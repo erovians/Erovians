@@ -19,7 +19,7 @@
 
 @layer base {
   body {
-    @apply bg-white;
+    @apply bg-black;
   }
    html {
     scroll-behavior: smooth;
