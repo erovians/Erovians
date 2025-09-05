@@ -55,7 +55,7 @@ export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   return (
-    <nav className="bg-white shadow-sm border-b h-24 fixed w-full top-0 left-0 z-50 ">
+    <nav className="bg-white shadow-sm border-b h-24 w-full top-0 left-0 z-50  sticky">
       <div className="max-w-full mx-auto px-6 flex justify-between items-center h-full">
         {/* Logo */}
         <div className="flex items-center ">
@@ -68,7 +68,7 @@ export default function Navbar() {
             <NavigationMenuList>
               {/* Home */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Sell Online</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">Sell Online</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
@@ -105,7 +105,7 @@ export default function Navbar() {
 
               {/* Components */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Fee & Commission</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">Fee & Commission</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {components.map((component) => (
@@ -123,7 +123,7 @@ export default function Navbar() {
 
               {/* Grow */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Grow</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">Grow</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[300px] gap-4">
                     <li>
@@ -158,7 +158,7 @@ export default function Navbar() {
 
               {/* Learn */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Learn</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">Learn</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px] gap-4">
                     <li>
