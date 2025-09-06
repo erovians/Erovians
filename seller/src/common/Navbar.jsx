@@ -167,10 +167,10 @@ export default function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex h-[60%] justify-between items-center w-1/6 gap-3 mr-25">
-          <Button variant="outline" className="bg-transparent h-full w-[60%] border border-yellow hover:bg-yellow">
+          <Button variant="outline" className="bg-transparent h-full w-[60%] border border-navyblue hover:bg-navyblue hover:text-white">
             Login <span><LogIn /></span>
           </Button>
-          <Button variant="outline" className="bg-yellow h-full w-[60%] cursor-pointer hover:bg-yellow hover:bg-white hover:border-yellow px-20">
+          <Button variant="outline" className="bg-navyblue h-full w-[60%] text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20">
             Start Selling <span><Store /></span>
           </Button>
         </div>

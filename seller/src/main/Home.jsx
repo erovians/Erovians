@@ -1,20 +1,21 @@
 import { assets } from '@/assets/assets'
-import Footer from '@/common/Footer'
 import Cards from '@/components/web/Card/Cards'
+import WhySellersLove from '@/components/web/WhySellersLove/WhySellersLove'
 import Hero from '@/pages/Hero'
 import React from 'react'
 
 const Home = () => {
     const steps = [
-    { step: "Step 1", title: "Join Erovians", description: "Create a Seller Account", image: assets.sandeep },
-    { step: "Step 2", title: "Sell Your Products", description: "List and manage your products", image: assets.logo },
-    { step: "Step 3", title: "Build Your Brand", description: "Grow your business with us", image: assets.logo },
+    { step: "Step 1", title: "Join Erovians", description: "Create a Seller Account", image: assets.joinimg },
+    { step: "Step 2", title: "Sell Your Products", description: "List and manage your products", image: assets.sellimg },
+    { step: "Step 3", title: "Build Your Brand", description: "Grow your business with us", image: assets.brandimg },
   ]
   return (
 
     <div>
         <Hero/>
-       <section className="w-full px-6 py-16 mt-0 sm:mt-40 bg-gray-50 "> 
+
+       <section className="w-full px-6 py-16 mt-0 sm:mt-30  "> 
   {/* Heading */}
   <div className="max-w-3xl mx-auto text-center mb-12 rich-text">
     <h1>
@@ -37,7 +38,9 @@ const Home = () => {
     ))}
   </div>
         </section>
-        <Footer/>
+       
+        <WhySellersLove/>
+     
 
     </div>
   )

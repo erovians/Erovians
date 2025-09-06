@@ -6,10 +6,10 @@
 @theme {
   --color-white: #ffffff;
   --color-black: #333333;
-  --color-blue: #047cd5;
+  --color-blue: #0c2c43;
   --color-grey: #888;
   --color-darkgrey: #3f3f3f;
-  --color-yellow: #ffcd00;
+  --color-navyblue: #0c2c43;
   --color-lightblue: #f1faff;
 
 }
@@ -19,13 +19,17 @@
   font-family: 'Poppins', sans-serif;
 }
 
-@layer base {
+/* @layer base {
   body {
     @apply bg-black;
   }
    html {
     scroll-behavior: smooth;
   }
+} */
+
+body {
+  @apply bg-white; /* change to any Tailwind color */
 }
 
 ::-webkit-scrollbar{

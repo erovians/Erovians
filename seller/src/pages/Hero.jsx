@@ -27,10 +27,10 @@ function StatCircle({ value, label, borderColor, textColor, spin }) {
 
 export default function Hero() {
   const stats = [
-    { value: "14 Lakh+", label: "Seller community", borderColor: "border-blue-500", textColor: "text-blue-500" },
-    { value: "24×7", label: "Online Business", borderColor: "border-green-500", textColor: "text-green-500", spin: true },
-    { value: "7", label: "days* payment", borderColor: "border-red-500", textColor: "text-red-500" },
-    { value: "19000+", label: "Pincodes served", borderColor: "border-purple-500", textColor: "text-purple-500" },
+    { value: "14 Lakh+", label: "Seller community", borderColor: "border-navyblue", textColor: "text-navyblue" },
+    { value: "24×7", label: "Online Business", borderColor: "border-navyblue", textColor: "text-navyblue", spin: true },
+    { value: "7", label: "days* payment", borderColor: "border-navyblue", textColor: "text-navyblue" },
+    { value: "19000+", label: "Pincodes served", borderColor: "border-navyblue", textColor: "text-navyblue" },
   ];
 
   return (
