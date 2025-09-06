@@ -31,3 +31,13 @@
 ::-webkit-scrollbar{
   display: none;
 }
+
+
+/* Heading class */
+
+.rich-text h1 {
+  font-size: 30px; font-weight: bold; color: var(--color-grey);
+}
+.rich-text p {
+  font-size: 20px; color: var(--color-grey);
+}
