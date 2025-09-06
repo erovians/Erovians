@@ -80,7 +80,7 @@ export default function WhySellersLove() {
   ];
 
   return (
-    <section className="w-[98%] m-auto px-6 py-16">
+    <section className="w-[98%] m-auto px-6 py-5 sm:py-16">
       {/* Top Heading */}
       <div className="text-center md:text-left mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-grey">

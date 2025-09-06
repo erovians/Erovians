@@ -6,11 +6,15 @@ import reachimg from "./reach.svg"
 import brandimg from "./brand.svg"
 import sellimg from "./sell.svg"
 import whysellerlove from "./why-seller-love.svg"
+import ekta from "./ekta.svg"
+import logowhite from "./white-seller-logo.png"
 
 export const assets = {
     logo,
     heroimg,
     dashboradimg,
     joinimg , reachimg , brandimg , sellimg,
-    whysellerlove
+    whysellerlove,
+    ekta,
+    logowhite
 }

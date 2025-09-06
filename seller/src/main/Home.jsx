@@ -1,5 +1,6 @@
 import { assets } from '@/assets/assets'
 import Cards from '@/components/web/Card/Cards'
+import CarouselMain from '@/components/web/Carousel/CarouselMain'
 import WhySellersLove from '@/components/web/WhySellersLove/WhySellersLove'
 import Hero from '@/pages/Hero'
 import React from 'react'
@@ -15,7 +16,7 @@ const Home = () => {
     <div>
         <Hero/>
 
-       <section className="w-full px-6 py-16 mt-0 sm:mt-30  "> 
+        <section className="w-full px-6 py-16 mt-0 sm:mt-30  "> 
   {/* Heading */}
   <div className="max-w-3xl mx-auto text-center mb-12 rich-text">
     <h1>
@@ -38,9 +39,8 @@ const Home = () => {
     ))}
   </div>
         </section>
-       
         <WhySellersLove/>
-     
+        <CarouselMain/>
 
     </div>
   )

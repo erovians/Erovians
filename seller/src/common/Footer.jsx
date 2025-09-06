@@ -9,7 +9,7 @@ export default function Footer() {
     
     {/* Left Section */}
     <div>
-      <img src={assets.logo} alt="Logo" className="h-14 mb-6" />
+      <img src={assets.logowhite} alt="Logo" className="h-14 mb-6" />
       <p className="text-sm leading-relaxed mb-6 max-w-sm">
         Join <span className="font-semibold text-blue-400">Erovians</span> today 
         and grow your business with a trusted platform designed for sellers like you.
