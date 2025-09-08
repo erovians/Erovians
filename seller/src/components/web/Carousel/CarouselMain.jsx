@@ -52,7 +52,7 @@ export default function SuccessStories() {
           <h1 className="mb-4">
             <span className="text-blue">Seller </span>Success Stories
           </h1>
-          <p className="  mb-6" >
+          <p className=" mb-6" >
             14 Lakh+ sellers trust Erovians for their online business. Now its your turn to take big move with Erovians.
           </p>
           <button className="px-6 border flex gap-2 py-3 bg-blue text-white rounded-md shadow hover:bg-white hover:text-blue hover:border-blue transition cursor-pointer">

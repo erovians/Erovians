@@ -82,11 +82,11 @@ export default function WhySellersLove() {
   return (
     <section className="w-[98%] m-auto px-6 py-5 sm:py-16">
       {/* Top Heading */}
-      <div className="text-center md:text-left mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-grey">
+      <div className="text-center md:text-left mb-12 rich-text">
+        <h1 className="">
           Why do <span className="text-blue">brands</span> choose to grow with{" "}
           <span className="text-blue">Erovians?</span>
-        </h2>
+        </h1>
         <p className="mt-4 text-gray-600 max-w-3xl">
           Erovians helps thousands of businesses build their digital presence,
           reach new customers, and scale faster. Our platform is designed to
