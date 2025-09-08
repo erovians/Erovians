@@ -1,8 +1,8 @@
 import { assets } from '@/assets/assets'
-import Cards from '@/components/web/Card/Cards'
-import CarouselMain from '@/components/web/Carousel/CarouselMain'
-import WhySellersLove from '@/components/web/WhySellersLove/WhySellersLove'
-import Hero from '@/pages/Hero'
+import Cards from '@/components/Cards'
+import CarouselMain from '@/components/CarouselMain'
+import WhySellersLove from '@/components/WhySellersLove'
+import Hero from '@/components/Hero'
 import React from 'react'
 
 const Home = () => {

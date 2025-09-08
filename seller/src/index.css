@@ -20,22 +20,14 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* @layer base {
-  body {
-    @apply bg-black;
-  }
-   html {
-    scroll-behavior: smooth;
-  }
-} */
-
 body {
-  @apply bg-white; /* change to any Tailwind color */
+  @apply bg-white; 
 }
 
 ::-webkit-scrollbar{
   display: none;
 }
+
 
 
 /* Heading class */

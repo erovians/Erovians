@@ -1,6 +1,6 @@
 import React from "react";
 import { assets } from "@/assets/assets";
-import Cards from "@/components/web/Card/Cards";
+import Cards from "@/components/Cards";
 
 // Reusable StatCircle Component
 function StatCircle({ value, label, borderColor, textColor, spin }) {
