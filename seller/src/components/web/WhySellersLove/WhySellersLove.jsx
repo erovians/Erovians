@@ -87,7 +87,7 @@ export default function WhySellersLove() {
           Why do <span className="text-blue">brands</span> choose to grow with{" "}
           <span className="text-blue">Erovians?</span>
         </h1>
-        <p className="mt-4 text-gray-600 max-w-3xl">
+        <p className="mt-4 max-w-3xl">
           Erovians helps thousands of businesses build their digital presence,
           reach new customers, and scale faster. Our platform is designed to
           make selling simple, profitable, and sustainable for every brand.
