@@ -59,7 +59,14 @@ export default function Navbar() {
       <div className="max-w-full mx-auto px-6 flex justify-between items-center h-full">
         {/* Logo */}
         <div className="flex items-center ">
-        <Link to={'/'}> <img src={assets.logo} alt="Logo" className="h-8 w-auto sm:h-8 md:h-8 lg:h-10 xl:h-12" /></Link> 
+          <Link to={"/"}>
+            {" "}
+            <img
+              src={assets.logo}
+              alt="Logo"
+              className="h-8 w-auto sm:h-8 md:h-8 lg:h-10 xl:h-12"
+            />
+          </Link>
         </div>
 
         {/* Desktop Menu */}
@@ -68,16 +75,26 @@ export default function Navbar() {
             <NavigationMenuList>
               {/* Home */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">Sell Online</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">
+                  Sell Online
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
-                      <NavigationMenuLink asChild  className="hover:bg-transparent"> 
-                       <img src={assets.dashboradimg} alt="Nav-Dahsboard-Image"/>
+                      <NavigationMenuLink
+                        asChild
+                        className="hover:bg-transparent"
+                      >
+                        <img
+                          src={assets.dashboradimg}
+                          alt="Nav-Dahsboard-Image"
+                        />
                       </NavigationMenuLink>
                     </li>
                     <ListItem href="/docs" title="Create Account">
-                      Creating your Erovians seller account is a quick process, taking less than 10 minutes, and requires only 3 documents.
+                      Creating your Erovians seller account is a quick process,
+                      taking less than 10 minutes, and requires only 3
+                      documents.
                     </ListItem>
                     <ListItem href="/docs/installation" title="List Products">
                       List your products to display users .
@@ -86,7 +103,8 @@ export default function Navbar() {
                       href="/docs/primitives/typography"
                       title="Help & Support"
                     >
-                      24/7 support to assist you with any questions or issues you may have.
+                      24/7 support to assist you with any questions or issues
+                      you may have.
                     </ListItem>
                   </ul>
                 </NavigationMenuContent>
@@ -94,7 +112,9 @@ export default function Navbar() {
 
               {/* Components */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">Fee & Commission</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">
+                  Fee & Commission
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {components.map((component) => (
@@ -112,7 +132,9 @@ export default function Navbar() {
 
               {/* Grow */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">Grow</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-base">
+                  Grow
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[300px] gap-4">
                     <li>
@@ -134,7 +156,9 @@ export default function Navbar() {
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Link href="#">
-                          <div className="font-medium">Erovians Value Services</div>
+                          <div className="font-medium">
+                            Erovians Value Services
+                          </div>
                           <div className="text-muted-foreground">
                             Read our latest blog posts.
                           </div>
@@ -147,7 +171,11 @@ export default function Navbar() {
 
               {/* Learn */}
               <NavigationMenuItem>
-               <Link to={'/learn'}><NavigationMenuTrigger className="text-base">Learn</NavigationMenuTrigger></Link> 
+                <Link to={"/learn"}>
+                  <NavigationMenuTrigger className="text-base">
+                    Learn
+                  </NavigationMenuTrigger>
+                </Link>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px] gap-4">
                     <li>
@@ -167,11 +195,23 @@ export default function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex h-[60%] justify-between items-center w-1/6 gap-3 mr-25">
-          <Button variant="outline" className="bg-transparent h-full w-[60%] border border-navyblue hover:bg-navyblue hover:text-white">
-            Login <span><LogIn /></span>
+          <Button
+            variant="outline"
+            className="bg-transparent h-full w-[60%] border border-navyblue hover:bg-navyblue hover:text-white"
+          >
+            Login{" "}
+            <span>
+              <LogIn />
+            </span>
           </Button>
-          <Button variant="outline" className="bg-navyblue h-full w-[60%] text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20">
-            Start Selling <span><Store /></span>
+          <Button
+            variant="outline"
+            className="bg-navyblue h-full w-[60%] text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20"
+          >
+            Start Selling{" "}
+            <span>
+              <Store />
+            </span>
           </Button>
         </div>
 
@@ -195,10 +235,26 @@ export default function Navbar() {
                 setOpenDropdown(openDropdown === "home" ? null : "home")
               }
             >
-              <li><Link to="/" className="block">shadcn/ui</Link></li>
-              <li><Link to="/docs" className="block">Introduction</Link></li>
-              <li><Link to="/docs/installation" className="block">Installation</Link></li>
-              <li><Link to="/docs/primitives/typography" className="block">Typography</Link></li>
+              <li>
+                <Link to="/" className="block">
+                  shadcn/ui
+                </Link>
+              </li>
+              <li>
+                <Link to="/docs" className="block">
+                  Introduction
+                </Link>
+              </li>
+              <li>
+                <Link to="/docs/installation" className="block">
+                  Installation
+                </Link>
+              </li>
+              <li>
+                <Link to="/docs/primitives/typography" className="block">
+                  Typography
+                </Link>
+              </li>
             </MobileDropdown>
 
             {/* Components */}
@@ -206,12 +262,16 @@ export default function Navbar() {
               title="Components"
               isOpen={openDropdown === "components"}
               onClick={() =>
-                setOpenDropdown(openDropdown === "components" ? null : "components")
+                setOpenDropdown(
+                  openDropdown === "components" ? null : "components"
+                )
               }
             >
               {components.map((c) => (
                 <li key={c.title}>
-                  <Link to={c.href} className="block">{c.title}</Link>
+                  <Link to={c.href} className="block">
+                    {c.title}
+                  </Link>
                 </li>
               ))}
             </MobileDropdown>
@@ -224,9 +284,15 @@ export default function Navbar() {
                 setOpenDropdown(openDropdown === "grow" ? null : "grow")
               }
             >
-              <li><Link to="#">Components</Link></li>
-              <li><Link to="#">Documentation</Link></li>
-              <li><Link to="#">Blog</Link></li>
+              <li>
+                <Link to="#">Components</Link>
+              </li>
+              <li>
+                <Link to="#">Documentation</Link>
+              </li>
+              <li>
+                <Link to="#">Blog</Link>
+              </li>
             </MobileDropdown>
 
             {/* Learn */}
@@ -237,17 +303,27 @@ export default function Navbar() {
                 setOpenDropdown(openDropdown === "learn" ? null : "learn")
               }
             >
-              <li><Link to="#">FAQs</Link></li>
-              <li><Link to="#">Seller Success Stories</Link></li>
+              <li>
+                <Link to="#">FAQs</Link>
+              </li>
+              <li>
+                <Link to="#">Seller Success Stories</Link>
+              </li>
             </MobileDropdown>
           </ul>
 
           {/* Buttons */}
           <div className="flex flex-col gap-3 mt-4">
-            <Button variant="outline" className="bg-transparent border border-yellow hover:bg-yellow">
+            <Button
+              variant="outline"
+              className="bg-transparent border border-yellow hover:bg-yellow"
+            >
               Login <LogIn />
             </Button>
-            <Button variant="outline" className="bg-yellow hover:bg-white hover:border-yellow">
+            <Button
+              variant="outline"
+              className="bg-yellow hover:bg-white hover:border-yellow"
+            >
               Start Selling <Store />
             </Button>
           </div>

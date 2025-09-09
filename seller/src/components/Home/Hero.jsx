@@ -26,40 +26,60 @@ function StatCircle({ value, label, borderColor, textColor, spin }) {
 
 export default function Hero() {
   const stats = [
-    { value: "14 Lakh+", label: "Seller community", borderColor: "border-navyblue", textColor: "text-navyblue" },
-    { value: "24×7", label: "Online Business", borderColor: "border-navyblue", textColor: "text-navyblue", spin: true },
-    { value: "7", label: "days* payment", borderColor: "border-navyblue", textColor: "text-navyblue" },
-    { value: "19000+", label: "Pincodes served", borderColor: "border-navyblue", textColor: "text-navyblue" },
+    {
+      value: "14 Lakh+",
+      label: "Seller community",
+      borderColor: "border-navyblue",
+      textColor: "text-navyblue",
+    },
+    {
+      value: "24×7",
+      label: "Online Business",
+      borderColor: "border-navyblue",
+      textColor: "text-navyblue",
+      spin: true,
+    },
+    {
+      value: "7",
+      label: "days* payment",
+      borderColor: "border-navyblue",
+      textColor: "text-navyblue",
+    },
+    {
+      value: "19000+",
+      label: "Pincodes served",
+      borderColor: "border-navyblue",
+      textColor: "text-navyblue",
+    },
   ];
 
   return (
-    <> 
-    <section className="relative w-full" >
-      {/* Background Image */}
-      <img
-        src={assets.heroimg}
-        alt="Erovians Seller"
-        className="w-[98%] m-auto h-[280px] sm:h-[400px] md:h-[500px] lg:h-[600px] object-cover"
-      />
+    <>
+      <section className="relative w-full">
+        {/* Background Image */}
+        <img
+          src={assets.heroimg}
+          alt="Erovians Seller"
+          className="w-[98%] m-auto h-[280px] sm:h-[400px] md:h-[500px] lg:h-[600px] object-cover"
+        />
 
-      {/* Bottom Stats */}
-      <div
-        className="
+        {/* Bottom Stats */}
+        <div
+          className="
           relative mt-4
           sm:mt-6
           md:absolute md:bottom-[-100px] md:left-1/2 md:transform md:-translate-x-1/2 
           w-[100%] sm:w-[85%] lg:w-[80%] 
           mx-auto
         "
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 bg-white shadow-lg rounded-xl py-6 sm:py-8 px-4 sm:px-8 text-center">
-          {stats.map((stat, index) => (
-            <StatCircle key={index} {...stat} />
-          ))}
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 bg-white shadow-lg rounded-xl py-6 sm:py-8 px-4 sm:px-8 text-center">
+            {stats.map((stat, index) => (
+              <StatCircle key={index} {...stat} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-   
+      </section>
     </>
   );
 }

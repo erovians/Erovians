@@ -27,13 +27,25 @@ export default function Register() {
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
         {/* Stepper */}
         <div className="flex justify-between items-center mb-6 text-sm font-medium text-gray-600">
-          <div className={`flex-1 text-center ${step === 1 ? "text-blue-600 font-bold" : ""}`}>
+          <div
+            className={`flex-1 text-center ${
+              step === 1 ? "text-blue-600 font-bold" : ""
+            }`}
+          >
             EMAIL ID & GST
           </div>
-          <div className={`flex-1 text-center ${step === 2 ? "text-blue-600 font-bold" : ""}`}>
+          <div
+            className={`flex-1 text-center ${
+              step === 2 ? "text-blue-600 font-bold" : ""
+            }`}
+          >
             PASSWORD CREATION
           </div>
-          <div className={`flex-1 text-center ${step === 3 ? "text-blue-600 font-bold" : ""}`}>
+          <div
+            className={`flex-1 text-center ${
+              step === 3 ? "text-blue-600 font-bold" : ""
+            }`}
+          >
             ONBOARDING DASHBOARD
           </div>
         </div>
@@ -61,13 +73,16 @@ export default function Register() {
               className="w-full border border-gray-300 rounded p-3 mb-3"
             />
 
-            <p className="mb-2 font-medium">What are you looking to sell on Flipkart?</p>
+            <p className="mb-2 font-medium">
+              What are you looking to sell on Flipkart?
+            </p>
             <div className="flex gap-4 mb-4">
               <button className="flex-1 border-2 border-blue-600 text-blue-600 font-medium py-3 rounded-lg hover:bg-blue-50">
                 All Categories
               </button>
               <button className="flex-1 border border-gray-300 text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50">
-                Only Books <span className="text-sm text-gray-500">(PAN mandatory)</span>
+                Only Books{" "}
+                <span className="text-sm text-gray-500">(PAN mandatory)</span>
               </button>
             </div>
 
@@ -122,9 +137,12 @@ export default function Register() {
         {/* Step 3 */}
         {step === 3 && (
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">Welcome to Seller Hub 🎉</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              Welcome to Seller Hub 🎉
+            </h2>
             <p className="text-gray-600 mb-6">
-              Your onboarding is almost complete. Proceed to dashboard to set up your store.
+              Your onboarding is almost complete. Proceed to dashboard to set up
+              your store.
             </p>
 
             <div className="flex justify-between gap-4">

@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import {ChartNoAxesColumn} from "lucide-react";
+import { ChartNoAxesColumn } from "lucide-react";
 import { assets } from "@/assets/assets";
 
 export default function SuccessStories() {
@@ -17,7 +17,7 @@ export default function SuccessStories() {
       company: "Glide Route Ventures",
       feedback:
         "From 5 to 40+ brands, Erovian's seamless registration, seller support & account managers' guidance fueled our growth in beauty & grooming sectors.",
-      img: "https://via.placeholder.com/100", 
+      img: "https://via.placeholder.com/100",
     },
     {
       name: "Ravi Kumar",
@@ -40,9 +40,7 @@ export default function SuccessStories() {
   const handleNext = () =>
     setActiveIndex((prev) => (prev + 1) % feedbacks.length);
   const handlePrev = () =>
-    setActiveIndex((prev) =>
-      prev === 0 ? feedbacks.length - 1 : prev - 1
-    );
+    setActiveIndex((prev) => (prev === 0 ? feedbacks.length - 1 : prev - 1));
 
   return (
     <section className="w-full py-16 px-6">
@@ -52,11 +50,12 @@ export default function SuccessStories() {
           <h1 className="mb-4">
             <span className="text-blue">Seller </span>Success Stories
           </h1>
-          <p className=" mb-6" >
-            14 Lakh+ sellers trust Erovians for their online business. Now its your turn to take big move with Erovians.
+          <p className=" mb-6">
+            14 Lakh+ sellers trust Erovians for their online business. Now its
+            your turn to take big move with Erovians.
           </p>
           <button className="px-6 border flex gap-2 py-3 bg-blue text-white rounded-md shadow hover:bg-white hover:text-blue hover:border-blue transition cursor-pointer">
-            See All Stories <ChartNoAxesColumn/>
+            See All Stories <ChartNoAxesColumn />
           </button>
         </div>
 
@@ -89,9 +88,12 @@ export default function SuccessStories() {
                 </CarouselItem>
               ))}
             </CarouselContent>
-              <span onClick={handlePrev}><CarouselPrevious className=" ml-8 h-10 w-10 sm:h-15 sm:w-15 sm:ml-0 "/></span>
-               <span onClick={handleNext}><CarouselNext  className="mr-8 h-10 w-10 sm:h-15 sm:w-15 sm:mr-0 " /></span>
-          
+            <span onClick={handlePrev}>
+              <CarouselPrevious className=" ml-8 h-10 w-10 sm:h-15 sm:w-15 sm:ml-0 " />
+            </span>
+            <span onClick={handleNext}>
+              <CarouselNext className="mr-8 h-10 w-10 sm:h-15 sm:w-15 sm:mr-0 " />
+            </span>
           </Carousel>
 
           {/* Indicators */}

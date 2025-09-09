@@ -1,25 +1,21 @@
-
 import React from "react";
 
-const Banner = ({title, img, description, subdescription}) => {
+const Banner = ({ title, img, description, subdescription }) => {
   return (
     <section className="w-full bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        
         {/* Left Section */}
         <div className="space-y-6 rich-text">
-          <h1 className="text-3xl text-navyblue leading-snug" style={{color:'#0c2c43'}}>
+          <h1
+            className="text-3xl text-navyblue leading-snug"
+            style={{ color: "#0c2c43" }}
+          >
             {title}{" "}
           </h1>
-          <p className="text-gray-700 text-lg">
-            {description}{" "}
-           
-          </p>
+          <p className="text-gray-700 text-lg">{description} </p>
 
           <div className="flex items-start gap-3 bg-blue-50 p-3 rounded-lg">
-            <span className="text-grey text-sm">
-              {subdescription}
-            </span>
+            <span className="text-grey text-sm">{subdescription}</span>
           </div>
         </div>
 

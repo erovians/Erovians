@@ -108,15 +108,14 @@ export default function WhySellersLove() {
           ))}
         </div>
 
-       {/* Right - Seller Image */}
-<div className="flex justify-center md:justify-end pr-0 sm:pr-20">
-  <img
-    src={assets.whysellerlove}
-    alt="Seller"
-    className="w-full h-auto max-w-xs sm:max-w-sm md:max-w-xl lg:max-w-xl xl:max-w-lg object-contain"
-  />
-</div>
-
+        {/* Right - Seller Image */}
+        <div className="flex justify-center md:justify-end pr-0 sm:pr-20">
+          <img
+            src={assets.whysellerlove}
+            alt="Seller"
+            className="w-full h-auto max-w-xs sm:max-w-sm md:max-w-xl lg:max-w-xl xl:max-w-lg object-contain"
+          />
+        </div>
       </div>
     </section>
   );
