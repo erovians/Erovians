@@ -8,6 +8,7 @@ import sellimg from "./sell.svg"
 import whysellerlove from "./why-seller-love.svg"
 import ekta from "./ekta.svg"
 import logowhite from "./white-seller-logo.png"
+import bannerimg from "./banner-5_1.png"
 
 export const assets = {
     logo,
@@ -16,5 +17,6 @@ export const assets = {
     joinimg , reachimg , brandimg , sellimg,
     whysellerlove,
     ekta,
-    logowhite
+    logowhite,
+    bannerimg
 }

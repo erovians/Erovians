@@ -4,6 +4,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Footer from "@/common/Footer";
 import Register from "./pages/Auth/Register";
+import FandQ from "./pages/Learn";
+import Learn from "./pages/Learn";
 
 function App() {
   const location = useLocation();
@@ -19,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/learn" element={<Learn />} />
       </Routes>
 
       {/* Same logic can be applied to Footer if you want */}

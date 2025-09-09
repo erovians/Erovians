@@ -59,7 +59,7 @@ export default function Navbar() {
       <div className="max-w-full mx-auto px-6 flex justify-between items-center h-full">
         {/* Logo */}
         <div className="flex items-center ">
-          <img src={assets.logo} alt="Logo" className="h-8 w-auto sm:h-8 md:h-8 lg:h-10 xl:h-12" />
+        <Link to={'/'}> <img src={assets.logo} alt="Logo" className="h-8 w-auto sm:h-8 md:h-8 lg:h-10 xl:h-12" /></Link> 
         </div>
 
         {/* Desktop Menu */}
@@ -147,7 +147,7 @@ export default function Navbar() {
 
               {/* Learn */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">Learn</NavigationMenuTrigger>
+               <Link to={'/learn'}><NavigationMenuTrigger className="text-base">Learn</NavigationMenuTrigger></Link> 
                 <NavigationMenuContent>
                   <ul className="grid w-[200px] gap-4">
                     <li>
