@@ -186,9 +186,9 @@ export default function Navbar() {
                         <Link href="#">FAQs</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <a href="/learn#whatSellerSays">
+                        <Link href="/learn#whatSellerSays">
                           Seller Success Stories
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                   </ul>
