@@ -75,9 +75,12 @@ export default function Navbar() {
             <NavigationMenuList>
               {/* Home */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">
-                  Sell Online
-                </NavigationMenuTrigger>
+                <Link to={"sell-online"}>
+                  {" "}
+                  <NavigationMenuTrigger className="text-base">
+                    Sell Online
+                  </NavigationMenuTrigger>
+                </Link>
                 <NavigationMenuContent>
                   <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
@@ -140,7 +143,7 @@ export default function Navbar() {
                     <li>
                       <NavigationMenuLink asChild>
                         <Link href="#">
-                          <div className="font-medium">E-Assured Badge</div>
+                          <div className="font-medium">Verified Badge</div>
                           <div className="text-muted-foreground">
                             Browse all components in the library.
                           </div>
@@ -183,7 +186,9 @@ export default function Navbar() {
                         <Link href="#">FAQs</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <a href="/learn#whatSellerSays">Seller Success Stories</a>
+                        <a href="/learn#whatSellerSays">
+                          Seller Success Stories
+                        </a>
                       </NavigationMenuLink>
                     </li>
                   </ul>

@@ -2,7 +2,7 @@ import React from "react";
 
 const Banner = ({ title, img, description, subdescription }) => {
   return (
-    <section className="w-full bg-gray-50 h-[100%]">
+    <section className="w-full  h-[100%]">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Left Section */}
         <div className="space-y-6 rich-text">

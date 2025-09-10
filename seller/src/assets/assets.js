@@ -9,6 +9,8 @@ import whysellerlove from "./why-seller-love.svg";
 import ekta from "./ekta.svg";
 import logowhite from "./white-seller-logo.png";
 import learn_banner_img from "./learn-banner-img.svg";
+import sell_online_banner from "./Grow-BUSINESS.svg";
+import sell_online_helpandsupport from "./SellOnline_helpandsupport.png";
 
 export const assets = {
   logo,
@@ -22,4 +24,6 @@ export const assets = {
   ekta,
   logowhite,
   learn_banner_img,
+  sell_online_banner,
+  sell_online_helpandsupport,
 };

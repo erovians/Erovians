@@ -6,6 +6,7 @@ import Footer from "@/common/Footer";
 import Register from "./pages/Auth/Register";
 import FandQ from "./pages/Learn";
 import Learn from "./pages/Learn";
+import SellOnline from "./pages/SellOnline";
 
 function App() {
   const location = useLocation();
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/sell-online" element={<SellOnline />} />
       </Routes>
 
       {/* Same logic can be applied to Footer if you want */}
