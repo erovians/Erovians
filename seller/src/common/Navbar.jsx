@@ -75,8 +75,7 @@ export default function Navbar() {
             <NavigationMenuList>
               {/* Home */}
               <NavigationMenuItem>
-                <Link to={"sell-online"}>
-                  {" "}
+                <Link to={"/sell-online"}>
                   <NavigationMenuTrigger className="text-base">
                     Sell Online
                   </NavigationMenuTrigger>
@@ -94,7 +93,7 @@ export default function Navbar() {
                         />
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/docs" title="Create Account">
+                    <ListItem href="/sell-online#createAccount" title="Create Account" asChild>
                       Creating your Erovians seller account is a quick process,
                       taking less than 10 minutes, and requires only 3
                       documents.
@@ -183,10 +182,12 @@ export default function Navbar() {
                   <ul className="grid w-[200px] gap-4">
                     <li>
                       <NavigationMenuLink asChild>
-                        <Link href="#">FAQs</Link>
+                        <Link to={"/learn#FAQ"} scroll={true}>
+                          FAQs
+                        </Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <Link href="/learn#whatSellerSays">
+                        <Link to={"/learn#whatSellerSays"} scroll={true}>
                           Seller Success Stories
                         </Link>
                       </NavigationMenuLink>
@@ -343,7 +344,7 @@ function ListItem({ title, children, href, ...props }) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <Link href={href}>
+        <Link to={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}
