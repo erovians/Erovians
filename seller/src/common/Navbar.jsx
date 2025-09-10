@@ -75,7 +75,7 @@ export default function Navbar() {
             <NavigationMenuList>
               {/* Home */}
               <NavigationMenuItem>
-                <Link to={"sell-online"}>
+                <Link to={"sellonline"}>
                   {" "}
                   <NavigationMenuTrigger className="text-base">
                     Sell Online
@@ -94,16 +94,24 @@ export default function Navbar() {
                         />
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/docs" title="Create Account">
+
+                    <ListItem
+                      href="/sellonline#CreateAccount"
+                      title="Create Account"
+                    >
                       Creating your Erovians seller account is a quick process,
                       taking less than 10 minutes, and requires only 3
                       documents.
                     </ListItem>
-                    <ListItem href="/docs/installation" title="List Products">
+
+                    <ListItem
+                      href="/sellonline#list-product"
+                      title="List Products"
+                    >
                       List your products to display users .
                     </ListItem>
                     <ListItem
-                      href="/docs/primitives/typography"
+                      href="/sellonline#helpsupport"
                       title="Help & Support"
                     >
                       24/7 support to assist you with any questions or issues
@@ -112,7 +120,6 @@ export default function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
               {/* Components */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-base">
@@ -132,7 +139,6 @@ export default function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
               {/* Grow */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-base">
@@ -171,7 +177,6 @@ export default function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
               {/* Learn */}
               <NavigationMenuItem>
                 <Link to={"/learn"}>
@@ -183,17 +188,24 @@ export default function Navbar() {
                   <ul className="grid w-[200px] gap-4">
                     <li>
                       <NavigationMenuLink asChild>
-                        <Link href="#">FAQs</Link>
+                        <Link to={"/learn#FAQ"} scroll={true} duration={1000}>
+                          FAQs
+                        </Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <a href="/learn#whatSellerSays">
+                        <Link
+                          to={"/learn#whatSellerSays"}
+                          scroll={true}
+                          duration={1000}
+                        >
                           Seller Success Stories
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+              ``
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -343,7 +355,7 @@ function ListItem({ title, children, href, ...props }) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <Link href={href}>
+        <Link to={href} scroll={true} duration={300}>
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Banner from "@/common/Banner";
 import { assets } from "@/assets/assets";
+import { Link, useLocation } from "react-router-dom";
 import {
   UserPlus,
   ShieldCheck,
@@ -10,9 +11,19 @@ import {
   Layers,
   Phone,
 } from "lucide-react";
-import { Accordion } from "@radix-ui/react-accordion";
 
 const SellOnline = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location]);
   return (
     <div className="flex flex-col">
       {/* Banner Section */}
@@ -28,7 +39,7 @@ const SellOnline = () => {
       {/* Create Account Section */}
       <section
         className="bg-white py-12 px-6 md:px-16 min-h-[80vh] flex flex-col justify-center"
-        id="create-account"
+        id="CreateAccount"
       >
         {/* Title */}
         <div className="rich-text">
@@ -179,7 +190,7 @@ const SellOnline = () => {
       </section>
 
       {/* Help and support */}
-      <section className=" py-12 px-6 md:px-16" id="help-support">
+      <section className=" py-12 px-6 md:px-16" id="helpsupport">
         <div className="max-w-full md:flex md:items-center md:justify-between  ">
           {/* Text Section */}
           <div className="rich-text md:w-1/2 mb-8 md:mb-0">
