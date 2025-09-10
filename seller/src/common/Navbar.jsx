@@ -98,11 +98,11 @@ export default function Navbar() {
                       taking less than 10 minutes, and requires only 3
                       documents.
                     </ListItem>
-                    <ListItem href="/docs/installation" title="List Products">
+                    <ListItem href="/sell-online#listProduct" title="List Products">
                       List your products to display users .
                     </ListItem>
                     <ListItem
-                      href="/docs/primitives/typography"
+                      href= "/sell-online#help&support"
                       title="Help & Support"
                     >
                       24/7 support to assist you with any questions or issues

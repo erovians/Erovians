@@ -123,7 +123,7 @@ const SellOnline = () => {
       {/* List Products Section */}
       <section
         className="py-12 px-6 md:px-16 min-h-[80vh] flex flex-col justify-center"
-        id="list-product"
+        id="listProduct"
       >
         {/* Title */}
         <div className="rich-text">
@@ -190,7 +190,7 @@ const SellOnline = () => {
       </section>
 
       {/* Help and support */}
-      <section className=" py-12 px-6 md:px-16" id="help-support">
+      <section className=" py-12 px-6 md:px-16" id="help&support">
         <div className="max-w-full md:flex md:items-center md:justify-between  ">
           {/* Text Section */}
           <div className="rich-text md:w-1/2 mb-8 md:mb-0">
