@@ -205,7 +205,6 @@ export default function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              ``
             </NavigationMenuList>
           </NavigationMenu>
         </div>

@@ -25,17 +25,14 @@ const SellOnline = () => {
     }
   }, [location]);
   return (
-    <div className="flex flex-col">
+    <>
       {/* Banner Section */}
-      <div className="min-h-[80vh] flex items-center ">
-        <Banner
-          title="Start Selling Online with Erovians"
-          description="Grow your marble and granite business by selling products online and reach customers across India with Erovians’s powerful tools for sellers."
-          subdescription="Getting started is simple—just a few documents and you’re ready to sell on Erovians."
-          img={assets.sell_online_banner}
-        />
-      </div>
-
+      <Banner
+        title="Start Selling Online with Erovians"
+        description="Grow your marble and granite business by selling products online and reach customers across India with Erovians’s powerful tools for sellers."
+        subdescription="Getting started is simple—just a few documents and you’re ready to sell on Erovians."
+        img={assets.sell_online_banner}
+      />
       {/* Create Account Section */}
       <section
         className="bg-white py-12 px-6 md:px-16 min-h-[80vh] flex flex-col justify-center"
@@ -225,7 +222,7 @@ const SellOnline = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 
