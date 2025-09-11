@@ -94,16 +94,16 @@ export default function Navbar() {
                         />
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/docs" title="Create Account">
+                    <ListItem href="/sell-online#CreateAccount" title="Create Account">
                       Creating your Erovians seller account is a quick process,
                       taking less than 10 minutes, and requires only 3
                       documents.
                     </ListItem>
-                    <ListItem href="/docs/installation" title="List Products">
+                    <ListItem href="/sell-online#list-product" title="List Products">
                       List your products to display users .
                     </ListItem>
                     <ListItem
-                      href="/docs/primitives/typography"
+                      href="/sell-online#help&support"
                       title="Help & Support"
                     >
                       24/7 support to assist you with any questions or issues
@@ -183,7 +183,7 @@ export default function Navbar() {
                         <Link href="#">FAQs</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <a href="/learn#whatSellerSays">
+                        <Link to="/learn#whatSellerSays">
                           Seller Success Stories
                         </Link>
                       </NavigationMenuLink>
@@ -238,23 +238,18 @@ export default function Navbar() {
               }
             >
               <li>
-                <Link to="/" className="block">
-                  shadcn/ui
+                <Link to="/sell-online#CreateAccount" className="block">
+                  Create Account
                 </Link>
               </li>
               <li>
-                <Link to="/docs" className="block">
-                  Introduction
+                <Link to="/sell-online#list-product" className="block">
+                  List Products
                 </Link>
               </li>
               <li>
-                <Link to="/docs/installation" className="block">
-                  Installation
-                </Link>
-              </li>
-              <li>
-                <Link to="/docs/primitives/typography" className="block">
-                  Typography
+                <Link to="/sell-online#help&support" className="block">
+                  Help & Support
                 </Link>
               </li>
             </MobileDropdown>
@@ -306,10 +301,10 @@ export default function Navbar() {
               }
             >
               <li>
-                <Link to="#">FAQs</Link>
+                <Link to="/learn#FAQ">FAQs</Link>
               </li>
               <li>
-                <Link to="#">Seller Success Stories</Link>
+                <Link to="/learn#whatSellerSays">Seller Success Stories</Link>
               </li>
             </MobileDropdown>
           </ul>
@@ -340,7 +335,7 @@ function ListItem({ title, children, href, ...props }) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <Link href={href}>
+        <Link to={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}

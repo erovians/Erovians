@@ -187,7 +187,7 @@ const SellOnline = () => {
       </section>
 
       {/* Help and support */}
-      <section className=" py-12 px-6 md:px-16" id="helpsupport">
+      <section className=" py-12 px-6 md:px-16" id="help&support">
         <div className="max-w-full md:flex md:items-center md:justify-between  ">
           {/* Text Section */}
           <div className="rich-text md:w-1/2 mb-8 md:mb-0">

@@ -99,7 +99,7 @@ const Learn = () => {
       </div>
 
       {/* Accrodian */}
-    <section className="w-full flex justify-center py-10 px-4 bg-gray-50" >
+    <section className="w-full flex justify-center py-10 px-4 bg-gray-50"id="FAQ" >
       <div className="w-full max-w-3xl rich-text">
         {/* Section Heading */}
         <h1 className="text-center text-2xl md:text-3xl font-bold mb-8">
