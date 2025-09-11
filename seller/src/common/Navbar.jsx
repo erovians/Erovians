@@ -180,7 +180,7 @@ export default function Navbar() {
                   <ul className="grid w-[200px] gap-4">
                     <li>
                       <NavigationMenuLink asChild>
-                        <Link href="#">FAQs</Link>
+                        <Link to="/learn#FAQ">FAQs</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Link to="/learn#whatSellerSays">
