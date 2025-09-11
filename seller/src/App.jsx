@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/learn" element={<Learn />} />
-        <Route path="/sell-online" element={<SellOnline />} />
+        <Route path="/sellonline" element={<SellOnline />} />
       </Routes>
 
       {/* Same logic can be applied to Footer if you want */}
