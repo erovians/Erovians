@@ -44,7 +44,7 @@ const Learn = () => {
     <>
       {/* Hero Banner */}
       <Banner
-        title="Grow Your Business with Erovians"
+        title="Choose Erovians For Your Business Exposure"
         description="Sell your products online and reach crores of customers through Erovians’s selling tools for suppliers"
         subdescription="Don’t have a GSTIN or have a Composition GSTIN? You can still sell on Erovians."
         img={assets.learn_banner_img}
@@ -99,12 +99,15 @@ const Learn = () => {
       </div>
 
       {/* Accrodian */}
-    <section className="w-full flex justify-center py-10 px-4 bg-gray-50"id="FAQ" >
-      <div className="w-full max-w-3xl rich-text">
-        {/* Section Heading */}
-        <h1 className="text-center text-2xl md:text-3xl font-bold mb-8">
-          Commonly <span className="text-navyblue">Asked </span> Questions
-        </h1>
+      <section
+        className="w-full flex justify-center py-10 px-4 bg-gray-50"
+        id="FAQ"
+      >
+        <div className="w-full max-w-3xl rich-text">
+          {/* Section Heading */}
+          <h1 className="text-center text-2xl md:text-3xl font-bold mb-8">
+            Commonly <span className="text-navyblue">Asked </span> Questions
+          </h1>
 
           {/* Accordion */}
           <Accordion type="single" collapsible className="w-full divide-y">
