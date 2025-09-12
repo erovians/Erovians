@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { assets } from "@/assets/assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn, Store, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import {
@@ -53,6 +53,8 @@ const components = [
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  const navigate = useNavigate();
 
   return (
     <nav className="bg-white shadow-sm border-b h-24 w-full top-0 left-0 z-50  sticky">
@@ -207,24 +209,29 @@ export default function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex h-[60%] justify-between items-center w-1/6 gap-3 mr-25">
-          <Button
-            variant="outline"
-            className="bg-transparent h-full w-[60%] border border-navyblue hover:bg-navyblue hover:text-white"
-          >
-            Login{" "}
-            <span>
-              <LogIn />
-            </span>
-          </Button>
-          <Button
-            variant="outline"
-            className="bg-navyblue h-full w-[60%] text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20"
-          >
-            Start Selling{" "}
-            <span>
-              <Store />
-            </span>
-          </Button>
+          <Link to="/login" className="h-full w-[60%]">
+            <Button
+              variant="outline"
+              className="bg-transparent h-full w-full border border-navyblue hover:bg-navyblue hover:text-white"
+            >
+              Login
+              <span>
+                <LogIn />
+              </span>
+            </Button>
+          </Link>
+
+          <Link to="/start-selling" className="h-full w-[60%]">
+            <Button
+              variant="outline"
+              className="bg-navyblue h-full w-full text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20"
+            >
+              Start Selling{" "}
+              <span>
+                <Store />
+              </span>
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -325,13 +332,18 @@ export default function Navbar() {
               variant="outline"
               className="bg-transparent border border-yellow hover:bg-yellow"
             >
-              Login <LogIn />
+              <Link to={"/login"}>
+                Login <LogIn />
+              </Link>
             </Button>
+
             <Button
               variant="outline"
               className="bg-yellow hover:bg-white hover:border-yellow"
             >
-              Start Selling <Store />
+              <Link to={"/start-selling"}>
+                Start Selling <Store />
+              </Link>
             </Button>
           </div>
         </div>

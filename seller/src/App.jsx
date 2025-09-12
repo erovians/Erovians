@@ -8,12 +8,15 @@ import FandQ from "./pages/Learn";
 import Learn from "./pages/Learn";
 import SellOnline from "./pages/SellOnline";
 import Grow from "./pages/Grow";
+import Login from "./pages/Login";
+import SellerSignUp from "./pages/SellerSignUp";
 
 function App() {
   const location = useLocation();
 
   // Define routes where Navbar should be hidden
-  const hideNavbarRoutes = ["/register"];
+  const hideNavbarRoutes = ["/start-selling"];
+  const hideFooterRoutes = ["/login", "/start-selling"];
 
   return (
     <>
@@ -26,10 +29,12 @@ function App() {
         <Route path="/learn" element={<Learn />} />
         <Route path="/sell-online" element={<SellOnline />} />
         <Route path="/grow" element={<Grow />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/start-selling" element={<SellerSignUp />} />
       </Routes>
 
       {/* Same logic can be applied to Footer if you want */}
-      {!hideNavbarRoutes.includes(location.pathname) && <Footer />}
+      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </>
   );
 }

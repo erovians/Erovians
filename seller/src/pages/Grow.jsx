@@ -125,10 +125,10 @@ const Grow = () => {
       <section className="bg-gray-50 py-12 px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
           {/* Title */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-navyblue mb-2">
-              Erovians Value Services
-            </h2>
+          <div className="mb-8 rich-text">
+            <h1 className="mb-2">
+              <span className="text-navyblue">Erovians Value Services</span>
+            </h1>
             <div className="w-20 h-1 bg-navyblue rounded"></div>
           </div>
 
@@ -153,9 +153,7 @@ const Grow = () => {
               </p>
 
               {/* Premium Catalogue Services */}
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Premium Catalogue Services
-              </h3>
+              <h3 className="mb-2">Premium Catalogue Services</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
                 In the stone and granite industry, presentation matters as much
                 as quality. Erovians Premium Catalogue Services ensure your
@@ -192,14 +190,6 @@ const Grow = () => {
                   Quotation & material calculator tools for bulk buyers
                 </li>
               </ul>
-
-              {/* Brochure */}
-              <a
-                href="/brochure.pdf"
-                className="inline-block mt-6 text-navyblue font-medium hover:underline"
-              >
-                Download Catalogue Brochure
-              </a>
             </div>
 
             {/* Right Image */}
