@@ -52,21 +52,21 @@ const Learn = () => {
 
       {/* Testimonials / Banner Carousel Section */}
       <div
-        className="flex flex-col w-full mt-10 px-4 py-10 min-h-fit"
+        className="flex flex-col w-full md:mt-4 px-4 md:py-10 min-h-fit"
         id="whatSellerSays"
       >
         {/* Section Heading */}
         <div className="mb-6 rich-text text-center">
-          <h1 className="text-3xl md:text-4xl font-bold">
-            What Our <span className="text-navyblue">Sellers</span> Say?
+          <h1>
+            <span className="text-navyblue"> What Our Sellers Say? </span>
           </h1>
-          <p className="mt-2 text-gray-700 text-base md:text-lg">
+          <p className="mt-2">
             Hear from our trusted partners who are growing with Erovians
           </p>
         </div>
 
         {/* Carousel */}
-        <div className="w-full flex justify-center py-12">
+        <div className="w-full flex justify-center md:py-12">
           <Carousel className="w-full max-w-6xl relative">
             <CarouselContent className="flex gap-4">
               {banners.map((banner, index) => (
@@ -105,7 +105,7 @@ const Learn = () => {
       >
         <div className="w-full max-w-3xl rich-text">
           {/* Section Heading */}
-          <h1 className="text-center text-2xl md:text-3xl font-bold mb-8">
+          <h1 className="text-center mb-8">
             Commonly <span className="text-navyblue">Asked </span> Questions
           </h1>
 

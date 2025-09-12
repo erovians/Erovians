@@ -3,14 +3,13 @@ import React from "react";
 const Banner = ({ title, img, description, subdescription }) => {
   return (
     <section className="w-full h-[100%]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 md:gap-10 items-center">
         {/* Left Section */}
-        <div className="space-y-6 rich-text">
+        <div className="space-y-6 rich-text text-center sm:text-start">
           <h1
-            className="text-3xl text-navyblue leading-snug"
-            style={{ color: "#0c2c43" }}
+            className="leading-snug"
           >
-            {title}{" "}
+            <span className="text-3xl sm:text-5xl text-navyblue">{title}</span>
           </h1>
           <p className="text-gray-700 text-lg">{description} </p>
 
