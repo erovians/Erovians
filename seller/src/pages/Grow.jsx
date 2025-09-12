@@ -76,18 +76,18 @@ const Grow = () => {
       </section>
 
       {/* Advertise Products Section */}
-      <section className="py-10 px-6 md:px-16 bg-white" id="list-product">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <section className="md:py-10 px-6 md:px-16 bg-white" id="list-product">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-10 items-center">
           {/* Right Image */}
-          <div className="flex justify-center">
+          <div className="flex justify-center ">
             <img
               src={assets.grow_advertised}
               alt="advertise_products"
-              className="h-fit w-full"
+              className="md:h-fit w-full "
             />
           </div>
           {/* Left Content */}
-          <div className="rich-text">
+          <div className="rich-text ">
             <h1 className="mb-4">
               <span className="text-navyblue">Advertise Your Products</span>
             </h1>
@@ -122,7 +122,7 @@ const Grow = () => {
       </section>
 
       {/* Erovians Value Services */}
-      <section className="bg-gray-50 md:py-12 px-6 md:px-16">
+      <section className="bg-gray-50 py-6 md:py-12 px-6 md:px-16">
         <div className="max-w-7xl mx-auto">
           {/* Title */}
           <div className="mb-8 rich-text">
@@ -136,9 +136,7 @@ const Grow = () => {
             {/* Left Content */}
             <div className="rich-text">
               {/* Account Management */}
-              <h3 className="mb-2">
-                Account Management
-              </h3>
+              <h3 className="mb-2">Account Management</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
                 Unlock the power of{" "}
                 <span className="font-semibold">
@@ -153,9 +151,7 @@ const Grow = () => {
               </p>
 
               {/* Premium Catalogue Services */}
-              <h3 className="mb-2">
-                Premium Catalogue Services
-              </h3>
+              <h3 className="mb-2">Premium Catalogue Services</h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
                 In the stone and granite industry, presentation matters as much
                 as quality. Erovians Premium Catalogue Services ensure your
@@ -173,14 +169,15 @@ const Grow = () => {
                   Professional product photography & video (textures, finishes,
                   slabs)
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="text-navyblue w-5 h-5" />
-                  360° stone & granite product showcase
-                </li>
+
                 <li className="flex items-center gap-2">
                   <CheckCircle className="text-navyblue w-5 h-5" />
                   Augmented Reality (AR) preview in kitchens, flooring &
                   interiors
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="text-navyblue w-5 h-5" />
+                  360° stone and granite product showcase
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="text-navyblue w-5 h-5" />
