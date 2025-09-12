@@ -11,6 +11,9 @@ import logowhite from "./white-seller-logo.png";
 import learn_banner_img from "./learn-banner-img.svg";
 import sell_online_banner from "./sell-online-banner.svg";
 import sell_online_helpandsupport from "./SellOnline_helpandsupport.png";
+import grow_verified from "./Grow-verified.svg";
+import grow_advertised from "./Grow-advertised.svg";
+import grow_banner_img from "./grow-banner-img.svg";
 
 export const assets = {
   logo,
@@ -26,4 +29,7 @@ export const assets = {
   learn_banner_img,
   sell_online_banner,
   sell_online_helpandsupport,
+  grow_verified,
+  grow_advertised,
+  grow_banner_img
 };

@@ -94,12 +94,18 @@ export default function Navbar() {
                         />
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/sell-online#CreateAccount" title="Create Account">
+                    <ListItem
+                      href="/sell-online#CreateAccount"
+                      title="Create Account"
+                    >
                       Creating your Erovians seller account is a quick process,
                       taking less than 10 minutes, and requires only 3
                       documents.
                     </ListItem>
-                    <ListItem href="/sell-online#list-product" title="List Products">
+                    <ListItem
+                      href="/sell-online#list-product"
+                      title="List Products"
+                    >
                       List your products to display users .
                     </ListItem>
                     <ListItem
@@ -133,9 +139,11 @@ export default function Navbar() {
               </NavigationMenuItem>
               {/* Grow */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-base">
-                  Grow
-                </NavigationMenuTrigger>
+                <Link to={"/grow"}>
+                  <NavigationMenuTrigger className="text-base">
+                    Grow
+                  </NavigationMenuTrigger>
+                </Link>
                 <NavigationMenuContent>
                   <ul className="grid w-[300px] gap-4">
                     <li>
@@ -149,7 +157,9 @@ export default function Navbar() {
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Link href="#">
-                          <div className="font-medium">Insights and Tools</div>
+                          <div className="font-medium">
+                            Advertise Your Products
+                          </div>
                           <div className="text-muted-foreground">
                             Learn how to use the library.
                           </div>

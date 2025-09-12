@@ -33,24 +33,24 @@ body {
 /* Heading class */
 
 .rich-text h1 {
-  font-size: 30px; font-weight: bold; color: var(--color-grey);
+  font-size: 24px; font-weight: bold; color: var(--color-grey);
 }
 .rich-text p {
   font-size: 16px; color: var(--color-subgrey);
 
 }
 h3 {
-  font-size: 16px; font-weight: 600; color: var(--color-navyblue);
+  font-size: 18px; font-weight: 600; color: var(--color-navyblue);
 }
 @media (min-width: 768px) {
   .rich-text h1 {
-    font-size: 36px;
+    font-size: 28px;
   }
   .rich-text p {
-    font-size: 20px;
+    font-size: 18px;
   }
   h3{
-    font-size: 18px;
+    font-size: 20px;
   }
 }
 
