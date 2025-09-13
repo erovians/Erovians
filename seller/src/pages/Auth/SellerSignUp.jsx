@@ -138,7 +138,7 @@ const SellerSignUp = () => {
         {/* Left Section */}
         <div>
           {/* Stepper */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 text-xs sm:text-sm font-semibold text-gray-600">
+          <div className="flex  md:items-center md:justify-between mb-8 text-xs sm:text-sm font-semibold text-gray-600">
             {steps.map((item, i) => (
               <div key={item.id} className="flex items-center flex-col">
                 {/* Step Circle */}
@@ -153,19 +153,9 @@ const SellerSignUp = () => {
                 </div>
 
                 {/* Title */}
-                <span className="ml-2 text-xs md:ml-2 mt-2 md:mt-0 whitespace-nowrap text-center md:text-left">
+                <span className="ml-2 text-xs md:ml-2 mt-2 md:mt-0 text-center md:text-left">
                   {item.title}
                 </span>
-
-                {/* Connector */}
-                {i < steps.length - 1 && (
-                  <div
-                    className={`${
-                      // horizontal line on desktop, vertical line on mobile
-                      "md:w-10 md:h-px h-6 w-px"
-                    } bg-gray-300 mx-0 md:mx-3 my-2 md:my-0`}
-                  ></div>
-                )}
               </div>
             ))}
           </div>
@@ -188,7 +178,7 @@ const SellerSignUp = () => {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={!formData.mobile || formData.mobile.length !== 10}
-                    className="px-4 py-2 sm:py-0 text-[#0c2c43] font-semibold text-sm disabled:text-gray-400 border-t sm:border-t-0 sm:border-l border-gray-200"
+                    className="px-4 py-2 sm:py-0  font-semibold text-sm text-white disabled:text-gray-600 disabled:bg-white border-t sm:border-t-0 sm:border-l border-gray-200 bg-navyblue "
                   >
                     Send OTP
                   </button>
@@ -366,7 +356,7 @@ const SellerSignUp = () => {
 
         {/* Right Section */}
         <div className="hidden md:flex flex-col gap-6">
-          <div className="p-4 border rounded-md shadow-sm">
+          <div className="p-2 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
               List with Erovians, Grow With Erovians, Explore with Erovians !!
             </p>
@@ -374,11 +364,13 @@ const SellerSignUp = () => {
               List your products to sell them worldwide.
             </p>
           </div>
-          <img
-            src={assets.SellerSignupform}
-            alt="Seller Banner"
-            className="rounded-md "
-          />
+          <div>
+            <img
+              src={assets.SellerSignupform}
+              alt="Seller Banner"
+              className="rounded-md "
+            />
+          </div>
         </div>
       </div>
 
