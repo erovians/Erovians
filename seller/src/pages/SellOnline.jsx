@@ -128,56 +128,56 @@ const SellOnline = () => {
             <span className="text-navyblue">List Your Products</span>
           </h1>
           <p className="mb-10">
-            What is a listing? A listing refers to the process of registering
-            your marble and granite products on the Erovians platform, making
-            them visible to customers, and enabling them to view and purchase.
-            It involves creating a detailed product page that includes essential
-            information such as product title, description, images, pricing, and
-            other relevant details. A well-crafted listing helps attract
-            potential customers and facilitates the sale of your products.
+            Listing your products on{" "}
+            <span className="font-semibold">Erovians </span>
+            means showcasing your marble and granite collections to a wide
+            customer base. A product listing is more than just adding details –
+            it’s about creating a complete product page that highlights key
+            information such as product name, description, images,
+            specifications, and pricing. A well-optimized listing not only makes
+            your product discoverable but also helps build trust and encourages
+            customers to make confident purchase decisions.
           </p>
         </div>
 
         {/* Tip */}
         <div className="bg-white border-l-4 border-r-3 border-navyblue p-4 mb-10 shadow-sm rounded-md">
           <p className="text-gray-700 text-sm">
-            💡 Did you know that providing precise and comprehensive information
-            about your product, along with clear and captivating images, can
-            increase its visibility on our platform by up to{" "}
-            <span className="font-semibold">15%</span>?
+            💡 Pro Tip: Products with detailed descriptions, accurate
+            specifications, and high-quality images are proven to attract up to{" "}
+            <span className="font-semibold">15% more customer engagement</span>{" "}
+            and significantly improve sales on the Erovians platform.
           </p>
         </div>
 
         {/* Listing Methods */}
-        <h3 className="mb-6">
-          Listing on Erovians can be done in 2 different ways:
+        <h3 className="mb-6 font-semibold text-lg text-gray-900">
+          You can list your products on Erovians in two simple ways:
         </h3>
 
         <div className="grid md:grid-cols-2 gap-8 flex-grow">
           {[
             {
-              video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_1",
-              title: "1. Match with existing products",
-              desc: "If your marble or granite type is already listed on Erovians, you can seamlessly link or ‘attach’ your product to the existing catalog and start selling immediately.",
+              image: assets.listprodcut_img1,
+              title: "1. Match with Existing Category",
+              desc: "If your marble or granite type is already available on Erovians, you can easily link your product to our existing catalog. This quick method saves time and lets you start selling instantly while benefiting from the visibility of an already established product page.",
             },
             {
-              video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_2",
-              title: "2. New product",
-              desc: "For marble or granite products not currently available on Erovians, you’ll need to provide complete details and create a new listing. This allows customers to discover your unique product.",
+              image: assets.listprodcut_img2,
+              title: "2. Create a New Category",
+              desc: "For unique or new varieties of marble and granite not listed yet, you can create a fresh product entry. By adding high-quality images, detailed descriptions, and accurate specifications, you ensure that your product stands out and reaches potential buyers effectively.",
             },
           ].map((item, index) => (
             <div
               key={index}
-              className="bg-white border rounded-lg shadow-sm p-4 flex flex-col h-full hover:shadow-md transition"
+              className="bg-white rounded-lg border-b-3 border-navyblue p-4 flex flex-col h-full hover:shadow-md transition"
             >
-              <div className="relative pb-[56.25%] mb-4">
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full rounded-md"
-                  src={item.video}
-                  title={item.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+              <div className="relative mb-4">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full object-cover rounded-md"
+                />
               </div>
               <h4 className="font-medium text-gray-900 mb-2">{item.title}</h4>
               <p className="text-gray-600 text-sm flex-grow">{item.desc}</p>

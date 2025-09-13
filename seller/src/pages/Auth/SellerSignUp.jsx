@@ -246,7 +246,8 @@ const SellerSignUp = () => {
               <input
                 type="text"
                 name="gstin"
-                placeholder="Enter GSTIN (Optional)"
+                placeholder="Enter GSTIN "
+                required
                 value={formData.gstin}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
