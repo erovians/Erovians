@@ -15,6 +15,7 @@ import grow_verified from "./Grow-verified.svg";
 import grow_advertised from "./Grow-advertised.svg";
 import grow_banner_img from "./grow-banner-img.svg";
 import EroviansValueServices from "./EroviansValueServices.svg";
+import SellerSignupform from "./SellerSignupform.svg";
 
 export const assets = {
   logo,
@@ -34,4 +35,5 @@ export const assets = {
   grow_advertised,
   grow_banner_img,
   EroviansValueServices,
+  SellerSignupform,
 };

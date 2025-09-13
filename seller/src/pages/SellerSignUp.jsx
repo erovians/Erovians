@@ -375,7 +375,7 @@ const SellerSignUp = () => {
             </p>
           </div>
           <img
-            src={assets.EroviansValueServices}
+            src={assets.SellerSignupform}
             alt="Seller Banner"
             className="rounded-md "
           />
