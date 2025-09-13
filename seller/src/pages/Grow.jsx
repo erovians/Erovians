@@ -194,9 +194,9 @@ const Grow = () => {
             {/* Right Image */}
             <div className="flex justify-center">
               <img
-                src="/images/value-services.jpg"
+                src={assets.EroviansValueServices}
                 alt="Erovians Value Services"
-                className="rounded-xl shadow-lg"
+                className="rounded-xl "
               />
             </div>
           </div>

@@ -208,8 +208,8 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Buttons */}
-        <div className="hidden lg:flex h-[60%] justify-between items-center w-1/6 gap-3 mr-25">
-          <Link to="/login" className="h-full w-[60%]">
+        <div className="hidden lg:flex h-[60%] justify-between items-center w-1/5 gap-3 mr-25">
+          <Link to="/login" className="h-full w-full" >
             <Button
               variant="outline"
               className="bg-transparent h-full w-full border border-navyblue hover:bg-navyblue hover:text-white"
@@ -221,7 +221,7 @@ export default function Navbar() {
             </Button>
           </Link>
 
-          <Link to="/start-selling" className="h-full w-[60%]">
+          <Link to="/start-selling" className="h-full w-[50%]">
             <Button
               variant="outline"
               className="bg-navyblue h-full w-full text-white cursor-pointer hover:bg-navyblue hover:bg-white hover:border-navyblue px-20"
