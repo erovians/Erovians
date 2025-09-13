@@ -14,8 +14,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[90vh] bg-gradient-to-br from-gray-100 to-gray-200">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+    <div className="flex items-center justify-center min-h-[90vh]">
+      <div className="w-full max-w-md  rounded-2xl p-8  ">
         {/* Title */}
         <h2 className="text-3xl font-bold text-center text-navyblue mb-2">
           Welcome Back 👋

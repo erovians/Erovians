@@ -16,6 +16,8 @@ import grow_advertised from "./Grow-advertised.svg";
 import grow_banner_img from "./grow-banner-img.svg";
 import EroviansValueServices from "./EroviansValueServices.svg";
 import SellerSignupform from "./SellerSignupform.svg";
+import listprodcut_img1 from "./listprodcut_img2.svg";
+import listprodcut_img2 from "./listprodcut_img1.svg";
 
 export const assets = {
   logo,
@@ -36,4 +38,6 @@ export const assets = {
   grow_banner_img,
   EroviansValueServices,
   SellerSignupform,
+  listprodcut_img1,
+  listprodcut_img2,
 };
