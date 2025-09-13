@@ -17,6 +17,8 @@ const sellerSchema = new mongoose.Schema(
     },
     gstin: {
       type: String,
+      required: true,
+      unique: true,
       default: null, // Optional
     },
     password: {
