@@ -36,9 +36,7 @@ export const registerSeller = async (req, res) => {
       businessName,
       category,
     });
-
     const savedSeller = await seller.save();
-
     // generate JWT
     const token = jwt.sign(
       { id: savedSeller._id, email: savedSeller.email },
