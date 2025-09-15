@@ -2,7 +2,6 @@ import logo from "./seller_logo.png";
 import heroimg from "./hero_img.svg";
 import dashboradimg from "./seller_dashboard.svg";
 import joinimg from "./join.svg";
-import reachimg from "./reach.svg";
 import brandimg from "./brand.svg";
 import sellimg from "./sell.svg";
 import whysellerlove from "./why-seller-love.svg";
@@ -18,13 +17,15 @@ import EroviansValueServices from "./EroviansValueServices.svg";
 import SellerSignupform from "./SellerSignupform.svg";
 import listprodcut_img1 from "./listprodcut_img2.svg";
 import listprodcut_img2 from "./listprodcut_img1.svg";
+import learn_banner1 from "./learn-bannerimage1.svg";
+import learn_banner2 from "./learn-bannerimage2.svg";
+import learn_banner3 from "./learn-bannerimage3.svg";
 
 export const assets = {
   logo,
   heroimg,
   dashboradimg,
   joinimg,
-  reachimg,
   brandimg,
   sellimg,
   whysellerlove,
@@ -40,4 +41,7 @@ export const assets = {
   SellerSignupform,
   listprodcut_img1,
   listprodcut_img2,
+  learn_banner1,
+  learn_banner2,
+  learn_banner3,
 };

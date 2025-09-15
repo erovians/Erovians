@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { assets } from "@/assets/assets";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
 import {
   InputOTP,
   InputOTPGroup,
@@ -99,13 +101,39 @@ const SellerSignUp = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  // Inside your component
+  const dispatch = useDispatch();
+  const { loading, error, successMessage } = useSelector(
+    (state) => state.seller
+  );
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setModalMessage(
-      "Form submitted successfully! You're ready to start selling."
-    );
-    setShowModal(true);
+
+    const sellerData = {
+      email: formData.email,
+      mobile: formData.mobile,
+      gstin: formData.gstin,
+      password: formData.password,
+      businessName: formData.businessName,
+      category: formData.category,
+    };
+
+    dispatch(registerSeller(sellerData));
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      setModalMessage(successMessage);
+      setShowModal(true);
+      dispatch(clearSellerState());
+    }
+    if (error) {
+      setModalMessage(error);
+      setShowModal(true);
+      dispatch(clearSellerState());
+    }
+  }, [successMessage, error, dispatch]);
 
   const Modal = ({ message, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">

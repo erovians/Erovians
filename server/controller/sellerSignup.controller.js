@@ -16,19 +16,16 @@ export const registerSeller = async (req, res) => {
     if (!businessName)
       return res.status(400).json({ message: "Business Name is required" });
 
-
-    // seller exist or not 
+    // seller exist or not
     const existingSeller = await Seller.findOne({
-      $or: [{ email }, { mobile }],
+      $or: [{ email }, { mobile }, { gstin }],
     });
     if (existingSeller) {
       return res.status(400).json({ message: "Seller already registered" });
     }
 
-
     // password encrypt
     const hashedPassword = await bcrypt.hash(password, 10);
-
 
     // create seller
     const seller = new Seller({
