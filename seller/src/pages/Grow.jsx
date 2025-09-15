@@ -92,17 +92,17 @@ const Grow = () => {
               <span className="text-navyblue">Advertise Your Products</span>
             </h1>
             <p className="mb-6 text-gray-600 leading-relaxed">
-              Supercharge your online business with Flipkart Advertising, a
+              Supercharge your online business with Erovians Advertising, a
               powerful marketing solution that enables you to showcase your
-              products to millions of Flipkart customers every day. With
-              Flipkart Advertising, you can expand your reach, boost sales, and
+              products to millions of Erovians customers every day. With
+              Erovians Advertising, you can expand your reach, boost sales, and
               accelerate the growth of your online business. Maximise your
               visibility, engage with potential customers, and unlock new
               opportunities for success.
             </p>
 
             <h3 className="mb-2">
-              Benefits of running Flipkart Ads for your business:
+              Benefits of running Erovians Ads for your business:
             </h3>
             <ul className="space-y-3 text-gray-700">
               <li className="flex items-start">
