@@ -19,7 +19,6 @@ const sellerSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      default: null, // Optional
     },
     password: {
       type: String,
@@ -33,7 +32,7 @@ const sellerSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["All", "Books", "Electronics"], // expand as needed
+      enum: ["All", "Books", "Electronics"],
       default: "All",
     },
     isMobileVerified: {
@@ -46,5 +45,3 @@ const sellerSchema = new mongoose.Schema(
 
 const Seller = mongoose.model("Seller", sellerSchema);
 export default Seller;
-
-
