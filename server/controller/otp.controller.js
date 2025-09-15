@@ -1,53 +1,64 @@
 // otp.controller.js
-import twilio from "twilio";
+import axios from "axios";
+import qs from "qs";
 
-const accountSid = process.env.TWILIO_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
+const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
+const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
+const TWILIO_FROM_NUMBER = "+18723169588"; // Your Twilio phone number
 
-// Temporary in-memory store (better: use Redis for production)
-const otpStore = {};
+const TWILIO_API_URL = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export const sendOtp = async (req, res) => {
+  const { mobile } = req.body;
+  console.log(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER);
+  console.log(mobile);
+  if (!mobile)
+    return res.status(400).json({ message: "Mobile number is required" });
+
+  const otp = generateOTP();
+
+  const data = {
+    To: `+91${mobile}`, // assuming Indian numbers
+    From: TWILIO_FROM_NUMBER,
+    Body: `Your OTP is ${otp}`,
+  };
+
   try {
-    const { mobile } = req.body;
-    if (!mobile) return res.status(400).json({ message: "Mobile is required" });
-
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Send SMS using Twilio
-    await client.messages.create({
-      body: `Your OTP is: ${otp}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: `+91${mobile}`, // Add country code
+    const response = await axios.post(TWILIO_API_URL, qs.stringify(data), {
+      auth: {
+        username: TWILIO_ACCOUNT_SID,
+        password: TWILIO_AUTH_TOKEN,
+      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
-    // Store OTP temporarily (valid for 5 min)
-    otpStore[mobile] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 };
+    // store OTP temporarily (better: use Redis or DB)
+    global.otpStore = global.otpStore || {};
+    global.otpStore[mobile] = otp;
 
-    res.status(200).json({ message: "OTP sent successfully" });
+    return res.json({ success: true, message: "OTP sent successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to send OTP" });
+    return res.status(500).json({ message: "Failed to send OTP" });
   }
 };
 
-export const verifyOtp = (req, res) => {
+export const verifyOtp = async (req, res) => {
   const { mobile, otp } = req.body;
+  if (!mobile || !otp)
+    return res.status(400).json({ message: "Mobile and OTP are required" });
 
-  const record = otpStore[mobile];
-  if (!record) return res.status(400).json({ message: "OTP not sent" });
+  global.otpStore = global.otpStore || {};
+  if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
+    delete global.otpStore[mobile]; // clear OTP once verified
 
-  if (record.expiresAt < Date.now()) {
-    delete otpStore[mobile];
-    return res.status(400).json({ message: "OTP expired" });
+    return res.json({ success: true, message: "OTP verified successfully" });
   }
 
-  if (record.otp !== otp)
-    return res.status(400).json({ message: "Invalid OTP" });
-
-  // OTP verified successfully
-  delete otpStore[mobile];
-  res.status(200).json({ message: "Mobile verified successfully" });
+  return res
+    .status(400)
+    .json({ success: false, message: "Invalid or expired OTP" });
 };

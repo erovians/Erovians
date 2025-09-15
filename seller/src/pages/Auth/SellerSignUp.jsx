@@ -4,12 +4,15 @@ import { assets } from "@/assets/assets";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
+import axios from "axios";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+
+const API_URL = "http://localhost:9000/api/seller";
 
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
@@ -36,38 +39,82 @@ const SellerSignUp = () => {
     { id: 3, title: "ONBOARDING DASHBOARD" },
   ];
 
-  // Input handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const validateMobile = () => {
     const mobileRegex = /^[0-9]{10}$/;
-    if (!mobileRegex.test(formData.mobile)) {
-      setErrors({ mobile: "Please enter a valid 10-digit mobile number." });
-      return false;
-    }
-    setErrors({ mobile: "" });
-    return true;
-  };
-
-  const handleSendOtp = () => {
-    if (validateMobile()) {
-      setShowModal(true);
-      setModalMessage("OTP sent to your number (123456)");
-      setShowOtpField(true);
-    }
-  };
-
-  const handleVerifyOtp = () => {
-    if (otp === "123456") {
-      setIsMobileVerified(true);
-      setShowModal(true);
-      setModalMessage("Mobile number verified successfully!");
+    const isValid = mobileRegex.test(formData.mobile);
+    if (!isValid) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        mobile: "Please enter a valid 10-digit mobile number.",
+      }));
     } else {
-      setErrors({ otp: "Invalid OTP. Please try again." });
+      setErrors((prevErrors) => ({ ...prevErrors, mobile: "" }));
+    }
+    return isValid;
+  };
+
+  const handleSendOtp = async () => {
+    if (!validateMobile()) {
+      return;
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+
+    try {
+      const response = await axios.post(`${API_URL}/send-otp`, {
+        mobile: formData.mobile,
+      });
+      if (response.data.success) {
+        setShowModal(true);
+        setModalMessage("OTP sent to your number!");
+        setShowOtpField(true);
+      } else {
+        setShowModal(true);
+        setModalMessage(
+          response.data.message || "Failed to send OTP. Please try again."
+        );
+      }
+    } catch (err) {
+      console.error("Error sending OTP:", err);
+      setShowModal(true);
+      setModalMessage("Failed to send OTP. Please try again.");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otp: "Please enter the 6-digit OTP.",
+      }));
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${API_URL}/verify-otp`, {
+        mobile: formData.mobile,
+        otp,
+      });
+
+      if (res.data.success) {
+        setIsMobileVerified(true);
+        setShowModal(true);
+        setModalMessage("Mobile number verified successfully!");
+        setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+      } else {
+        setErrors((prevErrors) => ({ ...prevErrors, otp: res.data.message }));
+      }
+    } catch (err) {
+      console.error("Error verifying OTP:", err);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        otp: "Invalid OTP. Please try again.",
+      }));
     }
   };
 
@@ -79,15 +126,23 @@ const SellerSignUp = () => {
     if (!emailRegex.test(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
+
     if (!formData.mobile) {
       newErrors.mobile = "Mobile number is required.";
+    } else if (!validateMobile()) {
+      newErrors.mobile = "Please enter a valid 10-digit mobile number.";
     }
+
     if (!isMobileVerified) {
       newErrors.otp = "Please verify your mobile number.";
+      // Also, show the modal with a clear instruction
+      setShowModal(true);
+      setModalMessage("Please verify your mobile number with OTP to continue.");
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      return;
     } else {
       setStep(2);
     }
@@ -96,12 +151,12 @@ const SellerSignUp = () => {
   const handlePasswordContinue = () => {
     if (formData.password === formData.confirmPassword) {
       setStep(3);
+      setErrors({});
     } else {
       setErrors({ confirmPassword: "Passwords do not match." });
     }
   };
 
-  // Inside your component
   const dispatch = useDispatch();
   const { loading, error, successMessage } = useSelector(
     (state) => state.seller
@@ -151,7 +206,6 @@ const SellerSignUp = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans">
-      {/* Header */}
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
         <Link to={"/"}>
           <img
@@ -163,13 +217,10 @@ const SellerSignUp = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-6 md:px-12 py-8 md:py-12 max-w-6xl mx-auto">
-        {/* Left Section */}
         <div>
-          {/* Stepper */}
           <div className="flex  md:items-center md:justify-between mb-8 text-xs sm:text-sm font-semibold text-gray-600">
             {steps.map((item, i) => (
               <div key={item.id} className="flex items-center flex-col">
-                {/* Step Circle */}
                 <div
                   className={`w-6 h-6 rounded-full flex  items-center justify-center border-2 ${
                     step >= item.id
@@ -180,7 +231,6 @@ const SellerSignUp = () => {
                   {step > item.id ? <Check size={14} /> : item.id}
                 </div>
 
-                {/* Title */}
                 <span className="ml-2 text-xs md:ml-2 mt-2 md:mt-0 text-center md:text-left">
                   {item.title}
                 </span>
@@ -188,10 +238,8 @@ const SellerSignUp = () => {
             ))}
           </div>
 
-          {/* Step 1 */}
           {step === 1 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-              {/* Mobile */}
               <div className="flex border rounded-md overflow-hidden flex-col sm:flex-row">
                 <input
                   type="tel"
@@ -257,7 +305,6 @@ const SellerSignUp = () => {
                 <p className="text-red-500 text-sm">{errors.otp}</p>
               )}
 
-              {/* Email */}
               <input
                 type="email"
                 name="email"
@@ -270,7 +317,6 @@ const SellerSignUp = () => {
                 <p className="text-red-500 text-sm">{errors.email}</p>
               )}
 
-              {/* GST */}
               <input
                 type="text"
                 name="gstin"
@@ -296,7 +342,6 @@ const SellerSignUp = () => {
             </form>
           )}
 
-          {/* Step 2 */}
           {step === 2 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
               <input
@@ -337,7 +382,6 @@ const SellerSignUp = () => {
             </form>
           )}
 
-          {/* Step 3 */}
           {step === 3 && (
             <form className="space-y-5" onSubmit={handleSubmit}>
               <input
@@ -383,7 +427,6 @@ const SellerSignUp = () => {
           )}
         </div>
 
-        {/* Right Section */}
         <div className="hidden md:flex flex-col gap-6">
           <div className="p-2 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
