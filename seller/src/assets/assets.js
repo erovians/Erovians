@@ -18,6 +18,9 @@ import EroviansValueServices from "./EroviansValueServices.svg";
 import SellerSignupform from "./SellerSignupform.svg";
 import listprodcut_img1 from "./listprodcut_img2.svg";
 import listprodcut_img2 from "./listprodcut_img1.svg";
+import learn_carousel1 from "./learn-carousel1.svg"
+import learn_carousel2 from "./learn-carousel2.svg"
+import learn_carousel3 from "./learn-carousel3.svg"
 
 export const assets = {
   logo,
@@ -40,4 +43,7 @@ export const assets = {
   SellerSignupform,
   listprodcut_img1,
   listprodcut_img2,
+  learn_carousel1,
+  learn_carousel2,
+  learn_carousel3  
 };
