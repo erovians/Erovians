@@ -16,6 +16,8 @@ const API_URL = "http://localhost:9000/api/seller";
 
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
+  const [otpStatus, setOtpStatus] = useState("idle");
+
   const [formData, setFormData] = useState({
     email: "",
     mobile: "",
@@ -59,21 +61,83 @@ const SellerSignUp = () => {
     return isValid;
   };
 
+  // const handleSendOtp = async () => {
+  //   if (!validateMobile()) {
+  //     return;
+  //   }
+  //   setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+
+  //   try {
+  //     const response = await axios.post(`${API_URL}/send-otp`, {
+  //       mobile: formData.mobile,
+  //     });
+  //     if (response.data.success) {
+  //       setShowModal(true);
+  //       setModalMessage("OTP sent to your number!");
+  //       setShowOtpField(true);
+  //     } else {
+  //       setShowModal(true);
+  //       setModalMessage(
+  //         response.data.message || "Failed to send OTP. Please try again."
+  //       );
+  //     }
+  //   } catch (err) {
+  //     console.error("Error sending OTP:", err);
+  //     setShowModal(true);
+  //     setModalMessage("Failed to send OTP. Please try again.");
+  //   }
+  // };
+
+  // const handleVerifyOtp = async () => {
+  //   if (otp.length !== 6) {
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       otp: "Please enter the 6-digit OTP.",
+  //     }));
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await axios.post(`${API_URL}/verify-otp`, {
+  //       mobile: formData.mobile,
+  //       otp,
+  //     });
+
+  //     if (res.data.success) {
+  //       setIsMobileVerified(true);
+  //       setShowModal(true);
+  //       setModalMessage("Mobile number verified successfully!");
+  //       setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+  //     } else {
+  //       setErrors((prevErrors) => ({ ...prevErrors, otp: res.data.message }));
+  //     }
+  //   } catch (err) {
+  //     console.error("Error verifying OTP:", err);
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       otp: "Invalid OTP. Please try again.",
+  //     }));
+  //   }
+  // };
+
   const handleSendOtp = async () => {
-    if (!validateMobile()) {
-      return;
-    }
+    if (!validateMobile()) return;
+
     setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+    setOtpStatus("sending"); // <-- show "Sending..."
 
     try {
       const response = await axios.post(`${API_URL}/send-otp`, {
         mobile: formData.mobile,
       });
+
       if (response.data.success) {
+        setOtpStatus("sent"); // <-- show "Sent"
         setShowModal(true);
         setModalMessage("OTP sent to your number!");
         setShowOtpField(true);
       } else {
+        setOtpStatus("idle");
         setShowModal(true);
         setModalMessage(
           response.data.message || "Failed to send OTP. Please try again."
@@ -81,6 +145,7 @@ const SellerSignUp = () => {
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
+      setOtpStatus("idle");
       setShowModal(true);
       setModalMessage("Failed to send OTP. Please try again.");
     }
@@ -103,11 +168,13 @@ const SellerSignUp = () => {
 
       if (res.data.success) {
         setIsMobileVerified(true);
+        setOtpStatus("verified"); // <-- update button to "Verified"
         setShowModal(true);
         setModalMessage("Mobile number verified successfully!");
         setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
       } else {
         setErrors((prevErrors) => ({ ...prevErrors, otp: res.data.message }));
+        setOtpStatus("sent"); // stay on "Sent"
       }
     } catch (err) {
       console.error("Error verifying OTP:", err);
@@ -115,6 +182,7 @@ const SellerSignUp = () => {
         ...prevErrors,
         otp: "Invalid OTP. Please try again.",
       }));
+      setOtpStatus("sent");
     }
   };
 
@@ -133,9 +201,9 @@ const SellerSignUp = () => {
       newErrors.mobile = "Please enter a valid 10-digit mobile number.";
     }
 
+    // Add a crucial check for mobile verification status
     if (!isMobileVerified) {
-      newErrors.otp = "Please verify your mobile number.";
-      // Also, show the modal with a clear instruction
+      newErrors.otp = "Please verify your mobile number with OTP to continue.";
       setShowModal(true);
       setModalMessage("Please verify your mobile number with OTP to continue.");
     }
@@ -148,6 +216,7 @@ const SellerSignUp = () => {
     }
   };
 
+  // ***********************************
   const handlePasswordContinue = () => {
     if (formData.password === formData.confirmPassword) {
       setStep(3);
@@ -176,6 +245,7 @@ const SellerSignUp = () => {
 
     dispatch(registerSeller(sellerData));
   };
+  // ***********************************
 
   useEffect(() => {
     if (successMessage) {
@@ -250,13 +320,38 @@ const SellerSignUp = () => {
                   className="flex-1 px-4 py-3 text-sm outline-none"
                 />
                 {!isMobileVerified && (
+                  // <button
+                  //   type="button"
+                  //   onClick={handleSendOtp}
+                  //   disabled={!formData.mobile || formData.mobile.length !== 10}
+                  //   className="px-4 py-2 sm:py-0  font-semibold text-sm text-white disabled:text-gray-600 disabled:bg-white border-t sm:border-t-0 sm:border-l border-gray-200 bg-navyblue "
+                  // >
+                  //   Send OTP
+                  // </button>
                   <button
                     type="button"
                     onClick={handleSendOtp}
-                    disabled={!formData.mobile || formData.mobile.length !== 10}
-                    className="px-4 py-2 sm:py-0  font-semibold text-sm text-white disabled:text-gray-600 disabled:bg-white border-t sm:border-t-0 sm:border-l border-gray-200 bg-navyblue "
+                    disabled={
+                      !formData.mobile ||
+                      formData.mobile.length !== 10 ||
+                      otpStatus === "sending"
+                    }
+                    className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
+    ${
+      otpStatus === "verified"
+        ? "bg-green-600"
+        : otpStatus === "sending"
+        ? "bg-gray-400"
+        : "bg-navyblue"
+    }`}
                   >
-                    Send OTP
+                    {otpStatus === "sending"
+                      ? "Sending..."
+                      : otpStatus === "sent"
+                      ? "Sent"
+                      : otpStatus === "verified"
+                      ? "Verified"
+                      : "Send OTP"}
                   </button>
                 )}
               </div>

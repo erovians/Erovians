@@ -6,6 +6,13 @@ export const registerSeller = async (req, res) => {
   try {
     const { email, mobile, gstin, password, businessName, category } = req.body;
 
+    global.verifiedMobiles = global.verifiedMobiles || {};
+    if (!global.verifiedMobiles[mobile]) {
+      return res.status(400).json({
+        message: "Mobile number must be verified before registration.",
+      });
+    }
+
     // every field check
     if (!email) return res.status(400).json({ message: "Email is required" });
     if (!mobile)
@@ -35,8 +42,13 @@ export const registerSeller = async (req, res) => {
       password: hashedPassword,
       businessName,
       category,
+      isMobileVerified: true,
     });
+
     const savedSeller = await seller.save();
+
+    delete global.verifiedMobiles[mobile];
+
     // generate JWT
     const token = jwt.sign(
       { id: savedSeller._id, email: savedSeller.email },
