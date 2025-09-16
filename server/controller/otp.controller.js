@@ -14,8 +14,6 @@ function generateOTP() {
 
 export const sendOtp = async (req, res) => {
   const { mobile } = req.body;
-  console.log(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER);
-  console.log(mobile);
   if (!mobile)
     return res.status(400).json({ message: "Mobile number is required" });
 
@@ -46,14 +44,38 @@ export const sendOtp = async (req, res) => {
   }
 };
 
+// export const verifyOtp = async (req, res) => {
+//   const { mobile, otp } = req.body;
+//   if (!mobile || !otp)
+//     return res.status(400).json({ message: "Mobile and OTP are required" });
+
+//   global.otpStore = global.otpStore || {};
+//   if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
+//     delete global.otpStore[mobile]; // clear OTP once verified
+
+//     return res.json({ success: true, message: "OTP verified successfully" });
+//   }
+
+//   return res
+//     .status(400)
+//     .json({ success: false, message: "Invalid or expired OTP" });
+// };
+
+// In otp.controller.js
+
 export const verifyOtp = async (req, res) => {
   const { mobile, otp } = req.body;
   if (!mobile || !otp)
     return res.status(400).json({ message: "Mobile and OTP are required" });
 
   global.otpStore = global.otpStore || {};
+
   if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
-    delete global.otpStore[mobile]; // clear OTP once verified
+    delete global.otpStore[mobile];
+
+    // 🚨 New: Store a success flag for this mobile number on the server
+    global.verifiedMobiles = global.verifiedMobiles || {};
+    global.verifiedMobiles[mobile] = true; // Mark mobile as verified
 
     return res.json({ success: true, message: "OTP verified successfully" });
   }
