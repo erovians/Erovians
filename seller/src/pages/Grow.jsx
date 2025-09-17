@@ -3,7 +3,6 @@ import Banner from "@/common/Banner";
 import { assets } from "@/assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
-// import eroImage from "../assets/ero-service.png"; // Replace with your image path
 
 const Grow = () => {
   const location = useLocation();
@@ -75,7 +74,10 @@ const Grow = () => {
       </section>
 
       {/* Advertise Products Section */}
-      <section className="md:py-10 px-6 md:px-16 bg-white" id="AdvertiseProducts">
+      <section
+        className="md:py-10 px-6 md:px-16 bg-white"
+        id="AdvertiseProducts"
+      >
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-10 items-center">
           {/* Right Image */}
           <div className="flex justify-center ">
