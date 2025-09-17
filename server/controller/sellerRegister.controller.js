@@ -113,7 +113,7 @@ export const registerSeller = async (req, res) => {
     }
 
     // ===== Password Hash =====
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // ===== Create Seller =====
     const seller = new Seller({
