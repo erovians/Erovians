@@ -32,7 +32,7 @@ const sellerSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["All", "Books", "Electronics"],
+      enum: ["All", "Marbles", "Granites"],
       default: "All",
     },
     isMobileVerified: {
