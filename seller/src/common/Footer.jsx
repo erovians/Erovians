@@ -14,9 +14,6 @@ export default function Footer() {
             today and grow your business with a trusted platform designed for
             sellers like you.
           </p>
-          {/* <button className=" text-white px-6 py-3 rounded-xl text-sm font-medium transition-all shadow-md hover:shadow-lg">
-        Get Started
-      </button> */}
           <Button
             variant="outline"
             className="bg-white text-black py-5 px-8  border border-navyblue cursor-pointer"
@@ -28,26 +25,28 @@ export default function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-2">
           {/* Middle Section */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-5">
+            <h2 className="text-white font-semibold text-lg mb-5">
               Quick Links
-            </h3>
+            </h2>
             <ul className="space-y-3 text-sm">
-              {["Home", "About Us", "Services", "Contact"].map((link, i) => (
-                <li key={i}>
-                  <a
-                    href="#"
-                    className="hover:text-blue-400 transition-colors duration-200 hover:underline"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
+              {["Sell Online", "Fee & Commission", "Grow", "Learn"].map(
+                (link, i) => (
+                  <li key={i}>
+                    <a
+                      href="#"
+                      className="hover:text-blue-400 transition-colors duration-200 hover:underline"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                )
+              )}
             </ul>
           </div>
 
           {/* Right Section */}
           <div>
-            <h3 className="text-white font-semibold text-lg mb-5">Resources</h3>
+            <h2 className="text-white font-semibold text-lg mb-5">Resources</h2>
             <ul className="space-y-3 text-sm">
               {["Blog", "FAQ", "Support"].map((link, i) => (
                 <li key={i}>

@@ -1,6 +1,7 @@
 // otp.controller.js
 import axios from "axios";
 import qs from "qs";
+import Seller from "../models/sellerSingnup.model.js";
 
 const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
 const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
@@ -17,51 +18,44 @@ export const sendOtp = async (req, res) => {
   if (!mobile)
     return res.status(400).json({ message: "Mobile number is required" });
 
-  const otp = generateOTP();
-
-  const data = {
-    To: `+91${mobile}`, // assuming Indian numbers
-    From: TWILIO_FROM_NUMBER,
-    Body: `Your OTP is ${otp}`,
-  };
-
   try {
-    const response = await axios.post(TWILIO_API_URL, qs.stringify(data), {
-      auth: {
-        username: TWILIO_ACCOUNT_SID,
-        password: TWILIO_AUTH_TOKEN,
-      },
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    const seller = await Seller.findOne({ mobile });
+    if (seller) {
+      return res
+        .status(409)
+        .json({ exists: true, message: "Mobile already exists" });
+    } else {
+      const otp = generateOTP();
 
-    // store OTP temporarily (better: use Redis or DB)
-    global.otpStore = global.otpStore || {};
-    global.otpStore[mobile] = otp;
+      const data = {
+        To: `+91${mobile}`, // assuming Indian numbers
+        From: TWILIO_FROM_NUMBER,
+        Body: `Your OTP is ${otp}`,
+      };
 
-    return res.json({ success: true, message: "OTP sent successfully" });
+      const response = await axios.post(TWILIO_API_URL, qs.stringify(data), {
+        auth: {
+          username: TWILIO_ACCOUNT_SID,
+          password: TWILIO_AUTH_TOKEN,
+        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+
+      // store OTP temporarily (better: use Redis or DB)
+      global.otpStore = global.otpStore || {};
+      global.otpStore[mobile] = otp;
+
+      return res
+        .status(200)
+        .json({ success: true, message: "OTP sent successfully" });
+    }
   } catch (error) {
-    return res.status(500).json({ message: "Failed to send OTP" });
+    console.error("Error sending OTP:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to send OTP" });
   }
 };
-
-// export const verifyOtp = async (req, res) => {
-//   const { mobile, otp } = req.body;
-//   if (!mobile || !otp)
-//     return res.status(400).json({ message: "Mobile and OTP are required" });
-
-//   global.otpStore = global.otpStore || {};
-//   if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
-//     delete global.otpStore[mobile]; // clear OTP once verified
-
-//     return res.json({ success: true, message: "OTP verified successfully" });
-//   }
-
-//   return res
-//     .status(400)
-//     .json({ success: false, message: "Invalid or expired OTP" });
-// };
-
-// In otp.controller.js
 
 export const verifyOtp = async (req, res) => {
   const { mobile, otp } = req.body;
@@ -73,11 +67,12 @@ export const verifyOtp = async (req, res) => {
   if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
     delete global.otpStore[mobile];
 
-    // 🚨 New: Store a success flag for this mobile number on the server
     global.verifiedMobiles = global.verifiedMobiles || {};
-    global.verifiedMobiles[mobile] = true; // Mark mobile as verified
+    global.verifiedMobiles[mobile] = true;
 
-    return res.json({ success: true, message: "OTP verified successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "OTP verified successfully" });
   }
 
   return res
