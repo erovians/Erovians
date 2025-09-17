@@ -4,15 +4,22 @@ import { assets } from "@/assets/assets";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
-import axios from "axios";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import api from "@/utils/axios.utils";
 
-const API_URL = "http://localhost:9000/api/seller";
+// ✅ Import validation helpers
+import {
+  validateEmail,
+  validateMobile,
+  validateGstin,
+  validatePassword,
+  validateOtp,
+} from "@/utils/validation.utils";
 
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
@@ -47,92 +54,23 @@ const SellerSignUp = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const validateMobile = () => {
-    const mobileRegex = /^[0-9]{10}$/;
-    const isValid = mobileRegex.test(formData.mobile);
-    if (!isValid) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        mobile: "Please enter a valid 10-digit mobile number.",
-      }));
-    } else {
-      setErrors((prevErrors) => ({ ...prevErrors, mobile: "" }));
-    }
-    return isValid;
-  };
-
-  // const handleSendOtp = async () => {
-  //   if (!validateMobile()) {
-  //     return;
-  //   }
-  //   setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
-
-  //   try {
-  //     const response = await axios.post(`${API_URL}/send-otp`, {
-  //       mobile: formData.mobile,
-  //     });
-  //     if (response.data.success) {
-  //       setShowModal(true);
-  //       setModalMessage("OTP sent to your number!");
-  //       setShowOtpField(true);
-  //     } else {
-  //       setShowModal(true);
-  //       setModalMessage(
-  //         response.data.message || "Failed to send OTP. Please try again."
-  //       );
-  //     }
-  //   } catch (err) {
-  //     console.error("Error sending OTP:", err);
-  //     setShowModal(true);
-  //     setModalMessage("Failed to send OTP. Please try again.");
-  //   }
-  // };
-
-  // const handleVerifyOtp = async () => {
-  //   if (otp.length !== 6) {
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       otp: "Please enter the 6-digit OTP.",
-  //     }));
-  //     return;
-  //   }
-
-  //   try {
-  //     const res = await axios.post(`${API_URL}/verify-otp`, {
-  //       mobile: formData.mobile,
-  //       otp,
-  //     });
-
-  //     if (res.data.success) {
-  //       setIsMobileVerified(true);
-  //       setShowModal(true);
-  //       setModalMessage("Mobile number verified successfully!");
-  //       setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
-  //     } else {
-  //       setErrors((prevErrors) => ({ ...prevErrors, otp: res.data.message }));
-  //     }
-  //   } catch (err) {
-  //     console.error("Error verifying OTP:", err);
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       otp: "Invalid OTP. Please try again.",
-  //     }));
-  //   }
-  // };
-
   const handleSendOtp = async () => {
-    if (!validateMobile()) return;
+    const mobileError = validateMobile(formData.mobile);
+    if (mobileError) {
+      setErrors((prev) => ({ ...prev, mobile: mobileError }));
+      return;
+    }
 
-    setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
-    setOtpStatus("sending"); // <-- show "Sending..."
+    setErrors((prev) => ({ ...prev, otp: "" }));
+    setOtpStatus("sending");
 
     try {
-      const response = await axios.post(`${API_URL}/send-otp`, {
+      const response = await api.post(`/seller/send-otp`, {
         mobile: formData.mobile,
       });
 
       if (response.data.success) {
-        setOtpStatus("sent"); // <-- show "Sent"
+        setOtpStatus("sent");
         setShowModal(true);
         setModalMessage("OTP sent to your number!");
         setShowOtpField(true);
@@ -152,86 +90,105 @@ const SellerSignUp = () => {
   };
 
   const handleVerifyOtp = async () => {
-    if (otp.length !== 6) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        otp: "Please enter the 6-digit OTP.",
-      }));
+    const otpError = validateOtp(otp);
+    if (otpError) {
+      setErrors((prev) => ({ ...prev, otp: otpError }));
       return;
     }
 
     try {
-      const res = await axios.post(`${API_URL}/verify-otp`, {
+      const res = await api.post(`/seller/verify-otp`, {
         mobile: formData.mobile,
         otp,
       });
 
       if (res.data.success) {
         setIsMobileVerified(true);
-        setOtpStatus("verified"); // <-- update button to "Verified"
+        setOtpStatus("verified");
         setShowModal(true);
         setModalMessage("Mobile number verified successfully!");
-        setErrors((prevErrors) => ({ ...prevErrors, otp: "" }));
+        setErrors((prev) => ({ ...prev, otp: "" }));
       } else {
-        setErrors((prevErrors) => ({ ...prevErrors, otp: res.data.message }));
-        setOtpStatus("sent"); // stay on "Sent"
+        setErrors((prev) => ({ ...prev, otp: res.data.message }));
+        setOtpStatus("sent");
       }
     } catch (err) {
       console.error("Error verifying OTP:", err);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
+      setErrors((prev) => ({
+        ...prev,
         otp: "Invalid OTP. Please try again.",
       }));
       setOtpStatus("sent");
     }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
+    const emailError = validateEmail(formData.email);
+    if (emailError) newErrors.email = emailError;
 
-    if (!formData.mobile) {
-      newErrors.mobile = "Mobile number is required.";
-    } else if (!validateMobile()) {
-      newErrors.mobile = "Please enter a valid 10-digit mobile number.";
-    }
+    const mobileError = validateMobile(formData.mobile);
+    if (mobileError) newErrors.mobile = mobileError;
 
-    // Add a crucial check for mobile verification status
+    const gstinError = validateGstin(formData.gstin);
+    if (gstinError) newErrors.gstin = gstinError;
+
     if (!isMobileVerified) {
       newErrors.otp = "Please verify your mobile number with OTP to continue.";
-      setShowModal(true);
-      setModalMessage("Please verify your mobile number with OTP to continue.");
     }
 
+    // ✅ Stop if validation fails
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
-    } else {
+    }
+
+    try {
+      const res = await api.post("/seller/check-unique", {
+        email: formData.email,
+        gstin: formData.gstin,
+      });
+
+      if (!res.data.success) {
+        setErrors((prev) => ({ ...prev, [res.data.field]: res.data.message }));
+        setShowModal(true);
+        setModalMessage(res.data.message);
+        return;
+      }
+
       setStep(2);
+    } catch (err) {
+      console.error("Error checking unique:", err);
+      setShowModal(true);
+      setModalMessage("Server error. Please try again.");
     }
   };
 
-  // ***********************************
   const handlePasswordContinue = () => {
-    if (formData.password === formData.confirmPassword) {
+    const passwordError = validatePassword(
+      formData.password,
+      formData.confirmPassword
+    );
+
+    if (passwordError) {
+      setErrors({ confirmPassword: passwordError });
+    } else {
       setStep(3);
       setErrors({});
-    } else {
-      setErrors({ confirmPassword: "Passwords do not match." });
     }
   };
 
+  // -----------------------------------
+  // Final Submit
+  // -----------------------------------
   const dispatch = useDispatch();
   const { loading, error, successMessage } = useSelector(
     (state) => state.seller
   );
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const sellerData = {
@@ -245,7 +202,6 @@ const SellerSignUp = () => {
 
     dispatch(registerSeller(sellerData));
   };
-  // ***********************************
 
   useEffect(() => {
     if (successMessage) {
@@ -260,6 +216,9 @@ const SellerSignUp = () => {
     }
   }, [successMessage, error, dispatch]);
 
+  // -----------------------------------
+  // Modal Component
+  // -----------------------------------
   const Modal = ({ message, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
@@ -320,14 +279,6 @@ const SellerSignUp = () => {
                   className="flex-1 px-4 py-3 text-sm outline-none"
                 />
                 {!isMobileVerified && (
-                  // <button
-                  //   type="button"
-                  //   onClick={handleSendOtp}
-                  //   disabled={!formData.mobile || formData.mobile.length !== 10}
-                  //   className="px-4 py-2 sm:py-0  font-semibold text-sm text-white disabled:text-gray-600 disabled:bg-white border-t sm:border-t-0 sm:border-l border-gray-200 bg-navyblue "
-                  // >
-                  //   Send OTP
-                  // </button>
                   <button
                     type="button"
                     onClick={handleSendOtp}
@@ -409,18 +360,43 @@ const SellerSignUp = () => {
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
 
               <input
                 type="text"
                 name="gstin"
-                placeholder="Enter GSTIN "
-                required
+                placeholder="GSTIN *"
                 value={formData.gstin}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+                className={`w-full px-4 py-3 border rounded-md text-sm outline-none ${
+                  errors.gstin ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.gstin && (
+                <p className="text-red-500 text-sm mt-1">{errors.gstin}</p>
+              )}
+
+              <div className="mt-6 p-4">
+                <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+                  GSTIN is required to sell on Erovians
+                </h2>
+
+                <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                  Expand your business reach, connect with new customers, and
+                  grow your revenue with{" "}
+                  <span className="text-[#0c2c43] font-semibold">Erovians</span>
+                  .
+                </p>
+
+                <p className="text-xs text-gray-500 mt-4 leading-snug">
+                  By continuing, I agree to{" "}
+                  <Link to={"/"} className="text-blue-600 font-medium ">
+                    Terms of Use & Privacy Policy
+                  </Link>
+                  .
+                </p>
+              </div>
 
               <button
                 type="button"
@@ -523,7 +499,7 @@ const SellerSignUp = () => {
         </div>
 
         <div className="hidden md:flex flex-col gap-6">
-          <div className="p-2 border rounded-md shadow-sm">
+          <div className="p-4 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
               List with Erovians, Grow With Erovians, Explore with Erovians !!
             </p>

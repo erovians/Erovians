@@ -150,7 +150,7 @@ export default function Navbar() {
                   <ul className="grid w-[300px] gap-4">
                     <li>
                       <NavigationMenuLink asChild>
-                        <Link href="#">
+                        <Link to="/grow#VerifiedBadge">
                           <div className="font-medium">Verified Badge</div>
                           <div className="text-muted-foreground">
                             Browse all components in the library.
@@ -158,7 +158,7 @@ export default function Navbar() {
                         </Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <Link href="#">
+                        <Link to="/grow#AdvertiseProducts">
                           <div className="font-medium">
                             Advertise Your Products
                           </div>
@@ -168,7 +168,7 @@ export default function Navbar() {
                         </Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
-                        <Link href="#">
+                        <Link to="/grow#EroviansValueServices">
                           <div className="font-medium">
                             Erovians Value Services
                           </div>
@@ -209,7 +209,7 @@ export default function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden lg:flex h-[60%] justify-between items-center w-1/5 gap-3 mr-25">
-          <Link to="/login" className="h-full w-full" >
+          <Link to="/login" className="h-full w-full">
             <Button
               variant="outline"
               className="bg-transparent h-full w-full border border-navyblue hover:bg-navyblue hover:text-white"

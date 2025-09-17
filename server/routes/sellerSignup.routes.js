@@ -1,13 +1,20 @@
 import express from "express";
-import { registerSeller } from "../controller/sellerSignup.controller.js";
-import { loginSeller } from "../controller/sellerLogin.controller.js";
+
+import {
+  registerSeller,
+  loginSeller,
+  checkUniqueSeller,
+} from "../controller/sellerRegister.controller.js";
 import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
 
 const router = express.Router();
 
-router.post("/register", registerSeller);
-router.post("/login", loginSeller);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
+
+//route to check the email and gst number alreday exist or not
+router.post("/check-unique", checkUniqueSeller);
+router.post("/register", registerSeller);
+router.post("/login", loginSeller);
 
 export default router;
