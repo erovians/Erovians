@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { encrypt } from "../utils/encryption.util.js";
 
 const sellerSchema = new mongoose.Schema(
   {
@@ -42,6 +43,15 @@ const sellerSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+sellerSchema.pre("save", function (next) {
+  if (this.isModified("gstin")) this.gstin = encrypt(this.gstin);
+  next();
+});
+
+sellerSchema.methods.getDecryptedData = function () {
+  return { gstin: this.gstin };
+};
 
 const Seller = mongoose.model("Seller", sellerSchema);
 export default Seller;
