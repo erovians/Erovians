@@ -2,7 +2,6 @@ import Seller from "../models/sellerSingnup.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-
 dotenv.config();
 
 export const checkUniqueSeller = async (req, res) => {
