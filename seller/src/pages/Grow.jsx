@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import Banner from "@/common/Banner";
 import { assets } from "@/assets/assets";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
-// import eroImage from "../assets/ero-service.png"; // Replace with your image path
 
 const Grow = () => {
   const location = useLocation();
@@ -27,10 +26,10 @@ const Grow = () => {
         img={assets.grow_banner_img}
       />
       {/* Create Account Section */}
-      <section className="bg-white md:py-10 px-6 md:px-16" id="CreateAccount">
+      <section className="bg-white md:py-10 px-6 md:px-16" id="VerifiedBadge">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Left Content */}
-          <div className="rich-text" id="VerifiedBadge">
+          <div className="rich-text" >
             <h1 className="mb-4">
               <span className="text-navyblue">Verified Badge</span>
             </h1>
