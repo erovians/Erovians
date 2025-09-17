@@ -17,7 +17,8 @@ const sellerSchema = new mongoose.Schema(
     },
     gstin: {
       type: String,
-      default: null, // Optional
+      required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -31,7 +32,7 @@ const sellerSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["All", "Books", "Electronics"], // expand as needed
+      enum: ["All", "Books", "Electronics"],
       default: "All",
     },
     isMobileVerified: {
