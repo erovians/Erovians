@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { assets } from "@/assets/assets";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import api from "@/utils/axios.utils";
+
+// ✅ Import validation helpers
+import {
+  validateEmail,
+  validateMobile,
+  validateGstin,
+  validatePassword,
+  validateOtp,
+} from "@/utils/validation.utils";
 
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
+  const [otpStatus, setOtpStatus] = useState("idle");
+
   const [formData, setFormData] = useState({
     email: "",
     mobile: "",
@@ -34,79 +48,177 @@ const SellerSignUp = () => {
     { id: 3, title: "ONBOARDING DASHBOARD" },
   ];
 
-  // Input handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" });
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
-  const validateMobile = () => {
-    const mobileRegex = /^[0-9]{10}$/;
-    if (!mobileRegex.test(formData.mobile)) {
-      setErrors({ mobile: "Please enter a valid 10-digit mobile number." });
-      return false;
+  const handleSendOtp = async () => {
+    const mobileError = validateMobile(formData.mobile);
+    if (mobileError) {
+      setErrors((prev) => ({ ...prev, mobile: mobileError }));
+      return;
     }
-    setErrors({ mobile: "" });
-    return true;
-  };
 
-  const handleSendOtp = () => {
-    if (validateMobile()) {
+    setErrors((prev) => ({ ...prev, otp: "" }));
+    setOtpStatus("sending");
+
+    try {
+      const response = await api.post(`/seller/send-otp`, {
+        mobile: formData.mobile,
+      });
+
+      if (response.data.success) {
+        setOtpStatus("sent");
+        setShowModal(true);
+        setModalMessage("OTP sent to your number!");
+        setShowOtpField(true);
+      } else {
+        setOtpStatus("idle");
+        setShowModal(true);
+        setModalMessage(
+          response.data.message || "Failed to send OTP. Please try again."
+        );
+      }
+    } catch (err) {
+      console.error("Error sending OTP:", err);
+      setOtpStatus("idle");
       setShowModal(true);
-      setModalMessage("OTP sent to your number (123456)");
-      setShowOtpField(true);
+      setModalMessage("Failed to send OTP. Please try again.");
     }
   };
 
-  const handleVerifyOtp = () => {
-    if (otp === "123456") {
-      setIsMobileVerified(true);
-      setShowModal(true);
-      setModalMessage("Mobile number verified successfully!");
-    } else {
-      setErrors({ otp: "Invalid OTP. Please try again." });
+  const handleVerifyOtp = async () => {
+    const otpError = validateOtp(otp);
+    if (otpError) {
+      setErrors((prev) => ({ ...prev, otp: otpError }));
+      return;
+    }
+
+    try {
+      const res = await api.post(`/seller/verify-otp`, {
+        mobile: formData.mobile,
+        otp,
+      });
+
+      if (res.data.success) {
+        setIsMobileVerified(true);
+        setOtpStatus("verified");
+        setShowModal(true);
+        setModalMessage("Mobile number verified successfully!");
+        setErrors((prev) => ({ ...prev, otp: "" }));
+      } else {
+        setErrors((prev) => ({ ...prev, otp: res.data.message }));
+        setOtpStatus("sent");
+      }
+    } catch (err) {
+      console.error("Error verifying OTP:", err);
+      setErrors((prev) => ({
+        ...prev,
+        otp: "Invalid OTP. Please try again.",
+      }));
+      setOtpStatus("sent");
     }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-    if (!formData.mobile) {
-      newErrors.mobile = "Mobile number is required.";
-    }
+    const emailError = validateEmail(formData.email);
+    if (emailError) newErrors.email = emailError;
+
+    const mobileError = validateMobile(formData.mobile);
+    if (mobileError) newErrors.mobile = mobileError;
+
+    const gstinError = validateGstin(formData.gstin);
+    if (gstinError) newErrors.gstin = gstinError;
+
     if (!isMobileVerified) {
-      newErrors.otp = "Please verify your mobile number.";
+      newErrors.otp = "Please verify your mobile number with OTP to continue.";
     }
 
+    // ✅ Stop if validation fails
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-    } else {
+      return;
+    }
+
+    try {
+      const res = await api.post("/seller/check-unique", {
+        email: formData.email,
+        gstin: formData.gstin,
+      });
+
+      if (!res.data.success) {
+        setErrors((prev) => ({ ...prev, [res.data.field]: res.data.message }));
+        setShowModal(true);
+        setModalMessage(res.data.message);
+        return;
+      }
+
       setStep(2);
+    } catch (err) {
+      console.error("Error checking unique:", err);
+      setShowModal(true);
+      setModalMessage("Server error. Please try again.");
     }
   };
 
   const handlePasswordContinue = () => {
-    if (formData.password === formData.confirmPassword) {
-      setStep(3);
+    const passwordError = validatePassword(
+      formData.password,
+      formData.confirmPassword
+    );
+
+    if (passwordError) {
+      setErrors({ confirmPassword: passwordError });
     } else {
-      setErrors({ confirmPassword: "Passwords do not match." });
+      setStep(3);
+      setErrors({});
     }
   };
 
+  // -----------------------------------
+  // Final Submit
+  // -----------------------------------
+  const dispatch = useDispatch();
+  const { loading, error, successMessage } = useSelector(
+    (state) => state.seller
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setModalMessage(
-      "Form submitted successfully! You're ready to start selling."
-    );
-    setShowModal(true);
+
+    const sellerData = {
+      email: formData.email,
+      mobile: formData.mobile,
+      gstin: formData.gstin,
+      password: formData.password,
+      businessName: formData.businessName,
+      category: formData.category,
+    };
+
+    dispatch(registerSeller(sellerData));
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      setModalMessage(successMessage);
+      setShowModal(true);
+      dispatch(clearSellerState());
+    }
+    if (error) {
+      setModalMessage(error);
+      setShowModal(true);
+      dispatch(clearSellerState());
+    }
+  }, [successMessage, error, dispatch]);
+
+  // -----------------------------------
+  // Modal Component
+  // -----------------------------------
   const Modal = ({ message, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
@@ -123,7 +235,6 @@ const SellerSignUp = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans">
-      {/* Header */}
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
         <Link to={"/"}>
           <img
@@ -135,13 +246,10 @@ const SellerSignUp = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-6 md:px-12 py-8 md:py-12 max-w-6xl mx-auto">
-        {/* Left Section */}
         <div>
-          {/* Stepper */}
           <div className="flex  md:items-center md:justify-between mb-8 text-xs sm:text-sm font-semibold text-gray-600">
             {steps.map((item, i) => (
               <div key={item.id} className="flex items-center flex-col">
-                {/* Step Circle */}
                 <div
                   className={`w-6 h-6 rounded-full flex  items-center justify-center border-2 ${
                     step >= item.id
@@ -152,7 +260,6 @@ const SellerSignUp = () => {
                   {step > item.id ? <Check size={14} /> : item.id}
                 </div>
 
-                {/* Title */}
                 <span className="ml-2 text-xs md:ml-2 mt-2 md:mt-0 text-center md:text-left">
                   {item.title}
                 </span>
@@ -160,10 +267,8 @@ const SellerSignUp = () => {
             ))}
           </div>
 
-          {/* Step 1 */}
           {step === 1 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-              {/* Mobile */}
               <div className="flex border rounded-md overflow-hidden flex-col sm:flex-row">
                 <input
                   type="tel"
@@ -177,10 +282,27 @@ const SellerSignUp = () => {
                   <button
                     type="button"
                     onClick={handleSendOtp}
-                    disabled={!formData.mobile || formData.mobile.length !== 10}
-                    className="px-4 py-2 sm:py-0  font-semibold text-sm text-white disabled:text-gray-600 disabled:bg-white border-t sm:border-t-0 sm:border-l border-gray-200 bg-navyblue "
+                    disabled={
+                      !formData.mobile ||
+                      formData.mobile.length !== 10 ||
+                      otpStatus === "sending"
+                    }
+                    className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
+    ${
+      otpStatus === "verified"
+        ? "bg-green-600"
+        : otpStatus === "sending"
+        ? "bg-gray-400"
+        : "bg-navyblue"
+    }`}
                   >
-                    Send OTP
+                    {otpStatus === "sending"
+                      ? "Sending..."
+                      : otpStatus === "sent"
+                      ? "Sent"
+                      : otpStatus === "verified"
+                      ? "Verified"
+                      : "Send OTP"}
                   </button>
                 )}
               </div>
@@ -229,7 +351,6 @@ const SellerSignUp = () => {
                 <p className="text-red-500 text-sm">{errors.otp}</p>
               )}
 
-              {/* Email */}
               <input
                 type="email"
                 name="email"
@@ -239,18 +360,43 @@ const SellerSignUp = () => {
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
 
-              {/* GST */}
               <input
                 type="text"
                 name="gstin"
-                placeholder="Enter GSTIN (Optional)"
+                placeholder="GSTIN *"
                 value={formData.gstin}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+                className={`w-full px-4 py-3 border rounded-md text-sm outline-none ${
+                  errors.gstin ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.gstin && (
+                <p className="text-red-500 text-sm mt-1">{errors.gstin}</p>
+              )}
+
+              <div className="mt-6 p-4">
+                <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+                  GSTIN is required to sell on Erovians
+                </h2>
+
+                <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                  Expand your business reach, connect with new customers, and
+                  grow your revenue with{" "}
+                  <span className="text-[#0c2c43] font-semibold">Erovians</span>
+                  .
+                </p>
+
+                <p className="text-xs text-gray-500 mt-4 leading-snug">
+                  By continuing, I agree to{" "}
+                  <Link to={"/"} className="text-blue-600 font-medium ">
+                    Terms of Use & Privacy Policy
+                  </Link>
+                  .
+                </p>
+              </div>
 
               <button
                 type="button"
@@ -267,7 +413,6 @@ const SellerSignUp = () => {
             </form>
           )}
 
-          {/* Step 2 */}
           {step === 2 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
               <input
@@ -308,7 +453,6 @@ const SellerSignUp = () => {
             </form>
           )}
 
-          {/* Step 3 */}
           {step === 3 && (
             <form className="space-y-5" onSubmit={handleSubmit}>
               <input
@@ -354,9 +498,8 @@ const SellerSignUp = () => {
           )}
         </div>
 
-        {/* Right Section */}
         <div className="hidden md:flex flex-col gap-6">
-          <div className="p-2 border rounded-md shadow-sm">
+          <div className="p-4 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
               List with Erovians, Grow With Erovians, Explore with Erovians !!
             </p>

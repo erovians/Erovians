@@ -30,7 +30,7 @@ const Grow = () => {
       <section className="bg-white md:py-10 px-6 md:px-16" id="CreateAccount">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Left Content */}
-          <div className="rich-text">
+          <div className="rich-text" id="VerifiedBadge">
             <h1 className="mb-4">
               <span className="text-navyblue">Verified Badge</span>
             </h1>
@@ -69,14 +69,13 @@ const Grow = () => {
             <img
               src={assets.grow_verified} // 🔄 replace with your image/icon
               alt="Verified Badge"
-              className=""
             />
           </div>
         </div>
       </section>
 
       {/* Advertise Products Section */}
-      <section className="md:py-10 px-6 md:px-16 bg-white" id="list-product">
+      <section className="md:py-10 px-6 md:px-16 bg-white" id="AdvertiseProducts">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-10 items-center">
           {/* Right Image */}
           <div className="flex justify-center ">
@@ -87,7 +86,7 @@ const Grow = () => {
             />
           </div>
           {/* Left Content */}
-          <div className="rich-text ">
+          <div className="rich-text">
             <h1 className="mb-4">
               <span className="text-navyblue">Advertise Your Products</span>
             </h1>
@@ -122,7 +121,10 @@ const Grow = () => {
       </section>
 
       {/* Erovians Value Services */}
-      <section className="bg-gray-50 py-6 md:py-12 px-6 md:px-16">
+      <section
+        className="bg-gray-50 py-6 md:py-12 px-6 md:px-16"
+        id="EroviansValueServices"
+      >
         <div className="max-w-7xl mx-auto">
           {/* Title */}
           <div className="mb-8 rich-text">
