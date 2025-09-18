@@ -31,7 +31,8 @@ const SellerSignUp = () => {
     confirmPassword: "",
     businessName: "",
     category: "All",
-    documentUrl: "",
+
+    documentFile: null,
   });
 
   const [otp, setOtp] = useState("");
@@ -40,8 +41,6 @@ const SellerSignUp = () => {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-
-  const [isUploading, setIsUploading] = useState(false);
 
   const steps = [
     { id: 1, title: "EMAIL ID & GST" },
@@ -186,7 +185,8 @@ const SellerSignUp = () => {
     }
   };
 
-  const handleFileUpload = async (e) => {
+  // ✅ New handleFileUpload function - now just saves the file object
+  const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -206,39 +206,17 @@ const SellerSignUp = () => {
       return;
     }
 
-    const formDataFile = new FormData();
-    formDataFile.append("file", file);
-
-    setIsUploading(true);
-    setModalMessage("Uploading file... Please wait.");
+    setFormData((prev) => ({ ...prev, documentFile: file }));
+    setModalMessage("Document selected!");
     setShowModal(true);
-
-    try {
-      const res = await api.post("/upload", formDataFile, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (res.data.success) {
-        setFormData((prev) => ({ ...prev, documentUrl: res.data.url }));
-        setModalMessage("File uploaded successfully!");
-      } else {
-        setModalMessage(res.data.error || "File upload failed. Try again.");
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      setModalMessage("File upload failed. Try again.");
-    } finally {
-      setIsUploading(false);
-    }
   };
 
+  // ✅ New handleSubmit function - sends a single request with all data and the file
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.documentUrl) {
-      setModalMessage(
-        "Please upload the required document and wait for the upload to complete."
-      );
+    if (!formData.documentFile) {
+      setModalMessage("Please upload the required document.");
       setShowModal(true);
       return;
     }
@@ -248,17 +226,16 @@ const SellerSignUp = () => {
       return;
     }
 
-    const sellerData = {
-      email: formData.email,
-      mobile: formData.mobile,
-      gstin: formData.gstin,
-      password: formData.password,
-      businessName: formData.businessName,
-      category: formData.category,
-      documentUrl: formData.documentUrl,
-    };
+    const finalSellerData = new FormData();
+    finalSellerData.append("email", formData.email);
+    finalSellerData.append("mobile", formData.mobile);
+    finalSellerData.append("gstin", formData.gstin);
+    finalSellerData.append("password", formData.password);
+    finalSellerData.append("businessName", formData.businessName);
+    finalSellerData.append("category", formData.category);
+    finalSellerData.append("file", formData.documentFile); // Append the file object here
 
-    dispatch(registerSeller(sellerData));
+    dispatch(registerSeller(finalSellerData));
   };
 
   useEffect(() => {
@@ -381,10 +358,8 @@ const SellerSignUp = () => {
                       <InputOTPSlot index={3} />
                     </InputOTPGroup>
                     <InputOTPSeparator />
-                    <InputOTPGroup>
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
                   </InputOTP>
                   <button
                     type="button"
@@ -483,26 +458,13 @@ const SellerSignUp = () => {
                   accept="image/jpeg,image/png,application/pdf"
                   onChange={handleFileUpload}
                   className="w-full px-4 py-3 border rounded-md text-sm outline-none"
-                  disabled={isUploading}
                 />
-                {isUploading && (
-                  <p className="text-sm text-gray-500 mt-2">Uploading...</p>
+                {formData.documentFile && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Document selected!
+                  </p>
                 )}
               </div>
-
-              {formData.documentUrl && (
-                <div className="mt-3">
-                  <p className="text-xs text-gray-600">Uploaded Document:</p>
-                  <a
-                    href={formData.documentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline text-sm"
-                  >
-                    View File
-                  </a>
-                </div>
-              )}
 
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
@@ -519,15 +481,13 @@ const SellerSignUp = () => {
                     !formData.password ||
                     !formData.confirmPassword ||
                     errors.confirmPassword ||
-                    isUploading ||
-                    !formData.documentUrl
+                    !formData.documentFile
                   }
                   className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto ${
                     !formData.password ||
                     !formData.confirmPassword ||
                     errors.confirmPassword ||
-                    isUploading ||
-                    !formData.documentUrl
+                    !formData.documentFile
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "hover:bg-[#1a4361]"
                   }`}
@@ -581,11 +541,9 @@ const SellerSignUp = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={
-                    !formData.documentUrl || !formData.businessName || loading
-                  }
+                  disabled={!formData.businessName || loading}
                   className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto ${
-                    !formData.documentUrl || !formData.businessName
+                    !formData.businessName
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "hover:bg-[#1a4361]"
                   }`}
