@@ -46,7 +46,15 @@ export const checkUniqueSeller = async (req, res) => {
 
 export const registerSeller = async (req, res) => {
   try {
-    const { email, mobile, gstin, password, businessName, category } = req.body;
+    const {
+      email,
+      mobile,
+      gstin,
+      password,
+      businessName,
+      category,
+      documentUrl,
+    } = req.body;
 
     global.verifiedMobiles = global.verifiedMobiles || {};
     if (!global.verifiedMobiles[mobile]) {
@@ -55,7 +63,6 @@ export const registerSeller = async (req, res) => {
       });
     }
 
-    // ===== Field Validations =====
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
@@ -103,7 +110,10 @@ export const registerSeller = async (req, res) => {
         .json({ message: "Business Name must be at least 3 characters long" });
     }
 
-    // ===== Check existing seller =====
+    if (!documentUrl) {
+      return res.status(400).json({ message: "Document URL is required" });
+    }
+
     const existingSeller = await Seller.findOne({
       $or: [{ email }, { mobile }, { gstin }],
     });
@@ -111,10 +121,8 @@ export const registerSeller = async (req, res) => {
       return res.status(400).json({ message: "Seller already registered" });
     }
 
-    // ===== Password Hash =====
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // ===== Create Seller =====
     const seller = new Seller({
       email,
       mobile,
@@ -122,15 +130,14 @@ export const registerSeller = async (req, res) => {
       password: hashedPassword,
       businessName,
       category,
+      documentUrl,
       isMobileVerified: true,
     });
 
     const savedSeller = await seller.save();
 
-    // cleanup verified mobile
     delete global.verifiedMobiles[mobile];
 
-    // ===== Generate JWT =====
     const token = jwt.sign(
       { id: savedSeller._id, email: savedSeller.email },
       process.env.JWT_SECRET,
@@ -146,6 +153,7 @@ export const registerSeller = async (req, res) => {
         businessName: savedSeller.businessName,
         category: savedSeller.category,
         isMobileVerified: savedSeller.isMobileVerified,
+        documentUrl: savedSeller.documentUrl,
       },
       token,
     });
@@ -166,7 +174,6 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    // Find seller by email or mobile
     const seller = await Seller.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
     });
@@ -175,26 +182,22 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Check password
     const isMatch = await bcrypt.compare(password, seller.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Make sure secret exists
     if (!process.env.JWT_SECRET) {
       console.error("JWT_SECRET is not defined in .env file");
       return res.status(500).json({ message: "Server configuration error" });
     }
 
-    // Generate JWT
     const token = jwt.sign(
       { id: seller._id, email: seller.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    // Send token in httpOnly cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
@@ -202,7 +205,6 @@ export const loginSeller = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Send response (without token in body, cookie is stored automatically)
     res.status(200).json({
       message: "Login successful",
       seller: {
