@@ -2,6 +2,7 @@ import Seller from "../models/sellerSingnup.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import cloudinary from "../config/cloudinary.js";
 dotenv.config();
 
 export const checkUniqueSeller = async (req, res) => {
@@ -46,79 +47,35 @@ export const checkUniqueSeller = async (req, res) => {
 
 export const registerSeller = async (req, res) => {
   try {
-    const {
-      email,
-      mobile,
-      gstin,
-      password,
-      businessName,
-      category,
-      documentUrl,
-    } = req.body;
+    const { email, mobile, gstin, password, businessName, category } = req.body;
 
-    global.verifiedMobiles = global.verifiedMobiles || {};
-    if (!global.verifiedMobiles[mobile]) {
+    if (!req.files || !req.files.file) {
+      return res.status(400).json({ message: "GSTIN document is required." });
+    }
+    const file = req.files.file;
+
+    const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (!acceptedTypes.includes(file.mimetype)) {
       return res.status(400).json({
-        message: "Mobile number must be verified before registration.",
+        message: "Invalid file type. Only JPG, PNG, and PDF are allowed.",
       });
     }
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return res.status(400).json({ message: "File size exceeds 5MB." });
     }
 
-    if (!mobile) {
-      return res.status(400).json({ message: "Mobile number is required" });
-    }
-    const mobileRegex = /^[0-9]{10}$/;
-    if (!mobileRegex.test(mobile)) {
-      return res
-        .status(400)
-        .json({ message: "Mobile number must be 10 digits" });
-    }
-
-    if (!gstin) {
-      return res.status(400).json({ message: "GSTIN is required" });
-    }
-    const gstinRegex =
-      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    if (!gstinRegex.test(gstin)) {
-      return res.status(400).json({
-        message: "GSTIN must be 15 characters alphanumeric (A-Z, 0-9)",
+    let documentUrl = "";
+    try {
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: "ero_vians_uploads",
+        resource_type: "auto",
       });
-    }
-
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters long" });
-    }
-
-    if (!businessName) {
-      return res.status(400).json({ message: "Business Name is required" });
-    }
-    if (businessName.length < 3) {
-      return res
-        .status(400)
-        .json({ message: "Business Name must be at least 3 characters long" });
-    }
-
-    if (!documentUrl) {
-      return res.status(400).json({ message: "Document URL is required" });
-    }
-
-    const existingSeller = await Seller.findOne({
-      $or: [{ email }, { mobile }, { gstin }],
-    });
-    if (existingSeller) {
-      return res.status(400).json({ message: "Seller already registered" });
+      documentUrl = result.secure_url;
+    } catch (err) {
+      console.error("Cloudinary Upload Error:", err);
+      return res.status(500).json({ message: "Failed to upload document." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -135,7 +92,6 @@ export const registerSeller = async (req, res) => {
     });
 
     const savedSeller = await seller.save();
-
     delete global.verifiedMobiles[mobile];
 
     const token = jwt.sign(
