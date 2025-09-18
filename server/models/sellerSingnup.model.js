@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { encrypt } from "../utils/encryption.util.js";
+import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
