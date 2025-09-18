@@ -7,11 +7,9 @@ export const registerSeller = createAsyncThunk(
   "seller/registerSeller",
   async (sellerData, { rejectWithValue }) => {
     try {
-      const response = await api.post(
-        "/seller/register", // Replace with your backend URL
-        sellerData
-      );
-      return response.data; // data will contain seller info + token
+      // sellerData can be FormData including file
+      const response = await api.post("/seller/register", sellerData);
+      return response.data; // data contains seller info + token
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

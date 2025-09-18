@@ -21,6 +21,8 @@ import {
   validateOtp,
 } from "@/utils/validation.utils";
 
+const MAX_FILE_SIZE_MB = 5;
+
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
   const [otpStatus, setOtpStatus] = useState("idle");
@@ -76,16 +78,24 @@ const SellerSignUp = () => {
         setShowOtpField(true);
       } else {
         setOtpStatus("idle");
-        setShowModal(true);
-        setModalMessage(
-          response.data.message || "Failed to send OTP. Please try again."
-        );
+        setErrors((prev) => ({
+          ...prev,
+          mobile: response.data.message || "Failed to send OTP",
+        }));
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
-      setOtpStatus("idle");
-      setShowModal(true);
-      setModalMessage("Failed to send OTP. Please try again.");
+
+      if (err.response && err.response.status === 409) {
+        setErrors((prev) => ({ ...prev, mobile: err.response.data.message }));
+        setOtpStatus("idle");
+      } else {
+        setOtpStatus("idle");
+        setErrors((prev) => ({
+          ...prev,
+          otp: "Failed to send OTP. Please try again later.",
+        }));
+      }
     }
   };
 
@@ -116,7 +126,7 @@ const SellerSignUp = () => {
       console.error("Error verifying OTP:", err);
       setErrors((prev) => ({
         ...prev,
-        otp: "Invalid OTP. Please try again.",
+        otp: "Invalid or expired OTP. Please try again.",
       }));
       setOtpStatus("sent");
     }
@@ -157,12 +167,13 @@ const SellerSignUp = () => {
         setModalMessage(res.data.message);
         return;
       }
-
       setStep(2);
     } catch (err) {
-      console.error("Error checking unique:", err);
-      setShowModal(true);
-      setModalMessage("Server error. Please try again.");
+      console.error("Error checking uniqueness:", err);
+      setErrors((prev) => ({
+        ...prev,
+        email: "Something went wrong. Please try again later.",
+      }));
     }
   };
 
@@ -191,16 +202,34 @@ const SellerSignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const sellerData = {
-      email: formData.email,
-      mobile: formData.mobile,
-      gstin: formData.gstin,
-      password: formData.password,
-      businessName: formData.businessName,
-      category: formData.category,
-    };
+    // Validation: check file
+    if (!formData.file) {
+      setErrors({ file: "Please upload a document (image or PDF)." });
+      return;
+    }
 
-    dispatch(registerSeller(sellerData));
+    const allowedTypes = ["application/pdf", "image/png", "image/jpeg"];
+    if (!allowedTypes.includes(formData.file.type)) {
+      setErrors({ file: "Only PDF, JPG, or PNG files are allowed." });
+      return;
+    }
+
+    const maxSize = MAX_FILE_SIZE_MB * 1024 * 1024;
+    if (formData.file.size > maxSize) {
+      setErrors({ file: `File size must be less than ${MAX_FILE_SIZE_MB}MB.` });
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("email", formData.email);
+    fd.append("mobile", formData.mobile);
+    fd.append("gstin", formData.gstin);
+    fd.append("password", formData.password);
+    fd.append("businessName", formData.businessName);
+    fd.append("category", formData.category);
+    fd.append("file", formData.file); // <-- attach the file
+
+    dispatch(registerSeller(fd)); // send FormData instead of JSON
   };
 
   useEffect(() => {
@@ -232,7 +261,6 @@ const SellerSignUp = () => {
       </div>
     </div>
   );
-
   return (
     <div className="min-h-screen bg-white font-sans">
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
@@ -478,6 +506,22 @@ const SellerSignUp = () => {
                     {cat}
                   </button>
                 ))}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">
+                  Upload Business Document (Image/PDF) *
+                </label>
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  onChange={(e) =>
+                    setFormData({ ...formData, file: e.target.files[0] })
+                  }
+                  className="w-full border px-3 py-2 rounded-md text-sm outline-none"
+                />
+                {errors.file && (
+                  <p className="text-red-500 text-sm">{errors.file}</p>
+                )}
               </div>
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button

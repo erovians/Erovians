@@ -23,7 +23,7 @@ export const sendOtp = async (req, res) => {
     if (seller) {
       return res
         .status(409)
-        .json({ exists: true, message: "Mobile already exists" });
+        .json({ message: "Mobile already exists" });
     } else {
       const otp = generateOTP();
 

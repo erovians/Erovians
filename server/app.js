@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Static file serving
-app.use(express.static("public"));
+app.use('/api/uploads', express.static('uploads'))
 
 // Cookie parser
 app.use(cookieParser());

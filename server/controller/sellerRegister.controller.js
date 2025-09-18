@@ -2,6 +2,7 @@ import Seller from "../models/sellerSingnup.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
 
 dotenv.config();
 
@@ -115,6 +116,24 @@ export const registerSeller = async (req, res) => {
     // ===== Password Hash =====
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Image check
+    const avatarLocalPath = req.file?.path;
+    if (!avatarLocalPath) {
+      return res.status(400).json({
+        success: false,
+        error: "File is required",
+      });
+    }
+
+    // Upload to Cloudinary
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatar) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to upload file",
+      });
+    }
+
     // ===== Create Seller =====
     const seller = new Seller({
       email,
@@ -123,6 +142,7 @@ export const registerSeller = async (req, res) => {
       password: hashedPassword,
       businessName,
       category,
+      businessDocument: avatar.url,
       isMobileVerified: true,
     });
 
@@ -146,6 +166,7 @@ export const registerSeller = async (req, res) => {
         mobile: savedSeller.mobile,
         businessName: savedSeller.businessName,
         category: savedSeller.category,
+        businessDocument: savedSeller.businessDocument,
         isMobileVerified: savedSeller.isMobileVerified,
       },
       token,
