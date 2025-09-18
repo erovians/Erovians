@@ -40,6 +40,10 @@ const sellerSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    documentUrl: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
