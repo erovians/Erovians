@@ -35,6 +35,9 @@ const sellerSchema = new mongoose.Schema(
       enum: ["All", "Marbles", "Granites"],
       default: "All",
     },
+    businessDocument: {
+      type: String,
+    },
     isMobileVerified: {
       type: Boolean,
       default: false,
