@@ -233,7 +233,7 @@ const SellerSignUp = () => {
     finalSellerData.append("password", formData.password);
     finalSellerData.append("businessName", formData.businessName);
     finalSellerData.append("category", formData.category);
-    finalSellerData.append("file", formData.documentFile); // Append the file object here
+    finalSellerData.append("file", formData.documentFile);
 
     dispatch(registerSeller(finalSellerData));
   };
