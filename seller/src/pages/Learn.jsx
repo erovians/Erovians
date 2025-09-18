@@ -33,9 +33,9 @@ const Learn = () => {
   }, [location]);
 
   const banners = [
-    assets.learn_banner1,
-    assets.learn_banner2,
-    assets.learn_banner3,
+    assets.learn_carousel1,
+    assets.learn_carousel2,
+    assets.learn_carousel3,
   ];
 
   return (
