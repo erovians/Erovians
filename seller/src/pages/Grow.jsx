@@ -74,7 +74,10 @@ const Grow = () => {
       </section>
 
       {/* Advertise Products Section */}
-      <section className="md:py-10 px-6 md:px-16 bg-white" id="AdvertiseProducts">
+      <section
+        className="md:py-10 px-6 md:px-16 bg-white"
+        id="AdvertiseProducts"
+      >
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-10 items-center">
           {/* Right Image */}
           <div className="flex justify-center ">
