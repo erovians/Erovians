@@ -464,7 +464,7 @@ const SellerSignUp = () => {
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
               <div className="flex flex-col sm:flex-row gap-3">
-                {["All", "Books", "Electronics"].map((cat) => (
+                {["All", "Marbles", "Granites"].map((cat) => (
                   <button
                     key={cat}
                     type="button"
