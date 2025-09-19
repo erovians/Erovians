@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import sellerRoutes from "./routes/sellerSignup.routes.js";
 import fileUpload from "express-fileupload";
 import createCompany from "./routes/company.routes.js";
+import productRoute from "./routes/product.route.js";
 
 const app = express();
 
@@ -36,5 +37,8 @@ app.use("/api/seller", sellerRoutes);
 
 // Company Routes
 app.use("/api/company", createCompany);
+
+//Product ROute
+app.use("/api/product", productRoute);
 
 export { app };
