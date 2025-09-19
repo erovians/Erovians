@@ -31,7 +31,6 @@ const SellerSignUp = () => {
     confirmPassword: "",
     businessName: "",
     category: "All",
-
     documentFile: null,
   });
 
@@ -171,58 +170,82 @@ const SellerSignUp = () => {
     }
   };
 
+  // SellerSignUp.jsx
+
   const handlePasswordContinue = () => {
+    const newErrors = {};
+
     const passwordError = validatePassword(
       formData.password,
       formData.confirmPassword
     );
-
     if (passwordError) {
-      setErrors({ confirmPassword: passwordError });
+      newErrors.password = passwordError;
+      newErrors.confirmPassword = passwordError;
+    }
+
+    if (!formData.documentFile) {
+      newErrors.documentFile = "Please upload the required document.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setModalMessage(Object.values(newErrors).join(". "));
+      setShowModal(true);
     } else {
       setStep(3);
       setErrors({});
     }
   };
 
-  // ✅ New handleFileUpload function - now just saves the file object
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) {
+      setFormData((prev) => ({ ...prev, documentFile: null }));
+      setErrors((prev) => ({ ...prev, documentFile: "" }));
+      return;
+    }
 
     const maxSize = 5 * 1024 * 1024;
+    const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
+
     if (file.size > maxSize) {
       setModalMessage("File size exceeds 5MB. Please choose a smaller file.");
       setShowModal(true);
       e.target.value = "";
+      setFormData((prev) => ({ ...prev, documentFile: null }));
       return;
     }
 
-    const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!acceptedTypes.includes(file.type)) {
       setModalMessage("Invalid file type. Only JPG, PNG, and PDF are allowed.");
       setShowModal(true);
       e.target.value = "";
+      setFormData((prev) => ({ ...prev, documentFile: null }));
       return;
     }
 
     setFormData((prev) => ({ ...prev, documentFile: file }));
+    setErrors((prev) => ({ ...prev, documentFile: "" }));
     setModalMessage("Document selected!");
     setShowModal(true);
   };
 
-  // ✅ New handleSubmit function - sends a single request with all data and the file
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const newErrors = {};
     if (!formData.documentFile) {
-      setModalMessage("Please upload the required document.");
-      setShowModal(true);
-      return;
+      newErrors.documentFile = "Please upload the required document.";
+    }
+    if (!formData.businessName) {
+      newErrors.businessName = "Business name is required.";
     }
 
-    if (!formData.businessName) {
-      setErrors({ businessName: "Business name is required." });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setShowModal(true);
+      setModalMessage(Object.values(newErrors).join(". "));
       return;
     }
 
@@ -459,9 +482,14 @@ const SellerSignUp = () => {
                   onChange={handleFileUpload}
                   className="w-full px-4 py-3 border rounded-md text-sm outline-none"
                 />
-                {formData.documentFile && (
+                {errors.documentFile && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.documentFile}
+                  </p>
+                )}
+                {formData.documentFile && !errors.documentFile && (
                   <p className="text-sm text-green-600 mt-2">
-                    Document selected!
+                    Document selected: {formData.documentFile.name}
                   </p>
                 )}
               </div>
