@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import sellerRoutes from "./routes/sellerSignup.routes.js";
 import fileUpload from "express-fileupload";
+import createCompany from "./routes/company.routes.js";
 
 const app = express();
 
@@ -32,5 +33,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/seller", sellerRoutes);
+
+// Company Routes
+app.use("/api/company", createCompany);
 
 export { app };
