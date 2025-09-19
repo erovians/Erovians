@@ -4,66 +4,76 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
   {
     companyName: {
       type: String,
-      required: true,
       trim: true,
+      minlength: 2,
+      maxlength: 100,
       index: true,
     },
     address: {
       street: {
         type: String,
-        required: true,
         trim: true,
+        minlength: 2,
+        maxlength: 100,
       },
       city: {
         type: String,
-        required: true,
         trim: true,
+        minlength: 2,
+        maxlength: 50,
+        match: /^[a-zA-Z\s]+$/,
       },
       stateOrProvince: {
         type: String,
-        required: true,
         trim: true,
+        minlength: 2,
+        maxlength: 50,
+        match: /^[a-zA-Z\s]+$/,
       },
       countryOrRegion: {
         type: String,
-        required: true,
         trim: true,
+        minlength: 2,
+        maxlength: 50,
       },
       postalCode: {
         type: String,
-        required: true,
         trim: true,
+        match: /^[0-9]{4,10}$/,
       },
     },
     locationOfRegistration: {
       type: String,
-      required: true,
       trim: true,
+      minlength: 2,
+      maxlength: 100,
     },
     mainCategory: {
       type: String,
-      required: true,
       enum: ["Marble", "Granite"],
     },
     productListingCategory: {
       type: String,
-      required: true,
       trim: true,
+      minlength: 2,
+      maxlength: 100,
     },
     acceptedCurrency: {
       type: String,
-      required: true,
       enum: ["USD", "INR", "EUR", "JPY"],
-      trim: true,
     },
     acceptedPaymentType: {
       type: [String],
-      required: true,
       enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
+      validate: {
+        validator: function (arr) {
+          return arr.length > 0;
+        },
+        message: "At least one payment type must be selected",
+      },
     },
     languageSpoken: {
       type: [String],
-      required: true,
       default: ["English", "Hindi"],
     },
   },
@@ -96,16 +106,14 @@ const CompanyDataSchema = new mongoose.Schema(
   {
     companyBasicInfo: {
       type: CompanyBasicInfoSchema,
-      required: true,
     },
     companyIntro: {
       type: CompanyIntroSchema,
-      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "seller",
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }
