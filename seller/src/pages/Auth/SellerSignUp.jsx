@@ -87,10 +87,14 @@ const SellerSignUp = () => {
         );
       }
     } catch (err) {
-      console.error("Error sending OTP:", err);
+      if (err.response.status == 409) {
+        setErrors((prev) => ({ ...prev, mobile: err.response.data.message }));
+      } else {
+        setShowModal(true);
+        setModalMessage("Failed to send OTP. Please try again.");
+      }
+    } finally {
       setOtpStatus("idle");
-      setShowModal(true);
-      setModalMessage("Failed to send OTP. Please try again.");
     }
   };
 
@@ -335,10 +339,7 @@ const SellerSignUp = () => {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={
-                      !formData.mobile ||
-                      formData.mobile.length !== 10 ||
-                      otpStatus === "sending" ||
-                      otpStatus === "verified"
+                      otpStatus === "sending" || otpStatus === "verified"
                     }
                     className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
                     ${
