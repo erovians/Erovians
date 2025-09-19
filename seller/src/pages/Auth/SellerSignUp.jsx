@@ -388,7 +388,7 @@ const SellerSignUp = () => {
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-500 text-sm">{errors.email}</p>
               )}
 
               <input
@@ -402,7 +402,7 @@ const SellerSignUp = () => {
                 }`}
               />
               {errors.gstin && (
-                <p className="text-red-500 text-sm mt-1">{errors.gstin}</p>
+                <p className="text-red-500 text-sm">{errors.gstin}</p>
               )}
 
               <div className="mt-6 p-4">
