@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { encrypt } from "../utils/encryption.util.js";
+import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
@@ -38,7 +38,11 @@ const sellerSchema = new mongoose.Schema(
     },
     isMobileVerified: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    documentUrl: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

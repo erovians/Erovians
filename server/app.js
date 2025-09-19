@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import sellerRoutes from "./routes/sellerSignup.routes.js";
+import fileUpload from "express-fileupload";
 
 const app = express();
 
-// CORS setup
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -13,7 +13,14 @@ app.use(
   })
 );
 
-// Body parsers
+// Add file upload middleware here
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
