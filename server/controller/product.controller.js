@@ -26,7 +26,7 @@ export const addProduct = async (req, res) => {
     } = req.body;
 
     const product = new Product({
-      seller: seller || null, // allow null or body value while testing
+      seller: seller || null,
       productName,
       productType,
       grade,
@@ -52,7 +52,7 @@ export const addProduct = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "Product added successfully (Test mode)",
+      message: "Product added successfully",
       data: savedProduct,
     });
   } catch (error) {
@@ -72,9 +72,7 @@ export const listProducts = async (req, res) => {
     let filter = {};
     if (sellerId) filter.seller = sellerId;
 
-    const products = await Product.find(filter)
-      .populate("seller", "name email")
-      .sort({ createdAt: -1 });
+    const products = await Product.find(filter).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
