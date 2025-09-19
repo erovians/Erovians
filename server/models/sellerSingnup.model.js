@@ -38,7 +38,7 @@ const sellerSchema = new mongoose.Schema(
     },
     isMobileVerified: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     documentUrl: {
       type: String,

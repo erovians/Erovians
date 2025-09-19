@@ -1,183 +1,3 @@
-// import Seller from "../models/sellerSingnup.model.js";
-// import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken";
-// import dotenv from "dotenv";
-// // import cloudinary from "../config/cloudinary.js";
-// import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
-// dotenv.config();
-
-// export const checkUniqueSeller = async (req, res) => {
-//   try {
-//     const { email, gstin } = req.body;
-//     const query = [];
-
-//     if (email) query.push({ email });
-//     if (gstin) query.push({ gstin });
-
-//     if (query.length === 0) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "No data provided" });
-//     }
-
-//     const existing = await Seller.findOne({ $or: query });
-
-//     if (existing) {
-//       if (email && existing.email === email) {
-//         return res.status(409).json({
-//           success: false,
-//           field: "email",
-//           message: "Email already exists",
-//         });
-//       }
-//       if (gstin && existing.gstin === gstin) {
-//         return res.status(409).json({
-//           success: false,
-//           field: "gstin",
-//           message: "GSTIN already exists",
-//         });
-//       }
-//     }
-
-//     return res.status(200).json({ success: true, message: "Available" });
-//   } catch (err) {
-//     console.error("Error checking unique:", err);
-//     res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
-
-// export const registerSeller = async (req, res) => {
-//   try {
-//     const { email, mobile, gstin, password, businessName, category } = req.body;
-
-//     if (!req.files || !req.files.file) {
-//       return res.status(400).json({ message: "GSTIN document is required." });
-//     }
-//     const file = req.files.file;
-
-//     const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
-//     if (!acceptedTypes.includes(file.mimetype)) {
-//       return res.status(400).json({
-//         message: "Invalid file type. Only JPG, PNG, and PDF are allowed.",
-//       });
-//     }
-
-//     const maxSize = 5 * 1024 * 1024;
-//     if (file.size > maxSize) {
-//       return res.status(400).json({ message: "File size exceeds 5MB." });
-//     }
-
-//     let documentUrl = "";
-//     try {
-//       const result = await cloudinary.uploader.upload(file.tempFilePath, {
-//         folder: "ero_vians_uploads",
-//         resource_type: "auto",
-//       });
-//       documentUrl = result.secure_url;
-//     } catch (err) {
-//       console.error("Cloudinary Upload Error:", err);
-//       return res.status(500).json({ message: "Failed to upload document." });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 12);
-
-//     const seller = new Seller({
-//       email,
-//       mobile,
-//       gstin,
-//       password: hashedPassword,
-//       businessName,
-//       category,
-//       documentUrl,
-//       isMobileVerified: true,
-//     });
-
-//     const savedSeller = await seller.save();
-//     delete global.verifiedMobiles[mobile];
-
-//     const token = jwt.sign(
-//       { id: savedSeller._id, email: savedSeller.email },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
-//     );
-
-//     res.status(201).json({
-//       message: "Seller registered successfully",
-//       seller: {
-//         id: savedSeller._id,
-//         email: savedSeller.email,
-//         mobile: savedSeller.mobile,
-//         businessName: savedSeller.businessName,
-//         category: savedSeller.category,
-//         isMobileVerified: savedSeller.isMobileVerified,
-//         documentUrl: savedSeller.documentUrl,
-//       },
-//       token,
-//     });
-//   } catch (error) {
-//     console.error("Error registering seller:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// export const loginSeller = async (req, res) => {
-//   try {
-//     const { identifier, password } = req.body;
-
-//     if (!identifier) {
-//       return res.status(400).json({ message: "Email or Mobile is required" });
-//     }
-//     if (!password) {
-//       return res.status(400).json({ message: "Password is required" });
-//     }
-
-//     const seller = await Seller.findOne({
-//       $or: [{ email: identifier }, { mobile: identifier }],
-//     });
-
-//     if (!seller) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, seller.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-
-//     if (!process.env.JWT_SECRET) {
-//       console.error("JWT_SECRET is not defined in .env file");
-//       return res.status(500).json({ message: "Server configuration error" });
-//     }
-
-//     const token = jwt.sign(
-//       { id: seller._id, email: seller.email },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
-//     );
-
-//     res.cookie("token", token, {
-//       httpOnly: true,
-//       secure: true,
-//       sameSite: "lax",
-//       maxAge: 7 * 24 * 60 * 60 * 1000,
-//     });
-
-//     res.status(200).json({
-//       message: "Login successful",
-//       seller: {
-//         id: seller._id,
-//         email: seller.email,
-//         mobile: seller.mobile,
-//         businessName: seller.businessName,
-//         category: seller.category,
-//         isMobileVerified: seller.isMobileVerified,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Error logging in seller:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 import Seller from "../models/sellerSingnup.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -200,6 +20,22 @@ export const checkUniqueSeller = async (req, res) => {
   try {
     const { email, gstin } = req.body;
     const query = [];
+
+    // ✅ Frontend validation check here for added security
+    if (email && !isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        field: "email",
+        message: "Invalid email format.",
+      });
+    }
+    if (gstin && !isValidGSTIN(gstin)) {
+      return res.status(400).json({
+        success: false,
+        field: "gstin",
+        message: "Invalid GSTIN format.",
+      });
+    }
 
     if (email) query.push({ email });
     if (gstin) query.push({ gstin });
@@ -289,15 +125,6 @@ export const registerSeller = async (req, res) => {
       return res.status(400).json({ message: "File size exceeds 5MB." });
     }
 
-    // 🔹 Upload file
-    const uploadResult = await uploadOnCloudinary(file.tempFilePath);
-    const documentUrl = uploadResult?.secure_url;
-    if (!documentUrl) {
-      return res
-        .status(500)
-        .json({ message: "Failed to upload document to Cloudinary." });
-    }
-
     // 🔹 Check duplicates
     const existingSeller = await Seller.findOne({
       $or: [{ email }, { mobile }, { gstin }],
@@ -307,6 +134,15 @@ export const registerSeller = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+
+    // 🔹 Upload file
+    const uploadResult = await uploadOnCloudinary(file.tempFilePath);
+    const documentUrl = uploadResult?.secure_url;
+    if (!documentUrl) {
+      return res
+        .status(500)
+        .json({ message: "Failed to upload document to Cloudinary." });
+    }
 
     const seller = new Seller({
       email,
