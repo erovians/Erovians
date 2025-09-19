@@ -25,9 +25,21 @@ export const validateGstin = (gstin) => {
 
 // ✅ Password validation
 export const validatePassword = (password, confirmPassword) => {
-  if (!password) return "Password is required.";
-  if (password.length < 6) return "Password must be at least 6 characters.";
-  if (password !== confirmPassword) return "Passwords do not match.";
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+  if (!password) {
+    return "Password is required.";
+  }
+
+  if (!passwordRegex.test(password)) {
+    return "Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, one number, and one special character.";
+  }
+
+  if (password !== confirmPassword) {
+    return "Passwords do not match.";
+  }
+
   return "";
 };
 
