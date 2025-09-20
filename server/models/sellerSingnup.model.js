@@ -3,28 +3,15 @@ import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
-      unique: true,
-      lowercase: true,
-      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide a valid email"],
-    },
-    mobile: {
-      type: String,
-      required: true,
-      unique: true,
-      match: [/^[0-9]{10}$/, "Please provide a valid 10-digit mobile number"],
     },
     gstin: {
       type: String,
       required: true,
       unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 6,
     },
     businessName: {
       type: String,
@@ -36,13 +23,14 @@ const sellerSchema = new mongoose.Schema(
       enum: ["All", "Marbles", "Granites"],
       default: "All",
     },
-    isMobileVerified: {
-      type: Boolean,
-      default: true,
-    },
+
     documentUrl: {
       type: String,
       required: true,
+    },
+    varificationStatus: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
     },
   },
   { timestamps: true }
