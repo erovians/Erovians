@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 dotenv.config();
 
-// ✅ Utility validation functions
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const isValidMobile = (mobile) => /^[6-9]\d{9}$/.test(mobile);

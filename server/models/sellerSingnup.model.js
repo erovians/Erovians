@@ -6,9 +6,9 @@ const sellerSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
-    gstin: {
+    businessId: {
       type: String,
       required: true,
       unique: true,
