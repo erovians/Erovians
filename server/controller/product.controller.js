@@ -1,52 +1,69 @@
 import Product from "../models/product.model.js";
-import mongoose from "mongoose";
 
 export const addProduct = async (req, res) => {
   try {
     const {
+      sellerId,
       productName,
-      productType,
+      productImages,
+      category,
       grade,
       color,
       origin,
       size,
-      finish,
       weight,
       pricePerUnit,
-      currency,
       unit,
-      minOrderQuantity,
-      warrenty,
-      stockAvailability,
-      certifications,
-      productImages,
       description,
-      tags,
-      discountPrice,
-      seller,
     } = req.body;
 
+    if (
+      !sellerId ||
+      !productName ||
+      !productImages ||
+      !category ||
+      !grade ||
+      !color ||
+      !origin ||
+      !size ||
+      !weight ||
+      !pricePerUnit ||
+      !unit ||
+      !description
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+      });
+    }
+
+    if (!Array.isArray(productImages) || productImages.length < 3) {
+      return res.status(400).json({
+        success: false,
+        message: "At least 3 product images are required",
+      });
+    }
+
+    if (!size.length || !size.width || !size.thickness) {
+      return res.status(400).json({
+        success: false,
+        message: "Size (length, width, thickness) must be provided",
+      });
+    }
+
     const product = new Product({
-      seller: seller || null,
+      sellerId,
       productName,
-      productType,
+      productImages,
+      category,
       grade,
       color,
       origin,
       size,
-      finish,
       weight,
       pricePerUnit,
-      currency,
       unit,
-      minOrderQuantity,
-      warrenty,
-      stockAvailability,
-      certifications,
-      productImages,
       description,
-      tags,
-      discountPrice,
     });
 
     const savedProduct = await product.save();
@@ -57,11 +74,10 @@ export const addProduct = async (req, res) => {
       data: savedProduct,
     });
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("❌ Error adding product:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Something went wrong while adding the product",
     });
   }
 };
@@ -69,9 +85,7 @@ export const addProduct = async (req, res) => {
 export const listAllProducts = async (req, res) => {
   try {
     const { sellerId } = req.query;
-
-    let filter = {};
-    if (sellerId) filter.seller = sellerId;
+    const filter = sellerId ? { sellerId } : {};
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
@@ -81,11 +95,10 @@ export const listAllProducts = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    console.error("Error listing products:", error);
+    console.error("❌ Error listing products:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Something went wrong while fetching products",
     });
   }
 };
@@ -108,11 +121,10 @@ export const getProductById = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("❌ Error fetching product:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Something went wrong while fetching product",
     });
   }
 };
@@ -122,38 +134,32 @@ export const updateProductFields = async (req, res) => {
     const { productId } = req.params;
     let updates = req.body;
 
-    if (!Array.isArray(updates)) {
-      updates = [updates];
+    if (!updates || Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No update data provided",
+      });
     }
 
     const allowedFields = [
       "productName",
-      "productType",
+      "productImages",
+      "category",
       "grade",
       "color",
       "origin",
       "size.length",
       "size.width",
       "size.thickness",
-      "finish",
       "weight",
       "pricePerUnit",
-      "currency",
       "unit",
-      "minOrderQuantity",
-      "warrenty",
-      "stockAvailability",
-      "productImages",
       "description",
-      "tags",
-      "discountPrice",
     ];
 
     let updateObj = {};
 
-    for (let u of updates) {
-      const { field, value } = u;
-
+    for (const [field, value] of Object.entries(updates)) {
       if (!allowedFields.includes(field)) {
         return res.status(400).json({
           success: false,
@@ -190,11 +196,10 @@ export const updateProductFields = async (req, res) => {
       data: updatedProduct,
     });
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("❌ Error updating product:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Something went wrong while updating product",
     });
   }
 };
