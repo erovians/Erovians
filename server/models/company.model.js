@@ -4,77 +4,58 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
   {
     companyName: {
       type: String,
+      required: true,
       trim: true,
       minlength: 2,
       maxlength: 100,
       index: true,
     },
     address: {
-      street: {
-        type: String,
-        trim: true,
-        minlength: 2,
-        maxlength: 100,
-      },
-      city: {
-        type: String,
-        trim: true,
-        minlength: 2,
-        maxlength: 50,
-        match: /^[a-zA-Z\s]+$/,
-      },
-      stateOrProvince: {
-        type: String,
-        trim: true,
-        minlength: 2,
-        maxlength: 50,
-        match: /^[a-zA-Z\s]+$/,
-      },
-      countryOrRegion: {
-        type: String,
-        trim: true,
-        minlength: 2,
-        maxlength: 50,
-      },
-      postalCode: {
-        type: String,
-        trim: true,
-        match: /^[0-9]{4,10}$/,
-      },
+      street: { type: String, trim: true, required: true },
+      city: { type: String, trim: true, required: true },
+      stateOrProvince: { type: String, trim: true, required: true },
+      countryOrRegion: { type: String, trim: true, required: true },
+      postalCode: { type: String, trim: true, required: true },
     },
     locationOfRegistration: {
       type: String,
+      required: true,
       trim: true,
       minlength: 2,
       maxlength: 100,
     },
     mainCategory: {
       type: String,
+      required: true,
       enum: ["Marble", "Granite"],
     },
-    productListingCategory: {
+    subCategory: {
       type: String,
+      required: true,
       trim: true,
       minlength: 2,
-      maxlength: 100,
+      maxlength: 50,
     },
     acceptedCurrency: {
       type: String,
+      required: true,
       enum: ["USD", "INR", "EUR", "JPY"],
     },
     acceptedPaymentType: {
       type: [String],
+      required: true,
       enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
       validate: {
         validator: function (arr) {
           return arr.length > 0;
         },
-        message: "At least one payment type must be selected",
+        message: "At least one payment method is required",
       },
     },
     languageSpoken: {
       type: [String],
-      default: ["English", "Hindi"],
+      default: ["English"],
+      required: true,
     },
   },
   { _id: false }
@@ -82,45 +63,36 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
 
 const CompanyIntroSchema = new mongoose.Schema(
   {
-    logo: {
-      type: String,
-      required: true,
-    },
-    companyDescription: {
-      type: String,
-      required: true,
-      minlength: 50,
-    },
+    logo: { type: String, required: true },
+    companyDescription: { type: String, required: true, minlength: 50 },
     companyPhotos: {
       type: [String],
       required: true,
+      validate: (val) => val.length >= 1,
     },
-    companyVideo: {
-      type: String,
-    },
+    companyVideos: { type: [String], default: [] },
   },
   { _id: false }
 );
 
 const CompanyDataSchema = new mongoose.Schema(
   {
-    companyBasicInfo: {
-      type: CompanyBasicInfoSchema,
-    },
-    companyIntro: {
-      type: CompanyIntroSchema,
-    },
-    createdBy: {
+    SellerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "seller",
-      required: false,
+      required: true,
+      unique: true,
     },
+    companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
+    companyIntro: { type: CompanyIntroSchema, required: true },
   },
   { timestamps: true }
 );
 
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
+CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
+CompanyDataSchema.index({ "companyBasicInfo.acceptedCurrency": 1 });
 
-const SellerDashboard = mongoose.model("CompanyDetails", CompanyDataSchema);
+const CompanyDetails = mongoose.model("Company", CompanyDataSchema);
 
-export default SellerDashboard;
+export default CompanyDetails;

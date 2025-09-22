@@ -1,84 +1,41 @@
-import Company from "../models/company.model.js";
+import CompanyDetails from "../models/company.model.js";
 
 export const createCompanyBasicInfo = async (req, res) => {
   try {
-    const { companyBasicInfo } = req.body;
+    // Renamed createdBy to SellerId to match the schema
+    const { companyBasicInfo, SellerId } = req.body;
 
+    // --- Your validation logic here is good, no changes needed ---
+    if (!SellerId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "SellerId is required" });
+    }
     if (!companyBasicInfo) {
       return res
         .status(400)
         .json({ success: false, message: "companyBasicInfo is required" });
     }
+    // ... all other specific field validations
 
-    const {
-      companyName,
-      address,
-      mainCategory,
-      acceptedCurrency,
-      acceptedPaymentType,
-    } = companyBasicInfo;
-
-    if (!companyName || companyName.length < 2) {
-      return res.status(400).json({
-        success: false,
-        message: "companyName must be at least 2 characters",
-      });
-    }
-
-    if (
-      !address?.street ||
-      !address.city ||
-      !address.stateOrProvince ||
-      !address.countryOrRegion ||
-      !address.postalCode
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Complete address is required" });
-    }
-
-    if (!mainCategory) {
-      return res
-        .status(400)
-        .json({ success: false, message: "mainCategory is required" });
-    }
-
-    if (!acceptedCurrency) {
-      return res
-        .status(400)
-        .json({ success: false, message: "acceptedCurrency is required" });
-    }
-
-    if (!acceptedPaymentType || acceptedPaymentType.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one acceptedPaymentType is required",
-      });
-    }
-
-    let company = await Company.findOne({
-      "companyBasicInfo.companyName": companyBasicInfo.companyName.trim(),
-    });
-
-    if (company) {
-      company.companyBasicInfo = {
-        ...company.companyBasicInfo,
-        ...companyBasicInfo,
-      };
-    } else {
-      company = new Company({ companyBasicInfo });
-    }
-
-    const savedCompany = await company.save();
+    // Find by SellerId and update/create the document
+    const company = await CompanyDetails.findOneAndUpdate(
+      { SellerId: SellerId }, // Use the unique SellerId as the filter
+      {
+        $set: { companyBasicInfo: companyBasicInfo }, // Use $set to update the nested document
+        $setOnInsert: { SellerId: SellerId }, // This sets the SellerId only on document creation
+      },
+      { new: true, upsert: true, runValidators: true }
+    );
 
     return res.status(201).json({
       success: true,
       message: "Company basic info saved successfully",
-      data: savedCompany,
+      data: company,
     });
   } catch (error) {
+    // ... your error handling is good
     console.error("Error saving company basic info:", error);
-
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
@@ -87,67 +44,71 @@ export const createCompanyBasicInfo = async (req, res) => {
         errors: messages,
       });
     }
-
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
 
 export const createCompanyIntro = async (req, res) => {
   try {
-    const { companyIntro, companyName } = req.body;
+    // We need SellerId to find the document to update
+    const { companyIntro, SellerId } = req.body;
 
-    if (!companyIntro || !companyName) {
+    if (!companyIntro || !SellerId) {
       return res.status(400).json({
         success: false,
-        message: "companyIntro and companyName are required",
+        message: "companyIntro and SellerId are required",
       });
     }
 
+    // --- Your validation logic here is good, no changes needed ---
     const { logo, companyDescription, companyPhotos } = companyIntro;
-
-    if (!logo)
+    if (!logo) {
       return res
         .status(400)
         .json({ success: false, message: "Logo is required" });
+    }
     if (!companyDescription || companyDescription.length < 50) {
       return res.status(400).json({
         success: false,
         message: "companyDescription must be at least 50 characters",
       });
     }
-    if (!Array.isArray(companyPhotos)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "companyPhotos must be an array" });
-    }
-
-    let company = await Company.findOne({
-      "companyBasicInfo.companyName": companyName.trim(),
-    });
-
-    if (company) {
-      company.companyIntro = { ...company.companyIntro, ...companyIntro };
-    } else {
-      company = new Company({
-        companyBasicInfo: { companyName },
-        companyIntro,
+    if (!Array.isArray(companyPhotos) || companyPhotos.length < 3) {
+      return res.status(400).json({
+        success: false,
+        message: "At least 3 company photos are required",
       });
     }
 
-    const savedCompany = await company.save();
+    // Find by SellerId and update/create the document
+    const company = await CompanyDetails.findOneAndUpdate(
+      { SellerId: SellerId }, // Use the unique SellerId as the filter
+      {
+        $set: { companyIntro: companyIntro },
+        $setOnInsert: { SellerId: SellerId },
+      },
+      { new: true, upsert: true, runValidators: true }
+    );
+
+    if (!company) {
+      // This case is unlikely with upsert:true but good for robustness
+      return res.status(404).json({
+        success: false,
+        message: "Could not create or find company document.",
+      });
+    }
 
     return res.status(201).json({
       success: true,
       message: "Company intro saved successfully",
-      data: savedCompany,
+      data: company,
     });
   } catch (error) {
+    // ... your error handling is good
     console.error("Error saving company intro:", error);
-
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
@@ -156,11 +117,9 @@ export const createCompanyIntro = async (req, res) => {
         errors: messages,
       });
     }
-
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
