@@ -3,10 +3,11 @@ import Product from "../models/product.model.js";
 export const addProduct = async (req, res) => {
   try {
     const {
-      sellerId,
+      companyId,
       productName,
       productImages,
       category,
+      subCategory,
       grade,
       color,
       origin,
@@ -18,10 +19,11 @@ export const addProduct = async (req, res) => {
     } = req.body;
 
     if (
-      !sellerId ||
+      !companyId ||
       !productName ||
       !productImages ||
       !category ||
+      !subCategory ||
       !grade ||
       !color ||
       !origin ||
@@ -52,10 +54,11 @@ export const addProduct = async (req, res) => {
     }
 
     const product = new Product({
-      sellerId,
+      companyId,
       productName,
       productImages,
       category,
+      subCategory,
       grade,
       color,
       origin,
@@ -84,8 +87,8 @@ export const addProduct = async (req, res) => {
 
 export const listAllProducts = async (req, res) => {
   try {
-    const { sellerId } = req.query;
-    const filter = sellerId ? { sellerId } : {};
+    const { companyId } = req.query;
+    const filter = companyId ? { companyId } : {};
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
@@ -145,6 +148,7 @@ export const updateProductFields = async (req, res) => {
       "productName",
       "productImages",
       "category",
+      "subCategory",
       "grade",
       "color",
       "origin",

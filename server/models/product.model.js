@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
   {
-    sellerId: {
+    companyId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Seller",
+      ref: "Company",
       required: [true, "Seller ID is required"],
-      index: true, // ✅ faster lookups by seller
+      index: true,
     },
     productName: {
       type: String,
@@ -32,6 +32,11 @@ const ProductSchema = new mongoose.Schema(
         values: ["Granite", "Marble"],
         message: "{VALUE} is not a valid category",
       },
+      index: true,
+    },
+    subCategory: {
+      type: String,
+      required: [true, "subCategory is required"],
       index: true,
     },
     grade: {
