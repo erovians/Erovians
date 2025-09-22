@@ -66,7 +66,7 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const listProducts = async (req, res) => {
+export const listAllProducts = async (req, res) => {
   try {
     const { sellerId } = req.query;
 
@@ -82,6 +82,33 @@ export const listProducts = async (req, res) => {
     });
   } catch (error) {
     console.error("Error listing products:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+export const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.error("Error fetching product:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",

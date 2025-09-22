@@ -48,16 +48,10 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    currency: {
-      type: String,
-      required: true,
-      enum: ["INR", "USD", "EUR", "JPY"],
-      default: "INR",
-    },
     unit: {
       type: String,
       required: true,
-      enum: ["Sq.ft", "Sq.m", "Piece"],
+      enum: ["sq.ft", "sq.m", "Piece"],
       default: "Sq.ft",
     },
     minOrderQuantity: {
@@ -72,9 +66,6 @@ const ProductSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: true,
-    },
-    certifications: {
-      type: [String],
     },
     productImages: {
       type: [String],
