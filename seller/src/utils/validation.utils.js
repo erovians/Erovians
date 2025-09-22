@@ -16,10 +16,10 @@ export const validateMobile = (mobile) => {
 };
 
 // ✅ GSTIN validation (basic format check)
-export const validateGstin = (gstin) => {
+export const validatebusinessId = (businessId) => {
   const gstinRegex = /^[0-9A-Z]{15}$/;
-  if (!gstin) return "GSTIN is required.";
-  if (!gstinRegex.test(gstin)) return "Please enter a valid GSTIN.";
+  if (!businessId) return "GSTIN is required.";
+  if (!gstinRegex.test(businessId)) return "Please enter a valid GSTIN.";
   return "";
 };
 
