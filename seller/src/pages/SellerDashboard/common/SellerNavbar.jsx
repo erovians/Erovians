@@ -1,27 +1,31 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { assets } from "@/assets/assets";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "../../../redux/slice/sellerSidebarSlice";
+import { assets } from "../../../assets/assets";
 import {
   Menu,
   Search,
-  Star,
   MessageSquare,
   ShoppingCart,
   HelpCircle,
-  User,
 } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SellerNavbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dispatch = useDispatch();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <nav className=" px-6 py-7 flex justify-between items-center">
         {/* Left: Sidebar + Logo */}
         <div className="flex items-center justify-center space-x-10  ">
-          <button className="text-gray-600 hover:text-gray-800 focus:outline-none">
+          <button
+            onClick={() => dispatch(toggleSidebar())}
+            className="text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
             <Menu size={30} />
           </button>
           <Link to="/" className="flex items-center">
