@@ -39,6 +39,6 @@ app.use("/api/seller", sellerRoutes);
 app.use("/api/company", createCompany);
 
 //Product ROute
-app.use("/api/product", productRoute);
+app.use("/api/product",  productRoute);
 
 export { app };
