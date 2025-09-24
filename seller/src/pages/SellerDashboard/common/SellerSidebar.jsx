@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   X,
+  Store,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -32,7 +33,7 @@ const SellerSidebar = () => {
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-white opacity-0 z-40 transition-opacity ${
+        className={`fixed inset-0 bg-white  opacity-0 z-40 transition-opacity ${
           isOpen ? "block" : "hidden"
         }`}
         onClick={() => dispatch(closeSidebar())}
@@ -40,7 +41,7 @@ const SellerSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-[93px] border left-0 h-[calc(100%-80px)] bg-white shadow-lg z-50 w-64 transform transition-transform duration-300 ${
+        className={`fixed top-[93px] border left-0 h-[calc(100%-80px)] bg-white shadow-lg  z-50 w-64 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -60,18 +61,16 @@ const SellerSidebar = () => {
             key: "home",
             icon: <Home size={20} />,
             label: "Home",
-            subLinks: [
-              { to: "/seller/dashboard/overview", label: "Overview" },
-              { to: "/seller/dashboard/stats", label: "Stats" },
-            ],
+            subLinks: [{ to: "/seller/dashboard/overview", label: "Overview" }],
           },
           {
             key: "messages",
             icon: <MessageSquare size={20} />,
             label: "Messages",
             subLinks: [
-              { to: "/seller/messages/inbox", label: "Inbox" },
-              { to: "/seller/messages/sent", label: "Sent" },
+              { to: "/seller/messages/inquires", label: "Inquires" },
+              { to: "/seller/messages/contacts", label: "Contacts" },
+              { to: "/seller/messages/settings", label: "Settings" },
             ],
           },
           {
@@ -79,8 +78,9 @@ const SellerSidebar = () => {
             icon: <ShoppingCart size={20} />,
             label: "Orders",
             subLinks: [
-              { to: "/seller/orders/pending", label: "Pending" },
               { to: "/seller/orders/completed", label: "Completed" },
+              { to: "/seller/orders/pending", label: "Pending" },
+              { to: "/seller/orders/reviews", label: "Reviews" },
             ],
           },
           {
@@ -88,13 +88,22 @@ const SellerSidebar = () => {
             icon: <Box size={20} />,
             label: "Products",
             subLinks: [
-              { to: "/seller/products/list", label: "List Products" },
               { to: "/seller/products/add", label: "Add Product" },
+              { to: "/seller/products/list", label: "List Products" },
               { to: "/seller/products/categories", label: "Categories" },
             ],
           },
+          {
+            key: "Store",
+            icon: <Store size={20} />,
+            label: "Store",
+            subLinks: [
+              { to: "/seller/products/list", label: "Company Profile" },
+              { to: "/seller/products/add", label: "Certification" },
+            ],
+          },
         ].map((menu) => (
-          <div key={menu.key} className="px-4 mt-2">
+          <div key={menu.key} className="px-4 mt-2 ">
             <button
               onClick={() => toggleMenu(menu.key)}
               className="flex items-center justify-between w-full py-2 text-gray-700 rounded hover:bg-gray-100 focus:outline-none"

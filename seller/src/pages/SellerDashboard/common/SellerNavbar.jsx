@@ -3,13 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toggleSidebar } from "../../../redux/slice/sellerSidebarSlice";
 import { assets } from "../../../assets/assets";
-import {
-  Menu,
-  Search,
-  MessageSquare,
-  ShoppingCart,
-  HelpCircle,
-} from "lucide-react";
+import { Menu, Search, Headset, Bell, HelpCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SellerNavbar = () => {
@@ -49,12 +43,12 @@ const SellerNavbar = () => {
             </div>
           </div>
           {/* Desktop icons */}
-          <div className="hidden md:flex items-center space-x-9">
+          <div className="hidden md:flex items-center space-x-7">
             <Link to="#" className="text-gray-600 hover:text-blue-500">
-              <MessageSquare size={22} />
+              <Bell size={22} />
             </Link>
             <Link to="#" className="text-gray-600 hover:text-blue-500">
-              <ShoppingCart size={22} />
+              <Headset size={22} />
             </Link>
             <Link to="#" className="text-gray-600 hover:text-blue-500">
               <HelpCircle size={22} />
@@ -62,7 +56,7 @@ const SellerNavbar = () => {
             <Link to="#" className="text-gray-600 hover:text-blue-500">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>Ero</AvatarFallback>
               </Avatar>
             </Link>
           </div>
