@@ -2,12 +2,15 @@
 import axios from "axios";
 import qs from "qs";
 import Seller from "../models/sellerSingnup.model.js";
+import twilio from "twilio";
 
 const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
 const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
-const TWILIO_FROM_NUMBER = "+18723169588"; // Your Twilio phone number
+const TWILIO_FROM_NUMBER = "+18723169588";
 
 const TWILIO_API_URL = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
