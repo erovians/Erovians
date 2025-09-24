@@ -5,23 +5,21 @@ import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 dotenv.config();
 
-// ✅ Utility validation functions
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const isValidMobile = (mobile) => /^[6-9]\d{9}$/.test(mobile);
 
-const isValidGSTIN = (gstin) =>
-  /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(gstin);
+const isValidGSTIN = (businessId) =>
+  /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(businessId);
 
 const isStrongPassword = (password) =>
   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(password);
 
 export const checkUniqueSeller = async (req, res) => {
   try {
-    const { email, gstin } = req.body;
+    const { email, businessId } = req.body;
     const query = [];
 
-    // ✅ Frontend validation check here for added security
     if (email && !isValidEmail(email)) {
       return res.status(400).json({
         success: false,
@@ -29,16 +27,16 @@ export const checkUniqueSeller = async (req, res) => {
         message: "Invalid email format.",
       });
     }
-    if (gstin && !isValidGSTIN(gstin)) {
+    if (businessId && !isValidGSTIN(businessId)) {
       return res.status(400).json({
         success: false,
-        field: "gstin",
-        message: "Invalid GSTIN format.",
+        field: "businessId",
+        message: "Invalid businessId format.",
       });
     }
 
     if (email) query.push({ email });
-    if (gstin) query.push({ gstin });
+    if (businessId) query.push({ businessId });
 
     if (query.length === 0) {
       return res
@@ -56,11 +54,11 @@ export const checkUniqueSeller = async (req, res) => {
           message: "Email already exists",
         });
       }
-      if (gstin && existing.gstin === gstin) {
+      if (businessId && existing.businessId === businessId) {
         return res.status(409).json({
           success: false,
-          field: "gstin",
-          message: "GSTIN already exists",
+          field: "businessId",
+          message: "businessId already exists",
         });
       }
     }
@@ -74,9 +72,17 @@ export const checkUniqueSeller = async (req, res) => {
 
 export const registerSeller = async (req, res) => {
   try {
-    const { email, mobile, gstin, password, businessName, category } = req.body;
+    const {
+      email,
+      mobile,
+      businessId,
+      password,
+      sellername,
+      companyregstartionlocation,
+      businessName,
+    } = req.body;
 
-    // 🔹 Validate fields
+    // Validations
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: "Valid email is required" });
     }
@@ -85,8 +91,8 @@ export const registerSeller = async (req, res) => {
         .status(400)
         .json({ message: "Valid mobile number is required" });
     }
-    if (!gstin || !isValidGSTIN(gstin)) {
-      return res.status(400).json({ message: "Valid GSTIN is required" });
+    if (!businessId || !isValidGSTIN(businessId)) {
+      return res.status(400).json({ message: "Valid businessId is required" });
     }
     if (!password || !isStrongPassword(password)) {
       return res.status(400).json({
@@ -97,11 +103,18 @@ export const registerSeller = async (req, res) => {
     if (!businessName || businessName.trim().length < 2) {
       return res.status(400).json({ message: "Business name is required" });
     }
-    if (!category || category.trim().length < 2) {
-      return res.status(400).json({ message: "Category is required" });
+    if (!sellername || sellername.trim().length < 2) {
+      return res.status(400).json({ message: "Seller name is required" });
+    }
+    if (
+      !companyregstartionlocation ||
+      companyregstartionlocation.trim().length < 2
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Company registration location is required" });
     }
 
-    // 🔹 Mobile verification check
     global.verifiedMobiles = global.verifiedMobiles || {};
     if (!global.verifiedMobiles[mobile]) {
       return res.status(400).json({
@@ -109,7 +122,7 @@ export const registerSeller = async (req, res) => {
       });
     }
 
-    // 🔹 File validation
+    // File validation
     if (!req.files || !req.files.file) {
       return res.status(400).json({ message: "GSTIN document is required." });
     }
@@ -125,17 +138,18 @@ export const registerSeller = async (req, res) => {
       return res.status(400).json({ message: "File size exceeds 5MB." });
     }
 
-    // 🔹 Check duplicates
+    // Check existing seller
     const existingSeller = await Seller.findOne({
-      $or: [{ email }, { mobile }, { gstin }],
+      $or: [{ email }, { mobile }, { businessId }],
     });
     if (existingSeller) {
       return res.status(400).json({ message: "Seller already registered" });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 🔹 Upload file
+    // Upload GSTIN document
     const uploadResult = await uploadOnCloudinary(file.tempFilePath);
     const documentUrl = uploadResult?.secure_url;
     if (!documentUrl) {
@@ -144,35 +158,40 @@ export const registerSeller = async (req, res) => {
         .json({ message: "Failed to upload document to Cloudinary." });
     }
 
+    // Create seller
     const seller = new Seller({
       email,
       mobile,
-      gstin,
+      businessId,
       password: hashedPassword,
+      sellername,
+      companyregstartionlocation,
       businessName,
-      category,
       documentUrl,
       isMobileVerified: true,
     });
 
     const savedSeller = await seller.save();
-
     delete global.verifiedMobiles[mobile];
 
+    // JWT token
     const token = jwt.sign(
       { id: savedSeller._id, email: savedSeller.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
+    // Response
     res.status(201).json({
       message: "Seller registered successfully",
       seller: {
         id: savedSeller._id,
         email: savedSeller.email,
         mobile: savedSeller.mobile,
+        sellername: savedSeller.sellername,
+        companyregstartionlocation: savedSeller.companyregstartionlocation,
         businessName: savedSeller.businessName,
-        category: savedSeller.category,
+        businessId: savedSeller.businessId,
         isMobileVerified: savedSeller.isMobileVerified,
         documentUrl: savedSeller.documentUrl,
       },
@@ -188,7 +207,6 @@ export const loginSeller = async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    // 🔹 Validate fields
     if (!identifier) {
       return res.status(400).json({ message: "Email or Mobile is required" });
     }
