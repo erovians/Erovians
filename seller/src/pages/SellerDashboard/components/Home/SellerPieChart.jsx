@@ -1,10 +1,10 @@
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
 
 const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
+  { name: "Product A", value: 400 },
+  { name: "Product B", value: 300 },
+  { name: "Product C", value: 300 },
+  { name: "Product D", value: 200 },
 ];
 
 const RADIAN = Math.PI / 180;
@@ -39,7 +39,7 @@ export default function SellerPieChart() {
   return (
     <ResponsiveContainer
       width="100%"
-      height="70%"
+      height="80%"
       //   className={"bg-amber-300 h-[50%]"}
     >
       <PieChart>
@@ -60,6 +60,14 @@ export default function SellerPieChart() {
             />
           ))}
         </Pie>
+       {/* Legend outside with gap */}
+      <div className="mt-10">
+        <Legend
+          layout="horizontal"
+          align="center"
+          verticalAlign="bottom"
+        />
+      </div>
       </PieChart>
     </ResponsiveContainer>
   );

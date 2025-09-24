@@ -16,7 +16,7 @@ const SellerProfile = () => {
   };
 
   return (
-    <div className=" p-6  mb-6 h-full">
+    <div className="p-6 mb-6 h-full">
       {/* Header: Seller + Company */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
