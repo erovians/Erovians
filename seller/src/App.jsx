@@ -11,8 +11,7 @@ import Login from "./pages/Auth/Login";
 import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
-// import AddProduct from "./pages/SellerDashboard/pages/AddProduct";
-// import ListProducts from "./pages/SellerDashboard/pages/ListProducts";
+import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
 
 function App() {
   const location = useLocation();
@@ -45,17 +44,12 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard">
-            <Route index element={<SellerDashboardLayout />} />{" "}
-            {/* default page */}
-            {/* <Route index element={<ListProducts />} /> default page */}
-            {/* <Route path="add-product" element={<AddProduct />} /> */}
-            {/* <Route path="list-products" element={<ListProducts />} /> */}
+          <Route path="/sellerdashboard" element={<SellerDashboardLayout />}>
+            <Route path="" element={<SellerDashboardHome />} />
           </Route>
         )}
       </Routes>
 
-      {/* Public Footer */}
       {!isSellerRoute && !hideFooterRoutes.includes(location.pathname) && (
         <Footer />
       )}

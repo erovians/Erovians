@@ -6,9 +6,7 @@ const Banner = ({ title, img, description, subdescription }) => {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 lg:grid-cols-2 md:gap-10 items-center">
         {/* Left Section */}
         <div className="space-y-6 rich-text text-center sm:text-start">
-          <h1
-            className="leading-snug"
-          >
+          <h1 className="leading-snug">
             <span className="text-3xl sm:text-5xl text-navyblue">{title}</span>
           </h1>
           <p className="text-gray-700 text-lg">{description} </p>
