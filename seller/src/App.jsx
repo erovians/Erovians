@@ -12,6 +12,7 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
+import CompanyProfile from "./pages/SellerDashboard/components/Company/CompanyProfile";
 
 function App() {
   const location = useLocation();
@@ -46,6 +47,9 @@ function App() {
         {isSellerRoute && (
           <Route path="/sellerdashboard" element={<SellerDashboardLayout />}>
             <Route path="" element={<SellerDashboardHome />} />
+
+            {/* company */}
+            <Route path="company/profile" element={<CompanyProfile />} />
           </Route>
         )}
       </Routes>

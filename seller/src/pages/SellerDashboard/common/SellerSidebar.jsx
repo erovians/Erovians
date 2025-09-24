@@ -98,8 +98,15 @@ const SellerSidebar = () => {
             icon: <Store size={20} />,
             label: "Store",
             subLinks: [
-              { to: "/seller/products/list", label: "Company Profile" },
-              { to: "/seller/products/add", label: "Certification" },
+              {
+                to: "/sellerdashboard/company/overview",
+                label: "Company Overview",
+              },
+              {
+                to: "/sellerdashboard/company/profile",
+                label: "Company Profile",
+              },
+              { to: "/sellerdashboard/company/add", label: "Certification" },
             ],
           },
         ].map((menu) => (
