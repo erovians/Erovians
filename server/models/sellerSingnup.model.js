@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
@@ -40,11 +41,24 @@ const sellerSchema = new mongoose.Schema(
     },
     isMobileVerified: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    documentUrl: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
 );
+
+sellerSchema.pre("save", function (next) {
+  if (this.isModified("gstin")) this.gstin = encrypt(this.gstin);
+  next();
+});
+
+sellerSchema.methods.getDecryptedData = function () {
+  return { gstin: this.gstin };
+};
 
 const Seller = mongoose.model("Seller", sellerSchema);
 export default Seller;
