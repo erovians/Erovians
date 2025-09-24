@@ -1,4 +1,3 @@
-// otp.controller.js
 import axios from "axios";
 import qs from "qs";
 import Seller from "../models/sellerSingnup.model.js";
