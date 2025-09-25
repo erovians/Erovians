@@ -9,7 +9,7 @@ const SellerDashboardHome = () => {
     <div className="flex flex-col lg:flex-row h-auto lg:h-screen">
       {/* Left Section (Chart) */}
       <div className="flex-1 p-4 lg:p-6">
-        <div className="bg-white p-2 lg:p-4 rounded-2xl shadow h-[500px] lg:h-[65%] flex flex-col">
+        <div className="bg-white p-2 lg:p-4 rounded shadow h-[500px] lg:h-[65%] flex flex-col">
           <div className="flex-1">
             <SellerChart />
           </div>
