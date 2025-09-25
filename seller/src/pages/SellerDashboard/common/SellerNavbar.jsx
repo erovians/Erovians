@@ -22,7 +22,7 @@ const SellerNavbar = () => {
           >
             <Menu size={30} />
           </button>
-          <Link to="/" className="flex items-center">
+          <Link to="/sellerdashboard" className="flex items-center">
             <img src={assets.logo} alt="Logo" className="h-9" />
           </Link>
         </div>
@@ -44,16 +44,16 @@ const SellerNavbar = () => {
           </div>
           {/* Desktop icons */}
           <div className="hidden md:flex items-center space-x-7">
-            <Link to="#" className="text-gray-600 hover:text-blue-500">
+            <Link to="#" className="text-gray-600 hover:text-navyblue">
               <Bell size={22} />
             </Link>
-            <Link to="#" className="text-gray-600 hover:text-blue-500">
+            <Link to="#" className="text-gray-600 hover:text-navyblue">
               <Headset size={22} />
             </Link>
-            <Link to="#" className="text-gray-600 hover:text-blue-500">
+            <Link to="#" className="text-gray-600 hover:text-navyblue">
               <HelpCircle size={22} />
             </Link>
-            <Link to="#" className="text-gray-600 hover:text-blue-500">
+            <Link to="#" className="text-gray-600 hover:text-navyblue">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>Ero</AvatarFallback>
