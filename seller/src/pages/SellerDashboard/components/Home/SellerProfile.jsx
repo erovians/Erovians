@@ -1,5 +1,5 @@
 import React from "react";
-import { Package } from "lucide-react";
+import { Package, Dot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -22,7 +22,7 @@ const SellerProfile = () => {
         <div className="flex items-center">
           <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-3">
             <Link to="#" className="text-gray-600 hover:text-blue-500">
-              <Avatar className="rounded-sm w-10 h-10">
+              <Avatar className="rounded-sm w-12 h-12">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>Ero</AvatarFallback>
               </Avatar>
@@ -47,18 +47,20 @@ const SellerProfile = () => {
       <div className="border-t pt-3 space-y-3">
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600 flex items-center gap-2">
-            <Package size={18} className="text-green-600" /> Total Products
+            <Package size={18} className="text-green-500" /> Total Products
           </p>
           <p className=" text-gray-800">{sellerData.totalProducts}</p>
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">Active Products</p>
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <Dot size={18} strokeWidth={10} className="text-green-500" />Active Products</p>
           <p className=" text-green-600">{sellerData.activeProducts}</p>
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">Inactive Products</p>
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <Dot size={18} strokeWidth={10} className="text-red-500" />Inactive Products</p>
           <p className=" text-red-500">{sellerData.inactiveProducts}</p>
         </div>
       </div>

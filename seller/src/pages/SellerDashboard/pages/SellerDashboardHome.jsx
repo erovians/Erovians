@@ -9,8 +9,7 @@ const SellerDashboardHome = () => {
     <div className="flex flex-col lg:flex-row h-auto lg:h-screen">
       {/* Left Section (Chart) */}
       <div className="flex-1 p-4 lg:p-6">
-        <div className="bg-white p-4 lg:p-6 rounded-2xl shadow h-[300px] lg:h-[65%] flex flex-col">
-          <h2 className="text-lg font-semibold mb-4">Sales Overview</h2>
+        <div className="bg-white p-2 lg:p-4 rounded-2xl shadow h-[500px] lg:h-[65%] flex flex-col">
           <div className="flex-1">
             <SellerChart />
           </div>
@@ -20,7 +19,7 @@ const SellerDashboardHome = () => {
       {/* Right Section (Profile + Banner) */}
       <div className="w-full lg:w-[35%] p-4 lg:p-6 flex flex-col gap-6">
         {/* Profile Card */}
-        <div className="bg-white shadow p-4 lg:p-6 rounded-sm">
+        <div className="bg-white shadow p-2 lg:p-4 rounded-sm">
           <SellerProfile />
         </div>
 

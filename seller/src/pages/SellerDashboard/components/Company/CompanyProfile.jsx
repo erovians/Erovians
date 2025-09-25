@@ -260,7 +260,7 @@ const BasicCompanyDetailsForm = ({ onFormSubmitSuccess }) => {
         </div>
         <div>
           <h4 className="text-md font-semibold text-gray-700 mb-4 border-b pb-2">
-            Address
+            Company Operational Address
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
@@ -581,7 +581,7 @@ const CompanyIntroductionForm = ({ onFormSubmitSuccess }) => {
             className="block text-sm font-medium text-gray-700 mb-2"
             htmlFor="companyDescription"
           >
-            Company Description <span className="text-red-500">*</span>
+           Detailed Company Description <span className="text-red-500">*</span>
           </label>
           <textarea
             id="companyDescription"

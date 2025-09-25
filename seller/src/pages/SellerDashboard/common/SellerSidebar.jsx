@@ -61,7 +61,7 @@ const SellerSidebar = () => {
             key: "home",
             icon: <Home size={20} />,
             label: "Home",
-            subLinks: [{ to: "/seller/dashboard/overview", label: "Overview" }],
+            subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
           },
           {
             key: "messages",
