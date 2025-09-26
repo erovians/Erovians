@@ -1,26 +1,44 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import sellerRoutes from "./routes/sellerSignup.routes.js";
+import fileUpload from "express-fileupload";
+import createCompany from "./routes/company.routes.js";
+import productRoute from "./routes/product.route.js";
 
 const app = express();
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
-}))
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-app.use(express.json({
-    limit: "16kb"
-}))
-//this is for getting data from url
-app.use(express.urlencoded({
-    extended: true,
-    limit: "16kb"
-}))
-//this is used to store the data in our own server
-app.use(express.static("public"))
+// Add file upload middleware here
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 
-//cookieparser is used to access the cookie and set the cookies
-app.use(cookieParser())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
-export {app}
+// Static file serving
+app.use(express.static("public"));
+
+// Cookie parser
+app.use(cookieParser());
+
+// Routes
+app.use("/api/seller", sellerRoutes);
+
+// Company Routes
+app.use("/api/company", createCompany);
+
+//Product ROute
+app.use("/api/product",  productRoute);
+
+export { app };
