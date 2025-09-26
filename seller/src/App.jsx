@@ -12,7 +12,7 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
-import CompanyProfile from "./pages/SellerDashboard/components/Company/CompanyProfile";
+import CompanyProfile from "./pages/SellerDashboard/components/Company-profile/CompanyProfileForm";
 
 function App() {
   const location = useLocation();
