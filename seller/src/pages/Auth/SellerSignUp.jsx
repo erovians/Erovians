@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import { assets } from "@/assets/assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
 import {
@@ -12,11 +12,10 @@ import {
 } from "@/components/ui/input-otp";
 import api from "@/utils/axios.utils";
 
-// ✅ Import validation helpers
 import {
   validateEmail,
   validateMobile,
-  validateGstin,
+  validatebusinessId,
   validatePassword,
   validateOtp,
 } from "@/utils/validation.utils";
@@ -26,15 +25,16 @@ const MAX_FILE_SIZE_MB = 5;
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
   const [otpStatus, setOtpStatus] = useState("idle");
-
   const [formData, setFormData] = useState({
     email: "",
     mobile: "",
-    gstin: "",
+    businessId: "",
     password: "",
     confirmPassword: "",
+    sellername: "",
     businessName: "",
-    category: "All",
+    companyregstartionlocation: "",
+    documentFile: null,
   });
 
   const [otp, setOtp] = useState("");
@@ -46,9 +46,15 @@ const SellerSignUp = () => {
 
   const steps = [
     { id: 1, title: "EMAIL ID & GST" },
-    { id: 2, title: "PASSWORD CREATION" },
-    { id: 3, title: "ONBOARDING DASHBOARD" },
+    { id: 2, title: "PASSWORD" },
+    { id: 3, title: "BUSINESS DETAILS & DOCUMENT" },
   ];
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, successMessage } = useSelector(
+    (state) => state.seller
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -84,18 +90,14 @@ const SellerSignUp = () => {
         }));
       }
     } catch (err) {
-      console.error("Error sending OTP:", err);
-
-      if (err.response && err.response.status === 409) {
+      if (err.response.status == 409) {
         setErrors((prev) => ({ ...prev, mobile: err.response.data.message }));
-        setOtpStatus("idle");
       } else {
-        setOtpStatus("idle");
-        setErrors((prev) => ({
-          ...prev,
-          otp: "Failed to send OTP. Please try again later.",
-        }));
+        setShowModal(true);
+        setModalMessage("Failed to send OTP. Please try again.");
       }
+    } finally {
+      setOtpStatus("idle");
     }
   };
 
@@ -142,14 +144,13 @@ const SellerSignUp = () => {
     const mobileError = validateMobile(formData.mobile);
     if (mobileError) newErrors.mobile = mobileError;
 
-    const gstinError = validateGstin(formData.gstin);
-    if (gstinError) newErrors.gstin = gstinError;
+    const businessIdError = validatebusinessId(formData.businessId);
+    if (businessIdError) newErrors.businessId = businessIdError;
 
     if (!isMobileVerified) {
       newErrors.otp = "Please verify your mobile number with OTP to continue.";
     }
 
-    // ✅ Stop if validation fails
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -158,7 +159,7 @@ const SellerSignUp = () => {
     try {
       const res = await api.post("/seller/check-unique", {
         email: formData.email,
-        gstin: formData.gstin,
+        businessId: formData.businessId,
       });
 
       if (!res.data.success) {
@@ -178,58 +179,94 @@ const SellerSignUp = () => {
   };
 
   const handlePasswordContinue = () => {
+    const newErrors = {};
     const passwordError = validatePassword(
       formData.password,
       formData.confirmPassword
     );
 
     if (passwordError) {
-      setErrors({ confirmPassword: passwordError });
+      newErrors.password = passwordError;
+      newErrors.confirmPassword = passwordError;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setModalMessage(Object.values(newErrors).join(". "));
+      setShowModal(true);
     } else {
       setStep(3);
       setErrors({});
     }
   };
 
-  // -----------------------------------
-  // Final Submit
-  // -----------------------------------
-  const dispatch = useDispatch();
-  const { loading, error, successMessage } = useSelector(
-    (state) => state.seller
-  );
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setFormData((prev) => ({ ...prev, documentFile: null }));
+      setErrors((prev) => ({ ...prev, documentFile: "" }));
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
+
+    if (file.size > maxSize) {
+      setModalMessage("File size exceeds 5MB. Please choose a smaller file.");
+      setShowModal(true);
+      e.target.value = "";
+      setFormData((prev) => ({ ...prev, documentFile: null }));
+      return;
+    }
+
+    if (!acceptedTypes.includes(file.type)) {
+      setModalMessage("Invalid file type. Only JPG, PNG, and PDF are allowed.");
+      setShowModal(true);
+      e.target.value = "";
+      setFormData((prev) => ({ ...prev, documentFile: null }));
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, documentFile: file }));
+    setErrors((prev) => ({ ...prev, documentFile: "" }));
+    setModalMessage("Document selected!");
+    setShowModal(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation: check file
-    if (!formData.file) {
-      setErrors({ file: "Please upload a document (image or PDF)." });
+    const newErrors = {};
+    if (!formData.documentFile)
+      newErrors.documentFile = "Please upload the required document.";
+    if (!formData.businessName)
+      newErrors.businessName = "Business name is required.";
+    if (!formData.sellername) newErrors.sellername = "Seller name is required.";
+    if (!formData.companyregstartionlocation)
+      newErrors.companyregstartionlocation =
+        "Business Registration Location is required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setShowModal(true);
+      setModalMessage(Object.values(newErrors).join(". "));
       return;
     }
 
-    const allowedTypes = ["application/pdf", "image/png", "image/jpeg"];
-    if (!allowedTypes.includes(formData.file.type)) {
-      setErrors({ file: "Only PDF, JPG, or PNG files are allowed." });
-      return;
-    }
+    const finalSellerData = new FormData();
+    finalSellerData.append("email", formData.email);
+    finalSellerData.append("mobile", formData.mobile);
+    finalSellerData.append("businessId", formData.businessId);
+    finalSellerData.append("password", formData.password);
+    finalSellerData.append("sellername", formData.sellername);
+    finalSellerData.append("businessName", formData.businessName);
+    finalSellerData.append(
+      "companyregstartionlocation",
+      formData.companyregstartionlocation
+    );
+    finalSellerData.append("file", formData.documentFile);
 
-    const maxSize = MAX_FILE_SIZE_MB * 1024 * 1024;
-    if (formData.file.size > maxSize) {
-      setErrors({ file: `File size must be less than ${MAX_FILE_SIZE_MB}MB.` });
-      return;
-    }
-
-    const fd = new FormData();
-    fd.append("email", formData.email);
-    fd.append("mobile", formData.mobile);
-    fd.append("gstin", formData.gstin);
-    fd.append("password", formData.password);
-    fd.append("businessName", formData.businessName);
-    fd.append("category", formData.category);
-    fd.append("file", formData.file); // <-- attach the file
-
-    dispatch(registerSeller(fd)); // send FormData instead of JSON
+    dispatch(registerSeller(finalSellerData));
   };
 
   useEffect(() => {
@@ -245,9 +282,6 @@ const SellerSignUp = () => {
     }
   }, [successMessage, error, dispatch]);
 
-  // -----------------------------------
-  // Modal Component
-  // -----------------------------------
   const Modal = ({ message, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 shadow-xl max-w-sm w-full text-center">
@@ -275,11 +309,12 @@ const SellerSignUp = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-6 md:px-12 py-8 md:py-12 max-w-6xl mx-auto">
         <div>
-          <div className="flex  md:items-center md:justify-between mb-8 text-xs sm:text-sm font-semibold text-gray-600">
-            {steps.map((item, i) => (
-              <div key={item.id} className="flex items-center flex-col">
+          {/* Step Indicators */}
+          <div className="flex justify-between items-center mb-8 text-xs sm:text-sm font-semibold text-gray-600">
+            {steps.map((item) => (
+              <div key={item.id} className="flex flex-col items-center">
                 <div
-                  className={`w-6 h-6 rounded-full flex  items-center justify-center border-2 ${
+                  className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${
                     step >= item.id
                       ? "border-[#0c2c43] text-[#0c2c43]"
                       : "border-gray-300 text-gray-400"
@@ -287,16 +322,14 @@ const SellerSignUp = () => {
                 >
                   {step > item.id ? <Check size={14} /> : item.id}
                 </div>
-
-                <span className="ml-2 text-xs md:ml-2 mt-2 md:mt-0 text-center md:text-left">
-                  {item.title}
-                </span>
+                <span className="mt-2 text-center">{item.title}</span>
               </div>
             ))}
           </div>
 
+          {/* Step 1: Email & GST + Mobile OTP */}
           {step === 1 && (
-            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-5" onSubmit={handleRegister}>
               <div className="flex border rounded-md overflow-hidden flex-col sm:flex-row">
                 <input
                   type="tel"
@@ -311,18 +344,16 @@ const SellerSignUp = () => {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={
-                      !formData.mobile ||
-                      formData.mobile.length !== 10 ||
-                      otpStatus === "sending"
+                      otpStatus === "sending" || otpStatus === "verified"
                     }
                     className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
-    ${
-      otpStatus === "verified"
-        ? "bg-green-600"
-        : otpStatus === "sending"
-        ? "bg-gray-400"
-        : "bg-navyblue"
-    }`}
+                    ${
+                      otpStatus === "verified"
+                        ? "bg-green-600"
+                        : otpStatus === "sending"
+                        ? "bg-gray-400"
+                        : "bg-navyblue"
+                    }`}
                   >
                     {otpStatus === "sending"
                       ? "Sending..."
@@ -356,10 +387,8 @@ const SellerSignUp = () => {
                       <InputOTPSlot index={3} />
                     </InputOTPGroup>
                     <InputOTPSeparator />
-                    <InputOTPGroup>
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
                   </InputOTP>
                   <button
                     type="button"
@@ -393,42 +422,28 @@ const SellerSignUp = () => {
 
               <input
                 type="text"
-                name="gstin"
-                placeholder="GSTIN *"
-                value={formData.gstin}
+                name="businessId"
+                placeholder="businessId *"
+                value={formData.businessId}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-md text-sm outline-none ${
-                  errors.gstin ? "border-red-500" : "border-gray-300"
+                  errors.businessId ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.gstin && (
-                <p className="text-red-500 text-sm mt-1">{errors.gstin}</p>
+              {errors.businessId && (
+                <p className="text-red-500 text-sm mt-1">{errors.businessId}</p>
               )}
 
-              <div className="mt-6 p-4">
-                <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
-                  GSTIN is required to sell on Erovians
-                </h2>
-
-                <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                  Expand your business reach, connect with new customers, and
-                  grow your revenue with{" "}
-                  <span className="text-[#0c2c43] font-semibold">Erovians</span>
-                  .
-                </p>
-
-                <p className="text-xs text-gray-500 mt-4 leading-snug">
-                  By continuing, I agree to{" "}
-                  <Link to={"/"} className="text-blue-600 font-medium ">
-                    Terms of Use & Privacy Policy
-                  </Link>
-                  .
-                </p>
-              </div>
+              <p className="text-xs text-gray-500 mt-4 leading-snug">
+                By continuing, I agree to{" "}
+                <Link to={"/"} className="text-blue-600 font-medium ">
+                  Terms of Use & Privacy Policy
+                </Link>
+                .
+              </p>
 
               <button
-                type="button"
-                onClick={handleRegister}
+                type="submit"
                 disabled={!isMobileVerified}
                 className={`w-full py-3 rounded-md font-bold ${
                   isMobileVerified
@@ -441,8 +456,17 @@ const SellerSignUp = () => {
             </form>
           )}
 
+          {/* Step 2: Password */}
           {step === 2 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="text"
+                name="sellername"
+                placeholder="Enter Seller Name *"
+                value={formData.sellername}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
               <input
                 type="password"
                 name="password"
@@ -462,6 +486,7 @@ const SellerSignUp = () => {
               {errors.confirmPassword && (
                 <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
+
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   type="button"
@@ -473,7 +498,7 @@ const SellerSignUp = () => {
                 <button
                   type="button"
                   onClick={handlePasswordContinue}
-                  className="bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto"
+                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto hover:bg-[#1a4361]`}
                 >
                   Continue →
                 </button>
@@ -481,46 +506,54 @@ const SellerSignUp = () => {
             </form>
           )}
 
+          {/* Step 3: Business Details + Document */}
           {step === 3 && (
             <form className="space-y-5" onSubmit={handleSubmit}>
               <input
                 type="text"
                 name="businessName"
-                placeholder="Business Name"
+                placeholder="Business Name *"
                 value={formData.businessName}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
-              <div className="flex flex-col sm:flex-row gap-3">
-                {["All", "Marbles", "Granites"].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, category: cat })}
-                    className={`flex-1 border rounded-md py-3 font-medium ${
-                      formData.category === cat
-                        ? "border-[#0c2c43] text-[#0c2c43]"
-                        : "border-gray-300 text-gray-500"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">
-                  Upload Business Document (Image/PDF) *
+              {errors.businessName && (
+                <p className="text-red-500 text-sm">{errors.businessName}</p>
+              )}
+
+              <input
+                type="text"
+                name="companyregstartionlocation"
+                placeholder="Business Registration Location *"
+                value={formData.companyregstartionlocation}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
+              {errors.companyregstartionlocation && (
+                <p className="text-red-500 text-sm">
+                  {errors.companyregstartionlocation}
+                </p>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload businessId Document (JPG, PNG, PDF)
                 </label>
                 <input
                   type="file"
-                  accept="image/*,application/pdf"
-                  onChange={(e) =>
-                    setFormData({ ...formData, file: e.target.files[0] })
-                  }
-                  className="w-full border px-3 py-2 rounded-md text-sm outline-none"
+                  accept="image/jpeg,image/png,application/pdf"
+                  onChange={handleFileUpload}
+                  className="w-full px-4 py-3 border rounded-md text-sm outline-none"
                 />
-                {errors.file && (
-                  <p className="text-red-500 text-sm">{errors.file}</p>
+                {errors.documentFile && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.documentFile}
+                  </p>
+                )}
+                {formData.documentFile && !errors.documentFile && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Document selected: {formData.documentFile.name}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col sm:flex-row justify-between gap-3">
@@ -533,15 +566,17 @@ const SellerSignUp = () => {
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto"
+                  disabled={loading}
+                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto hover:bg-[#1a4361]`}
                 >
-                  Submit
+                  {loading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>
           )}
         </div>
 
+        {/* Sidebar */}
         <div className="hidden md:flex flex-col gap-6">
           <div className="p-4 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
