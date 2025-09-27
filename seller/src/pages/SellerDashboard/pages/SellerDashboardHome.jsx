@@ -24,7 +24,7 @@ const SellerDashboardHome = () => {
         </div>
 
         {/* Banner Card */}
-        <div className="shadow rounded-sm bg-white h-[300px] lg:h-[40%]">
+        <div className="shadow rounded-sm bg-white h-[400px] lg:h-[40%]">
           <h3 className="text-center mt-5 font-bold text-lg text-gray-800">
             Top Selling Products
           </h3>
