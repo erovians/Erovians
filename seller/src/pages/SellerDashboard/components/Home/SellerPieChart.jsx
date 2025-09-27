@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
 
 const data = [
@@ -27,6 +29,7 @@ const renderCustomizedLabel = ({
       x={x}
       y={y}
       fill="white"
+      fontSize={12}
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
@@ -36,22 +39,32 @@ const renderCustomizedLabel = ({
 };
 
 export default function SellerPieChart() {
+  const [outerRadius, setOuterRadius] = useState(100);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 480) setOuterRadius(90);
+      else if (width < 768) setOuterRadius(100);
+      else setOuterRadius(110);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <ResponsiveContainer
-      width="100%"
-      height="80%"
-      //   className={"bg-amber-300 h-[50%]"}
-    >
+    <ResponsiveContainer width="100%" height="100%">
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="50%"
+          cy="45%"
           labelLine={false}
           label={renderCustomizedLabel}
-          fill="#8884d8"
           dataKey="value"
-          outerRadius={100}
+          outerRadius={outerRadius}
         >
           {data.map((entry, index) => (
             <Cell
@@ -60,14 +73,12 @@ export default function SellerPieChart() {
             />
           ))}
         </Pie>
-       {/* Legend outside with gap */}
-      <div className="mt-10">
         <Legend
           layout="horizontal"
           align="center"
           verticalAlign="bottom"
+          wrapperStyle={{ fontSize: "14px" }}
         />
-      </div>
       </PieChart>
     </ResponsiveContainer>
   );
