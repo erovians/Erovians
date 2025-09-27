@@ -53,6 +53,7 @@ const components = [
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 

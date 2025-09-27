@@ -16,18 +16,30 @@ export const validateMobile = (mobile) => {
 };
 
 // ✅ GSTIN validation (basic format check)
-export const validateGstin = (gstin) => {
+export const validatebusinessId = (businessId) => {
   const gstinRegex = /^[0-9A-Z]{15}$/;
-  if (!gstin) return "GSTIN is required.";
-  if (!gstinRegex.test(gstin)) return "Please enter a valid GSTIN.";
+  if (!businessId) return "GSTIN is required.";
+  if (!gstinRegex.test(businessId)) return "Please enter a valid GSTIN.";
   return "";
 };
 
 // ✅ Password validation
 export const validatePassword = (password, confirmPassword) => {
-  if (!password) return "Password is required.";
-  if (password.length < 6) return "Password must be at least 6 characters.";
-  if (password !== confirmPassword) return "Passwords do not match.";
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+  if (!password) {
+    return "Password is required.";
+  }
+
+  if (!passwordRegex.test(password)) {
+    return "Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, one number, and one special character.";
+  }
+
+  if (password !== confirmPassword) {
+    return "Passwords do not match.";
+  }
+
   return "";
 };
 

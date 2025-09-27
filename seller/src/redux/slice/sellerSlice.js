@@ -2,14 +2,12 @@ import api from "@/utils/axios.utils";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Async thunk for registering seller
 export const registerSeller = createAsyncThunk(
   "seller/registerSeller",
   async (sellerData, { rejectWithValue }) => {
     try {
-      // sellerData can be FormData including file
       const response = await api.post("/seller/register", sellerData);
-      return response.data; // data contains seller info + token
+      return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
         return rejectWithValue(error.response.data);

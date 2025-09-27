@@ -1,8 +1,8 @@
 import connectDB from "./config/DB.js";
 import { app } from "./app.js";
-import dotenv from "dotenv";
 
-dotenv.config({});
+import dotenv from "dotenv";
+dotenv.config();
 
 connectDB()
   .then(() => {
