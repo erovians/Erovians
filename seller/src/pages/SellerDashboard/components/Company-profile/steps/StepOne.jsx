@@ -162,21 +162,6 @@ export default function StepOne({ formData, setFormData, errors }) {
         <p className="text-red-500 text-sm -mt-4 ">{errors.mainCategory}</p>
       )}
 
-      {/* Sub Category */}
-      {/* <div className={wrapperClass}>
-        <Building className="text-gray-400" />
-        <input
-          type="text"
-          name="subCategory"
-          placeholder="Sub Category"
-          value={formData.subCategory}
-          onChange={handleChange}
-          className={inputClass(Boolean(errors.subCategory))}
-        />
-      </div>
-      {errors.subCategory && (
-        <p className="text-red-500 text-sm -mt-4 ">{errors.subCategory}</p>
-      )} */}
       {/* Sub Categories (Multiple Inputs) */}
       <div className="space-y-6">
         <label className="block font-medium">
