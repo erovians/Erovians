@@ -15,7 +15,7 @@ import api from "@/utils/axios.utils";
 import {
   validateEmail,
   validateMobile,
-  validateGstin,
+  validatebusinessId,
   validatePassword,
   validateOtp,
 } from "@/utils/validation.utils";
@@ -28,11 +28,12 @@ const SellerSignUp = () => {
   const [formData, setFormData] = useState({
     email: "",
     mobile: "",
-    gstin: "",
+    businessId: "",
     password: "",
     confirmPassword: "",
+    sellername: "",
     businessName: "",
-    category: "All",
+    companyregstartionlocation: "",
     documentFile: null,
   });
 
@@ -45,8 +46,8 @@ const SellerSignUp = () => {
 
   const steps = [
     { id: 1, title: "EMAIL ID & GST" },
-    { id: 2, title: "PASSWORD & DOCUMENTS" },
-    { id: 3, title: "BUSINESS DETAILS" },
+    { id: 2, title: "PASSWORD" },
+    { id: 3, title: "BUSINESS DETAILS & DOCUMENT" },
   ];
 
   const navigate = useNavigate();
@@ -143,8 +144,8 @@ const SellerSignUp = () => {
     const mobileError = validateMobile(formData.mobile);
     if (mobileError) newErrors.mobile = mobileError;
 
-    const gstinError = validateGstin(formData.gstin);
-    if (gstinError) newErrors.gstin = gstinError;
+    const businessIdError = validatebusinessId(formData.businessId);
+    if (businessIdError) newErrors.businessId = businessIdError;
 
     if (!isMobileVerified) {
       newErrors.otp = "Please verify your mobile number with OTP to continue.";
@@ -158,7 +159,7 @@ const SellerSignUp = () => {
     try {
       const res = await api.post("/seller/check-unique", {
         email: formData.email,
-        gstin: formData.gstin,
+        businessId: formData.businessId,
       });
 
       if (!res.data.success) {
@@ -177,22 +178,16 @@ const SellerSignUp = () => {
     }
   };
 
-  // SellerSignUp.jsx
-
   const handlePasswordContinue = () => {
     const newErrors = {};
-
     const passwordError = validatePassword(
       formData.password,
       formData.confirmPassword
     );
+
     if (passwordError) {
       newErrors.password = passwordError;
       newErrors.confirmPassword = passwordError;
-    }
-
-    if (!formData.documentFile) {
-      newErrors.documentFile = "Please upload the required document.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -241,16 +236,37 @@ const SellerSignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const sellerData = {
-      email: formData.email,
-      mobile: formData.mobile,
-      gstin: formData.gstin,
-      password: formData.password,
-      businessName: formData.businessName,
-      category: formData.category,
-    };
+    const newErrors = {};
+    if (!formData.documentFile)
+      newErrors.documentFile = "Please upload the required document.";
+    if (!formData.businessName)
+      newErrors.businessName = "Business name is required.";
+    if (!formData.sellername) newErrors.sellername = "Seller name is required.";
+    if (!formData.companyregstartionlocation)
+      newErrors.companyregstartionlocation =
+        "Business Registration Location is required.";
 
-    dispatch(registerSeller(sellerData));
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setShowModal(true);
+      setModalMessage(Object.values(newErrors).join(". "));
+      return;
+    }
+
+    const finalSellerData = new FormData();
+    finalSellerData.append("email", formData.email);
+    finalSellerData.append("mobile", formData.mobile);
+    finalSellerData.append("businessId", formData.businessId);
+    finalSellerData.append("password", formData.password);
+    finalSellerData.append("sellername", formData.sellername);
+    finalSellerData.append("businessName", formData.businessName);
+    finalSellerData.append(
+      "companyregstartionlocation",
+      formData.companyregstartionlocation
+    );
+    finalSellerData.append("file", formData.documentFile);
+
+    dispatch(registerSeller(finalSellerData));
   };
 
   useEffect(() => {
@@ -293,6 +309,7 @@ const SellerSignUp = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-6 md:px-12 py-8 md:py-12 max-w-6xl mx-auto">
         <div>
+          {/* Step Indicators */}
           <div className="flex justify-between items-center mb-8 text-xs sm:text-sm font-semibold text-gray-600">
             {steps.map((item) => (
               <div key={item.id} className="flex flex-col items-center">
@@ -310,6 +327,7 @@ const SellerSignUp = () => {
             ))}
           </div>
 
+          {/* Step 1: Email & GST + Mobile OTP */}
           {step === 1 && (
             <form className="space-y-5" onSubmit={handleRegister}>
               <div className="flex border rounded-md overflow-hidden flex-col sm:flex-row">
@@ -404,16 +422,16 @@ const SellerSignUp = () => {
 
               <input
                 type="text"
-                name="gstin"
-                placeholder="GSTIN *"
-                value={formData.gstin}
+                name="businessId"
+                placeholder="businessId *"
+                value={formData.businessId}
                 onChange={handleChange}
                 className={`w-full px-4 py-3 border rounded-md text-sm outline-none ${
-                  errors.gstin ? "border-red-500" : "border-gray-300"
+                  errors.businessId ? "border-red-500" : "border-gray-300"
                 }`}
               />
-              {errors.gstin && (
-                <p className="text-red-500 text-sm">{errors.gstin}</p>
+              {errors.businessId && (
+                <p className="text-red-500 text-sm mt-1">{errors.businessId}</p>
               )}
 
               <p className="text-xs text-gray-500 mt-4 leading-snug">
@@ -438,8 +456,17 @@ const SellerSignUp = () => {
             </form>
           )}
 
+          {/* Step 2: Password */}
           {step === 2 && (
             <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="text"
+                name="sellername"
+                placeholder="Enter Seller Name *"
+                value={formData.sellername}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
               <input
                 type="password"
                 name="password"
@@ -460,9 +487,57 @@ const SellerSignUp = () => {
                 <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
 
+              <div className="flex flex-col sm:flex-row justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-gray-500 font-semibold w-full sm:w-auto"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePasswordContinue}
+                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto hover:bg-[#1a4361]`}
+                >
+                  Continue →
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Step 3: Business Details + Document */}
+          {step === 3 && (
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="businessName"
+                placeholder="Business Name *"
+                value={formData.businessName}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
+              {errors.businessName && (
+                <p className="text-red-500 text-sm">{errors.businessName}</p>
+              )}
+
+              <input
+                type="text"
+                name="companyregstartionlocation"
+                placeholder="Business Registration Location *"
+                value={formData.companyregstartionlocation}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
+              {errors.companyregstartionlocation && (
+                <p className="text-red-500 text-sm">
+                  {errors.companyregstartionlocation}
+                </p>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Upload GSTIN Document (JPG, PNG, PDF)
+                  Upload businessId Document (JPG, PNG, PDF)
                 </label>
                 <input
                   type="file"
@@ -485,87 +560,6 @@ const SellerSignUp = () => {
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   type="button"
-                  onClick={() => setStep(1)}
-                  className="text-gray-500 font-semibold w-full sm:w-auto"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="button"
-                  onClick={handlePasswordContinue}
-                  disabled={
-                    !formData.password ||
-                    !formData.confirmPassword ||
-                    errors.confirmPassword ||
-                    !formData.documentFile
-                  }
-                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto ${
-                    !formData.password ||
-                    !formData.confirmPassword ||
-                    errors.confirmPassword ||
-                    !formData.documentFile
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "hover:bg-[#1a4361]"
-                  }`}
-                >
-                  Continue →
-                </button>
-              </div>
-            </form>
-          )}
-
-          {step === 3 && (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="businessName"
-                placeholder="Business Name *"
-                value={formData.businessName}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
-              />
-              {errors.businessName && (
-                <p className="text-red-500 text-sm">{errors.businessName}</p>
-              )}
-
-              <label className="block text-sm font-medium text-gray-700">
-                Business Category
-              </label>
-              <div className="flex flex-col sm:flex-row gap-3">
-                {["All", "Marbles", "Granites"].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, category: cat })}
-                    className={`flex-1 border rounded-md py-3 font-medium ${
-                      formData.category === cat
-                        ? "border-[#0c2c43] text-[#0c2c43]"
-                        : "border-gray-300 text-gray-500"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">
-                  Upload Business Document (Image/PDF) *
-                </label>
-                <input
-                  type="file"
-                  accept="image/*,application/pdf"
-                  onChange={(e) =>
-                    setFormData({ ...formData, file: e.target.files[0] })
-                  }
-                  className="w-full border px-3 py-2 rounded-md text-sm outline-none"
-                />
-                {errors.file && (
-                  <p className="text-red-500 text-sm">{errors.file}</p>
-                )}
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between gap-3">
-                <button
-                  type="button"
                   onClick={() => setStep(2)}
                   className="text-gray-500 font-semibold w-full sm:w-auto"
                 >
@@ -573,12 +567,8 @@ const SellerSignUp = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={!formData.businessName || loading}
-                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto ${
-                    !formData.businessName
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "hover:bg-[#1a4361]"
-                  }`}
+                  disabled={loading}
+                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto hover:bg-[#1a4361]`}
                 >
                   {loading ? "Submitting..." : "Submit"}
                 </button>
@@ -587,6 +577,7 @@ const SellerSignUp = () => {
           )}
         </div>
 
+        {/* Sidebar */}
         <div className="hidden md:flex flex-col gap-6">
           <div className="p-4 border rounded-md shadow-sm">
             <p className="text-sm text-gray-700 mb-2">
