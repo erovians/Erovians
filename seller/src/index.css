@@ -80,3 +80,9 @@ h3 {
     --sidebar-ring: oklch(0.439 0 0);
   }
 }
+
+
+/* recharts styling */
+.recharts-wrapper:focus, .recharts-surface:focus{
+  outline: none;
+}
