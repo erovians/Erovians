@@ -556,7 +556,6 @@ const SellerSignUp = () => {
                   </p>
                 )}
               </div>
-
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   type="button"

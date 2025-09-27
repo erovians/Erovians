@@ -2,7 +2,7 @@ import Seller from "../models/sellerSingnup.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 dotenv.config();
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
