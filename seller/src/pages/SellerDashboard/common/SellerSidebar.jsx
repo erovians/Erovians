@@ -116,12 +116,12 @@ const SellerSidebar = () => {
               { to: "/sellerdashboard/orders/reviews", label: "Reviews" },
             ],
           },
-          {
-            key: "teams",
-            icon: <UserLock size={20} />,
-            label: "Teams",
-            to: "/sellerdashboard/teams",
-          },
+          // {
+          //   key: "teams",
+          //   icon: <UserLock size={20} />,
+          //   label: "Teams",
+          //   to: "/sellerdashboard/teams",
+          // },
         ].map((menu) => (
           <div key={menu.key} className="px-4 mt-2 ">
             <button
