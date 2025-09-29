@@ -93,7 +93,7 @@ export default function StepOne({ formData, setFormData, errors }) {
             {/* Floating label on border */}
             <label
               htmlFor="companyName"
-              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500 
+              className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500 
                  transition-all duration-200 
                  peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
@@ -124,8 +124,8 @@ export default function StepOne({ formData, setFormData, errors }) {
             {/* Floating label on border */}
             <label
               htmlFor="legalowner"
-              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500 
-                 transition-all duration-200 
+              className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500 
+                 transition-all duration-200 rounded-full
                  peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
             >
@@ -159,7 +159,7 @@ export default function StepOne({ formData, setFormData, errors }) {
 
             <label
               htmlFor="locationOfRegistration"
-              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+              className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                    transition-all duration-200
                    peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                    peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
@@ -192,7 +192,7 @@ export default function StepOne({ formData, setFormData, errors }) {
 
             <label
               htmlFor="yearcompanyregistered"
-              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+              className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                    transition-all duration-200
                    peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                    peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
@@ -239,7 +239,7 @@ export default function StepOne({ formData, setFormData, errors }) {
 
                 <label
                   htmlFor={field}
-                  className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+                  className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                          transition-all duration-200
                          peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                          peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
@@ -310,7 +310,7 @@ export default function StepOne({ formData, setFormData, errors }) {
 
                 <label
                   htmlFor={`mainProduct-${index}`}
-                  className="absolute left-8 -top-2 bg-white px-1 ml-2 text-sm text-gray-500
+                  className="absolute left-8 -top-2 bg-[#f9fafb] px-1 ml-2 text-sm text-gray-500
                        transition-all duration-200
                        peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                        peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
