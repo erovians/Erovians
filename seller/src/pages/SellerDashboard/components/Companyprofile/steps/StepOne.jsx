@@ -1,5 +1,5 @@
 import React from "react";
-import { User, MapPin, Building, Layers, XIcon } from "lucide-react";
+import { User, MapPin, Calendar, Building, Layers, XIcon } from "lucide-react";
 
 const currencies = [
   "USD",
@@ -74,38 +74,139 @@ export default function StepOne({ formData, setFormData, errors }) {
       <h3 className="text-lg font-semibold">Basic Company Details</h3>
 
       {/* Company Name */}
-      <div className={wrapperClass}>
-        <User className="text-gray-400" />
-        <input
-          type="text"
-          name="companyName"
-          placeholder="Company Name"
-          value={formData.companyName}
-          onChange={handleChange}
-          className={inputClass(Boolean(errors.companyName))}
-        />
+      {/* Company Name & Legal Owner */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col w-full max-w-md">
+          <div className={`${wrapperClass} relative`}>
+            <User className="text-gray-400" />
+
+            {/* Input with peer */}
+            <input
+              type="text"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              placeholder=" " // <-- keep a blank placeholder
+              className={`${inputClass(Boolean(errors.companyName))} peer`}
+            />
+
+            {/* Floating label on border */}
+            <label
+              htmlFor="companyName"
+              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500 
+                 transition-all duration-200 
+                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+            >
+              Company Name
+            </label>
+          </div>
+
+          {errors.companyName && (
+            <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>
+          )}
+        </div>
+
+        <div className="flex flex-col w-full max-w-md">
+          <div className={`${wrapperClass} relative`}>
+            <User className="text-gray-400" />
+
+            {/* Input with peer */}
+            <input
+              type="text"
+              name="legalowner"
+              value={formData.legalowner}
+              onChange={handleChange}
+              placeholder=" " // <-- space placeholder to trigger floating label
+              className={`${inputClass(Boolean(errors.legalowner))} peer`}
+            />
+
+            {/* Floating label on border */}
+            <label
+              htmlFor="legalowner"
+              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500 
+                 transition-all duration-200 
+                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+            >
+              Legal Owner
+            </label>
+          </div>
+
+          {errors.legalowner && (
+            <p className="text-red-500 text-sm mt-1">{errors.legalowner}</p>
+          )}
+        </div>
       </div>
-      {errors.companyName && (
-        <p className="text-red-500 text-sm -mt-4 ">{errors.companyName}</p>
-      )}
 
       {/* Location of Registration */}
-      <div className={wrapperClass}>
-        <MapPin className="text-gray-400" />
-        <input
-          type="text"
-          name="locationOfRegistration"
-          placeholder="Location of Registration"
-          value={formData.locationOfRegistration}
-          onChange={handleChange}
-          className={inputClass(Boolean(errors.locationOfRegistration))}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Location of Registration */}
+        <div className="flex flex-col w-full max-w-md">
+          <div className={`${wrapperClass} relative`}>
+            <MapPin className="text-gray-400" />
+
+            <input
+              type="text"
+              name="locationOfRegistration"
+              value={formData.locationOfRegistration}
+              onChange={handleChange}
+              placeholder=" "
+              className={`${inputClass(
+                Boolean(errors.locationOfRegistration)
+              )} peer`}
+            />
+
+            <label
+              htmlFor="locationOfRegistration"
+              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+                   transition-all duration-200
+                   peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                   peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+            >
+              Location of Registration
+            </label>
+          </div>
+          {errors.locationOfRegistration && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.locationOfRegistration}
+            </p>
+          )}
+        </div>
+
+        {/* Year Company Registered */}
+        <div className="flex flex-col w-full max-w-md">
+          <div className={`${wrapperClass} relative`}>
+            <Calendar className="text-gray-400" />
+
+            <input
+              type="text"
+              name="yearcompanyregistered"
+              value={formData.yearcompanyregistered}
+              onChange={handleChange}
+              placeholder=" "
+              className={`${inputClass(
+                Boolean(errors.yearcompanyregistered)
+              )} peer`}
+            />
+
+            <label
+              htmlFor="yearcompanyregistered"
+              className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+                   transition-all duration-200
+                   peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                   peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+            >
+              Year Company Registered
+            </label>
+          </div>
+          {errors.yearcompanyregistered && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.yearcompanyregistered}
+            </p>
+          )}
+        </div>
       </div>
-      {errors.locationOfRegistration && (
-        <p className="text-red-500 text-sm -mt-4 ">
-          {errors.locationOfRegistration}
-        </p>
-      )}
 
       <h4 className="font-medium">
         <span className="text-red-400">*</span> Company Operational Address
@@ -114,24 +215,37 @@ export default function StepOne({ formData, setFormData, errors }) {
         {[
           "street",
           "city",
-          "state/ Province",
-          "country/Region",
-          "zipcode/ postalCode",
+          "stateOrProvince",
+          "countryOrRegion",
+          "postalCode",
         ].map((field) => {
           const errorKey = `address.${field}`;
+          const labelText = field.replace(/([A-Z])/g, " $1"); // turn stateOrProvince → state Or Province
+
           return (
             <div key={field} className="flex flex-col w-full max-w-md">
-              {/* Icon + Input row */}
-              <div className="flex items-center gap-2 w-full">
+              <div className="relative flex items-center gap-2 w-full">
                 <MapPin className="text-gray-400" />
+
+                {/* Input with floating label */}
                 <input
                   type="text"
                   name={field}
-                  placeholder={field.replace(/([A-Z])/g, " $1")}
                   value={formData.address?.[field] || ""}
                   onChange={handleAddressChange}
-                  className={inputClass(Boolean(errors[errorKey]))}
+                  placeholder=" "
+                  className={`${inputClass(Boolean(errors[errorKey]))} peer`}
                 />
+
+                <label
+                  htmlFor={field}
+                  className="absolute left-8 -top-2 bg-white px-1 text-sm text-gray-500
+                         transition-all duration-200
+                         peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                         peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                >
+                  {labelText}
+                </label>
               </div>
 
               {/* Error message */}
@@ -169,25 +283,41 @@ export default function StepOne({ formData, setFormData, errors }) {
         </label>
 
         {/* Responsive grid for product inputs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4 ">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
           {(formData.mainProduct.length > 0 ? formData.mainProduct : [""]).map(
             (sub, index) => (
-              <div key={index} className="flex items-center gap-2 w-x">
+              <div
+                key={index}
+                className="relative flex items-center gap-2 w-full"
+              >
                 <Building className="text-gray-400 flex-shrink-0" />
+
+                {/* Input with floating label */}
                 <input
                   type="text"
                   name={`mainProduct-${index}`}
-                  placeholder={`Product ${index + 1}`}
                   value={sub}
                   onChange={(e) => {
                     const newSubs = [...formData.mainProduct];
                     newSubs[index] = e.target.value;
                     setFormData((prev) => ({ ...prev, mainProduct: newSubs }));
                   }}
+                  placeholder=" "
                   className={`flex-1 text-base ${inputClass(
                     Boolean(errors.mainProduct)
-                  )}`}
+                  )} peer`}
                 />
+
+                <label
+                  htmlFor={`mainProduct-${index}`}
+                  className="absolute left-8 -top-2 bg-white px-1 ml-2 text-sm text-gray-500
+                       transition-all duration-200
+                       peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                       peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                >
+                  Product {index + 1}
+                </label>
+
                 {index > 0 && (
                   <button
                     type="button"
