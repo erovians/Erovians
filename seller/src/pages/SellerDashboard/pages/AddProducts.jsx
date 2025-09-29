@@ -228,36 +228,97 @@ const AddProduct = () => {
         </button>
       </form>
 
-      {/* Right side: Preview */}
-      <div className="rounded-2xl p-6">
-        <h3 className="text-lg font-bold mb-4 text-gray-700">Live Preview</h3>
+      <div className=" rounded-3xl overflow-hidden h-fit border border-gray-200 max-w-xl mx-auto">
+        {/* Header */}
+        <div className="p-4">
+          <h3 className="text-xl font-bold text-white text-center">
+            🛍️ Product Overview
+          </h3>
+        </div>
 
-        {formData.productImages[0] ? (
-          <img
-            src={formData.productImages[0]}
-            alt="preview"
-            className="w-full h-48 object-cover rounded-lg mb-4"
-          />
+        {/* Images Carousel */}
+        {formData.productImages.some((img) => img) ? (
+          <div className="flex overflow-x-auto gap-3 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            {formData.productImages.map(
+              (img, idx) =>
+                img && (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Product ${idx + 1}`}
+                    className="h-48 w-64 object-cover rounded-xl flex-shrink-0 shadow-md"
+                  />
+                )
+            )}
+          </div>
         ) : (
-          <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg mb-4 text-gray-500">
-            No Image
+          <div className="h-48 bg-gray-100 flex items-center justify-center text-gray-400 font-medium">
+            No Images
           </div>
         )}
 
-        <h4 className="text-xl font-semibold">
-          {formData.productName || "Product Name"}
-        </h4>
-        <p className="text-gray-500">
-          {formData.category} • {formData.subCategory}
-        </p>
-        <p className="text-gray-700 mt-2">
-          {formData.description || "Product description will appear here..."}
-        </p>
-        <p className="text-blue-600 font-bold mt-3">
-          {formData.pricePerUnit
-            ? `$${formData.pricePerUnit} / ${formData.unit}`
-            : ""}
-        </p>
+        {/* Product Info */}
+        <div className="p-6 space-y-4">
+          <h2 className="text-2xl font-bold text-gray-800">
+            {formData.productName || "Product Name"}
+          </h2>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+              Category: {formData.category}
+            </span>
+            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+              SubCategory: {formData.subCategory || "N/A"}
+            </span>
+            <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+              Grade: {formData.grade}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-gray-600">
+            <p>
+              <span className="font-semibold">Color:</span>{" "}
+              {formData.color || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Origin:</span>{" "}
+              {formData.origin || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Length:</span>{" "}
+              {formData.size.length || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Width:</span>{" "}
+              {formData.size.width || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Thickness:</span>{" "}
+              {formData.size.thickness || "-"}
+            </p>
+            <p>
+              <span className="font-semibold">Weight:</span>{" "}
+              {formData.weight || "-"}
+            </p>
+          </div>
+
+          <p className="text-gray-800 font-semibold mt-2">
+            Price:{" "}
+            <span className="text-blue-600">
+              ${formData.pricePerUnit || "-"} / {formData.unit}
+            </span>
+          </p>
+
+          <div className="mt-4">
+            <h4 className="font-semibold text-gray-700 mb-1">Description:</h4>
+            <p className="text-gray-600">
+              {formData.description ||
+                "Product description will appear here..."}
+            </p>
+          </div>
+
+          {/* Footer */}
+        </div>
       </div>
     </div>
   );
