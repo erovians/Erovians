@@ -23,9 +23,7 @@ export const sendOtp = async (req, res) => {
   try {
     const seller = await Seller.findOne({ mobile });
     if (seller) {
-      return res
-        .status(409)
-        .json({ message: "Mobile already exists" });
+      return res.status(409).json({ message: "Mobile already exists" });
     } else {
       const otp = generateOTP();
 

@@ -9,7 +9,6 @@ import {
 const router = express.Router();
 
 router.post("/add", addProduct);
-
 router.get("/list", listAllProducts);
 router.get("/:productId", getProductById);
 
