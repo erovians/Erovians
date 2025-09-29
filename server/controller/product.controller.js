@@ -1,5 +1,90 @@
 import Product from "../models/product.model.js";
 
+// export const addProduct = async (req, res) => {
+//   try {
+//     const {
+//       companyId,
+//       productName,
+//       productImages,
+//       category,
+//       subCategory,
+//       grade,
+//       color,
+//       origin,
+//       size,
+//       weight,
+//       pricePerUnit,
+//       unit,
+//       description,
+//     } = req.body;
+
+//     if (
+//       !companyId ||
+//       !productName ||
+//       !productImages ||
+//       !category ||
+//       !subCategory ||
+//       !grade ||
+//       !color ||
+//       !origin ||
+//       !size ||
+//       !weight ||
+//       !pricePerUnit ||
+//       !unit ||
+//       !description
+//     ) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "All required fields must be provided",
+//       });
+//     }
+
+//     if (!Array.isArray(productImages) || productImages.length < 3) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "At least 3 product images are required",
+//       });
+//     }
+
+//     if (!size.length || !size.width || !size.thickness) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Size (length, width, thickness) must be provided",
+//       });
+//     }
+
+//     const product = new Product({
+//       companyId,
+//       productName,
+//       productImages,
+//       category,
+//       subCategory,
+//       grade,
+//       color,
+//       origin,
+//       size,
+//       weight,
+//       pricePerUnit,
+//       unit,
+//       description,
+//     });
+
+//     const savedProduct = await product.save();
+
+//     return res.status(201).json({
+//       success: true,
+//       message: "Product added successfully",
+//       data: savedProduct,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error adding product:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while adding the product",
+//     });
+//   }
+// };
+
 export const addProduct = async (req, res) => {
   try {
     const {
@@ -18,6 +103,7 @@ export const addProduct = async (req, res) => {
       description,
     } = req.body;
 
+    // Manual validation
     if (
       !companyId ||
       !productName ||

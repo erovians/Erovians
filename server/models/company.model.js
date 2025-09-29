@@ -31,10 +31,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
-    companyRegistrationYear: {
-      type: Date,
-      required: true,
-    },
+
     mainCategory: {
       type: String,
       required: true,

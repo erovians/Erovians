@@ -88,9 +88,12 @@ const SellerSidebar = () => {
             icon: <Box size={20} />,
             label: "Products",
             subLinks: [
-              { to: "/seller/products/add", label: "Add Product" },
-              { to: "/seller/products/list", label: "List Products" },
-              { to: "/seller/products/categories", label: "Categories" },
+              { to: "/sellerdashboard/products/add", label: "Add Product" },
+              { to: "/sellerdashboard/products/list", label: "List Products" },
+              {
+                to: "/sellerdashboard/products/categories",
+                label: "Categories",
+              },
             ],
           },
           {
