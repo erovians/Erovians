@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Static file serving
-app.use('/api/uploads', express.static('uploads'))
+app.use("/api/uploads", express.static("uploads"));
 
 // Cookie parser
 app.use(cookieParser());
@@ -39,6 +39,6 @@ app.use("/api/seller", sellerRoutes);
 app.use("/api/company", createCompany);
 
 //Product ROute
-app.use("/api/product",  productRoute);
+app.use("/api/product", productRoute);
 
 export { app };

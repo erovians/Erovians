@@ -180,18 +180,18 @@ export default function StepOne({ formData, setFormData, errors }) {
             <Calendar className="text-gray-400" />
 
             <input
-              type="text"
-              name="yearcompanyregistered"
-              value={formData.yearcompanyregistered}
+              type="date"
+              name="companyRegistrationYear"
+              value={formData.companyRegistrationYear}
               onChange={handleChange}
               placeholder=" "
               className={`${inputClass(
-                Boolean(errors.yearcompanyregistered)
+                Boolean(errors.companyRegistrationYear)
               )} peer`}
             />
 
             <label
-              htmlFor="yearcompanyregistered"
+              htmlFor="companyRegistrationYear"
               className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                    transition-all duration-200
                    peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
@@ -200,9 +200,9 @@ export default function StepOne({ formData, setFormData, errors }) {
               Year Company Registered
             </label>
           </div>
-          {errors.yearcompanyregistered && (
+          {errors.companyRegistrationYear && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.yearcompanyregistered}
+              {errors.companyRegistrationYear}
             </p>
           )}
         </div>
