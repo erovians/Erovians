@@ -16,7 +16,9 @@ export default function CompanyProfileForm() {
 
   const [formData, setFormData] = useState({
     companyName: "",
+    legalowner: "",
     locationOfRegistration: "",
+    companyRegistrationYear: "",
     address: {
       street: "",
       city: "",

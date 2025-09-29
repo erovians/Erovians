@@ -17,12 +17,23 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       countryOrRegion: { type: String, trim: true, required: true },
       postalCode: { type: String, trim: true, required: true },
     },
+    legalowner: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 100,
+    },
     locationOfRegistration: {
       type: String,
       required: true,
       trim: true,
       minlength: 2,
       maxlength: 100,
+    },
+    companyRegistrationYear: {
+      type: Date,
+      required: true,
     },
     mainCategory: {
       type: String,

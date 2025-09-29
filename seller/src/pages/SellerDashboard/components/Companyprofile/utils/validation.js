@@ -9,10 +9,19 @@ export const stepOneSchema = z.object({
     .min(1, "Company name is required") // empty
     .min(2, "Company name must be at least 2 characters"), // too short
 
+  legalowner: z
+    .string()
+    .min(1, "legalowner Name is required") // empty
+    .min(2, "legalowner must be at least 3 characters"), // too short
+
   locationOfRegistration: z
     .string()
     .min(1, "Location is required") // empty
     .min(2, "Location must be at least 2 characters"), // too short
+
+  companyRegistrationYear: z
+    .string()
+    .min(1, "company registration Year is required"), // empty
 
   address: z.object({
     street: z
@@ -67,25 +76,20 @@ export const stepTwoSchema = z.object({
       message: "The file size should not exceed 300kb",
     }),
   companyPhotos: z
-  .array(z.any())
-  .min(1, "At least one company photo is required")
-  .refine(
-    (files) =>
-      files.every(
-        (file) =>
-          file.type === "image/jpeg" || file.type === "image/png"
-      ),
-    {
-      message: "Each photo must be JPEG or PNG format",
-    }
-  )
-  .refine(
-    (files) => files.every((file) => file.size <= 200 * 1024),
-    {
+    .array(z.any())
+    .min(1, "At least one company photo is required")
+    .refine(
+      (files) =>
+        files.every(
+          (file) => file.type === "image/jpeg" || file.type === "image/png"
+        ),
+      {
+        message: "Each photo must be JPEG or PNG format",
+      }
+    )
+    .refine((files) => files.every((file) => file.size <= 200 * 1024), {
       message: "Each photo must not exceed 200 KB",
-    }
-  ),
-
+    }),
 
   companyVideos: z.array(z.any()).optional(),
 });
