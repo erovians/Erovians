@@ -66,30 +66,30 @@ export const stepTwoSchema = z.object({
     .min(1, "Company description is required")
     .min(50, "Company description must be at least 50 characters"),
 
-  logo: z
-    .any()
-    .refine((file) => !!file, "Logo is required")
-    .refine((file) => file instanceof File, {
-      message: "Please upload a valid file",
-    })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: "The file size should not exceed 300kb",
-    }),
-  companyPhotos: z
-    .array(z.any())
-    .min(1, "At least one company photo is required")
-    .refine(
-      (files) =>
-        files.every(
-          (file) => file.type === "image/jpeg" || file.type === "image/png"
-        ),
-      {
-        message: "Each photo must be JPEG or PNG format",
-      }
-    )
-    .refine((files) => files.every((file) => file.size <= 200 * 1024), {
-      message: "Each photo must not exceed 200 KB",
-    }),
+  // logo: z
+  //   .any()
+  //   .refine((file) => !!file, "Logo is required")
+  //   .refine((file) => file instanceof File, {
+  //     message: "Please upload a valid file",
+  //   })
+  //   .refine((file) => file.size <= MAX_FILE_SIZE, {
+  //     message: "The file size should not exceed 300kb",
+  //   }),
+  // companyPhotos: z
+  //   .array(z.any())
+  //   .min(1, "At least one company photo is required")
+  //   .refine(
+  //     (files) =>
+  //       files.every(
+  //         (file) => file.type === "image/jpeg" || file.type === "image/png"
+  //       ),
+  //     {
+  //       message: "Each photo must be JPEG or PNG format",
+  //     }
+  //   )
+  //   .refine((files) => files.every((file) => file.size <= 200 * 1024), {
+  //     message: "Each photo must not exceed 200 KB",
+  //   }),
 
-  companyVideos: z.array(z.any()).optional(),
+  // companyVideos: z.array(z.any()).optional(),
 });

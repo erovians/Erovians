@@ -63,7 +63,7 @@ export default function StepOne({ formData, setFormData, errors }) {
   };
 
   const inputClass = (hasErr) =>
-    `w-full px-3 py-2 border rounded  ${
+    `text-xs w-full px-3 py-2 border rounded  ${
       hasErr ? "border-red-500" : "border-gray-300"
     }`;
 
@@ -71,9 +71,7 @@ export default function StepOne({ formData, setFormData, errors }) {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold">Basic Company Details</h3>
 
-      {/* Company Name */}
       {/* Company Name & Legal Owner */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col w-full max-w-md">
@@ -95,10 +93,10 @@ export default function StepOne({ formData, setFormData, errors }) {
               htmlFor="companyName"
               className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500 
                  transition-all duration-200 
-                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm
+                 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-black"
             >
-              Company Name
+              Company name
             </label>
           </div>
 
@@ -126,10 +124,10 @@ export default function StepOne({ formData, setFormData, errors }) {
               htmlFor="legalowner"
               className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500 
                  transition-all duration-200 rounded-full
-                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                 peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm
+                 peer-focus:-top-2 peer-focus:text-xs peer-focus:text-black"
             >
-              Legal Owner
+              Legal owner
             </label>
           </div>
 
@@ -161,10 +159,10 @@ export default function StepOne({ formData, setFormData, errors }) {
               htmlFor="locationOfRegistration"
               className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                    transition-all duration-200
-                   peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
-                   peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                   peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm
+                   peer-focus:-top-2 peer-focus:text-xs peer-focus:text-black"
             >
-              Location of Registration
+              Location of registration
             </label>
           </div>
           {errors.locationOfRegistration && (
@@ -197,7 +195,7 @@ export default function StepOne({ formData, setFormData, errors }) {
                    peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
                    peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
             >
-              Year Company Registered
+              Year company registred
             </label>
           </div>
           {errors.companyRegistrationYear && (
@@ -220,7 +218,7 @@ export default function StepOne({ formData, setFormData, errors }) {
           "postalCode",
         ].map((field) => {
           const errorKey = `address.${field}`;
-          const labelText = field.replace(/([A-Z])/g, " $1"); // turn stateOrProvince → state Or Province
+          const labelText = field.replace(/([A-Z])/g, " $1").toLowerCase(); // turn stateOrProvince → state Or Province
 
           return (
             <div key={field} className="flex flex-col w-full max-w-md">
@@ -241,8 +239,8 @@ export default function StepOne({ formData, setFormData, errors }) {
                   htmlFor={field}
                   className="absolute left-8 -top-2 bg-[#f9fafb] px-1 text-sm text-gray-500
                          transition-all duration-200
-                         peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
-                         peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
+                         peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm
+                         peer-focus:-top-2 peer-focus:text-xs peer-focus:text-black"
                 >
                   {labelText}
                 </label>
@@ -295,6 +293,7 @@ export default function StepOne({ formData, setFormData, errors }) {
                 {/* Input with floating label */}
                 <input
                   type="text"
+                  id={`mainProduct-${index}`}
                   name={`mainProduct-${index}`}
                   value={sub}
                   onChange={(e) => {
@@ -303,7 +302,7 @@ export default function StepOne({ formData, setFormData, errors }) {
                     setFormData((prev) => ({ ...prev, mainProduct: newSubs }));
                   }}
                   placeholder=" "
-                  className={`flex-1 text-base ${inputClass(
+                  className={`flex-1  ${inputClass(
                     Boolean(errors.mainProduct)
                   )} peer`}
                 />
@@ -312,7 +311,7 @@ export default function StepOne({ formData, setFormData, errors }) {
                   htmlFor={`mainProduct-${index}`}
                   className="absolute left-8 -top-2 bg-[#f9fafb] px-1 ml-2 text-sm text-gray-500
                        transition-all duration-200
-                       peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base
+                       peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-xs
                        peer-focus:-top-2 peer-focus:text-sm peer-focus:text-black"
                 >
                   Product {index + 1}
@@ -364,7 +363,7 @@ export default function StepOne({ formData, setFormData, errors }) {
         <label className="block mb-1">Accepted Currencies</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {currencies.map((c) => (
-            <label key={c} className="flex items-center gap-2">
+            <label key={c} className="flex text-sm items-center gap-2">
               <input
                 type="checkbox"
                 checked={(formData.acceptedCurrency || []).includes(c)}
@@ -386,7 +385,7 @@ export default function StepOne({ formData, setFormData, errors }) {
         <label className="block mb-1">Accepted Payment Types</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {paymentTypes.map((c) => (
-            <label key={c} className="flex items-center gap-2">
+            <label key={c} className="flex text-sm items-center gap-2">
               <input
                 type="checkbox"
                 checked={(formData.acceptedPaymentType || []).includes(c)}
@@ -408,7 +407,7 @@ export default function StepOne({ formData, setFormData, errors }) {
         <label className="block mb-1">Languages Spoken</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {languages.map((c) => (
-            <label key={c} className="flex items-center gap-2">
+            <label key={c} className="flex text-sm items-center gap-2">
               <input
                 type="checkbox"
                 checked={(formData.languageSpoken || []).includes(c)}

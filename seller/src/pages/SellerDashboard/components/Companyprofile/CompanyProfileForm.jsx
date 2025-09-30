@@ -2,47 +2,73 @@ import React, { useEffect, useState } from "react";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import ReviewStep from "./steps/ReviewStep";
-import { ZodError } from "zod";
 import { stepOneSchema, stepTwoSchema } from "./utils/validation";
+import api from "@/utils/axios.utils";
+import { Loader2, Check } from "lucide-react";
 
 const steps = [
-  { id: 1, title: "Basic Details", component: StepOne, schema: stepOneSchema },
-  { id: 2, title: "Introduction", component: StepTwo, schema: stepTwoSchema },
+  {
+    id: 1,
+    title: "Comapny Basic Details",
+    component: StepOne,
+    schema: stepOneSchema,
+  },
+  {
+    id: 2,
+    title: "Company Introduction",
+    component: StepTwo,
+    schema: stepTwoSchema,
+  },
   { id: 3, title: "Review & Submit", component: ReviewStep, schema: null },
 ];
 
 export default function CompanyProfileForm() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentStep, setCurrentStep] = useState(() => {
+    const savedStep = localStorage.getItem("currentStep");
+    return savedStep ? Number(savedStep) : 1;
+  });
+  // const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState({
-    companyName: "",
-    legalowner: "",
-    locationOfRegistration: "",
-    companyRegistrationYear: "",
-    address: {
-      street: "",
-      city: "",
-      stateOrProvince: "",
-      countryOrRegion: "",
-      postalCode: "",
-    },
-    mainCategory: "",
-    mainProduct: [],
-    acceptedCurrency: [],
-    acceptedPaymentType: [],
-    languageSpoken: [],
-
-    // Step 2
-    companyDescription: "",
-    logo: null,
-    companyPhotos: [],
-    companyVideos: [],
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("companyFormData");
+    return savedData
+      ? JSON.parse(savedData)
+      : {
+          companyName: "",
+          legalowner: "",
+          locationOfRegistration: "",
+          companyRegistrationYear: "",
+          address: {
+            street: "",
+            city: "",
+            stateOrProvince: "",
+            countryOrRegion: "",
+            postalCode: "",
+          },
+          mainCategory: "",
+          mainProduct: [],
+          acceptedCurrency: [],
+          acceptedPaymentType: [],
+          languageSpoken: [],
+          // Step 2
+          companyDescription: "",
+          logo: null,
+          companyPhotos: [],
+          companyVideos: [],
+        };
   });
 
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    const { logo, companyPhotos, companyVideos, ...safeData } = formData;
+    localStorage.setItem("companyFormData", JSON.stringify(safeData));
+  }, [formData]);
+
+  useEffect(() => {
+    localStorage.setItem("currentStep", currentStep);
     setProgress(Math.round(((currentStep - 1) / (steps.length - 1)) * 100));
   }, [currentStep]);
 
@@ -86,15 +112,68 @@ export default function CompanyProfileForm() {
 
   const handleSubmit = async () => {
     try {
+      console.log("Submitting form data...");
       await stepOneSchema.parseAsync(formData);
       await stepTwoSchema.parseAsync(formData);
       setErrors({});
-      console.log("Final Submission", formData);
-      alert("Submitted ✅ (check console)");
+      setIsSubmitting(true);
+
+      const form = new FormData();
+
+      // Append primitive fields
+      form.append("companyName", formData.companyName);
+      form.append("legalowner", formData.legalowner);
+      form.append("locationOfRegistration", formData.locationOfRegistration);
+      form.append("companyRegistrationYear", formData.companyRegistrationYear);
+      form.append("address", JSON.stringify(formData.address));
+      form.append("mainCategory", formData.mainCategory);
+      form.append("subCategory", formData.mainProduct.join(","));
+      form.append("acceptedCurrency", formData.acceptedCurrency.join(","));
+      form.append(
+        "acceptedPaymentType",
+        formData.acceptedPaymentType.join(",")
+      );
+      form.append("languageSpoken", formData.languageSpoken.join(","));
+      form.append("companyDescription", formData.companyDescription);
+
+      // Append optional files safely
+      if (formData.logo instanceof File) {
+        form.append("logo", formData.logo);
+      }
+
+      if (Array.isArray(formData.companyPhotos)) {
+        formData.companyPhotos.forEach((photo, idx) => {
+          if (photo instanceof File) form.append("companyPhotos", photo);
+        });
+      }
+
+      if (Array.isArray(formData.companyVideos)) {
+        formData.companyVideos.forEach((video, idx) => {
+          if (video instanceof File) form.append("companyVideos", video);
+        });
+      }
+
+      console.log("Files appended successfully ✅");
+
+      // Send request
+      const res = await api.post("/company/register", form);
+      console.log("Response:", res);
+
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Something went wrong");
+      }
+
+      if (res.status === 201) {
+        alert("Company registered successfully");
+        localStorage.removeItem("companyFormData");
+        localStorage.removeItem("currentStep");
+      }
     } catch (err) {
+      console.error("Submit error:", err);
       const formatted = mapZodErrors(err);
       setErrors(formatted);
-      // jump to first failing step
+
+      // Jump to the step where error occurred
       if (
         formatted["companyName"] ||
         formatted["address.street"] ||
@@ -108,6 +187,8 @@ export default function CompanyProfileForm() {
       ) {
         setCurrentStep(2);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -123,6 +204,45 @@ export default function CompanyProfileForm() {
             className="h-2 bg-navyblue rounded transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
+        </div>
+
+        {/* Step indicators */}
+        <div className="flex justify-between mt-6">
+          {steps.map((step) => {
+            const isActive = currentStep === step.id;
+            const isCompleted = currentStep > step.id;
+
+            return (
+              <div key={step.id} className="flex-1 text-center relative">
+                <div
+                  className={`mx-auto w-8 h-8 flex items-center justify-center rounded-full 
+            ${
+              isActive || isCompleted
+                ? "bg-navyblue text-white"
+                : "bg-gray-300 text-gray-700"
+            }`}
+                >
+                  {isCompleted ? <Check className="w-4 h-4" /> : step.id}
+                </div>
+
+                <p
+                  className={`mt-2 text-sm font-medium ${
+                    isActive ? "text-navyblue" : "text-gray-600"
+                  }`}
+                >
+                  {step.title}
+                </p>
+
+                {/* Connector line between steps */}
+                {step.id < steps.length && (
+                  <div
+                    className={`absolute top-4 left-1/2 w-full h-0.5 -translate-y-1/2 z-[-1]
+              ${isCompleted ? "bg-navyblue" : "bg-gray-300"}`}
+                  ></div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -156,9 +276,12 @@ export default function CompanyProfileForm() {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="flex px-4 py-2 bg-navyblue text-white rounded"
               >
-                Submit
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isSubmitting ? "Submitting" : "Submit"}
               </button>
             )}
           </div>
