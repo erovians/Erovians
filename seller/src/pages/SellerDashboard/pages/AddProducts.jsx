@@ -50,6 +50,22 @@ const AddProduct = () => {
     try {
       const res = await api.post("/product/add", formData);
       setMessage(res.data.message);
+      // Reset form after successful submission
+      setFormData({
+        companyId: "",
+        productName: "",
+        productImages: ["", "", ""],
+        category: "Granite",
+        subCategory: "",
+        grade: "A",
+        color: "",
+        origin: "",
+        size: { length: "", width: "", thickness: "" },
+        weight: "",
+        pricePerUnit: "",
+        unit: "sq.ft",
+        description: "",
+      });
     } catch (err) {
       setMessage(err.response?.data?.message || "Something went wrong");
     } finally {
@@ -89,19 +105,30 @@ const AddProduct = () => {
           className="w-full border p-3 rounded-lg"
         />
 
+        {/* Product Images */}
         <div className="space-y-2">
-          <label className="font-medium">Product Images</label>
-          {formData.productImages.map((img, idx) => (
-            <input
-              key={idx}
-              type="text"
-              name={`image-${idx}`}
-              placeholder={`Image URL ${idx + 1}`}
-              value={img}
-              onChange={handleChange}
-              className="w-full border p-3 rounded-lg"
-            />
-          ))}
+          <label className="font-medium">Product Images (Min 3)</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => {
+              const files = Array.from(e.target.files);
+              setFormData((prev) => ({
+                ...prev,
+                productImages: files, // store all files selected
+              }));
+            }}
+            className="w-full border p-3 rounded-lg"
+          />
+
+          {/* Validation message if less than 3 */}
+          {formData.productImages.length > 0 &&
+            formData.productImages.length < 3 && (
+              <p className="text-red-500 text-sm">
+                Please select at least 3 images.
+              </p>
+            )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -222,7 +249,7 @@ const AddProduct = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg shadow hover:bg-blue-700 transition"
+          className="w-full bg-gray-600 cursor-pointer text-white py-3 rounded-lg shadow hover:bg-gray-700 transition"
         >
           {loading ? "Submitting..." : "Add Product"}
         </button>
@@ -237,22 +264,19 @@ const AddProduct = () => {
         </div>
 
         {/* Images Carousel */}
-        {formData.productImages.some((img) => img) ? (
+        {formData.productImages.length > 0 ? (
           <div className="flex overflow-x-auto gap-3 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {formData.productImages.map(
-              (img, idx) =>
-                img && (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={`Product ${idx + 1}`}
-                    className="h-48 w-64 object-cover rounded-xl flex-shrink-0 shadow-md"
-                  />
-                )
-            )}
+            {formData.productImages.map((img, idx) => (
+              <img
+                key={idx}
+                src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                alt={`Product ${idx + 1}`}
+                className="h-48 w-64 object-cover rounded-xl flex-shrink-0 shadow-md"
+              />
+            ))}
           </div>
         ) : (
-          <div className="h-48 bg-gray-100 flex items-center justify-center text-gray-400 font-medium">
+          <div className="h-48 flex items-center justify-center text-gray-400 font-medium">
             No Images
           </div>
         )}
@@ -264,7 +288,7 @@ const AddProduct = () => {
           </h2>
 
           <div className="flex flex-wrap gap-2">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+            <span className="bg-blue-100 text-blue-800  px-3 py-1 rounded-full text-sm">
               Category: {formData.category}
             </span>
             <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
@@ -304,7 +328,7 @@ const AddProduct = () => {
 
           <p className="text-gray-800 font-semibold mt-2">
             Price:{" "}
-            <span className="text-blue-600">
+            <span className="text-red-600">
               ${formData.pricePerUnit || "-"} / {formData.unit}
             </span>
           </p>
