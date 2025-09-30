@@ -21,6 +21,7 @@
     "express-fileupload": "^1.5.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
+    "multer": "^2.0.2",
     "qs": "^6.14.0",
     "twilio": "^5.9.0"
   },
