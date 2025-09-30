@@ -17,12 +17,23 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       countryOrRegion: { type: String, trim: true, required: true },
       postalCode: { type: String, trim: true, required: true },
     },
+    legalowner: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 100,
+    },
     locationOfRegistration: {
       type: String,
       required: true,
       trim: true,
       minlength: 2,
       maxlength: 100,
+    },
+    companyRegistrationYear: {
+      type: Date,
+      required: true,
     },
     mainCategory: {
       type: String,
@@ -44,7 +55,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     acceptedPaymentType: {
       type: [String],
       required: true,
-      enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
+      // enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
       validate: {
         validator: function (arr) {
           return arr.length > 0;
@@ -63,11 +74,11 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
 
 const CompanyIntroSchema = new mongoose.Schema(
   {
-    logo: { type: String, required: true },
+    logo: { type: String, required: false },
     companyDescription: { type: String, required: true, minlength: 50 },
     companyPhotos: {
       type: [String],
-      required: true,
+      required: false,
       validate: (val) => val.length >= 1,
     },
     companyVideos: { type: [String], default: [] },
@@ -77,12 +88,12 @@ const CompanyIntroSchema = new mongoose.Schema(
 
 const CompanyDataSchema = new mongoose.Schema(
   {
-    SellerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "seller",
-      required: true,
-      unique: true,
-    },
+    // SellerId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "seller",
+    //   required: true,
+    //   unique: true,
+    // },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
     companyIntro: { type: CompanyIntroSchema, required: true },
   },
