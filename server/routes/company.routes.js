@@ -1,12 +1,10 @@
 import express from "express";
 import {
-  createCompanyBasicInfo,
-  createCompanyIntro,
+  registerCompany
 } from "../controller/company.controller.js";
 
 const router = express.Router();
 
-router.post("/basic-info", createCompanyBasicInfo);
-router.post("/intro", createCompanyIntro);
+router.post("/register", registerCompany);
 
 export default router;

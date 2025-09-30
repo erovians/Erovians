@@ -8,6 +8,8 @@ import productRoute from "./routes/product.route.js";
 
 const app = express();
 
+app.use(express.json());
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -15,15 +17,13 @@ app.use(
   })
 );
 
-// Add file upload middleware here
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
+// // Add file upload middleware here
+// This must come before your company route
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp/",
+}));
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Static file serving
