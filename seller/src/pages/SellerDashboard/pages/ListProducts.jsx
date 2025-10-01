@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/utils/axios.utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-const ListProducts = ({ companyId }) => {
+const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -10,8 +17,8 @@ const ListProducts = ({ companyId }) => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("/api/products", {
-          params: { companyId }, // send companyId as query
+        const res = await api.get("/product/list", {
+          params: { companyId },
         });
         setProducts(res.data.data);
       } catch (err) {
@@ -30,41 +37,86 @@ const ListProducts = ({ companyId }) => {
   if (!products.length) return <p>No products found for this company.</p>;
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
       {products.map((product) => (
         <div
           key={product._id}
-          className="border rounded-xl shadow p-4 hover:shadow-lg transition"
+          className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-w-[400px] max-h-[500px] w-full mx-auto"
         >
-          {/* Image */}
-          {product.productImages && product.productImages[0] ? (
-            <img
-              src={product.productImages[0]}
-              alt={product.productName}
-              className="w-full h-48 object-cover rounded-lg mb-4"
-            />
+          {/* Product Images Carousel */}
+          {product.productImages && product.productImages.length > 0 ? (
+            <Carousel className="w-full h-[220px] rounded-t-2xl relative">
+              <CarouselContent>
+                {product.productImages.map((img, idx) => (
+                  <CarouselItem
+                    key={idx}
+                    className="flex items-center justify-center"
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.productName} - ${idx + 1}`}
+                      className="w-full h-[220px] object-cover rounded-t-2xl"
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+
+              {/* Optional Arrows */}
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 bg-white rounded-full shadow flex items-center justify-center cursor-pointer" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 bg-white rounded-full shadow flex items-center justify-center cursor-pointer" />
+            </Carousel>
           ) : (
-            <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg mb-4">
+            <div className="w-full h-[220px] flex items-center justify-center bg-gray-100 text-gray-400 rounded-t-2xl">
               No Image
             </div>
           )}
 
           {/* Product Details */}
-          <h3 className="text-xl font-semibold mb-2">{product.productName}</h3>
-          <p className="text-gray-600 mb-1">Category: {product.category}</p>
-          <p className="text-gray-600 mb-1">
-            SubCategory: {product.subCategory || "N/A"}
-          </p>
-          <p className="text-gray-600 mb-1">Grade: {product.grade}</p>
-          <p className="text-gray-600 mb-1">Color: {product.color}</p>
-          <p className="text-gray-600 mb-1">Origin: {product.origin}</p>
-          <p className="text-gray-600 mb-1">
-            Size: {product.size?.length} x {product.size?.width} x{" "}
-            {product.size?.thickness}
-          </p>
-          <p className="text-gray-800 font-semibold mt-2">
-            Price: ${product.pricePerUnit} / {product.unit}
-          </p>
+          <div className="p-4 h-[280px] flex flex-col justify-between">
+            {/* Title */}
+            <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
+              {product.productName}
+            </h3>
+
+            {/* Tags */}
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">
+                {product.category}
+              </span>
+              <span className="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">
+                Grade {product.grade}
+              </span>
+            </div>
+
+            {/* Info */}
+            <div className="text-sm text-gray-600 mb-2 space-y-1">
+              <p>
+                <span className="font-medium">SubCategory:</span>{" "}
+                {product.subCategory || "N/A"}
+              </p>
+              <p>
+                <span className="font-medium">Color:</span> {product.color}
+              </p>
+              <p>
+                <span className="font-medium">Origin:</span> {product.origin}
+              </p>
+              <p>
+                <span className="font-medium">Size:</span>{" "}
+                {product.size?.length} × {product.size?.width} ×{" "}
+                {product.size?.thickness}
+              </p>
+            </div>
+
+            {/* Price */}
+            <div className="mt-2 flex justify-between items-center">
+              <span className="text-lg font-bold text-emerald-600">
+                ${product.pricePerUnit} / {product.unit}
+              </span>
+              <button className="px-3 py-1.5 text-sm bg-navyblue text-white rounded-lg shadow hover:bg-blue-800 transition">
+                View
+              </button>
+            </div>
+          </div>
         </div>
       ))}
     </div>

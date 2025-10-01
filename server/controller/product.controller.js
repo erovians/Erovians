@@ -67,10 +67,40 @@ export const addProduct = async (req, res) => {
   }
 };
 
+// export const listAllProducts = async (req, res) => {
+//   try {
+//     const { companyId } = req.query;
+//     const filter = companyId ? { companyId } : {};
+
+//     const products = await Product.find(filter).sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       count: products.length,
+//       data: products,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error listing products:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while fetching products",
+//     });
+//   }
+// };
+
 export const listAllProducts = async (req, res) => {
   try {
-    const { companyId } = req.query;
-    const filter = companyId ? { companyId } : {};
+    // First try query param, then fallback to default static one
+    const companyId = req.query.companyId || "651234abcd5678ef90123456";
+
+    if (!companyId) {
+      return res.status(400).json({
+        success: false,
+        message: "Company ID is required",
+      });
+    }
+
+    const filter = { companyId };
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
