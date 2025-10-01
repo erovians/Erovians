@@ -5,7 +5,7 @@ const AddProduct = () => {
   const [formData, setFormData] = useState({
     companyId: "",
     productName: "",
-    productImages: ["", "", ""],
+    productImages: [],
     category: "Granite",
     subCategory: "",
     grade: "A",
@@ -48,13 +48,37 @@ const AddProduct = () => {
     setMessage("");
 
     try {
-      const res = await api.post("/product/add", formData);
+      const formDataToSend = new FormData();
+
+      // Append all text fields
+      formDataToSend.append("companyId", formData.companyId);
+      formDataToSend.append("productName", formData.productName);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("subCategory", formData.subCategory);
+      formDataToSend.append("grade", formData.grade);
+      formDataToSend.append("color", formData.color);
+      formDataToSend.append("origin", formData.origin);
+      formDataToSend.append("weight", formData.weight);
+      formDataToSend.append("pricePerUnit", formData.pricePerUnit);
+      formDataToSend.append("unit", formData.unit);
+      formDataToSend.append("description", formData.description);
+
+      // Append nested object (must stringify)
+      formDataToSend.append("size", JSON.stringify(formData.size));
+
+      // Append files
+      formData.productImages.forEach((file) => {
+        formDataToSend.append("productImages", file);
+      });
+
+      // 🚫 don’t manually set headers, axios will set multipart correctly
+      const res = await api.post("/product/add", formDataToSend);
+
       setMessage(res.data.message);
-      // Reset form after successful submission
       setFormData({
         companyId: "",
         productName: "",
-        productImages: ["", "", ""],
+        productImages: [],
         category: "Granite",
         subCategory: "",
         grade: "A",
