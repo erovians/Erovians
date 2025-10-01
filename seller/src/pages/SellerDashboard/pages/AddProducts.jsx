@@ -99,11 +99,11 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-8">
+    <div className="max-w-full mx-auto p-6 grid md:grid-cols-2 gap-8 ">
       {/* Left side: Form */}
       <form onSubmit={handleSubmit} className="rounded-2xl p-6 space-y-5 ">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          🛒 Add New Product
+          Add New Product
         </h2>
 
         {message && (
@@ -130,23 +130,7 @@ const AddProduct = () => {
           className="w-full border p-3 rounded-lg"
         />
 
-        {/* Product Images */}
-        {/* <div className="space-y-2">
-          <label className="font-medium">Product Images (Min 3)</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={(e) => {
-              const files = Array.from(e.target.files);
-              setFormData((prev) => ({
-                ...prev,
-                productImages: files, // store all files selected
-              }));
-            }}
-            className="w-full border p-3 rounded-lg"
-          />
-
+    
           {/* Validation message if less than 3 */}
         {formData.productImages.length > 0 &&
           formData.productImages.length < 3 && (
@@ -336,11 +320,11 @@ const AddProduct = () => {
         </button>
       </form>
 
-      <div className="max-w-4xl h-fit mx-auto bg-white border rounded-2xl shadow-md overflow-hidden flex flex-col md:flex-row">
+      <div className="min-w-full h-[25%] mx-auto bg-white border rounded-2xl shadow-md overflow-hidden flex flex-col md:flex-row">
         {/* Left: Images */}
-        <div className="md:w-1/2 p-4">
+        <div className="md:w-1/2 h-full p-2 flex flex-col">
           {/* Main Image */}
-          <div className="border rounded-lg overflow-hidden mb-2">
+          <div className="border rounded-lg overflow-hidden flex-1 mb-1">
             <img
               src={
                 formData.productImages.length > 0
@@ -350,21 +334,20 @@ const AddProduct = () => {
                   : "https://via.placeholder.com/400x400?text=No+Image"
               }
               alt="Main Product"
-              className="w-full h-64 object-cover"
+              className="w-full h-full object-cover"
             />
           </div>
 
           {/* Thumbnails */}
           {formData.productImages.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto mt-2">
+            <div className="flex gap-1 overflow-x-auto mt-1">
               {formData.productImages.map((img, idx) => (
                 <img
                   key={idx}
                   src={typeof img === "string" ? img : URL.createObjectURL(img)}
                   alt={`Thumbnail ${idx + 1}`}
-                  className="w-16 h-16 object-cover rounded border cursor-pointer hover:ring-2 hover:ring-yellow-500"
+                  className="w-12 h-12 object-cover rounded border cursor-pointer hover:ring-2 hover:ring-yellow-500"
                   onClick={() => {
-                    // Swap main image
                     const newImages = [...formData.productImages];
                     [newImages[0], newImages[idx]] = [
                       newImages[idx],
@@ -379,62 +362,63 @@ const AddProduct = () => {
         </div>
 
         {/* Right: Info */}
-        <div className="md:w-1/2 p-6 flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="md:w-1/2 h-full p-3 flex flex-col justify-between overflow-hidden">
+          <div className="flex-1 overflow-y-auto pr-1">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1 truncate">
               {formData.productName || "Product Name"}
             </h2>
 
-            <div className="flex flex-wrap gap-2 mb-3">
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+            <div className="flex flex-wrap gap-5 mb-1">
+              <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">
                 {formData.category}
               </span>
-              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+              <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs">
                 {formData.subCategory || "N/A"}
               </span>
-              <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+              <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-xs">
                 {formData.grade}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-gray-700 mb-3">
+            <div className="grid grid-cols-2 mt-5 gap-3 text-gray-700 mb-1 text-xs">
               <p>
-                <span className="font-semibold">Color:</span>{" "}
+                <span className="text-gray-400">Color:</span>{" "}
                 {formData.color || "-"}
               </p>
               <p>
-                <span className="font-semibold">Origin:</span>{" "}
+                <span className="text-gray-400">Origin:</span>{" "}
                 {formData.origin || "-"}
               </p>
               <p>
-                <span className="font-semibold">Length:</span>{" "}
+                <span className="text-gray-400">Length:</span>{" "}
                 {formData.size.length || "-"}
               </p>
               <p>
-                <span className="font-semibold">Width:</span>{" "}
+                <span className="text-gray-400">Width:</span>{" "}
                 {formData.size.width || "-"}
               </p>
               <p>
-                <span className="font-semibold">Thickness:</span>{" "}
+                <span className="text-gray-400">Thickness:</span>{" "}
                 {formData.size.thickness || "-"}
               </p>
               <p>
-                <span className="font-semibold">Weight:</span>{" "}
+                <span className="text-gray-400">Weight:</span>{" "}
                 {formData.weight || "-"}
               </p>
             </div>
 
-            <p className="text-3xl font-bold text-red-600 mb-3">
-              ${formData.pricePerUnit || "-"} / {formData.unit}
+            <p className="text-lg md:text-xs font-bold  mb-1">
+              Price/Unit :{" "}
+              <span className="text-green-600">
+                {" "}
+                ${formData.pricePerUnit || "-"} / {formData.unit}
+              </span>
             </p>
 
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-1">Description:</h4>
-              <p className="text-gray-600 text-sm">
-                {formData.description ||
-                  "Product description will appear here..."}
-              </p>
-            </div>
+            <p className="text-gray-600 text-xs line-clamp-3">
+              {formData.description ||
+                "Product description will appear here..."}
+            </p>
           </div>
         </div>
       </div>
