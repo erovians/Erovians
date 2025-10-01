@@ -1,7 +1,13 @@
-import React, { useState } from "react";
-import api from "@/utils/axios.utils";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct, clearMessage } from "../../../redux/slice/productSlice";
 
 const AddProduct = () => {
+  const dispatch = useDispatch();
+  const { product, loading, message, error } = useSelector(
+    (state) => state.products || {}
+  );
+
   const [formData, setFormData] = useState({
     companyId: "",
     productName: "",
@@ -18,63 +24,56 @@ const AddProduct = () => {
     description: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  // Clear message after 3s
+  useEffect(() => {
+    if (message || error) {
+      const timer = setTimeout(() => {
+        dispatch(clearMessage());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, error, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (["length", "width", "thickness"].includes(name)) {
       setFormData((prev) => ({
         ...prev,
         size: { ...prev.size, [name]: value },
-      }));
-    } else if (name.startsWith("image")) {
-      const index = parseInt(name.split("-")[1]);
-      const updatedImages = [...formData.productImages];
-      updatedImages[index] = value;
-      setFormData((prev) => ({
-        ...prev,
-        productImages: updatedImages,
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData((prev) => ({
+      ...prev,
+      productImages: [...prev.productImages, ...files],
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === "size") {
+        formDataToSend.append(key, JSON.stringify(formData[key]));
+      } else if (key === "productImages") {
+        formData[key].forEach((file) =>
+          formDataToSend.append("productImages", file)
+        );
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
 
     try {
-      const formDataToSend = new FormData();
+      const result = await dispatch(addProduct(formDataToSend)).unwrap();
 
-      // Append all text fields
-      formDataToSend.append("companyId", formData.companyId);
-      formDataToSend.append("productName", formData.productName);
-      formDataToSend.append("category", formData.category);
-      formDataToSend.append("subCategory", formData.subCategory);
-      formDataToSend.append("grade", formData.grade);
-      formDataToSend.append("color", formData.color);
-      formDataToSend.append("origin", formData.origin);
-      formDataToSend.append("weight", formData.weight);
-      formDataToSend.append("pricePerUnit", formData.pricePerUnit);
-      formDataToSend.append("unit", formData.unit);
-      formDataToSend.append("description", formData.description);
-
-      // Append nested object (must stringify)
-      formDataToSend.append("size", JSON.stringify(formData.size));
-
-      // Append files
-      formData.productImages.forEach((file) => {
-        formDataToSend.append("productImages", file);
-      });
-
-      // 🚫 don’t manually set headers, axios will set multipart correctly
-      const res = await api.post("/product/add", formDataToSend);
-
-      setMessage(res.data.message);
+      // Reset form only after success
       setFormData({
         companyId: "",
         productName: "",
@@ -90,10 +89,12 @@ const AddProduct = () => {
         unit: "sq.ft",
         description: "",
       });
+
+      // Optionally: show a success alert
+      alert(result.message || "Product added successfully!");
     } catch (err) {
-      setMessage(err.response?.data?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      // If API fails, keep form data intact
+      alert(err || "Something went wrong");
     }
   };
 
@@ -130,7 +131,7 @@ const AddProduct = () => {
         />
 
         {/* Product Images */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="font-medium">Product Images (Min 3)</label>
           <input
             type="file"
@@ -147,12 +148,68 @@ const AddProduct = () => {
           />
 
           {/* Validation message if less than 3 */}
+        {formData.productImages.length > 0 &&
+          formData.productImages.length < 3 && (
+            <p className="text-red-500 text-sm">
+              Please select at least 3 images.
+            </p>
+          )}
+        {/* </div> */}
+        {/* Product Images */}
+        <div className="space-y-2">
+          <label className="font-medium">Product Images (Min 3)</label>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => {
+              const files = Array.from(e.target.files);
+              setFormData((prev) => ({
+                ...prev,
+                productImages: [...prev.productImages, ...files], // append new files
+              }));
+            }}
+            className="w-full border p-3 rounded-lg"
+          />
+
+          {/* Validation message if less than 3 */}
           {formData.productImages.length > 0 &&
             formData.productImages.length < 3 && (
               <p className="text-red-500 text-sm">
                 Please select at least 3 images.
               </p>
             )}
+
+          {/* Image previews with delete */}
+          {formData.productImages.length > 0 && (
+            <div className="flex flex-wrap gap-3 mt-3">
+              {formData.productImages.map((img, idx) => (
+                <div key={idx} className="relative">
+                  <img
+                    src={
+                      typeof img === "string" ? img : URL.createObjectURL(img)
+                    }
+                    alt={`Preview ${idx + 1}`}
+                    className="h-24 w-24 object-cover rounded-lg shadow-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        productImages: prev.productImages.filter(
+                          (_, i) => i !== idx
+                        ),
+                      }))
+                    }
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -279,93 +336,106 @@ const AddProduct = () => {
         </button>
       </form>
 
-      <div className=" rounded-3xl overflow-hidden h-fit border border-gray-200 max-w-xl mx-auto">
-        {/* Header */}
-        <div className="p-4">
-          <h3 className="text-xl font-bold text-white text-center">
-            🛍️ Product Overview
-          </h3>
+      <div className="max-w-4xl h-fit mx-auto bg-white border rounded-2xl shadow-md overflow-hidden flex flex-col md:flex-row">
+        {/* Left: Images */}
+        <div className="md:w-1/2 p-4">
+          {/* Main Image */}
+          <div className="border rounded-lg overflow-hidden mb-2">
+            <img
+              src={
+                formData.productImages.length > 0
+                  ? typeof formData.productImages[0] === "string"
+                    ? formData.productImages[0]
+                    : URL.createObjectURL(formData.productImages[0])
+                  : "https://via.placeholder.com/400x400?text=No+Image"
+              }
+              alt="Main Product"
+              className="w-full h-64 object-cover"
+            />
+          </div>
+
+          {/* Thumbnails */}
+          {formData.productImages.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto mt-2">
+              {formData.productImages.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                  alt={`Thumbnail ${idx + 1}`}
+                  className="w-16 h-16 object-cover rounded border cursor-pointer hover:ring-2 hover:ring-yellow-500"
+                  onClick={() => {
+                    // Swap main image
+                    const newImages = [...formData.productImages];
+                    [newImages[0], newImages[idx]] = [
+                      newImages[idx],
+                      newImages[0],
+                    ];
+                    setFormData({ ...formData, productImages: newImages });
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Images Carousel */}
-        {formData.productImages.length > 0 ? (
-          <div className="flex overflow-x-auto gap-3 p-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {formData.productImages.map((img, idx) => (
-              <img
-                key={idx}
-                src={typeof img === "string" ? img : URL.createObjectURL(img)}
-                alt={`Product ${idx + 1}`}
-                className="h-48 w-64 object-cover rounded-xl flex-shrink-0 shadow-md"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="h-48 flex items-center justify-center text-gray-400 font-medium">
-            No Images
-          </div>
-        )}
+        {/* Right: Info */}
+        <div className="md:w-1/2 p-6 flex flex-col justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {formData.productName || "Product Name"}
+            </h2>
 
-        {/* Product Info */}
-        <div className="p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {formData.productName || "Product Name"}
-          </h2>
+            <div className="flex flex-wrap gap-2 mb-3">
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                {formData.category}
+              </span>
+              <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                {formData.subCategory || "N/A"}
+              </span>
+              <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
+                {formData.grade}
+              </span>
+            </div>
 
-          <div className="flex flex-wrap gap-2">
-            <span className="bg-blue-100 text-blue-800  px-3 py-1 rounded-full text-sm">
-              Category: {formData.category}
-            </span>
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-              SubCategory: {formData.subCategory || "N/A"}
-            </span>
-            <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
-              Grade: {formData.grade}
-            </span>
-          </div>
+            <div className="grid grid-cols-2 gap-2 text-gray-700 mb-3">
+              <p>
+                <span className="font-semibold">Color:</span>{" "}
+                {formData.color || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Origin:</span>{" "}
+                {formData.origin || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Length:</span>{" "}
+                {formData.size.length || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Width:</span>{" "}
+                {formData.size.width || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Thickness:</span>{" "}
+                {formData.size.thickness || "-"}
+              </p>
+              <p>
+                <span className="font-semibold">Weight:</span>{" "}
+                {formData.weight || "-"}
+              </p>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4 text-gray-600">
-            <p>
-              <span className="font-semibold">Color:</span>{" "}
-              {formData.color || "-"}
-            </p>
-            <p>
-              <span className="font-semibold">Origin:</span>{" "}
-              {formData.origin || "-"}
-            </p>
-            <p>
-              <span className="font-semibold">Length:</span>{" "}
-              {formData.size.length || "-"}
-            </p>
-            <p>
-              <span className="font-semibold">Width:</span>{" "}
-              {formData.size.width || "-"}
-            </p>
-            <p>
-              <span className="font-semibold">Thickness:</span>{" "}
-              {formData.size.thickness || "-"}
-            </p>
-            <p>
-              <span className="font-semibold">Weight:</span>{" "}
-              {formData.weight || "-"}
-            </p>
-          </div>
-
-          <p className="text-gray-800 font-semibold mt-2">
-            Price:{" "}
-            <span className="text-red-600">
+            <p className="text-3xl font-bold text-red-600 mb-3">
               ${formData.pricePerUnit || "-"} / {formData.unit}
-            </span>
-          </p>
-
-          <div className="mt-4">
-            <h4 className="font-semibold text-gray-700 mb-1">Description:</h4>
-            <p className="text-gray-600">
-              {formData.description ||
-                "Product description will appear here..."}
             </p>
-          </div>
 
-          {/* Footer */}
+            <div>
+              <h4 className="font-semibold text-gray-800 mb-1">Description:</h4>
+              <p className="text-gray-600 text-sm">
+                {formData.description ||
+                  "Product description will appear here..."}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
