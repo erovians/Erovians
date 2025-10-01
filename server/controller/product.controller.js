@@ -1,11 +1,11 @@
 import Product from "../models/product.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
 export const addProduct = async (req, res) => {
   try {
     const {
       companyId,
       productName,
-      productImages,
       category,
       subCategory,
       grade,
@@ -18,52 +18,33 @@ export const addProduct = async (req, res) => {
       description,
     } = req.body;
 
-    // Manual validation
-    if (
-      !companyId ||
-      !productName ||
-      !productImages ||
-      !category ||
-      !subCategory ||
-      !grade ||
-      !color ||
-      !origin ||
-      !size ||
-      !weight ||
-      !pricePerUnit ||
-      !unit ||
-      !description
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All required fields must be provided",
-      });
+    // ✅ Parse size JSON
+    const parsedSize = JSON.parse(size);
+
+    // ✅ Upload all files to Cloudinary
+    const imageUrls = [];
+    for (const file of req.files) {
+      const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
+      if (uploaded) imageUrls.push(uploaded.secure_url);
     }
 
-    if (!Array.isArray(productImages) || productImages.length < 3) {
+    if (imageUrls.length < 3) {
       return res.status(400).json({
         success: false,
         message: "At least 3 product images are required",
       });
     }
 
-    if (!size.length || !size.width || !size.thickness) {
-      return res.status(400).json({
-        success: false,
-        message: "Size (length, width, thickness) must be provided",
-      });
-    }
-
     const product = new Product({
       companyId,
       productName,
-      productImages,
+      productImages: imageUrls,
       category,
       subCategory,
       grade,
       color,
       origin,
-      size,
+      size: parsedSize,
       weight,
       pricePerUnit,
       unit,

@@ -7,6 +7,7 @@ import createCompany from "./routes/company.routes.js";
 import productRoute from "./routes/product.route.js";
 
 const app = express();
+app.use(express.json({ limit: "10mb" }));
 
 app.use(
   cors({
@@ -14,17 +15,6 @@ app.use(
     credentials: true,
   })
 );
-
-// Add file upload middleware here
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
 // Static file serving
 app.use("/api/uploads", express.static("uploads"));
