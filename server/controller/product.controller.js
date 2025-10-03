@@ -16,6 +16,7 @@ export const addProduct = async (req, res) => {
       pricePerUnit,
       unit,
       description,
+      // status,
     } = req.body;
 
     // ✅ Parse size JSON
@@ -49,6 +50,7 @@ export const addProduct = async (req, res) => {
       pricePerUnit,
       unit,
       description,
+      // status,
     });
 
     const savedProduct = await product.save();
@@ -216,6 +218,38 @@ export const updateProductFields = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Something went wrong while updating product",
+    });
+  }
+};
+
+export const updateProductStatus = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { status } = req.body;
+
+    if (!["active", "inactive"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status. Must be 'active' or 'inactive'.",
+      });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { $set: { status } },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    console.error("❌ Error updating status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating status",
     });
   }
 };

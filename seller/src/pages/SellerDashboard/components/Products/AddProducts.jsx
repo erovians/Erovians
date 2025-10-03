@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, clearMessage } from "../../../redux/slice/productSlice";
+import { addProduct, clearMessage } from "../../../../redux/slice/productSlice";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -130,15 +130,14 @@ const AddProduct = () => {
           className="w-full border p-3 rounded-lg"
         />
 
-    
-          {/* Validation message if less than 3 */}
+        {/* Validation message if less than 3 */}
         {formData.productImages.length > 0 &&
           formData.productImages.length < 3 && (
             <p className="text-red-500 text-sm">
               Please select at least 3 images.
             </p>
           )}
-        
+
         {/* Product Images */}
         <div className="space-y-2">
           <label className="font-medium">Product Images (Min 3)</label>

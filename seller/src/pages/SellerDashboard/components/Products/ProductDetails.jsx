@@ -59,57 +59,69 @@ const ProductDetails = () => {
         </div>
 
         {/* Right: Product Info */}
-        <div className="md:w-1/2 flex flex-col">
+        <div className="md:w-1/2 flex flex-col space-y-6 p-6  rounded-2xl ">
           {/* Title */}
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-wide">
             {product.productName}
           </h1>
 
           {/* Price */}
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="flex items-baseline gap-3">
             <span className="text-3xl font-bold text-emerald-600">
               ₹{product.pricePerUnit}
             </span>
-            <span className="text-sm text-gray-500">/{product.unit}</span>
+            <span className="text-base text-gray-500">/{product.unit}</span>
           </div>
 
           {/* Details */}
-          <ul className="mt-4 text-sm text-gray-700 space-y-2">
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-gray-700 text-sm">
             <li>
-              <span className="font-medium">Category:</span> {product.category}
+              <span className="font-semibold">Category:</span>{" "}
+              {product.category}
             </li>
             <li>
-              <span className="font-medium">Grade:</span> {product.grade}
+              <span className="font-semibold">Grade:</span> {product.grade}
             </li>
             <li>
-              <span className="font-medium">Color:</span> {product.color}
+              <span className="font-semibold">Color:</span>{" "}
+              {product.color || "N/A"}
             </li>
             <li>
-              <span className="font-medium">Origin:</span>{" "}
+              <span className="font-semibold">Origin:</span>{" "}
               {product.origin || "N/A"}
             </li>
             <li>
-              <span className="font-medium">Size:</span> {product.size?.length}{" "}
-              × {product.size?.width} × {product.size?.thickness}
+              <span className="font-semibold">Length:</span>{" "}
+              {product.size?.length || "N/A"}
             </li>
             <li>
-              <span className="font-medium">Weight:</span>{" "}
+              <span className="font-semibold">Width:</span>{" "}
+              {product.size?.width || "N/A"}
+            </li>
+            <li>
+              <span className="font-semibold">Thickness:</span>{" "}
+              {product.size?.thickness || "N/A"}
+            </li>
+            <li>
+              <span className="font-semibold">Weight:</span>{" "}
               {product.weight || "N/A"}
             </li>
           </ul>
 
           {/* Description */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-gray-800">Description</h2>
-            <p className="mt-2 text-gray-600 leading-relaxed">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2 border-b border-gray-200 pb-1">
+              Description
+            </h2>
+            <p className="text-gray-600 leading-relaxed text-sm">
               {product.description || "No description available."}
             </p>
           </div>
 
           {/* Action Button */}
-          <button className="mt-6 px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition w-fit">
+          {/* <button className="self-start px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors">
             Buy Now
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

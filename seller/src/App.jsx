@@ -13,10 +13,10 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
 import CompanyProfile from "./pages/SellerDashboard/components/Companyprofile/CompanyProfileForm";
-import AddProducts from "./pages/SellerDashboard/pages/AddProducts";
+import AddProducts from "./pages/SellerDashboard/components/Products/AddProducts";
 import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/CompanyOverview";
-import ListProducts from "./pages/SellerDashboard/pages/ListProducts";
-import ProductDetails from "./pages/SellerDashboard/pages/ProductDetails";
+import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
+import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 
 function App() {
   const location = useLocation();
