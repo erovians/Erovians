@@ -67,17 +67,17 @@ export const stepTwoSchema = z.object({
     .min(50, "Company description must be at least 50 characters"),
 
   logo: z
-    .any()
-    .refine((file) => !!file, "Logo is required")
-    .refine((file) => file instanceof File, {
-      message: "Please upload a valid file",
-    })
+    .instanceof(File, { message: "Logo is required" })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
-      message: "The file size should not exceed 300kb",
+      message: "The file size should not exceed 300 KB",
     }),
+
   companyPhotos: z
-    .array(z.any())
-    .min(1, "At least one company photo is required")
+    .array(z.instanceof(File))
+    .default([]) // 👈 ensures we always get an array, never undefined
+    .refine((files) => files.length > 0, {
+      message: "At least one company photo is required",
+    })
     .refine(
       (files) =>
         files.every(
@@ -90,6 +90,6 @@ export const stepTwoSchema = z.object({
     .refine((files) => files.every((file) => file.size <= 200 * 1024), {
       message: "Each photo must not exceed 200 KB",
     }),
-
+    
   companyVideos: z.array(z.any()).optional(),
 });
