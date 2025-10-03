@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  createCompanyBasicInfo,
-  createCompanyIntro,
+  registerCompany
 } from "../controller/company.controller.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
-router.post("/basic-info", createCompanyBasicInfo);
-router.post("/intro", createCompanyIntro);
+router.post("/register", upload.fields([ 
+    { name: "logo", maxCount: 1 },
+    { name: "companyPhotos", maxCount: 10 },
+    { name: "companyVideo", maxCount: 1 },]) 
+  ,registerCompany);
 
 export default router;

@@ -5,7 +5,7 @@ const ProductSchema = new mongoose.Schema(
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-      required: [true, "Seller ID is required"],
+      required: [true, "Company ID is required"],
       index: true,
     },
     productName: {
@@ -23,7 +23,7 @@ const ProductSchema = new mongoose.Schema(
         },
         message: "At least 3 product images are required",
       },
-      required: [true, "Product images are required "],
+      required: [true, "Product images are required"],
     },
     category: {
       type: String,
@@ -36,7 +36,7 @@ const ProductSchema = new mongoose.Schema(
     },
     subCategory: {
       type: String,
-      required: [true, "subCategory is required"],
+      required: [true, "SubCategory is required"],
       index: true,
     },
     grade: {
@@ -98,16 +98,21 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: [true, "Description is required"],
       trim: true,
-      minlength: [20, "Description must be at least 20 characters"],
-      maxlength: [1000, "Description cannot exceed 1000 characters"],
+      minlength: [50, "Description must be at least 50 characters"],
+      maxlength: [1500, "Description cannot exceed 1500 characters"],
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   { timestamps: true }
 );
 
+// ✅ fixed index (changed sellerId → companyId)
+ProductSchema.index({ companyId: 1, category: 1 });
 ProductSchema.index({ category: 1, pricePerUnit: 1 });
-ProductSchema.index({ sellerId: 1, category: 1 });
 
 const Product = mongoose.model("Product", ProductSchema);
-
 export default Product;

@@ -20,6 +20,8 @@ import {
   validateOtp,
 } from "@/utils/validation.utils";
 
+const MAX_FILE_SIZE_MB = 5;
+
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
   const [otpStatus, setOtpStatus] = useState("idle");
@@ -82,10 +84,10 @@ const SellerSignUp = () => {
         setShowOtpField(true);
       } else {
         setOtpStatus("idle");
-        setShowModal(true);
-        setModalMessage(
-          response.data.message || "Failed to send OTP. Please try again."
-        );
+        setErrors((prev) => ({
+          ...prev,
+          mobile: response.data.message || "Failed to send OTP",
+        }));
       }
     } catch (err) {
       if (err.response.status == 409) {
@@ -126,7 +128,7 @@ const SellerSignUp = () => {
       console.error("Error verifying OTP:", err);
       setErrors((prev) => ({
         ...prev,
-        otp: "Invalid OTP. Please try again.",
+        otp: "Invalid or expired OTP. Please try again.",
       }));
       setOtpStatus("sent");
     }
@@ -166,12 +168,13 @@ const SellerSignUp = () => {
         setModalMessage(res.data.message);
         return;
       }
-
       setStep(2);
     } catch (err) {
-      console.error("Error checking unique:", err);
-      setShowModal(true);
-      setModalMessage("Server error. Please try again.");
+      console.error("Error checking uniqueness:", err);
+      setErrors((prev) => ({
+        ...prev,
+        email: "Something went wrong. Please try again later.",
+      }));
     }
   };
 
@@ -292,7 +295,6 @@ const SellerSignUp = () => {
       </div>
     </div>
   );
-
   return (
     <div className="min-h-screen bg-white font-sans">
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
@@ -415,7 +417,7 @@ const SellerSignUp = () => {
                 className="w-full px-4 py-3 border rounded-md text-sm outline-none"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-500 text-sm">{errors.email}</p>
               )}
 
               <input
@@ -554,7 +556,6 @@ const SellerSignUp = () => {
                   </p>
                 )}
               </div>
-
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   type="button"

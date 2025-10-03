@@ -1,11 +1,11 @@
 import Product from "../models/product.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
 export const addProduct = async (req, res) => {
   try {
     const {
       companyId,
       productName,
-      productImages,
       category,
       subCategory,
       grade,
@@ -16,57 +16,41 @@ export const addProduct = async (req, res) => {
       pricePerUnit,
       unit,
       description,
+      // status,
     } = req.body;
 
-    if (
-      !companyId ||
-      !productName ||
-      !productImages ||
-      !category ||
-      !subCategory ||
-      !grade ||
-      !color ||
-      !origin ||
-      !size ||
-      !weight ||
-      !pricePerUnit ||
-      !unit ||
-      !description
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All required fields must be provided",
-      });
+    // ✅ Parse size JSON
+    const parsedSize = JSON.parse(size);
+
+    // ✅ Upload all files to Cloudinary
+    const imageUrls = [];
+    for (const file of req.files) {
+      const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
+      if (uploaded) imageUrls.push(uploaded.secure_url);
     }
 
-    if (!Array.isArray(productImages) || productImages.length < 3) {
+    if (imageUrls.length < 3) {
       return res.status(400).json({
         success: false,
         message: "At least 3 product images are required",
       });
     }
 
-    if (!size.length || !size.width || !size.thickness) {
-      return res.status(400).json({
-        success: false,
-        message: "Size (length, width, thickness) must be provided",
-      });
-    }
-
     const product = new Product({
       companyId,
       productName,
-      productImages,
+      productImages: imageUrls,
       category,
       subCategory,
       grade,
       color,
       origin,
-      size,
+      size: parsedSize,
       weight,
       pricePerUnit,
       unit,
       description,
+      // status,
     });
 
     const savedProduct = await product.save();
@@ -85,10 +69,40 @@ export const addProduct = async (req, res) => {
   }
 };
 
+// export const listAllProducts = async (req, res) => {
+//   try {
+//     const { companyId } = req.query;
+//     const filter = companyId ? { companyId } : {};
+
+//     const products = await Product.find(filter).sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       count: products.length,
+//       data: products,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error listing products:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while fetching products",
+//     });
+//   }
+// };
+
 export const listAllProducts = async (req, res) => {
   try {
-    const { companyId } = req.query;
-    const filter = companyId ? { companyId } : {};
+    // First try query param, then fallback to default static one
+    const companyId = req.query.companyId || "651234abcd5678ef90123456";
+
+    if (!companyId) {
+      return res.status(400).json({
+        success: false,
+        message: "Company ID is required",
+      });
+    }
+
+    const filter = { companyId };
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
@@ -204,6 +218,38 @@ export const updateProductFields = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Something went wrong while updating product",
+    });
+  }
+};
+
+export const updateProductStatus = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { status } = req.body;
+
+    if (!["active", "inactive"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status. Must be 'active' or 'inactive'.",
+      });
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { $set: { status } },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    console.error("❌ Error updating status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating status",
     });
   }
 };

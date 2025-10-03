@@ -17,9 +17,7 @@ const SellerDashboardLayout = () => {
           <SellerNavbar />
         </div>
         <main
-          className={`flex-1 overflow-auto p-4 transition-all duration-300 ${
-            sidebarOpen ? "lg:ml-64" : "ml-0"
-          }`}
+          className={`flex-1 overflow-auto p-4 transition-all duration-300`}
         >
           <Outlet />
         </main>

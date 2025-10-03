@@ -17,6 +17,13 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       countryOrRegion: { type: String, trim: true, required: true },
       postalCode: { type: String, trim: true, required: true },
     },
+    legalowner: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 100,
+    },
     locationOfRegistration: {
       type: String,
       required: true,
@@ -24,6 +31,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
+
     mainCategory: {
       type: String,
       required: true,
@@ -36,15 +44,10 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 50,
     },
-    acceptedCurrency: {
-      type: String,
-      required: true,
-      enum: ["USD", "INR", "EUR", "JPY"],
-    },
+    acceptedCurrency: [{ type: String }],
     acceptedPaymentType: {
       type: [String],
       required: true,
-      enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
       validate: {
         validator: function (arr) {
           return arr.length > 0;
@@ -63,11 +66,11 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
 
 const CompanyIntroSchema = new mongoose.Schema(
   {
-    logo: { type: String, required: true },
+    logo: { type: String, required: false },
     companyDescription: { type: String, required: true, minlength: 50 },
     companyPhotos: {
       type: [String],
-      required: true,
+      required: false,
       validate: (val) => val.length >= 1,
     },
     companyVideos: { type: [String], default: [] },
