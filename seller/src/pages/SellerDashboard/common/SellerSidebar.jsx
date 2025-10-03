@@ -64,26 +64,6 @@ const SellerSidebar = () => {
             subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
           },
           {
-            key: "messages",
-            icon: <MessageSquare size={20} />,
-            label: "Messages",
-            subLinks: [
-              { to: "/seller/messages/inquires", label: "Inquires" },
-              { to: "/seller/messages/contacts", label: "Contacts" },
-              { to: "/seller/messages/settings", label: "Settings" },
-            ],
-          },
-          {
-            key: "orders",
-            icon: <ShoppingCart size={20} />,
-            label: "Orders",
-            subLinks: [
-              { to: "/seller/orders/completed", label: "Completed" },
-              { to: "/seller/orders/pending", label: "Pending" },
-              { to: "/seller/orders/reviews", label: "Reviews" },
-            ],
-          },
-          {
             key: "products",
             icon: <Box size={20} />,
             label: "Products",
@@ -110,6 +90,26 @@ const SellerSidebar = () => {
                 label: "Company Profile",
               },
               { to: "/sellerdashboard/company/add", label: "Certification" },
+            ],
+          },
+          {
+            key: "messages",
+            icon: <MessageSquare size={20} />,
+            label: "Messages",
+            subLinks: [
+              { to: "/seller/messages/inquires", label: "Inquires" },
+              { to: "/seller/messages/contacts", label: "Contacts" },
+              { to: "/seller/messages/settings", label: "Settings" },
+            ],
+          },
+          {
+            key: "orders",
+            icon: <ShoppingCart size={20} />,
+            label: "Orders",
+            subLinks: [
+              { to: "/seller/orders/completed", label: "Completed" },
+              { to: "/seller/orders/pending", label: "Pending" },
+              { to: "/seller/orders/reviews", label: "Reviews" },
             ],
           },
         ].map((menu) => (

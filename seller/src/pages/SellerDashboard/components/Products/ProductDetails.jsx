@@ -67,7 +67,7 @@ const ProductDetails = () => {
 
           {/* Price */}
           <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-emerald-600">
+            <span className="text-3xl font-bold text-black">
               ₹{product.pricePerUnit}
             </span>
             <span className="text-base text-gray-500">/{product.unit}</span>
