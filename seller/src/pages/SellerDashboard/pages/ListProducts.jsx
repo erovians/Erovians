@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "@/utils/axios.utils";
+import { Link } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -37,86 +38,86 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
   if (!products.length) return <p>No products found for this company.</p>;
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+    <div className="space-y-6">
       {products.map((product) => (
         <div
           key={product._id}
-          className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-w-[400px] max-h-[500px] w-full mx-auto"
+          className="flex flex-col md:flex-row bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
         >
-          {/* Product Images Carousel */}
-          {product.productImages && product.productImages.length > 0 ? (
-            <Carousel className="w-full h-[220px] rounded-t-2xl relative">
-              <CarouselContent>
-                {product.productImages.map((img, idx) => (
-                  <CarouselItem
-                    key={idx}
-                    className="flex items-center justify-center"
-                  >
-                    <img
-                      src={img}
-                      alt={`${product.productName} - ${idx + 1}`}
-                      className="w-full h-[220px] object-cover rounded-t-2xl"
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+          {/* Left: Product Images */}
+          <div className="md:w-2/4 w-full h-[280px] relative flex items-center justify-center ">
+            {product.productImages && product.productImages.length > 0 ? (
+              <Carousel className="w-full h-full">
+                <CarouselContent>
+                  {product.productImages.map((img, idx) => (
+                    <CarouselItem
+                      key={idx}
+                      className="flex items-center justify-center"
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.productName} - ${idx + 1}`}
+                        className="w-full h-[280px] object-contain"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 rounded-full shadow flex items-center justify-center cursor-pointer hover:bg-white" />
+                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 bg-white/80 rounded-full shadow flex items-center justify-center cursor-pointer hover:bg-white" />
+              </Carousel>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            )}
+          </div>
 
-              {/* Optional Arrows */}
-              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 bg-white rounded-full shadow flex items-center justify-center cursor-pointer" />
-              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 bg-white rounded-full shadow flex items-center justify-center cursor-pointer" />
-            </Carousel>
-          ) : (
-            <div className="w-full h-[220px] flex items-center justify-center bg-gray-100 text-gray-400 rounded-t-2xl">
-              No Image
-            </div>
-          )}
+          {/* Right: Product Details */}
+          <Link
+            key={product._id}
+            to={`/sellerdashboard/product/${product._id}`}
+            className="md:w-full w-full p-6 flex flex-col justify-between"
+          >
+            <div>
+              {/* Title */}
+              <h3 className="text-xl font-semibold text-gray-800">
+                {product.productName}
+              </h3>
 
-          {/* Product Details */}
-          <div className="p-4 h-[280px] flex flex-col justify-between">
-            {/* Title */}
-            <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
-              {product.productName}
-            </h3>
+              {/* Highlights */}
+              <ul className="mt-3 space-y-1 text-sm text-gray-600">
+                <li>
+                  <span className="font-medium">Category:</span>{" "}
+                  {product.category}
+                </li>
+                <li>
+                  <span className="font-medium">Grade:</span> {product.grade}
+                </li>
+                <li>
+                  <span className="font-medium">Size:</span>{" "}
+                  {product.size?.length} × {product.size?.width} ×{" "}
+                  {product.size?.thickness}
+                </li>
+                <li>
+                  <span className="font-medium">Origin:</span>{" "}
+                  {product.origin || "N/A"}
+                </li>
+              </ul>
 
-            {/* Tags */}
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">
-                {product.category}
-              </span>
-              <span className="px-2 py-1 text-xs bg-green-100 text-green-600 rounded-full">
-                Grade {product.grade}
-              </span>
-            </div>
-
-            {/* Info */}
-            <div className="text-sm text-gray-600 mb-2 space-y-1">
-              <p>
-                <span className="font-medium">SubCategory:</span>{" "}
-                {product.subCategory || "N/A"}
-              </p>
-              <p>
-                <span className="font-medium">Color:</span> {product.color}
-              </p>
-              <p>
-                <span className="font-medium">Origin:</span> {product.origin}
-              </p>
-              <p>
-                <span className="font-medium">Size:</span>{" "}
-                {product.size?.length} × {product.size?.width} ×{" "}
-                {product.size?.thickness}
+              {/* Description */}
+              <p className="mt-3 text-gray-500 text-sm line-clamp-3">
+                {product.description}
               </p>
             </div>
 
             {/* Price */}
-            <div className="mt-2 flex justify-between items-center">
-              <span className="text-lg font-bold text-emerald-600">
-                ${product.pricePerUnit} / {product.unit}
+            <div className="mt-4 flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-emerald-600">
+                ₹{product.pricePerUnit}
               </span>
-              <button className="px-3 py-1.5 text-sm bg-navyblue text-white rounded-lg shadow hover:bg-blue-800 transition">
-                View
-              </button>
+              <span className="text-sm text-gray-500">/{product.unit}</span>
             </div>
-          </div>
+          </Link>
         </div>
       ))}
     </div>
