@@ -4,6 +4,7 @@ import {
   listAllProducts,
   updateProductFields,
   getProductById,
+  updateProductStatus,
 } from "../controller/product.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -14,5 +15,6 @@ router.get("/list", listAllProducts);
 router.get("/:productId", getProductById);
 
 router.patch("/update/:productId", updateProductFields);
+router.patch("/:productId/status", updateProductStatus);
 
 export default router;

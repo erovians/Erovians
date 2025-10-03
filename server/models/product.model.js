@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
@@ -24,7 +23,7 @@ const ProductSchema = new mongoose.Schema(
         },
         message: "At least 3 product images are required",
       },
-      required: [true, "Product images are required"], 
+      required: [true, "Product images are required"],
     },
     category: {
       type: String,
@@ -99,8 +98,13 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: [true, "Description is required"],
       trim: true,
-      minlength: [20, "Description must be at least 20 characters"],
-      maxlength: [1000, "Description cannot exceed 1000 characters"],
+      minlength: [50, "Description must be at least 50 characters"],
+      maxlength: [1500, "Description cannot exceed 1500 characters"],
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   { timestamps: true }
