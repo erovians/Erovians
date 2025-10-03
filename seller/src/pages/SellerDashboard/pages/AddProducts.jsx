@@ -138,7 +138,7 @@ const AddProduct = () => {
               Please select at least 3 images.
             </p>
           )}
-        {/* </div> */}
+        
         {/* Product Images */}
         <div className="space-y-2">
           <label className="font-medium">Product Images (Min 3)</label>
