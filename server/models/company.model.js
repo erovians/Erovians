@@ -47,15 +47,10 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 50,
     },
-    acceptedCurrency: {
-      type: String,
-      required: true,
-      enum: ["USD", "INR", "EUR", "JPY"],
-    },
+    acceptedCurrency: [{ type: String }],
     acceptedPaymentType: {
       type: [String],
       required: true,
-      // enum: ["UPI", "Credit Card", "Debit Card", "Bank Transfer", "Cash"],
       validate: {
         validator: function (arr) {
           return arr.length > 0;
@@ -88,12 +83,12 @@ const CompanyIntroSchema = new mongoose.Schema(
 
 const CompanyDataSchema = new mongoose.Schema(
   {
-    // SellerId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "seller",
-    //   required: true,
-    //   unique: true,
-    // },
+    SellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "seller",
+      required: true,
+      unique: true,
+    },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
     companyIntro: { type: CompanyIntroSchema, required: true },
   },
