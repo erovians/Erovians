@@ -74,10 +74,6 @@ export default function StepTwo({ formData, setFormData, errors }) {
 
   return (
     <div>
-      <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
-        Company Introduction
-      </h3>
-
       {/* Company Logo */}
       <div className={formRowClass}>
         <label className={`${labelClass} pt-1`}>
