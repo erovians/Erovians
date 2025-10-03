@@ -12,7 +12,11 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
-import CompanyProfile from "./pages/SellerDashboard/components/Company/CompanyProfile";
+import CompanyProfile from "./pages/SellerDashboard/components/Companyprofile/CompanyProfileForm";
+import AddProducts from "./pages/SellerDashboard/components/Products/AddProducts";
+import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/CompanyOverview";
+import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
+import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 
 function App() {
   const location = useLocation();
@@ -50,6 +54,12 @@ function App() {
 
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
+            <Route path="company/overview" element={<CompanyOverview />} />
+
+            {/* products */}
+            <Route path="products/add" element={<AddProducts />} />
+            <Route path="products/list" element={<ListProducts />} />
+            <Route path="product/:id" element={<ProductDetails />} />
           </Route>
         )}
       </Routes>

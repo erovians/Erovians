@@ -331,9 +331,9 @@ export default function Navbar() {
           <div className="flex flex-col gap-3 mt-4">
             <Button
               variant="outline"
-              className="bg-transparent border border-yellow hover:bg-yellow"
+              className="bg-transparent border border-yellow hover:bg-yellow "
             >
-              <Link to={"/login"}>
+              <Link to={"/login"} className="flex gap-1  items-center m-auto">
                 Login <LogIn />
               </Link>
             </Button>
@@ -342,7 +342,7 @@ export default function Navbar() {
               variant="outline"
               className="bg-yellow hover:bg-white hover:border-yellow"
             >
-              <Link to={"/start-selling"}>
+              <Link to={"/start-selling"} className="flex gap-1  items-center m-auto">
                 Start Selling <Store />
               </Link>
             </Button>

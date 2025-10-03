@@ -64,6 +64,35 @@ const SellerSidebar = () => {
             subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
           },
           {
+            key: "products",
+            icon: <Box size={20} />,
+            label: "Products",
+            subLinks: [
+              { to: "/sellerdashboard/products/add", label: "Add Product" },
+              { to: "/sellerdashboard/products/list", label: "List Products" },
+              {
+                to: "/sellerdashboard/products/categories",
+                label: "Categories",
+              },
+            ],
+          },
+          {
+            key: "Store",
+            icon: <Store size={20} />,
+            label: "Store",
+            subLinks: [
+              {
+                to: "/sellerdashboard/company/overview",
+                label: "Company Overview",
+              },
+              {
+                to: "/sellerdashboard/company/profile",
+                label: "Company Profile",
+              },
+              { to: "/sellerdashboard/company/add", label: "Certification" },
+            ],
+          },
+          {
             key: "messages",
             icon: <MessageSquare size={20} />,
             label: "Messages",
@@ -81,32 +110,6 @@ const SellerSidebar = () => {
               { to: "/seller/orders/completed", label: "Completed" },
               { to: "/seller/orders/pending", label: "Pending" },
               { to: "/seller/orders/reviews", label: "Reviews" },
-            ],
-          },
-          {
-            key: "products",
-            icon: <Box size={20} />,
-            label: "Products",
-            subLinks: [
-              { to: "/seller/products/add", label: "Add Product" },
-              { to: "/seller/products/list", label: "List Products" },
-              { to: "/seller/products/categories", label: "Categories" },
-            ],
-          },
-          {
-            key: "Store",
-            icon: <Store size={20} />,
-            label: "Store",
-            subLinks: [
-              {
-                to: "/sellerdashboard/company/overview",
-                label: "Company Overview",
-              },
-              {
-                to: "/sellerdashboard/company/profile",
-                label: "Company Profile",
-              },
-              { to: "/sellerdashboard/company/add", label: "Certification" },
             ],
           },
         ].map((menu) => (
