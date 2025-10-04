@@ -146,81 +146,81 @@ export const getProductById = async (req, res) => {
   }
 };
 
-export const updateProductFields = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    let updates = req.body;
+// export const updateProductFields = async (req, res) => {
+//   try {
+//     const { productId } = req.params;
+//     let updates = req.body;
 
-    if (!updates || Object.keys(updates).length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "No update data provided",
-      });
-    }
+//     if (!updates || Object.keys(updates).length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No update data provided",
+//       });
+//     }
 
-    const allowedFields = [
-      "productName",
-      "productImages",
-      "category",
-      "subCategory",
-      "grade",
-      "color",
-      "origin",
-      "size.length",
-      "size.width",
-      "size.thickness",
-      "weight",
-      "pricePerUnit",
-      "unit",
-      "description",
-    ];
+//     const allowedFields = [
+//       "productName",
+//       "productImages",
+//       "category",
+//       "subCategory",
+//       "grade",
+//       "color",
+//       "origin",
+//       "size.length",
+//       "size.width",
+//       "size.thickness",
+//       "weight",
+//       "pricePerUnit",
+//       "unit",
+//       "description",
+//     ];
 
-    let updateObj = {};
+//     let updateObj = {};
 
-    for (const [field, value] of Object.entries(updates)) {
-      if (!allowedFields.includes(field)) {
-        return res.status(400).json({
-          success: false,
-          message: `Invalid field '${field}'. Allowed fields: ${allowedFields.join(
-            ", "
-          )}`,
-        });
-      }
+//     for (const [field, value] of Object.entries(updates)) {
+//       if (!allowedFields.includes(field)) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Invalid field '${field}'. Allowed fields: ${allowedFields.join(
+//             ", "
+//           )}`,
+//         });
+//       }
 
-      if (field.startsWith("size.")) {
-        const subField = field.split(".")[1];
-        updateObj[`size.${subField}`] = value;
-      } else {
-        updateObj[field] = value;
-      }
-    }
+//       if (field.startsWith("size.")) {
+//         const subField = field.split(".")[1];
+//         updateObj[`size.${subField}`] = value;
+//       } else {
+//         updateObj[field] = value;
+//       }
+//     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      { $set: updateObj },
-      { new: true, runValidators: true }
-    );
+//     const updatedProduct = await Product.findByIdAndUpdate(
+//       productId,
+//       { $set: updateObj },
+//       { new: true, runValidators: true }
+//     );
 
-    if (!updatedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
+//     if (!updatedProduct) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Product updated successfully",
-      data: updatedProduct,
-    });
-  } catch (error) {
-    console.error("❌ Error updating product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while updating product",
-    });
-  }
-};
+//     return res.status(200).json({
+//       success: true,
+//       message: "Product updated successfully",
+//       data: updatedProduct,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error updating product:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while updating product",
+//     });
+//   }
+// };
 
 export const updateProductStatus = async (req, res) => {
   try {
@@ -250,6 +250,58 @@ export const updateProductStatus = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Something went wrong while updating status",
+    });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    await product.deleteOne();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const updateProductData = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const updatedData = req.body;
+
+    const product = await Product.findByIdAndUpdate(productId, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+      message: "Product updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
     });
   }
 };
