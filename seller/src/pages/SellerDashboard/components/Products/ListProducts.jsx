@@ -46,37 +46,13 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
         >
           {/* Status Toggle */}
           <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-            <button
-              onClick={async (e) => {
-                e.preventDefault();
-                const newStatus =
-                  product.status === "active" ? "inactive" : "active";
-                try {
-                  await api.patch(`/product/${product._id}/status`, {
-                    status: newStatus,
-                  });
-                  setProducts((prev) =>
-                    prev.map((p) =>
-                      p._id === product._id ? { ...p, status: newStatus } : p
-                    )
-                  );
-                } catch (err) {
-                  console.error("Failed to update status", err);
-                }
-              }}
-              className={`relative inline-flex items-center h-5 rounded-full w-12 transition-colors duration-300 focus:outline-none ${
-                product.status === "active" ? "bg-green-500" : "bg-red-600"
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                product.status === "active"
+                  ? "bg-green-100 text-green-700 border border-green-300"
+                  : "bg-red-100 text-red-700 border border-red-300"
               }`}
             >
-              <span
-                className={`inline-block w-6 h-6 transform bg-white rounded-full shadow-md transition-transform duration-300 ${
-                  product.status === "active"
-                    ? "translate-x-7"
-                    : "translate-x-0"
-                }`}
-              />
-            </button>
-            <span className="text-sm font-medium text-gray-700">
               {product.status === "active" ? "Active" : "Inactive"}
             </span>
           </div>
