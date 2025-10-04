@@ -107,7 +107,7 @@ export const registerCompanyService = async (data, files) => {
   const uploadedFiles = [];
 
   try {
-    const SellerId = "6870e6e558e2ba32d6b1eb37"; // frontend must send sellerId
+    const SellerId = "6870e6e558e2ba32d6b1eb32"; // frontend must send sellerId
     if (!SellerId) throw new Error("SellerId is required");
 
     // Step 1: Check if company already exists
@@ -208,4 +208,14 @@ export const registerCompanyService = async (data, files) => {
 
     throw error;
   }
+};
+
+export const getCompanyDetailsService = async (sellerId) => {
+  if (!sellerId) throw new Error("SellerId is required");
+
+  const company = await CompanyDetails.findOne({ SellerId: sellerId });
+
+  if (!company) throw new Error("Company not found");
+
+  return company;
 };

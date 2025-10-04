@@ -55,7 +55,7 @@ export default function ReviewStep({ formData = {} }) {
                       <img
                         src={URL.createObjectURL(logo)}
                         alt="Logo"
-                        className="w-full h-full object-contain p-1"
+                        className="w-full h-full object-contain"
                       />
                     ) : companyName ? (
                       companyName.substring(0, 2).toUpperCase()
@@ -257,30 +257,11 @@ export default function ReviewStep({ formData = {} }) {
                   </h3>
 
                   <div
-                    className="max-h-60 overflow-y-scroll"
-                    style={{
-                      scrollbarWidth: "thin", // For Firefox
-                      scrollbarColor: "#9CA3AF #F3F4F6", // thumb color, track color
-                    }}
+                    className="max-h-60 overflow-y-auto"
                   >
                     <p className="text-sm text-gray-700 leading-relaxed">
                       {companyDescription}
                     </p>
-
-                    {/* Webkit scrollbar for Chrome, Edge, Safari */}
-                    <style jsx>{`
-                      div::-webkit-scrollbar {
-                        width: 8px;
-                      }
-                      div::-webkit-scrollbar-track {
-                        background: #f3f4f6; /* track color */
-                        border-radius: 8px;
-                      }
-                      div::-webkit-scrollbar-thumb {
-                        background-color: #9ca3af; /* thumb color */
-                        border-radius: 8px;
-                      }
-                    `}</style>
                   </div>
                 </div>
               )}
@@ -306,12 +287,12 @@ export default function ReviewStep({ formData = {} }) {
                       companyPhotos.slice(0, companyPhotos.length).map((photo, idx) => (
                         <div
                           key={idx}
-                          className="aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-blue-400"
+                          className="aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-navyblue"
                         >
                           <img
                             src={URL.createObjectURL(photo)}
                             alt={`Company photo ${idx + 1}`}
-                            className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       ))

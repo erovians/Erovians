@@ -131,8 +131,8 @@ const AddProduct = () => {
         />
 
         {/* Validation message if less than 3 */}
-        {formData.productImages.length > 0 &&
-          formData.productImages.length < 3 && (
+    
+          {formData.productName && (
             <p className="text-red-500 text-sm">
               Please select at least 3 images.
             </p>
