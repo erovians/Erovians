@@ -1,46 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 @import "tailwindcss";
-
 
 @theme {
   --color-white: #ffffff;
   --color-black: #333333;
   --color-blue: #0c2c43;
   --color-grey: #888;
---color-subgrey: #666666;
+  --color-subgrey: #666666;
   --color-darkgrey: #3f3f3f;
   --color-navyblue: #0c2c43;
   --color-lightblue: #f1faff;
-
 }
 
-
-*{
-  font-family: 'Poppins', sans-serif;
+* {
+  font-family: "Poppins", sans-serif;
 }
 
 body {
-  @apply bg-white; 
+  @apply bg-white;
 }
-
-::-webkit-scrollbar{
-  display: none;
-}
-
-
 
 /* Heading class */
 
 .rich-text h1 {
-  font-size: 24px; font-weight: bold; color: var(--color-grey);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-grey);
 }
 .rich-text p {
-  font-size: 16px; color: var(--color-subgrey);
-
+  font-size: 16px;
+  color: var(--color-subgrey);
 }
 h3 {
-  font-size: 18px; font-weight: 600; color: var(--color-navyblue);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-navyblue);
 }
 @media (min-width: 768px) {
   .rich-text h1 {
@@ -49,12 +44,10 @@ h3 {
   .rich-text p {
     font-size: 18px;
   }
-  h3{
+  h3 {
     font-size: 20px;
   }
 }
-
-
 
 /*  Sidebar css from shadcn UI */
 @layer base {
@@ -81,8 +74,8 @@ h3 {
   }
 }
 
-
 /* recharts styling */
-.recharts-wrapper:focus, .recharts-surface:focus{
+.recharts-wrapper:focus,
+.recharts-surface:focus {
   outline: none;
 }

@@ -3,9 +3,11 @@ import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import ReviewStep from "./steps/ReviewStep";
 import { stepOneSchema, stepTwoSchema } from "./utils/validation";
-import api from "@/utils/axios.utils";
-import { Loader2, Check, MoveRight } from "lucide-react";
+import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useDispatch, useSelector } from "react-redux";
+import { registerCompany, clearCompanyState } from "@/redux/slice/companySlice";
 
 const steps = [
   {
@@ -24,12 +26,16 @@ const steps = [
 ];
 
 export default function CompanyProfileForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem("currentStep");
     return savedStep ? Number(savedStep) : 1;
   });
-  // const [currentStep, setCurrentStep] = useState(1);
+
+  const dispatch = useDispatch();
+
+  const { loading, error, success, message } = useSelector(
+    (state) => state.company
+  );
 
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("companyFormData");
@@ -202,7 +208,6 @@ export default function CompanyProfileForm() {
       await stepOneSchema.parseAsync(formData);
       await stepTwoSchema.parseAsync(formData);
       setErrors({});
-      setIsSubmitting(true);
 
       const form = new FormData();
 
@@ -243,19 +248,25 @@ export default function CompanyProfileForm() {
 
       console.log("Files appended successfully ✅");
 
-      // Send request (do NOT set Content-Type manually)
-      const res = await api.post("/company/register", form);
-      console.log("Response:", res);
+      // // Send request (do NOT set Content-Type manually)
+      // const res = await api.post("/company/register", form);
+      // console.log("Response:", res);
 
-      if (!res.data.success) {
-        throw new Error(res.data.message || "Something went wrong");
-      }
+      // if (!res.data.success) {
+      //   throw new Error(res.data.message || "Something went wrong");
+      // }
 
-      if (res.status === 201) {
-        alert("Company registered successfully");
-        localStorage.removeItem("companyFormData");
-        localStorage.removeItem("currentStep");
-      }
+      // if (res.status === 201) {
+      //   alert("Company registered successfully");
+      //   localStorage.removeItem("companyFormData");
+      //   localStorage.removeItem("currentStep");
+      // }
+
+      const result = await dispatch(registerCompany(form)).unwrap(); // redux disptach
+      alert(result.message);
+      localStorage.removeItem("companyFormData");
+      localStorage.removeItem("currentStep");
+      dispatch(clearCompanyState());
     } catch (err) {
       console.error("Submit error:", err);
       const formatted = mapZodErrors(err);
@@ -275,8 +286,7 @@ export default function CompanyProfileForm() {
       ) {
         setCurrentStep(2);
       }
-    } finally {
-      setIsSubmitting(false);
+      alert(err);
     }
   };
 
@@ -350,21 +360,19 @@ export default function CompanyProfileForm() {
             )}
           </div>
 
-          <div className="ml-auto flex gap-2">
+          <div className="flex flex-col items-center gap-2">
             {currentStep < steps.length ? (
-              // <button
-              //   onClick={nextStep}
-              //   className="flex items-center gap-3 px-4 py-2 bg-navyblue text-white rounded cursor-pointer"
-              // >
-              //   Next <MoveRight size={20}/>
-              // </button>
               <Button onClick={nextStep} variant={"formButton"}>
                 Next <MoveRight size={20} />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} variant={"formButton"}>
-                {isSubmitting && <Loader2 className="animate-spin" />}
-                {isSubmitting ? "Submitting" : "Submit"}
+              <Button
+                onClick={handleSubmit}
+                variant={"formButton"}
+                disabled={loading}
+              >
+                {loading && <Spinner />}
+                {loading ? "Submitting" : "Submit"}
               </Button>
             )}
           </div>
