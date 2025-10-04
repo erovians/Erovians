@@ -69,32 +69,9 @@ export const addProduct = async (req, res) => {
   }
 };
 
-// export const listAllProducts = async (req, res) => {
-//   try {
-//     const { companyId } = req.query;
-//     const filter = companyId ? { companyId } : {};
-
-//     const products = await Product.find(filter).sort({ createdAt: -1 });
-
-//     return res.status(200).json({
-//       success: true,
-//       count: products.length,
-//       data: products,
-//     });
-//   } catch (error) {
-//     console.error("❌ Error listing products:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Something went wrong while fetching products",
-//     });
-//   }
-// };
-
 export const listAllProducts = async (req, res) => {
   try {
-    // First try query param, then fallback to default static one
     const companyId = req.query.companyId || "651234abcd5678ef90123456";
-
     if (!companyId) {
       return res.status(400).json({
         success: false,
@@ -102,7 +79,27 @@ export const listAllProducts = async (req, res) => {
       });
     }
 
+    console.log(req.query);
+
+    // Build dynamic filter
+    // const filter = { companyId };
+
     const filter = { companyId };
+
+    if (req.query.category && req.query.category !== "") {
+      filter.category = req.query.category;
+    }
+
+    if (req.query.subCategory && req.query.subCategory !== "") {
+      filter.subCategory = {
+        $regex: `^${req.query.subCategory}$`,
+        $options: "i",
+      };
+    }
+
+    if (req.query.search && req.query.search.trim() !== "") {
+      filter.productName = { $regex: req.query.search, $options: "i" };
+    }
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
@@ -145,82 +142,6 @@ export const getProductById = async (req, res) => {
     });
   }
 };
-
-// export const updateProductFields = async (req, res) => {
-//   try {
-//     const { productId } = req.params;
-//     let updates = req.body;
-
-//     if (!updates || Object.keys(updates).length === 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No update data provided",
-//       });
-//     }
-
-//     const allowedFields = [
-//       "productName",
-//       "productImages",
-//       "category",
-//       "subCategory",
-//       "grade",
-//       "color",
-//       "origin",
-//       "size.length",
-//       "size.width",
-//       "size.thickness",
-//       "weight",
-//       "pricePerUnit",
-//       "unit",
-//       "description",
-//     ];
-
-//     let updateObj = {};
-
-//     for (const [field, value] of Object.entries(updates)) {
-//       if (!allowedFields.includes(field)) {
-//         return res.status(400).json({
-//           success: false,
-//           message: `Invalid field '${field}'. Allowed fields: ${allowedFields.join(
-//             ", "
-//           )}`,
-//         });
-//       }
-
-//       if (field.startsWith("size.")) {
-//         const subField = field.split(".")[1];
-//         updateObj[`size.${subField}`] = value;
-//       } else {
-//         updateObj[field] = value;
-//       }
-//     }
-
-//     const updatedProduct = await Product.findByIdAndUpdate(
-//       productId,
-//       { $set: updateObj },
-//       { new: true, runValidators: true }
-//     );
-
-//     if (!updatedProduct) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found",
-//       });
-//     }
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Product updated successfully",
-//       data: updatedProduct,
-//     });
-//   } catch (error) {
-//     console.error("❌ Error updating product:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Something went wrong while updating product",
-//     });
-//   }
-// };
 
 export const updateProductStatus = async (req, res) => {
   try {
