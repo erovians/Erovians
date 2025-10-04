@@ -323,17 +323,17 @@ const AddProduct = () => {
         {/* Left: Images */}
         <div className="md:w-1/2 h-full p-2 flex flex-col">
           {/* Main Image */}
-          <div className="border rounded-lg overflow-hidden flex-1 mb-1">
+          <div className=" rounded-lg overflow-hidden flex-1 mb-1">
             <img
               src={
                 formData.productImages.length > 0
                   ? typeof formData.productImages[0] === "string"
                     ? formData.productImages[0]
                     : URL.createObjectURL(formData.productImages[0])
-                  : "https://via.placeholder.com/400x400?text=No+Image"
+                  : "https://img.freepik.com/free-photo/solid-painted-concrete-wall-textured-backdrop_53876-110679.jpg?semt=ais_hybrid&w=740&q=80"
               }
               alt="Main Product"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
 
@@ -345,7 +345,7 @@ const AddProduct = () => {
                   key={idx}
                   src={typeof img === "string" ? img : URL.createObjectURL(img)}
                   alt={`Thumbnail ${idx + 1}`}
-                  className="w-12 h-12 object-cover rounded border cursor-pointer hover:ring-2 hover:ring-yellow-500"
+                  className="w-12 h-12 object-contain rounded border cursor-pointer hover:ring-2 hover:ring-yellow-500"
                   onClick={() => {
                     const newImages = [...formData.productImages];
                     [newImages[0], newImages[idx]] = [
