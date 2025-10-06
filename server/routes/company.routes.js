@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  registerCompany
+  registerCompany, getCompanyDetails
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -11,5 +11,6 @@ router.post("/register", upload.fields([
     { name: "companyPhotos", maxCount: 10 },
     { name: "companyVideo", maxCount: 1 },]) 
   ,registerCompany);
+  router.get("/details/:sellerId", getCompanyDetails);
 
 export default router;

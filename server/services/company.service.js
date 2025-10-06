@@ -2,8 +2,12 @@
 import mongoose from "mongoose";
 import CompanyDetails from "../models/company.model.js";
 import Seller from "../models/sellerSingnup.model.js";
+import Product from "../models/product.model.js";
 import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
-import { uploadOnCloudinary, cloudinary } from "../utils/cloudinaryUpload.utils.js";
+import {
+  uploadOnCloudinary,
+  cloudinary,
+} from "../utils/cloudinaryUpload.utils.js";
 
 // export const registerCompanyService = async (data, files) => {
 //   const session = await mongoose.startSession();
@@ -107,12 +111,15 @@ export const registerCompanyService = async (data, files) => {
   const uploadedFiles = [];
 
   try {
-    const SellerId = "6870e6e558e2ba32d6b1eb37"; // frontend must send sellerId
+    const SellerId = "6870e6e558e2ba32d6b1eb33"; // frontend must send sellerId
     if (!SellerId) throw new Error("SellerId is required");
 
     // Step 1: Check if company already exists
-    const existingCompany = await CompanyDetails.findOne({ SellerId }).session(session);
-    if (existingCompany) throw new Error("Company already registered for this seller");
+    const existingCompany = await CompanyDetails.findOne({ SellerId }).session(
+      session
+    );
+    if (existingCompany)
+      throw new Error("Company already registered for this seller");
 
     // Step 2: Parse address safely
     let address = data.address;
@@ -150,7 +157,10 @@ export const registerCompanyService = async (data, files) => {
     // Step 4: Upload files AFTER validation
     let logoUrl = "";
     if (files?.logo?.[0]) {
-      const result = await uploadOnCloudinary(files.logo[0].path, files.logo[0].mimetype);
+      const result = await uploadOnCloudinary(
+        files.logo[0].path,
+        files.logo[0].mimetype
+      );
       if (!result?.secure_url) throw new Error("Logo upload failed");
       logoUrl = result.secure_url;
       uploadedFiles.push(result.public_id);
@@ -159,14 +169,18 @@ export const registerCompanyService = async (data, files) => {
     let photoUrls = [];
     for (const file of files?.companyPhotos || []) {
       const result = await uploadOnCloudinary(file.path, file.mimetype);
-      if (!result?.secure_url) throw new Error("One of the photos failed to upload");
+      if (!result?.secure_url)
+        throw new Error("One of the photos failed to upload");
       photoUrls.push(result.secure_url);
       uploadedFiles.push(result.public_id);
     }
 
     let videoUrls = [];
     if (files?.companyVideo?.[0]) {
-      const result = await uploadOnCloudinary(files.companyVideo[0].path, files.companyVideo[0].mimetype);
+      const result = await uploadOnCloudinary(
+        files.companyVideo[0].path,
+        files.companyVideo[0].mimetype
+      );
       if (!result?.secure_url) throw new Error("Video upload failed");
       videoUrls.push(result.secure_url);
       uploadedFiles.push(result.public_id);
@@ -183,7 +197,9 @@ export const registerCompanyService = async (data, files) => {
     validatedInput.companyIntro.companyVideos = videoUrls;
 
     // Step 6: Save in DB inside transaction
-    const savedCompany = await CompanyDetails.create([validatedInput], { session });
+    const savedCompany = await CompanyDetails.create([validatedInput], {
+      session,
+    });
 
     // Commit transaction
     await session.commitTransaction();
@@ -208,4 +224,23 @@ export const registerCompanyService = async (data, files) => {
 
     throw error;
   }
+};
+
+export const getCompanyDetailsService = async (sellerId) => {
+  if (!sellerId) throw new Error("SellerId is required");
+
+  const company = await CompanyDetails.findOne({ SellerId: sellerId }).lean();
+  console.log(company._id);
+
+  if (!company) throw new Error("Company not found");
+
+  const products = await Product.find({
+    companyId: company._id,
+  })
+    .select("productName productImages grade description") // only what you need
+    .limit(20) // pagin
+    .lean();
+
+
+  return { company, products };
 };
