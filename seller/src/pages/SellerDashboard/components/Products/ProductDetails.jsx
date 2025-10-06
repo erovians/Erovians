@@ -324,6 +324,18 @@ const ProductDetails = () => {
                     keys.length === 2
                       ? editData[keys[0]]?.[keys[1]]
                       : editData[field];
+
+                  // Map fields to units
+                  let unit = "";
+                  if (field === "size.length")
+                    unit = editData.size?.lengthMeasurement || "";
+                  if (field === "size.width")
+                    unit = editData.size?.widthMeasurement || "";
+                  if (field === "size.thickness")
+                    unit = editData.size?.thicknessMeasurement || "";
+                  if (field === "weight")
+                    unit = editData.weightMeasurement || "";
+
                   return (
                     <li key={idx} className="flex items-center">
                       <span className="font-medium capitalize w-32">
@@ -352,7 +364,9 @@ const ProductDetails = () => {
                           className="border p-1 text-sm flex-1"
                         />
                       ) : (
-                        <span className="text-gray-600">{value || "N/A"}</span>
+                        <span className="text-gray-600">
+                          {value || "N/A"} {unit}
+                        </span>
                       )}
                     </li>
                   );

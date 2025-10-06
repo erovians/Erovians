@@ -1,73 +1,73 @@
 import Product from "../models/product.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
-export const addProduct = async (req, res) => {
-  try {
-    const {
-      companyId,
-      productName,
-      category,
-      subCategory,
-      grade,
-      color,
-      origin,
-      size,
-      weight,
-      pricePerUnit,
-      unit,
-      description,
-      // status,
-    } = req.body;
+// export const addProduct = async (req, res) => {
+//   try {
+//     const {
+//       companyId,
+//       productName,
+//       category,
+//       subCategory,
+//       grade,
+//       color,
+//       origin,
+//       size,
+//       weight,
+//       pricePerUnit,
+//       unit,
+//       description,
+//       // status,
+//     } = req.body;
 
-    // ✅ Parse size JSON
-    const parsedSize = JSON.parse(size);
+//     // ✅ Parse size JSON
+//     const parsedSize = JSON.parse(size);
 
-    // ✅ Upload all files to Cloudinary
-    const imageUrls = [];
-    for (const file of req.files) {
-      const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
-      if (uploaded) imageUrls.push(uploaded.secure_url);
-    }
+//     // ✅ Upload all files to Cloudinary
+//     const imageUrls = [];
+//     for (const file of req.files) {
+//       const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
+//       if (uploaded) imageUrls.push(uploaded.secure_url);
+//     }
 
-    if (imageUrls.length < 3) {
-      return res.status(400).json({
-        success: false,
-        message: "At least 3 product images are required",
-      });
-    }
+//     if (imageUrls.length < 3) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "At least 3 product images are required",
+//       });
+//     }
 
-    const product = new Product({
-      companyId,
-      productName,
-      productImages: imageUrls,
-      category,
-      subCategory,
-      grade,
-      color,
-      origin,
-      size: parsedSize,
-      weight,
-      pricePerUnit,
-      unit,
-      description,
-      // status,
-    });
+//     const product = new Product({
+//       companyId,
+//       productName,
+//       productImages: imageUrls,
+//       category,
+//       subCategory,
+//       grade,
+//       color,
+//       origin,
+//       size: parsedSize,
+//       weight,
+//       pricePerUnit,
+//       unit,
+//       description,
+//       // status,
+//     });
 
-    const savedProduct = await product.save();
+//     const savedProduct = await product.save();
 
-    return res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      data: savedProduct,
-    });
-  } catch (error) {
-    console.error("❌ Error adding product:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while adding the product",
-    });
-  }
-};
+//     return res.status(201).json({
+//       success: true,
+//       message: "Product added successfully",
+//       data: savedProduct,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error adding product:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while adding the product",
+//     });
+//   }
+// };
 
 // export const listAllProducts = async (req, res) => {
 //   try {
@@ -117,6 +117,74 @@ export const addProduct = async (req, res) => {
 //   }
 // };
 // controllers/productController.js
+
+export const addProduct = async (req, res) => {
+  try {
+    const {
+      companyId,
+      productName,
+      category,
+      subCategory,
+      grade,
+      color,
+      origin,
+      size, // JSON string
+      weight,
+      weightMeasurement,
+      pricePerUnit,
+      priceUnit,
+      description,
+    } = req.body;
+
+    const parsedSize = JSON.parse(size);
+
+    // Upload images to Cloudinary
+    const imageUrls = [];
+    for (const file of req.files) {
+      const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
+      if (uploaded) imageUrls.push(uploaded.secure_url);
+    }
+
+    if (imageUrls.length < 3) {
+      return res.status(400).json({
+        success: false,
+        message: "At least 3 product images are required",
+      });
+    }
+
+    const product = new Product({
+      companyId,
+      productName,
+      productImages: imageUrls,
+      category,
+      subCategory,
+      grade,
+      color,
+      origin,
+      size: parsedSize,
+      weight,
+      weightMeasurement,
+      pricePerUnit,
+      priceUnit,
+      description,
+    });
+
+    const savedProduct = await product.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      data: savedProduct,
+    });
+  } catch (error) {
+    console.error("Error adding product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while adding the product",
+    });
+  }
+};
+
 export const listAllProducts = async (req, res) => {
   try {
     const { companyId, category, subCategory, search, status } = req.query;

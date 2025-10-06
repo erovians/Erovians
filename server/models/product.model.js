@@ -5,107 +5,61 @@ const ProductSchema = new mongoose.Schema(
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-      required: [true, "Company ID is required"],
+      required: true,
       index: true,
     },
     productName: {
       type: String,
-      required: [true, "Product name is required"],
+      required: true,
       trim: true,
-      minlength: [2, "Product name must be at least 2 characters"],
-      maxlength: [100, "Product name cannot exceed 100 characters"],
+      minlength: 2,
+      maxlength: 100,
     },
     productImages: {
       type: [String],
       validate: {
-        validator: function (val) {
-          return Array.isArray(val) && val.length >= 3;
-        },
+        validator: (val) => Array.isArray(val) && val.length >= 3,
         message: "At least 3 product images are required",
       },
-      required: [true, "Product images are required"],
+      required: true,
     },
     category: {
       type: String,
-      required: [true, "Category is required"],
-      enum: {
-        values: ["Granite", "Marble"],
-        message: "{VALUE} is not a valid category",
-      },
+      required: true,
+      enum: ["Granite", "Marble"],
       index: true,
     },
-    subCategory: {
-      type: String,
-      required: [true, "SubCategory is required"],
-      index: true,
-    },
-    grade: {
-      type: String,
-      required: [true, "Grade is required"],
-      enum: {
-        values: ["A", "B", "C"],
-        message: "{VALUE} is not a valid grade",
-      },
-    },
-    color: {
-      type: String,
-      required: [true, "Color is required"],
-      trim: true,
-    },
-    origin: {
-      type: String,
-      required: [true, "Origin is required"],
-      trim: true,
-    },
+    subCategory: { type: String, required: true, index: true },
+    grade: { type: String, required: true, enum: ["A", "B", "C"] },
+    color: { type: String, required: true, trim: true },
+    origin: { type: String, required: true, trim: true },
     size: {
-      length: {
-        type: Number,
-        required: [true, "Product length is required"],
-        min: [1, "Length must be greater than 0"],
-      },
-      width: {
-        type: Number,
-        required: [true, "Product width is required"],
-        min: [1, "Width must be greater than 0"],
-      },
-      thickness: {
-        type: Number,
-        required: [true, "Product thickness is required"],
-        min: [1, "Thickness must be greater than 0"],
+      length: { type: Number, required: true, min: 1 },
+      lengthMeasurement: { type: String, enum: ["ft", "m"], default: "ft" },
+      width: { type: Number, required: true, min: 1 },
+      widthMeasurement: { type: String, enum: ["ft", "m"], default: "ft" },
+      thickness: { type: Number, required: true, min: 1 },
+      thicknessMeasurement: {
+        type: String,
+        enum: ["inch", "cm"],
+        default: "inch",
       },
     },
-    weight: {
-      type: Number,
-      required: [true, "Weight is required"],
-      min: [1, "Weight must be greater than 0"],
-    },
-    pricePerUnit: {
-      type: Number,
-      required: [true, "Price per unit is required"],
-      min: [1, "Price per unit must be greater than 0"],
-      index: true,
-    },
-    unit: {
+    weight: { type: Number, required: true, min: 1 },
+    weightMeasurement: { type: String, enum: ["kg", "ton"], default: "kg" },
+    pricePerUnit: { type: Number, required: true, min: 1 },
+    priceUnit: {
       type: String,
-      required: [true, "Unit is required"],
-      enum: {
-        values: ["sq.ft", "sq.m", "piece"],
-        message: "{VALUE} is not a valid unit",
-      },
+      enum: ["sq.ft", "sq.m", "piece"],
       default: "sq.ft",
     },
     description: {
       type: String,
-      required: [true, "Description is required"],
+      required: true,
       trim: true,
-      minlength: [50, "Description must be at least 50 characters"],
-      maxlength: [1500, "Description cannot exceed 1500 characters"],
+      minlength: 50,
+      maxlength: 1500,
     },
-    // status: {
-    //   type: String,
-    //   enum: ["active", "inactive"],
-    //   default: "active",
-    // },
     status: {
       type: String,
       enum: ["active", "inactive", "pending", "violation"],
@@ -115,7 +69,6 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ fixed index (changed sellerId → companyId)
 ProductSchema.index({ companyId: 1, category: 1 });
 ProductSchema.index({ category: 1, pricePerUnit: 1 });
 
