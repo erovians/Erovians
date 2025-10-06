@@ -230,8 +230,11 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
                     </li>
                     <li>
                       <span className="font-medium">Size:</span>{" "}
-                      {product.size?.length} × {product.size?.width} ×{" "}
+                      {product.size?.length}
+                      {product.size.lengthMeasurement}× {product.size?.width}
+                      {product.size.widthMeasurement} ×{" "}
                       {product.size?.thickness}
+                      {product.size.thicknessMeasurement}
                     </li>
                     <li>
                       <span className="font-medium">Origin:</span>{" "}

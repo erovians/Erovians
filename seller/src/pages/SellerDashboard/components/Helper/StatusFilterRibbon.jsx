@@ -35,7 +35,7 @@ const StatusFilterRibbon = ({
         <button
           key={status.value}
           onClick={() => setStatusFilter(status.value)}
-          className={`flex items-center gap-2 px-4 py-2 rounded font-sm text-sm border transition-all duration-200 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-md font-sm text-sm border transition-all duration-200 ${
             statusFilter === status.value
               ? `${status.color} border`
               : "bg-white border-gray-300 hover:bg-gray-100"
