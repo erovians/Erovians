@@ -192,22 +192,38 @@ const ProductDetails = () => {
 
             <div className="flex items-center gap-3">
               {/* Status Toggle */}
-              <button
-                onClick={handleToggleStatus}
-                className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none ${
-                  product.status === "active" ? "bg-green-500" : "bg-red-600"
+              {/* Status Toggle */}
+              {product.status === "active" || product.status === "inactive" ? (
+                <button
+                  onClick={handleToggleStatus}
+                  className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none ${
+                    product.status === "active" ? "bg-green-500" : "bg-red-600"
+                  }`}
+                >
+                  <span
+                    className={`inline-block w-6 h-6 transform bg-white rounded-full shadow-md transition-transform duration-300 ${
+                      product.status === "active"
+                        ? "translate-x-6"
+                        : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              ) : null}
+
+              {/* Status Label with colors */}
+              <span
+                className={`text-sm font-medium px-2 py-1 rounded-full ${
+                  product.status === "active"
+                    ? "bg-green-100 text-green-700 border border-green-300"
+                    : product.status === "inactive"
+                    ? "bg-red-100 text-red-700 border border-red-300"
+                    : product.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                    : "bg-purple-100 text-purple-700 border border-purple-300"
                 }`}
               >
-                <span
-                  className={`inline-block w-6 h-6 transform bg-white rounded-full shadow-md transition-transform duration-300 ${
-                    product.status === "active"
-                      ? "translate-x-6"
-                      : "translate-x-0"
-                  }`}
-                />
-              </button>
-              <span className="text-sm font-medium text-gray-700">
-                {product.status}
+                {product.status.charAt(0).toUpperCase() +
+                  product.status.slice(1)}
               </span>
 
               {/* Menu */}
