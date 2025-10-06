@@ -13,7 +13,7 @@ import { Filter } from "../Helper/Filter";
 import { Search } from "../Helper/Search";
 import StatusFilterRibbon from "../Helper/StatusFilterRibbon";
 
-const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
+const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +32,9 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
 
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
+  const [bulkAction, setBulkAction] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 500);
     return () => clearTimeout(handler);
@@ -40,11 +43,9 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-
       const resAll = await api.get("/product/list", { params: { companyId } });
       const allProducts = resAll.data.data || [];
 
-      // Update status counts
       const counts = {
         all: allProducts.filter(
           (p) => p.status === "active" || p.status === "inactive"
@@ -58,7 +59,6 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
 
       let filtered = [...allProducts];
 
-      // Filter by status
       if (statusFilter === "all") {
         filtered = filtered.filter(
           (p) => p.status === "active" || p.status === "inactive"
@@ -78,7 +78,6 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
           filtered = filtered.filter((p) => p.subCategory === subCategory);
       }
 
-      // Apply search
       if (debouncedSearch)
         filtered = filtered.filter((p) =>
           p.productName.toLowerCase().includes(debouncedSearch.toLowerCase())
@@ -97,10 +96,42 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
     if (companyId) fetchProducts();
   }, [companyId, category, subCategory, debouncedSearch, statusFilter]);
 
+  // Handle bulk action
+  const handleBulkAction = async () => {
+    if (selectedProducts.length === 0)
+      return alert("Select at least one product!");
+
+    try {
+      setLoading(true);
+      if (bulkAction === "activate") {
+        await api.post("/product/bulk-activate", {
+          productIds: selectedProducts,
+        });
+      } else if (bulkAction === "deactivate") {
+        await api.post("/product/bulk-deactivate", {
+          productIds: selectedProducts,
+        });
+      } else if (bulkAction === "delete") {
+        await api.post("/product/bulk-delete", {
+          productIds: selectedProducts,
+        });
+      }
+      setBulkAction("");
+      setSelectedProducts([]);
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+      alert("Bulk action failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div className="flex flex-col h-[calc(100vh-100px)]">
+      {/* Filters */}
       <div className="sticky top-0 z-30 bg-white shadow-sm rounded-lg">
         <div className="flex flex-wrap justify-between gap-4 items-center p-4">
           <div className="flex gap-5 flex-wrap">
@@ -135,13 +166,60 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
           />
         </div>
 
-        <StatusFilterRibbon
-          statusCounts={statusCounts}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-        />
+        <div className="flex flex-wrap items-center  p-4">
+          {/* Left: Status Filter Ribbon */}
+          <StatusFilterRibbon
+            statusCounts={statusCounts}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+          />
+
+          {/* Right: Bulk Action Buttons */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setBulkAction("activate")}
+              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-green-100 transition-all duration-200"
+            >
+              Activate Multiple
+            </button>
+            <button
+              onClick={() => setBulkAction("deactivate")}
+              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-red-100 transition-all duration-200"
+            >
+              Deactivate Multiple
+            </button>
+            <button
+              onClick={() => setBulkAction("delete")}
+              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-purple-100 transition-all duration-200"
+            >
+              Delete Multiple
+            </button>
+
+            {bulkAction && (
+              <button
+                onClick={() => {
+                  setBulkAction("");
+                  setSelectedProducts([]);
+                }}
+                className="px-3 py-2 bg-gray-300 text-black rounded"
+              >
+                Cancel
+              </button>
+            )}
+
+            {bulkAction && selectedProducts.length > 0 && (
+              <button
+                onClick={handleBulkAction}
+                className="px-3 py-2 bg-gray-500 text-white rounded"
+              >
+                Confirm {bulkAction} ({selectedProducts.length})
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
+      {/* Product List */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
         {loading ? (
           <p className="text-center text-gray-500">Loading products...</p>
@@ -153,8 +231,26 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
           products.map((product) => (
             <div
               key={product._id}
-              className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden bg-white"
+              className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden bg-white items-center"
             >
+              {/* Checkbox for bulk action */}
+              {bulkAction && (
+                <input
+                  type="checkbox"
+                  className="m-4 h-5 w-5"
+                  checked={selectedProducts.includes(product._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedProducts([...selectedProducts, product._id]);
+                    } else {
+                      setSelectedProducts(
+                        selectedProducts.filter((id) => id !== product._id)
+                      );
+                    }
+                  }}
+                />
+              )}
+
               {/* Status Badge */}
               <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
                 <span
@@ -178,7 +274,7 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
                 </span>
               </div>
 
-              {/* Left: Images */}
+              {/* Images */}
               <div className="md:w-1/3 w-full h-48 md:h-auto flex items-center justify-center bg-gray-50">
                 {product.productImages?.length > 0 ? (
                   <Carousel className="w-full h-full">
@@ -206,7 +302,7 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
                 )}
               </div>
 
-              {/* Right: Details */}
+              {/* Details */}
               <Link
                 to={`/sellerdashboard/product/${product._id}`}
                 className="md:w-2/3 w-full p-4 flex flex-col justify-between"
@@ -230,11 +326,12 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
                     </li>
                     <li>
                       <span className="font-medium">Size:</span>{" "}
-                      {product.size?.length}
-                      {product.size.lengthMeasurement}× {product.size?.width}
-                      {product.size.widthMeasurement} ×{" "}
-                      {product.size?.thickness}
-                      {product.size.thicknessMeasurement}
+                      {product.size?.length || "N/A"}
+                      {product.size?.lengthMeasurement || ""} ×{" "}
+                      {product.size?.width || "N/A"}
+                      {product.size?.widthMeasurement || ""} ×{" "}
+                      {product.size?.thickness || "N/A"}
+                      {product.size?.thicknessMeasurement || ""}
                     </li>
                     <li>
                       <span className="font-medium">Origin:</span>{" "}
