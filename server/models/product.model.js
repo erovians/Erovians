@@ -101,9 +101,14 @@ const ProductSchema = new mongoose.Schema(
       minlength: [50, "Description must be at least 50 characters"],
       maxlength: [1500, "Description cannot exceed 1500 characters"],
     },
+    // status: {
+    //   type: String,
+    //   enum: ["active", "inactive"],
+    //   default: "active",
+    // },
     status: {
       type: String,
-      enum: ["active", "inactive"],
+      enum: ["active", "inactive", "pending", "violation"],
       default: "active",
     },
   },

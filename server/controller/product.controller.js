@@ -69,50 +69,76 @@ export const addProduct = async (req, res) => {
   }
 };
 
+// export const listAllProducts = async (req, res) => {
+//   try {
+//     const companyId = req.query.companyId || "651234abcd5678ef90123456";
+//     if (!companyId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Company ID is required",
+//       });
+//     }
+
+//     console.log(req.query);
+
+//     // Build dynamic filter
+//     // const filter = { companyId };
+
+//     const filter = { companyId };
+
+//     if (req.query.category && req.query.category !== "") {
+//       filter.category = req.query.category;
+//     }
+
+//     if (req.query.subCategory && req.query.subCategory !== "") {
+//       filter.subCategory = {
+//         $regex: `^${req.query.subCategory}$`,
+//         $options: "i",
+//       };
+//     }
+
+//     if (req.query.search && req.query.search.trim() !== "") {
+//       filter.productName = { $regex: req.query.search, $options: "i" };
+//     }
+
+//     const products = await Product.find(filter).sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       success: true,
+//       count: products.length,
+//       data: products,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error listing products:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while fetching products",
+//     });
+//   }
+// };
+// controllers/productController.js
 export const listAllProducts = async (req, res) => {
   try {
-    const companyId = req.query.companyId || "651234abcd5678ef90123456";
-    if (!companyId) {
-      return res.status(400).json({
-        success: false,
-        message: "Company ID is required",
-      });
-    }
-
-    console.log(req.query);
-
-    // Build dynamic filter
-    // const filter = { companyId };
+    const { companyId, category, subCategory, search, status } = req.query;
 
     const filter = { companyId };
 
-    if (req.query.category && req.query.category !== "") {
-      filter.category = req.query.category;
-    }
-
-    if (req.query.subCategory && req.query.subCategory !== "") {
-      filter.subCategory = {
-        $regex: `^${req.query.subCategory}$`,
-        $options: "i",
-      };
-    }
-
-    if (req.query.search && req.query.search.trim() !== "") {
-      filter.productName = { $regex: req.query.search, $options: "i" };
-    }
+    if (category) filter.category = category;
+    if (subCategory) filter.subCategory = subCategory;
+    if (status) filter.status = status;
+    if (search) filter.productName = { $regex: search, $options: "i" };
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      count: products.length,
       data: products,
     });
   } catch (error) {
-    console.error("❌ Error listing products:", error);
-    return res.status(500).json({
+    console.error(error);
+    res.status(500).json({
       success: false,
-      message: "Something went wrong while fetching products",
+      message: "Error fetching products",
     });
   }
 };
