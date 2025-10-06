@@ -102,7 +102,7 @@
 //   }
 // };
 
-import { registerCompanyService } from "../services/company.service.js";
+import { registerCompanyService, getCompanyDetailsService } from "../services/company.service.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -123,6 +123,29 @@ export const registerCompany = async (req, res) => {
     res.status(400).json({
       success: false,
       message: error.message || "Internal server error",
+    });
+  }
+};
+
+
+export const getCompanyDetails = async (req, res) => {
+  try {
+    const sellerId = req.params.sellerId; // or from req.user if you have auth
+    const { company, products } = await getCompanyDetailsService(sellerId);
+
+    console.log(products);
+    
+
+    res.status(200).json({
+      success: true,
+      company,
+      products
+    });
+  } catch (error) {
+    console.error("Error fetching company details:", error);
+    res.status(404).json({
+      success: false,
+      message: error.message || "Company not found",
     });
   }
 };
