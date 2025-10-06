@@ -131,11 +131,15 @@ export const registerCompany = async (req, res) => {
 export const getCompanyDetails = async (req, res) => {
   try {
     const sellerId = req.params.sellerId; // or from req.user if you have auth
-    const company = await getCompanyDetailsService(sellerId);
+    const { company, products } = await getCompanyDetailsService(sellerId);
+
+    console.log(products);
+    
 
     res.status(200).json({
       success: true,
       company,
+      products
     });
   } catch (error) {
     console.error("Error fetching company details:", error);
