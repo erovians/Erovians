@@ -109,7 +109,7 @@ const ProductSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "inactive", "pending", "violation"],
-      default: "active",
+      default: "pending",
     },
   },
   { timestamps: true }
