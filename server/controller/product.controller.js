@@ -204,9 +204,6 @@ export const updateProductData = async (req, res) => {
   }
 };
 
-// ***************************
-// controllers/productController.js
-
 export const bulkActivateProducts = async (req, res) => {
   try {
     const { productIds } = req.body;
