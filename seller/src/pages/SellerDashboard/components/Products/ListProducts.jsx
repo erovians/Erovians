@@ -44,8 +44,11 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
       const resAll = await api.get("/product/list", { params: { companyId } });
       const allProducts = resAll.data.data || [];
 
+      // Update status counts
       const counts = {
-        all: allProducts.length,
+        all: allProducts.filter(
+          (p) => p.status === "active" || p.status === "inactive"
+        ).length,
         active: allProducts.filter((p) => p.status === "active").length,
         inactive: allProducts.filter((p) => p.status === "inactive").length,
         pending: allProducts.filter((p) => p.status === "pending").length,
@@ -54,16 +57,32 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
       setStatusCounts(counts);
 
       let filtered = [...allProducts];
-      if (category !== "all")
-        filtered = filtered.filter((p) => p.category === category);
-      if (subCategory !== "all")
-        filtered = filtered.filter((p) => p.subCategory === subCategory);
+
+      // Filter by status
+      if (statusFilter === "all") {
+        filtered = filtered.filter(
+          (p) => p.status === "active" || p.status === "inactive"
+        );
+      } else {
+        filtered = filtered.filter((p) => p.status === statusFilter);
+      }
+
+      if (
+        statusFilter === "all" ||
+        statusFilter === "active" ||
+        statusFilter === "inactive"
+      ) {
+        if (category !== "all")
+          filtered = filtered.filter((p) => p.category === category);
+        if (subCategory !== "all")
+          filtered = filtered.filter((p) => p.subCategory === subCategory);
+      }
+
+      // Apply search
       if (debouncedSearch)
         filtered = filtered.filter((p) =>
           p.productName.toLowerCase().includes(debouncedSearch.toLowerCase())
         );
-      if (statusFilter !== "all")
-        filtered = filtered.filter((p) => p.status === statusFilter);
 
       setProducts(filtered);
     } catch (err) {
@@ -116,7 +135,6 @@ const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
           />
         </div>
 
-        {/* ✅ Use the new StatusFilterRibbon component */}
         <StatusFilterRibbon
           statusCounts={statusCounts}
           statusFilter={statusFilter}

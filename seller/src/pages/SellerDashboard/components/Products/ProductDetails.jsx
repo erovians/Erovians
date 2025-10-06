@@ -371,7 +371,7 @@ const ProductDetails = () => {
                   onChange={(e) =>
                     setEditData({ ...editData, description: e.target.value })
                   }
-                  className="w-full border p-2 text-sm"
+                  className="w-full h-40 border  p-2 text-sm"
                   rows={4}
                 />
               ) : (
