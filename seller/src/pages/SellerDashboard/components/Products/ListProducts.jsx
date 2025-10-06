@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../../../redux/slice/productSlice";
 import api from "@/utils/axios.utils";
 import { Link } from "react-router-dom";
 import {
@@ -8,15 +10,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-
 import { Filter } from "../Helper/Filter";
 import { Search } from "../Helper/Search";
 import StatusFilterRibbon from "../Helper/StatusFilterRibbon";
 
-const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const ListProducts = ({ companyId = "651234abcd5678ef90123456" }) => {
+  const dispatch = useDispatch();
+
+  const {
+    products = [],
+    loading,
+    error,
+  } = useSelector((state) => state.products);
 
   const [category, setCategory] = useState("all");
   const [subCategory, setSubCategory] = useState("all");
@@ -31,34 +36,46 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
   });
 
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-
   const [bulkAction, setBulkAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
 
+  // Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 500);
     return () => clearTimeout(handler);
   }, [search]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const resAll = await api.get("/product/list", { params: { companyId } });
-      const allProducts = resAll.data.data || [];
+  // Fetch products via Redux thunk
+  useEffect(() => {
+    if (companyId) {
+      dispatch(fetchProducts(companyId));
+    }
+  }, [companyId, dispatch]);
 
-      const counts = {
-        all: allProducts.filter(
-          (p) => p.status === "active" || p.status === "inactive"
-        ).length,
-        active: allProducts.filter((p) => p.status === "active").length,
-        inactive: allProducts.filter((p) => p.status === "inactive").length,
-        pending: allProducts.filter((p) => p.status === "pending").length,
-        violation: allProducts.filter((p) => p.status === "violation").length,
-      };
-      setStatusCounts(counts);
+  const filteredProducts = React.useMemo(() => {
+    let filtered = [...products];
 
-      let filtered = [...allProducts];
+    // 🔹 1. Apply base status counts
+    const counts = {
+      all: filtered.filter(
+        (p) => p.status === "active" || p.status === "inactive"
+      ).length,
+      active: filtered.filter((p) => p.status === "active").length,
+      inactive: filtered.filter((p) => p.status === "inactive").length,
+      pending: filtered.filter((p) => p.status === "pending").length,
+      violation: filtered.filter((p) => p.status === "violation").length,
+    };
+    setStatusCounts(counts);
 
+    // 🔹 2. Apply bulk-action-based filtering first
+    if (bulkAction === "activate") {
+      filtered = filtered.filter((p) => p.status !== "active");
+    } else if (bulkAction === "deactivate") {
+      filtered = filtered.filter((p) => p.status === "active");
+    }
+
+    // 🔹 3. Apply normal status filtering if no bulk action
+    if (!bulkAction) {
       if (statusFilter === "all") {
         filtered = filtered.filter(
           (p) => p.status === "active" || p.status === "inactive"
@@ -66,43 +83,43 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
       } else {
         filtered = filtered.filter((p) => p.status === statusFilter);
       }
-
-      if (
-        statusFilter === "all" ||
-        statusFilter === "active" ||
-        statusFilter === "inactive"
-      ) {
-        if (category !== "all")
-          filtered = filtered.filter((p) => p.category === category);
-        if (subCategory !== "all")
-          filtered = filtered.filter((p) => p.subCategory === subCategory);
-      }
-
-      if (debouncedSearch)
-        filtered = filtered.filter((p) =>
-          p.productName.toLowerCase().includes(debouncedSearch.toLowerCase())
-        );
-
-      setProducts(filtered);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load products.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 🔹 4. Apply category/subCategory filters
+    if (category !== "all")
+      filtered = filtered.filter((p) => p.category === category);
+    if (subCategory !== "all")
+      filtered = filtered.filter((p) => p.subCategory === subCategory);
+
+    // 🔹 5. Apply search filter
+    if (debouncedSearch) {
+      filtered = filtered.filter((p) =>
+        p.productName?.toLowerCase().includes(debouncedSearch.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [
+    products,
+    category,
+    subCategory,
+    debouncedSearch,
+    statusFilter,
+    bulkAction,
+  ]);
 
   useEffect(() => {
-    if (companyId) fetchProducts();
-  }, [companyId, category, subCategory, debouncedSearch, statusFilter]);
+    setSelectedProducts([]);
+  }, [bulkAction]);
 
-  // Handle bulk action
+  // Handle bulk actions
   const handleBulkAction = async () => {
-    if (selectedProducts.length === 0)
-      return alert("Select at least one product!");
+    if (selectedProducts.length === 0) {
+      alert("Select at least one product!");
+      return;
+    }
 
     try {
-      setLoading(true);
       if (bulkAction === "activate") {
         await api.post("/product/bulk-activate", {
           productIds: selectedProducts,
@@ -116,14 +133,13 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
           productIds: selectedProducts,
         });
       }
+
       setBulkAction("");
       setSelectedProducts([]);
-      fetchProducts();
+      dispatch(fetchProducts(companyId)); // Refresh after bulk action
     } catch (err) {
       console.error(err);
       alert("Bulk action failed!");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -167,14 +183,14 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
         </div>
 
         <div className="flex flex-wrap items-center  p-4">
-          {/* Left: Status Filter Ribbon */}
+          {/* Status Filter Ribbon */}
           <StatusFilterRibbon
             statusCounts={statusCounts}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
           />
 
-          {/* Right: Bulk Action Buttons */}
+          {/* Bulk Action Buttons */}
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setBulkAction("activate")}
@@ -196,24 +212,26 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
             </button>
 
             {bulkAction && (
-              <button
-                onClick={() => {
-                  setBulkAction("");
-                  setSelectedProducts([]);
-                }}
-                className="px-3 py-2 bg-gray-300 text-black rounded"
-              >
-                Cancel
-              </button>
-            )}
+              <>
+                <button
+                  onClick={() => {
+                    setBulkAction("");
+                    setSelectedProducts([]);
+                  }}
+                  className="px-3 py-2 bg-gray-300 text-black rounded"
+                >
+                  Cancel
+                </button>
 
-            {bulkAction && selectedProducts.length > 0 && (
-              <button
-                onClick={handleBulkAction}
-                className="px-3 py-2 bg-gray-500 text-white rounded"
-              >
-                Confirm {bulkAction} ({selectedProducts.length})
-              </button>
+                {selectedProducts.length > 0 && (
+                  <button
+                    onClick={handleBulkAction}
+                    className="px-3 py-2 bg-gray-500 text-white rounded"
+                  >
+                    Confirm {bulkAction} ({selectedProducts.length})
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -223,17 +241,16 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
         {loading ? (
           <p className="text-center text-gray-500">Loading products...</p>
-        ) : products.length === 0 ? (
+        ) : filteredProducts.length === 0 ? (
           <p className="text-center text-xl text-gray-500 mt-10">
             No products found
           </p>
         ) : (
-          products.map((product) => (
+          filteredProducts.map((product) => (
             <div
               key={product._id}
               className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden bg-white items-center"
             >
-              {/* Checkbox for bulk action */}
               {bulkAction && (
                 <input
                   type="checkbox"
@@ -251,7 +268,6 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 />
               )}
 
-              {/* Status Badge */}
               <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
