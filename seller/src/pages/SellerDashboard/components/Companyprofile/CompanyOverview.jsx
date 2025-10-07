@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompany } from "@/redux/slice/companySlice";
 import {
-  ChevronLeft,
-  ChevronRight,
   Factory,
   Users,
   TrendingUp,
@@ -332,7 +330,6 @@ const ProductCarousel = ({ productItems, next, prev }) => (
           </div>
         ))}
       </div>
-
     </div>
   </div>
 );
