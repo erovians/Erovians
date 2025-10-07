@@ -33,7 +33,7 @@ const ProductDetails = () => {
     if (!product) return;
     const newStatus = product.status === "active" ? "inactive" : "active";
     try {
-      await api.patch(`/product/${product._id}/status`, { status: newStatus });
+      await api.patch(`/product/${product.id}/status`, { status: newStatus });
       setProduct({ ...product, status: newStatus });
       setEditData({ ...editData, status: newStatus });
     } catch (error) {
@@ -45,7 +45,7 @@ const ProductDetails = () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-      await api.delete(`/product/${product._id}`);
+      await api.delete(`/product/${product.id}`);
       navigate("/sellerdashboard/products/list");
     } catch (error) {
       console.error("Failed to delete product:", error);
@@ -62,7 +62,7 @@ const ProductDetails = () => {
         ];
       }
 
-      const res = await api.put(`/product/${product._id}`, updatedData);
+      const res = await api.put(`/product/${product.id}`, updatedData);
       setProduct(res.data.data);
       setEditData(res.data.data);
       setIsEditing(false);
@@ -282,9 +282,9 @@ const ProductDetails = () => {
                   />
                   <input
                     type="text"
-                    value={editData.unit}
+                    value={editData.priceUnit}
                     onChange={(e) =>
-                      setEditData({ ...editData, unit: e.target.value })
+                      setEditData({ ...editData, priceUnit: e.target.value })
                     }
                     className="text-base border p-1 w-20"
                   />
@@ -295,7 +295,7 @@ const ProductDetails = () => {
                     ₹{product.pricePerUnit}
                   </span>
                   <span className="text-base text-gray-500">
-                    /{product.unit}
+                    /{product.priceUnit}
                   </span>
                 </>
               )}
@@ -400,7 +400,7 @@ const ProductDetails = () => {
             <div className="  transform mt-10 ">
               <button
                 onClick={handleSave}
-                className="bg-gray-600 cursor-pointer text-white px-6 py-2 rounded-lg shadow-lg hover:bg-gray-700 transition"
+                className="bg-navyblue border border-navyblue text-white px-6 py-2 rounded-md shadow-lg cursor-pointer hover:bg-white hover:text-navyblue transition"
               >
                 Save Changes
               </button>

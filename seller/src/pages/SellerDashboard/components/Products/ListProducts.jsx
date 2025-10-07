@@ -250,13 +250,13 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 <input
                   type="checkbox"
                   className="m-4 h-5 w-5"
-                  checked={selectedProducts.includes(product._id)}
+                  checked={selectedProducts.includes(product.id)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedProducts([...selectedProducts, product._id]);
+                      setSelectedProducts([...selectedProducts, product.id]);
                     } else {
                       setSelectedProducts(
-                        selectedProducts.filter((id) => id !== product._id)
+                        selectedProducts.filter((id) => id !== product.id)
                       );
                     }
                   }}
@@ -287,7 +287,9 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
               {/* 🔹 Status + Views Section */}
               <div className="absolute top-3 right-3 flex items-center gap-3 z-10">
                 {/* 👁️ Views Count */}
-
+                <span className="flex items-center gap-1  text-gray-600 text-xs font-medium  px-2 py-1 rounded-full ">
+                  👁️ {product.views || 0} views
+                </span>
                 {/* Status Badge */}
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -301,9 +303,6 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                   }`}
                 >
                   {product.status}
-                </span>
-                <span className="flex items-center gap-1 text-gray-600 text-xs font-medium bg-gray-100 px-2 py-1 rounded-full border border-gray-300">
-                  👁️ {product.views || 0} views
                 </span>
               </div>
 
@@ -337,7 +336,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
 
               {/* Details */}
               <Link
-                to={`/sellerdashboard/product/${product._id}`}
+                to={`/sellerdashboard/product/${product.id}`}
                 className="md:w-2/3 w-full p-4 flex flex-col justify-between"
               >
                 <div>
@@ -379,7 +378,9 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                   <span className="text-xl md:text-2xl font-bold text-black">
                     ₹{product.pricePerUnit}
                   </span>
-                  <span className="text-sm text-gray-500">/{product.unit}</span>
+                  <span className="text-sm text-gray-500">
+                    /{product.priceUnit}
+                  </span>
                 </div>
               </Link>
               {/* 🔹 Last Updated Timestamp */}

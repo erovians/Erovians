@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, clearMessage } from "../../../../redux/slice/productSlice";
+import { Spinner } from "@/components/ui/spinner";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -400,9 +401,10 @@ const AddProduct = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gray-700 text-white py-3 rounded-lg shadow hover:bg-gray-800 transition disabled:opacity-50"
+          className=" flex  justify-center items-center gap-3 w-full border border-navyblue bg-navyblue text-white py-3 rounded-lg shadow hover:bg-white hover:text-navyblue cursor-pointer transition disabled:opacity-50"
         >
-          {loading ? "Submitting..." : "Add Product"}
+          {loading && <Spinner />}
+          {loading ? "Submitting" : "Add Product"}
         </button>
       </form>
 
