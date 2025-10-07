@@ -55,7 +55,6 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
   const filteredProducts = React.useMemo(() => {
     let filtered = [...products];
 
-    // 🔹 1. Apply base status counts
     const counts = {
       all: filtered.filter(
         (p) => p.status === "active" || p.status === "inactive"
@@ -67,14 +66,12 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
     };
     setStatusCounts(counts);
 
-    // 🔹 2. Apply bulk-action-based filtering first
     if (bulkAction === "activate") {
       filtered = filtered.filter((p) => p.status !== "active");
     } else if (bulkAction === "deactivate") {
       filtered = filtered.filter((p) => p.status === "active");
     }
 
-    // 🔹 3. Apply normal status filtering if no bulk action
     if (!bulkAction) {
       if (statusFilter === "all") {
         filtered = filtered.filter(
@@ -85,13 +82,11 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
       }
     }
 
-    // 🔹 4. Apply category/subCategory filters
     if (category !== "all")
       filtered = filtered.filter((p) => p.category === category);
     if (subCategory !== "all")
       filtered = filtered.filter((p) => p.subCategory === subCategory);
 
-    // 🔹 5. Apply search filter
     if (debouncedSearch) {
       filtered = filtered.filter((p) =>
         p.productName?.toLowerCase().includes(debouncedSearch.toLowerCase())
