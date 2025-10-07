@@ -19,6 +19,8 @@ export const addProductService = async (data, files) => {
     description,
   } = data;
 
+  console.log("whole data", data);
+
   const parsedSize = JSON.parse(size || "{}");
 
   // Upload images to Cloudinary

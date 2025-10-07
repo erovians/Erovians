@@ -1,5 +1,3 @@
-
-
 // import { registerCompanyService, getCompanyDetailsService } from "../services/company.service.js";
 
 // export const registerCompany = async (req, res) => {
@@ -25,14 +23,12 @@
 //   }
 // };
 
-
 // export const getCompanyDetails = async (req, res) => {
 //   try {
 //     const sellerId = req.params.sellerId; // or from req.user if you have auth
 //     const { company, products } = await getCompanyDetailsService(sellerId);
 
 //     console.log(products);
-    
 
 //     res.status(200).json({
 //       success: true,
@@ -84,7 +80,7 @@ export const getCompanyDetails = async (req, res) => {
   try {
     // const sellerId = req.user._id; // safe, from auth middleware
 
-    const sellerId = "6870e6e558e2ba32d6b1eb33"
+    const sellerId = "6870e6e558e2ba32d6b1eb33";
 
     if (!sellerId) {
       return res.status(400).json({
