@@ -65,6 +65,7 @@ const ProductSchema = new mongoose.Schema(
       enum: ["active", "inactive", "pending", "violation"],
       default: "pending",
     },
+    views: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
