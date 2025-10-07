@@ -243,7 +243,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
         ) : (
           filteredProducts.map((product) => (
             <div
-              key={product._id}
+              key={product.id}
               className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden bg-white items-center"
             >
               {bulkAction && (

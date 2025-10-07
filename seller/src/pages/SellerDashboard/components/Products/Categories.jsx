@@ -117,7 +117,7 @@ const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                     </div>
 
                     <Link
-                      to={`/sellerdashboard/product/${product._id}`}
+                      to={`/sellerdashboard/product/${product.id}`}
                       className="mt-2 block w-full text-center bg-gray-800 text-white text-sm py-2 rounded hover:bg-gray-900 transition"
                     >
                       View Details
