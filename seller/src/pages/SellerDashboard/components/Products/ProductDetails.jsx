@@ -291,7 +291,7 @@ const ProductDetails = () => {
                 </>
               ) : (
                 <>
-                  <span className="text-3xl font-extrabold text-black">
+                  <span className="text-3xl font-extralight text-black">
                     ₹{product.pricePerUnit}
                   </span>
                   <span className="text-base text-gray-500">
