@@ -32,7 +32,7 @@ export const getCompany = createAsyncThunk(
   "company/getCompany",
   async (companyId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/company/details/6870e6e558e2ba32d6b1eb33`);
+      const res = await api.get(`/company/details`);
       console.log(res.data);
       return res.data; // { company: {...} }
       
@@ -46,7 +46,6 @@ const companySlice = createSlice({
   name: "company",
   initialState: {
     company: null,
-    products: [],
     loading: false,
     error: null,
     success: false,
@@ -103,17 +102,14 @@ const companySlice = createSlice({
       .addCase(getCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.products = [];
       })
       .addCase(getCompany.fulfilled, (state, action) => {
         state.loading = false;
         state.company = action.payload.company;
-        state.products = action.payload.products || [];
       })
       .addCase(getCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.products = [];
       });
   },
 });
