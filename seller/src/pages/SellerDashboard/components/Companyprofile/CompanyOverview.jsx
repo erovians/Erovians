@@ -13,9 +13,10 @@ import { Badge } from "@/components/ui/badge";
 
 const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
   const dispatch = useDispatch();
-  const { company, products, loading, error } = useSelector(
+  const { company, loading, error } = useSelector(
     (state) => state.company
   );
+  const products = company?.products || [];
   const [activeSection, setActiveSection] = useState("overview");
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
 
