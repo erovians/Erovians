@@ -268,7 +268,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 />
               )}
 
-              <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+              {/* <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
                     product.status === "active"
@@ -287,6 +287,28 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                     : product.status === "pending"
                     ? "Pending"
                     : "Violation"}
+                </span>
+              </div> */}
+              {/* 🔹 Status + Views Section */}
+              <div className="absolute top-3 right-3 flex items-center gap-3 z-10">
+                {/* 👁️ Views Count */}
+
+                {/* Status Badge */}
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    product.status === "active"
+                      ? "bg-green-100 text-green-700 border border-green-300"
+                      : product.status === "inactive"
+                      ? "bg-red-100 text-red-700 border border-red-300"
+                      : product.status === "pending"
+                      ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                      : "bg-purple-100 text-purple-700 border border-purple-300"
+                  }`}
+                >
+                  {product.status}
+                </span>
+                <span className="flex items-center gap-1 text-gray-600 text-xs font-medium bg-gray-100 px-2 py-1 rounded-full border border-gray-300">
+                  👁️ {product.views || 0} views
                 </span>
               </div>
 
@@ -365,6 +387,20 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                   <span className="text-sm text-gray-500">/{product.unit}</span>
                 </div>
               </Link>
+              {/* 🔹 Last Updated Timestamp */}
+              <div className="absolute bottom-2 right-4 text-xs text-gray-400">
+                Last updated:{" "}
+                {product.updatedAt
+                  ? new Date(product.updatedAt).toLocaleString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                  : "N/A"}
+              </div>
             </div>
           ))
         )}

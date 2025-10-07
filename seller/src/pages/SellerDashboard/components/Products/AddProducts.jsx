@@ -133,56 +133,57 @@ const AddProduct = () => {
   return (
     <div className="max-w-full mx-auto p-6 grid md:grid-cols-2 gap-8 ">
       {/* Left side: Form */}
-      <form onSubmit={handleSubmit} className="rounded-2xl p-6 space-y-5 ">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-3xl mx-auto bg-white rounded-2xl p-6 shadow-sm space-y-6"
+      >
+        <h2 className="text-2xl font-semibold text-gray-800 text-center">
           Add New Product
         </h2>
 
         {message && (
-          <div className="p-3 text-sm rounded bg-green-100 text-green-700 border border-green-300">
+          <div className="p-3 text-sm rounded bg-green-100 text-green-700 border border-green-300 text-center">
             {message}
           </div>
         )}
 
-        <input
-          type="text"
-          name="companyId"
-          placeholder="Company ID"
-          value={formData.companyId}
-          onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
-        />
+        {/* Company & Product Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            name="companyId"
+            placeholder="Company ID"
+            value={formData.companyId}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
+          />
 
-        <input
-          type="text"
-          name="productName"
-          placeholder="Product Name"
-          value={formData.productName}
-          onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
-        />
-
-        {formData.productImages.length > 0 &&
-          formData.productImages.length < 3 && (
-            <p className="text-red-500 text-sm">
-              Please select at least 3 images.
-            </p>
-          )}
+          <input
+            type="text"
+            name="productName"
+            placeholder="Product Name"
+            value={formData.productName}
+            onChange={handleChange}
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
+          />
+        </div>
 
         {/* Product Images */}
-        <div className="space-y-2">
-          <label className="font-medium">Product Images (Min 3)</label>
+        <div>
+          <label className="font-medium text-gray-700">
+            Product Images (Min 3)
+          </label>
           <input
             type="file"
             multiple
             accept="image/*"
             onChange={handleFileChange}
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 p-3 mt-2 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
           />
 
           {formData.productImages.length > 0 &&
             formData.productImages.length < 3 && (
-              <p className="text-red-500 text-sm">
+              <p className="text-red-500 text-sm mt-1">
                 Please select at least 3 images.
               </p>
             )}
@@ -196,7 +197,7 @@ const AddProduct = () => {
                       typeof img === "string" ? img : URL.createObjectURL(img)
                     }
                     alt={`Preview ${idx + 1}`}
-                    className="h-24 w-24 object-cover rounded-lg shadow-md"
+                    className="h-20 w-20 object-cover rounded-lg shadow-md"
                   />
                   <button
                     type="button"
@@ -208,7 +209,7 @@ const AddProduct = () => {
                         ),
                       }))
                     }
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
                   >
                     ×
                   </button>
@@ -218,12 +219,13 @@ const AddProduct = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Category & Subcategory */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="border p-3 rounded-lg"
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
           >
             <option value="Granite">Granite</option>
             <option value="Marble">Marble</option>
@@ -235,149 +237,170 @@ const AddProduct = () => {
             placeholder="Sub Category"
             value={formData.subCategory}
             onChange={handleChange}
-            className="border p-3 rounded-lg"
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
           />
         </div>
 
+        {/* Grade */}
         <select
           name="grade"
           value={formData.grade}
           onChange={handleChange}
-          className="border p-3 rounded-lg"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
         >
           <option value="A">Grade A</option>
           <option value="B">Grade B</option>
           <option value="C">Grade C</option>
         </select>
 
-        <input
-          type="text"
-          name="color"
-          placeholder="Color"
-          value={formData.color}
-          onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
-        />
-
-        <input
-          type="text"
-          name="origin"
-          placeholder="Origin"
-          value={formData.origin}
-          onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
-        />
-
-        {/* Size Inputs */}
-        <div className="grid grid-cols-3 gap-3">
+        {/* Color & Origin */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
-            type="number"
-            name="length"
-            placeholder="Length"
-            value={formData.size.length}
+            type="text"
+            name="color"
+            placeholder="Color"
+            value={formData.color}
             onChange={handleChange}
-            className="border p-3 rounded-lg"
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
           />
-          <select
-            name="lengthMeasurement"
-            value={formData.size.lengthMeasurement}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          >
-            <option value="ft">ft</option>
-            <option value="m">m</option>
-          </select>
 
           <input
-            type="number"
-            name="width"
-            placeholder="Width"
-            value={formData.size.width}
+            type="text"
+            name="origin"
+            placeholder="Origin"
+            value={formData.origin}
             onChange={handleChange}
-            className="border p-3 rounded-lg"
+            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
           />
-          <select
-            name="widthMeasurement"
-            value={formData.size.widthMeasurement}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          >
-            <option value="ft">ft</option>
-            <option value="m">m</option>
-          </select>
-
-          <input
-            type="number"
-            name="thickness"
-            placeholder="Thickness"
-            value={formData.size.thickness}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
-          <select
-            name="thicknessMeasurement"
-            value={formData.size.thicknessMeasurement}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          >
-            <option value="inch">inch</option>
-            <option value="cm">cm</option>
-          </select>
         </div>
 
-        {/* Weight and Price */}
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            type="number"
-            name="weight"
-            placeholder="Weight"
-            value={formData.weight}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
-          <select
-            name="weightMeasurement"
-            value={formData.weightMeasurement}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          >
-            <option value="kg">kg</option>
-            <option value="ton">ton</option>
-          </select>
+        {/* Size Section */}
+        <div>
+          <h3 className="text-sm font-medium text-gray-700 mb-2">
+            Size Details
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="flex gap-2">
+              <input
+                type="number"
+                name="length"
+                placeholder="Length"
+                value={formData.size.length}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-2/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              />
+              <select
+                name="lengthMeasurement"
+                value={formData.size.lengthMeasurement}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-1/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              >
+                <option value="ft">ft</option>
+                <option value="m">m</option>
+              </select>
+            </div>
 
-          <input
-            type="number"
-            name="pricePerUnit"
-            placeholder="Price Per Unit"
-            value={formData.pricePerUnit}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
-          <select
-            name="priceUnit"
-            value={formData.priceUnit}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          >
-            <option value="sq.ft">sq.ft</option>
-            <option value="sq.m">sq.m</option>
-            <option value="piece">piece</option>
-          </select>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                name="width"
+                placeholder="Width"
+                value={formData.size.width}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-2/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              />
+              <select
+                name="widthMeasurement"
+                value={formData.size.widthMeasurement}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-1/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              >
+                <option value="ft">ft</option>
+                <option value="m">m</option>
+              </select>
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="number"
+                name="thickness"
+                placeholder="Thickness"
+                value={formData.size.thickness}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-2/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              />
+              <select
+                name="thicknessMeasurement"
+                value={formData.size.thicknessMeasurement}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded-lg w-1/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+              >
+                <option value="inch">inch</option>
+                <option value="cm">cm</option>
+              </select>
+            </div>
+          </div>
         </div>
 
+        {/* Weight & Price */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex gap-2">
+            <input
+              type="number"
+              name="weight"
+              placeholder="Weight"
+              value={formData.weight}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-lg w-2/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+            />
+            <select
+              name="weightMeasurement"
+              value={formData.weightMeasurement}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-lg w-1/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+            >
+              <option value="kg">kg</option>
+              <option value="ton">ton</option>
+            </select>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="number"
+              name="pricePerUnit"
+              placeholder="Price Per Unit"
+              value={formData.pricePerUnit}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-lg w-2/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+            />
+            <select
+              name="priceUnit"
+              value={formData.priceUnit}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-lg w-1/3 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+            >
+              <option value="sq.ft">sq.ft</option>
+              <option value="sq.m">sq.m</option>
+              <option value="piece">piece</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Description */}
         <textarea
           name="description"
           placeholder="Product description..."
           value={formData.description}
           onChange={handleChange}
           rows={4}
-          className="w-full border p-3 rounded-lg"
+          className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
         />
 
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gray-600 cursor-pointer text-white py-3 rounded-lg shadow hover:bg-gray-700 transition"
+          className="w-full bg-gray-700 text-white py-3 rounded-lg shadow hover:bg-gray-800 transition disabled:opacity-50"
         >
           {loading ? "Submitting..." : "Add Product"}
         </button>
