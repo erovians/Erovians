@@ -9,7 +9,9 @@ export const registerCompany = createAsyncThunk(
       const res = await api.post("/company/register", formData);
       return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Registration failed");
+      return rejectWithValue(
+        err.response?.data?.message || "Registration failed"
+      );
     }
   }
 );
@@ -35,9 +37,10 @@ export const getCompany = createAsyncThunk(
       const res = await api.get(`/company/details/6870e6e558e2ba32d6b1eb33`);
       console.log(res.data);
       return res.data; // { company: {...} }
-      
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch company details");
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch company details"
+      );
     }
   }
 );
@@ -73,7 +76,8 @@ const companySlice = createSlice({
         state.loading = false;
         state.success = true;
         state.company = action.payload.company;
-        state.message = action.payload.message || "Company registered successfully";
+        state.message =
+          action.payload.message || "Company registered successfully";
       })
       .addCase(registerCompany.rejected, (state, action) => {
         state.loading = false;
@@ -91,7 +95,8 @@ const companySlice = createSlice({
         state.loading = false;
         state.success = true;
         state.company = action.payload.company;
-        state.message = action.payload.message || "Company updated successfully";
+        state.message =
+          action.payload.message || "Company updated successfully";
       })
       .addCase(editCompany.rejected, (state, action) => {
         state.loading = false;
