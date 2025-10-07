@@ -85,6 +85,7 @@ const CompanyDataSchema = new mongoose.Schema(
       ref: "seller",
       required: true,
       unique: true,
+      index: true,
     },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
     companyIntro: { type: CompanyIntroSchema, required: true },
@@ -95,6 +96,31 @@ const CompanyDataSchema = new mongoose.Schema(
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.acceptedCurrency": 1 });
+
+// text index for quick name/description search (weights help rank)
+CompanyDataSchema.index(
+  {
+    "companyBasicInfo.companyName": "text",
+    "companyIntro.companyDescription": "text",
+  },
+  {
+    weights: {
+      "companyBasicInfo.companyName": 10,
+      "companyIntro.companyDescription": 2,
+    },
+  }
+);
+
+// tidy API payloads
+CompanyDataSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform(doc, ret) {
+    ret.id = ret._id;
+    delete ret._id;
+    return ret;
+  },
+});
 
 const CompanyDetails = mongoose.model("Company", CompanyDataSchema);
 

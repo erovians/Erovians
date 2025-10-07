@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import sellerRoutes from "./routes/sellerSignup.routes.js";
-import createCompany from "./routes/company.routes.js";
-import productRoute from "./routes/product.route.js";
+import sellerRoutes from "./routes/seller.routes.js";
+import companyRoutes from "./routes/company.routes.js";
+import productRoutes from "./routes/product.route.js";
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
@@ -29,9 +29,9 @@ app.use("/api/uploads", express.static("uploads"));
 app.use("/api/seller", sellerRoutes);
 
 // Company route (multer handles files internally)
-app.use("/api/company", createCompany);
+app.use("/api/company", companyRoutes);
 
 // Product routes
-app.use("/api/product", productRoute);
+app.use("/api/product", productRoutes);
 
 export { app };

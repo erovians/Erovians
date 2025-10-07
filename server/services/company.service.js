@@ -1,57 +1,34 @@
-// src/services/company.service.js
-import mongoose from "mongoose";
-import CompanyDetails from "../models/company.model.js";
-import Seller from "../models/sellerSingnup.model.js";
-import Product from "../models/product.model.js";
-import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
-import {
-  uploadOnCloudinary,
-  cloudinary,
-} from "../utils/cloudinaryUpload.utils.js";
+// // src/services/company.service.js
+// import mongoose from "mongoose";
+// import CompanyDetails from "../models/company.model.js";
+// import Seller from "../models/sellerSingnup.model.js";
+// import Product from "../models/product.model.js";
+// import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
+// import {
+//   uploadOnCloudinary,
+//   cloudinary,
+// } from "../utils/cloudinaryUpload.utils.js";
+
 
 // export const registerCompanyService = async (data, files) => {
 //   const session = await mongoose.startSession();
 //   session.startTransaction();
 
+//   // keep track of uploaded Cloudinary files in case rollback is needed
+//   const uploadedFiles = [];
+
 //   try {
-//     const SellerId = "6870e6e558e2ba32d6b1eb37"; // frontend must send sellerId with form data
+//     const SellerId = "6870e6e558e2ba32d6b1eb33"; // frontend must send sellerId
 //     if (!SellerId) throw new Error("SellerId is required");
 
-//     // // Step 1: Validate seller exists
-//     // const seller = await Seller.findById(SellerId).session(session);
-//     // if (!seller) throw new Error("Seller not found");
+//     // Step 1: Check if company already exists
+//     const existingCompany = await CompanyDetails.findOne({ SellerId }).session(
+//       session
+//     );
+//     if (existingCompany)
+//       throw new Error("Company already registered for this seller");
 
-//     // Step 2: Check if company already exists
-//     const existingCompany = await CompanyDetails.findOne({ SellerId }).session(session);
-//     if (existingCompany) throw new Error("Company already registered for this seller");
-
-//     // Step 3: Handle file uploads
-//     let logoUrl = "";
-//     let photoUrls = [];
-//     let videoUrls = [];
-
-//     // Upload logo
-//     if (files?.logo?.[0]) {
-//       const result = await uploadOnCloudinary(files.logo[0].path, files.logo[0].mimetype);
-//       if (!result?.secure_url) throw new Error("Logo upload failed");
-//       logoUrl = result.secure_url;
-//     }
-
-//     // Upload photos
-//     for (const file of files?.companyPhotos || []) {
-//       const result = await uploadOnCloudinary(file.path, file.mimetype);
-//       if (!result?.secure_url) throw new Error("One of the photos failed to upload");
-//       photoUrls.push(result.secure_url);
-//     }
-
-//     // Upload video
-//     if (files?.companyVideo?.[0]) {
-//       const result = await uploadOnCloudinary(files.companyVideo[0].path, files.companyVideo[0].mimetype);
-//       if (!result?.secure_url) throw new Error("Video upload failed");
-//       videoUrls.push(result.secure_url);
-//     }
-
-//     // Step 4: Parse and validate address
+//     // Step 2: Parse address safely
 //     let address = data.address;
 //     if (typeof address === "string") {
 //       try {
@@ -61,15 +38,15 @@ import {
 //       }
 //     }
 
-//     // Step 5: Prepare object
-//     const companyData = {
+//     // Step 3: Run Zod validation FIRST
+//     const validatedInput = await registerCompanySchema.parseAsync({
 //       SellerId,
 //       companyBasicInfo: {
 //         companyName: data.companyName,
 //         address,
 //         legalowner: data.legalowner,
 //         locationOfRegistration: data.locationOfRegistration,
-//         companyRegistrationYear: new Date(data.companyRegistrationYear),
+//         companyRegistrationYear: data.companyRegistrationYear, // still string here
 //         mainCategory: data.mainCategory,
 //         subCategory: data.subCategory,
 //         acceptedCurrency: data.acceptedCurrency,
@@ -77,69 +54,121 @@ import {
 //         languageSpoken: data.languageSpoken,
 //       },
 //       companyIntro: {
-//         logo: logoUrl,
 //         companyDescription: data.companyDescription,
-//         companyPhotos: photoUrls,
-//         companyVideos: videoUrls,
+//         logo: "", // placeholder
+//         companyPhotos: [],
+//         companyVideos: [],
 //       },
-//     };
+//     });
 
-//     // Step 6: Validate with Zod
-//     const validatedData = registerCompanySchema.parse(companyData);
+//     // Step 4: Upload files AFTER validation
+//     let logoUrl = "";
+//     if (files?.logo?.[0]) {
+//       const result = await uploadOnCloudinary(
+//         files.logo[0].path,
+//         files.logo[0].mimetype
+//       );
+//       if (!result?.secure_url) throw new Error("Logo upload failed");
+//       logoUrl = result.secure_url;
+//       uploadedFiles.push(result.public_id);
+//     }
 
-//     // Step 7: Save in DB inside transaction
-//     const savedCompany = await CompanyDetails.create([validatedData], { session });
+//     let photoUrls = [];
+//     for (const file of files?.companyPhotos || []) {
+//       const result = await uploadOnCloudinary(file.path, file.mimetype);
+//       if (!result?.secure_url)
+//         throw new Error("One of the photos failed to upload");
+//       photoUrls.push(result.secure_url);
+//       uploadedFiles.push(result.public_id);
+//     }
 
-//     // Commit
+//     let videoUrls = [];
+//     if (files?.companyVideo?.[0]) {
+//       const result = await uploadOnCloudinary(
+//         files.companyVideo[0].path,
+//         files.companyVideo[0].mimetype
+//       );
+//       if (!result?.secure_url) throw new Error("Video upload failed");
+//       videoUrls.push(result.secure_url);
+//       uploadedFiles.push(result.public_id);
+//     }
+
+//     // Step 5: Convert date AFTER validation
+//     validatedInput.companyBasicInfo.companyRegistrationYear = new Date(
+//       validatedInput.companyBasicInfo.companyRegistrationYear
+//     );
+
+//     // Add files
+//     validatedInput.companyIntro.logo = logoUrl;
+//     validatedInput.companyIntro.companyPhotos = photoUrls;
+//     validatedInput.companyIntro.companyVideos = videoUrls;
+
+//     // Step 6: Save in DB inside transaction
+//     const savedCompany = await CompanyDetails.create([validatedInput], {
+//       session,
+//     });
+
+//     // Commit transaction
 //     await session.commitTransaction();
 //     session.endSession();
 
 //     return savedCompany[0];
 //   } catch (error) {
-//     // Abort on any error
+//     // Abort DB transaction
 //     await session.abortTransaction();
 //     session.endSession();
+
+//     // Rollback Cloudinary uploads if any
+//     if (uploadedFiles.length > 0) {
+//       for (const public_id of uploadedFiles) {
+//         try {
+//           await cloudinary.uploader.destroy(public_id);
+//         } catch (rollbackErr) {
+//           console.error("Failed to rollback Cloudinary file:", rollbackErr);
+//         }
+//       }
+//     }
+
 //     throw error;
 //   }
 // };
+
+// services/company.service.js
+import mongoose from "mongoose";
+import CompanyDetails from "../models/company.model.js";
+import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
 
 export const registerCompanyService = async (data, files) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  // keep track of uploaded Cloudinary files in case rollback is needed
   const uploadedFiles = [];
 
   try {
-    const SellerId = "6870e6e558e2ba32d6b1eb33"; // frontend must send sellerId
+    const SellerId = "6870e6e558e2ba32d6b1eb47";
     if (!SellerId) throw new Error("SellerId is required");
 
-    // Step 1: Check if company already exists
-    const existingCompany = await CompanyDetails.findOne({ SellerId }).session(
-      session
-    );
+    // ✅ Step 1: Check for existing company
+    const existingCompany = await CompanyDetails.findOne({ SellerId })
+      .session(session)
+      .lean();
+
     if (existingCompany)
       throw new Error("Company already registered for this seller");
 
-    // Step 2: Parse address safely
-    let address = data.address;
-    if (typeof address === "string") {
-      try {
-        address = JSON.parse(address);
-      } catch {
-        throw new Error("Invalid address format");
-      }
-    }
+    // ✅ Step 2: Parse and validate input
+    const address =
+      typeof data.address === "string" ? JSON.parse(data.address) : data.address;
 
-    // Step 3: Run Zod validation FIRST
-    const validatedInput = await registerCompanySchema.parseAsync({
+    const validated = await registerCompanySchema.parseAsync({
       SellerId,
       companyBasicInfo: {
         companyName: data.companyName,
         address,
         legalowner: data.legalowner,
         locationOfRegistration: data.locationOfRegistration,
-        companyRegistrationYear: data.companyRegistrationYear, // still string here
+        companyRegistrationYear: data.companyRegistrationYear,
         mainCategory: data.mainCategory,
         subCategory: data.subCategory,
         acceptedCurrency: data.acceptedCurrency,
@@ -148,99 +177,112 @@ export const registerCompanyService = async (data, files) => {
       },
       companyIntro: {
         companyDescription: data.companyDescription,
-        logo: "", // placeholder
+        logo: "",
         companyPhotos: [],
         companyVideos: [],
       },
     });
 
-    // Step 4: Upload files AFTER validation
-    let logoUrl = "";
-    if (files?.logo?.[0]) {
-      const result = await uploadOnCloudinary(
-        files.logo[0].path,
-        files.logo[0].mimetype
-      );
-      if (!result?.secure_url) throw new Error("Logo upload failed");
-      logoUrl = result.secure_url;
-      uploadedFiles.push(result.public_id);
-    }
+    //  let logoUrl = "";
+    // if (files?.logo?.[0]) {
+    //   const result = await uploadOnCloudinary(
+    //     files.logo[0].path,
+    //     files.logo[0].mimetype
+    //   );
+    //   if (!result?.secure_url) throw new Error("Logo upload failed");
+    //   logoUrl = result.secure_url;
+    //   uploadedFiles.push(result.public_id);
+    // }
 
-    let photoUrls = [];
-    for (const file of files?.companyPhotos || []) {
-      const result = await uploadOnCloudinary(file.path, file.mimetype);
-      if (!result?.secure_url)
-        throw new Error("One of the photos failed to upload");
-      photoUrls.push(result.secure_url);
-      uploadedFiles.push(result.public_id);
-    }
+    // ✅ Step 3: Upload to Cloudinary
+    const logoUrl = await (async () => {
+      if (!files?.logo?.[0]) return "";
+      const file = files.logo[0];
+      const res = await uploadOnCloudinary(file.path, file.mimetype);
+      if (!res?.secure_url) throw new Error("Logo upload failed");
+      uploadedFiles.push(res.public_id);
+      return res.secure_url;
+    })();
 
-    let videoUrls = [];
-    if (files?.companyVideo?.[0]) {
-      const result = await uploadOnCloudinary(
-        files.companyVideo[0].path,
-        files.companyVideo[0].mimetype
-      );
-      if (!result?.secure_url) throw new Error("Video upload failed");
-      videoUrls.push(result.secure_url);
-      uploadedFiles.push(result.public_id);
-    }
-
-    // Step 5: Convert date AFTER validation
-    validatedInput.companyBasicInfo.companyRegistrationYear = new Date(
-      validatedInput.companyBasicInfo.companyRegistrationYear
+    const photoUrls = await Promise.all(
+      (files?.companyPhotos || []).map(async (file) => {
+        const res = await uploadOnCloudinary(file.path, file.mimetype);
+        if (!res?.secure_url) throw new Error("Photo upload failed");
+        uploadedFiles.push(res.public_id);
+        return res.secure_url;
+      })
     );
 
-    // Add files
-    validatedInput.companyIntro.logo = logoUrl;
-    validatedInput.companyIntro.companyPhotos = photoUrls;
-    validatedInput.companyIntro.companyVideos = videoUrls;
+    const videoUrls = await Promise.all(
+      (files?.companyVideos || []).map(async (file) => {
+        const res = await uploadOnCloudinary(file.path, file.mimetype);
+        if (!res?.secure_url) throw new Error("Video upload failed");
+        uploadedFiles.push(res.public_id);
+        return res.secure_url;
+      })
+    );
 
-    // Step 6: Save in DB inside transaction
-    const savedCompany = await CompanyDetails.create([validatedInput], {
+    // ✅ Step 4: Build final object
+    validated.companyBasicInfo.companyRegistrationYear = new Date(
+      validated.companyBasicInfo.companyRegistrationYear
+    );
+    validated.companyIntro = {
+      ...validated.companyIntro,
+      logo: logoUrl,
+      companyPhotos: photoUrls,
+      companyVideos: videoUrls,
+    };
+
+    // ✅ Step 5: Save inside a transaction
+    const [savedCompany] = await CompanyDetails.create([validated], {
       session,
     });
 
-    // Commit transaction
     await session.commitTransaction();
     session.endSession();
 
-    return savedCompany[0];
+    return savedCompany;
   } catch (error) {
-    // Abort DB transaction
+    // 🔁 Rollback DB
     await session.abortTransaction();
     session.endSession();
 
-    // Rollback Cloudinary uploads if any
-    if (uploadedFiles.length > 0) {
-      for (const public_id of uploadedFiles) {
-        try {
-          await cloudinary.uploader.destroy(public_id);
-        } catch (rollbackErr) {
-          console.error("Failed to rollback Cloudinary file:", rollbackErr);
-        }
-      }
-    }
+    // 🔁 Rollback Cloudinary uploads
+    await Promise.all(
+      uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
+    );
 
     throw error;
   }
 };
 
+
 export const getCompanyDetailsService = async (sellerId) => {
-  if (!sellerId) throw new Error("SellerId is required");
+  try {
+    if (!sellerId) throw new Error("SellerId is required");
 
-  const company = await CompanyDetails.findOne({ SellerId: sellerId }).lean();
-  console.log(company._id);
+    const result = await CompanyDetails.aggregate([
+      { $match: { SellerId: new mongoose.Types.ObjectId(sellerId) } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "companyId",
+          as: "products",
+          pipeline: [
+            { $project: { productName: 1, productImages: 1, grade: 1, description: 1, status: 1 } },
+            { $limit: 20 },
+          ],
+        },
+      },
+    ]);
 
-  if (!company) throw new Error("Company not found");
+    if (!result.length) throw new Error("Company not found");
 
-  const products = await Product.find({
-    companyId: company._id,
-  })
-    .select("productName productImages grade description") // only what you need
-    .limit(20) // pagin
-    .lean();
-
-
-  return { company, products };
+    return result[0];
+  } catch (err) {
+    logger.error("getCompanyDetailsService failed", { sellerId, error: err.message });
+    throw err;
+  }
 };
+

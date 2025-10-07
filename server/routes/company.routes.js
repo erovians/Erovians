@@ -12,10 +12,8 @@ router.post(
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
-    { name: "companyVideo", maxCount: 1 },
-  ]),
-  registerCompany
-);
-router.get("/details/:sellerId", getCompanyDetails);
+    { name: "companyVideo", maxCount: 1 },]) 
+  ,registerCompany);
+  router.get("/details", getCompanyDetails);
 
 export default router;
