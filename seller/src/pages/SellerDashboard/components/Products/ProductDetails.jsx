@@ -185,7 +185,6 @@ const ProductDetails = () => {
         {/* Right: Product Info */}
         <div className="md:w-1/2 flex flex-col p-6 rounded-2xl font-sans text-gray-800 relative">
           {/* Header: Product Name + Status + Menu */}
-          {/* Header: Product Name + Status + Menu */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 sm:gap-0">
             {/* Product Title */}
             <div className="flex-1 w-full">
@@ -205,8 +204,8 @@ const ProductDetails = () => {
               )}
             </div>
 
-            {/* Status + Menu */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-wrap mt-2 sm:mt-0">
+            {/* Status + Menu (for medium and large screens) */}
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3 flex-wrap mt-2 sm:mt-0">
               {/* Status Toggle */}
               {(product.status === "active" ||
                 product.status === "inactive") && (
@@ -283,10 +282,121 @@ const ProductDetails = () => {
             </div>
           </div>
 
+          {/* ✅ Small screen layout for Price + Status + Menu */}
+          <div className="flex sm:hidden items-center justify-between mb-4 flex-wrap gap-2">
+            {/* Price */}
+            <div className="flex items-baseline gap-2">
+              {isEditing ? (
+                <>
+                  <input
+                    type="number"
+                    value={editData.pricePerUnit}
+                    onChange={(e) =>
+                      setEditData({ ...editData, pricePerUnit: e.target.value })
+                    }
+                    className="text-lg font-semibold border p-1 w-20"
+                  />
+                  <input
+                    type="text"
+                    value={editData.priceUnit}
+                    onChange={(e) =>
+                      setEditData({ ...editData, priceUnit: e.target.value })
+                    }
+                    className="text-sm border p-1 w-16"
+                  />
+                </>
+              ) : (
+                <>
+                  <span className="text-xl font-bold text-black">
+                    ₹{product.pricePerUnit}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    /{product.priceUnit}
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/* Status + Menu */}
+            <div className="flex items-center gap-2">
+              {(product.status === "active" ||
+                product.status === "inactive") && (
+                <button
+                  onClick={handleToggleStatus}
+                  className={`relative inline-flex items-center h-5 w-10 rounded-full transition-colors duration-300 focus:outline-none ${
+                    product.status === "active" ? "bg-green-500" : "bg-red-600"
+                  }`}
+                >
+                  <span
+                    className={`inline-block w-5 h-5 transform bg-white rounded-full shadow-md transition-transform duration-300 ${
+                      product.status === "active"
+                        ? "translate-x-5"
+                        : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              )}
+
+              <span
+                className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  product.status === "active"
+                    ? "bg-green-100 text-green-700 border border-green-300"
+                    : product.status === "inactive"
+                    ? "bg-red-100 text-red-700 border border-red-300"
+                    : product.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                    : "bg-purple-100 text-purple-700 border border-purple-300"
+                }`}
+              >
+                {product.status.charAt(0).toUpperCase() +
+                  product.status.slice(1)}
+              </span>
+
+              {/* Menu (same as large) */}
+              <div className="relative">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-1 rounded-full hover:bg-gray-100"
+                >
+                  <MoreVertical className="w-4 h-4 text-gray-600" />
+                </button>
+
+                {menuOpen && (
+                  <div className="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                    {!isEditing ? (
+                      <button
+                        onClick={() => {
+                          setIsEditing(true);
+                          setMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Edit
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="block w-full text-left px-3 py-2 text-sm text-gray-500 hover:bg-gray-100"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                    <button
+                      onClick={handleDelete}
+                      className="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-100"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto pr-2 space-y-6">
             {/* Price */}
-            <div className="flex items-baseline gap-3 border-b border-gray-200 pb-3">
+            <div className="hidden sm:flex items-baseline gap-3 border-b border-gray-200 pb-3">
               {isEditing ? (
                 <>
                   <input
