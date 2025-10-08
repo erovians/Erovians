@@ -246,7 +246,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
         {/* Small screen view: Only Dropdown */}
         <div className="sm:hidden mt-2">
           <select
-            className="w-full border rounded p-2"
+            className="w-full rounded h-10  "
             onChange={(e) => {
               const value = e.target.value;
               if (value.startsWith("category:"))
