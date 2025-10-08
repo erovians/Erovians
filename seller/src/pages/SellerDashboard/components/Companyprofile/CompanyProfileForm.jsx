@@ -248,20 +248,6 @@ export default function CompanyProfileForm() {
 
       console.log("Files appended successfully ✅");
 
-      // // Send request (do NOT set Content-Type manually)
-      // const res = await api.post("/company/register", form);
-      // console.log("Response:", res);
-
-      // if (!res.data.success) {
-      //   throw new Error(res.data.message || "Something went wrong");
-      // }
-
-      // if (res.status === 201) {
-      //   alert("Company registered successfully");
-      //   localStorage.removeItem("companyFormData");
-      //   localStorage.removeItem("currentStep");
-      // }
-
       const result = await dispatch(registerCompany(form)).unwrap(); // redux disptach
       alert(result.message);
       localStorage.removeItem("companyFormData");
@@ -292,7 +278,7 @@ export default function CompanyProfileForm() {
 
   return (
     <div className="max-w-7xl mx-auto rounded">
-      <div className="p-4">
+      <div className="p-2 md:p-4">
         <div className="flex justify-between mb-2">
           <span className="font-medium">Progress</span>
           <span className="text-sm">{progress}%</span>
@@ -313,7 +299,7 @@ export default function CompanyProfileForm() {
             return (
               <div key={step.id} className="flex-1 text-center relative">
                 <div
-                  className={`mx-auto w-8 h-8 flex items-center justify-center rounded-full 
+                  className={`mx-auto text-sm w-8 h-8 flex items-center justify-center rounded-full 
             ${
               isActive || isCompleted
                 ? "bg-navyblue text-white"
@@ -324,7 +310,7 @@ export default function CompanyProfileForm() {
                 </div>
 
                 <p
-                  className={`mt-2 text-sm font-medium ${
+                  className={`mt-2 text-xs font-medium ${
                     isActive ? "text-navyblue" : "text-gray-600"
                   }`}
                 >
@@ -344,7 +330,7 @@ export default function CompanyProfileForm() {
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="pt-6 md:p-6">
         <CurrentComponent
           formData={formData}
           setFormData={setFormData}
