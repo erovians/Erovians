@@ -6,7 +6,7 @@ import companyRoutes from "./routes/company.routes.js";
 import productRoutes from "./routes/product.route.js";
 
 const app = express();
-app.use(express.json({ limit: "10mb" }));
+// app.use(express.json({ limit: "10mb" }));
 
 // Enable JSON parsing for non-file routes
 app.use(express.json({ limit: "10mb" }));

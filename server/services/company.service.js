@@ -139,122 +139,122 @@ import CompanyDetails from "../models/company.model.js";
 import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
 
-export const registerCompanyService = async (data, files) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  export const registerCompanyService = async (data, files) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-  const uploadedFiles = [];
+    const uploadedFiles = [];
 
-  try {
-    const SellerId = "6870e6e558e2ba32d6b1eb47";
-    if (!SellerId) throw new Error("SellerId is required");
+    try {
+      const SellerId = "6870e6e558e2ba32d6b1eb47";
+      if (!SellerId) throw new Error("SellerId is required");
 
-    // ✅ Step 1: Check for existing company
-    const existingCompany = await CompanyDetails.findOne({ SellerId })
-      .session(session)
-      .lean();
+      // ✅ Step 1: Check for existing company
+      const existingCompany = await CompanyDetails.findOne({ SellerId })
+        .session(session)
+        .lean();
 
-    if (existingCompany)
-      throw new Error("Company already registered for this seller");
+      if (existingCompany)
+        throw new Error("Company already registered for this seller");
 
-    // ✅ Step 2: Parse and validate input
-    const address =
-      typeof data.address === "string" ? JSON.parse(data.address) : data.address;
+      // ✅ Step 2: Parse and validate input
+      const address =
+        typeof data.address === "string" ? JSON.parse(data.address) : data.address;
 
-    const validated = await registerCompanySchema.parseAsync({
-      SellerId,
-      companyBasicInfo: {
-        companyName: data.companyName,
-        address,
-        legalowner: data.legalowner,
-        locationOfRegistration: data.locationOfRegistration,
-        companyRegistrationYear: data.companyRegistrationYear,
-        mainCategory: data.mainCategory,
-        subCategory: data.subCategory,
-        acceptedCurrency: data.acceptedCurrency,
-        acceptedPaymentType: data.acceptedPaymentType,
-        languageSpoken: data.languageSpoken,
-      },
-      companyIntro: {
-        companyDescription: data.companyDescription,
-        logo: "",
-        companyPhotos: [],
-        companyVideos: [],
-      },
-    });
+      const validated = await registerCompanySchema.parseAsync({
+        SellerId,
+        companyBasicInfo: {
+          companyName: data.companyName,
+          address,
+          legalowner: data.legalowner,
+          locationOfRegistration: data.locationOfRegistration,
+          companyRegistrationYear: data.companyRegistrationYear,
+          mainCategory: data.mainCategory,
+          subCategory: data.subCategory,
+          acceptedCurrency: data.acceptedCurrency,
+          acceptedPaymentType: data.acceptedPaymentType,
+          languageSpoken: data.languageSpoken,
+        },
+        companyIntro: {
+          companyDescription: data.companyDescription,
+          logo: "",
+          companyPhotos: [],
+          companyVideos: [],
+        },
+      });
 
-    //  let logoUrl = "";
-    // if (files?.logo?.[0]) {
-    //   const result = await uploadOnCloudinary(
-    //     files.logo[0].path,
-    //     files.logo[0].mimetype
-    //   );
-    //   if (!result?.secure_url) throw new Error("Logo upload failed");
-    //   logoUrl = result.secure_url;
-    //   uploadedFiles.push(result.public_id);
-    // }
+      //  let logoUrl = "";
+      // if (files?.logo?.[0]) {
+      //   const result = await uploadOnCloudinary(
+      //     files.logo[0].path,
+      //     files.logo[0].mimetype
+      //   );
+      //   if (!result?.secure_url) throw new Error("Logo upload failed");
+      //   logoUrl = result.secure_url;
+      //   uploadedFiles.push(result.public_id);
+      // }
 
-    // ✅ Step 3: Upload to Cloudinary
-    const logoUrl = await (async () => {
-      if (!files?.logo?.[0]) return "";
-      const file = files.logo[0];
-      const res = await uploadOnCloudinary(file.path, file.mimetype);
-      if (!res?.secure_url) throw new Error("Logo upload failed");
-      uploadedFiles.push(res.public_id);
-      return res.secure_url;
-    })();
-
-    const photoUrls = await Promise.all(
-      (files?.companyPhotos || []).map(async (file) => {
+      // ✅ Step 3: Upload to Cloudinary
+      const logoUrl = await (async () => {
+        if (!files?.logo?.[0]) return "";
+        const file = files.logo[0];
         const res = await uploadOnCloudinary(file.path, file.mimetype);
-        if (!res?.secure_url) throw new Error("Photo upload failed");
+        if (!res?.secure_url) throw new Error("Logo upload failed");
         uploadedFiles.push(res.public_id);
         return res.secure_url;
-      })
-    );
+      })();
 
-    const videoUrls = await Promise.all(
-      (files?.companyVideos || []).map(async (file) => {
-        const res = await uploadOnCloudinary(file.path, file.mimetype);
-        if (!res?.secure_url) throw new Error("Video upload failed");
-        uploadedFiles.push(res.public_id);
-        return res.secure_url;
-      })
-    );
+      const photoUrls = await Promise.all(
+        (files?.companyPhotos || []).map(async (file) => {
+          const res = await uploadOnCloudinary(file.path, file.mimetype);
+          if (!res?.secure_url) throw new Error("Photo upload failed");
+          uploadedFiles.push(res.public_id);
+          return res.secure_url;
+        })
+      );
 
-    // ✅ Step 4: Build final object
-    validated.companyBasicInfo.companyRegistrationYear = new Date(
-      validated.companyBasicInfo.companyRegistrationYear
-    );
-    validated.companyIntro = {
-      ...validated.companyIntro,
-      logo: logoUrl,
-      companyPhotos: photoUrls,
-      companyVideos: videoUrls,
-    };
+      const videoUrls = await Promise.all(
+        (files?.companyVideos || []).map(async (file) => {
+          const res = await uploadOnCloudinary(file.path, file.mimetype);
+          if (!res?.secure_url) throw new Error("Video upload failed");
+          uploadedFiles.push(res.public_id);
+          return res.secure_url;
+        })
+      );
 
-    // ✅ Step 5: Save inside a transaction
-    const [savedCompany] = await CompanyDetails.create([validated], {
-      session,
-    });
+      // ✅ Step 4: Build final object
+      validated.companyBasicInfo.companyRegistrationYear = new Date(
+        validated.companyBasicInfo.companyRegistrationYear
+      );
+      validated.companyIntro = {
+        ...validated.companyIntro,
+        logo: logoUrl,
+        companyPhotos: photoUrls,
+        companyVideos: videoUrls,
+      };
 
-    await session.commitTransaction();
-    session.endSession();
+      // ✅ Step 5: Save inside a transaction
+      const [savedCompany] = await CompanyDetails.create([validated], {
+        session,
+      });
 
-    return savedCompany;
-  } catch (error) {
-    // 🔁 Rollback DB
-    await session.abortTransaction();
-    session.endSession();
+      await session.commitTransaction();
+      session.endSession();
 
-    // 🔁 Rollback Cloudinary uploads
-    await Promise.all(
-      uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
-    );
+      return savedCompany;
+    } catch (error) {
+      // 🔁 Rollback DB
+      await session.abortTransaction();
+      session.endSession();
 
-    throw error;
-  }
-};
+      // 🔁 Rollback Cloudinary uploads
+      await Promise.all(
+        uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
+      );
+
+      throw error;
+    }
+  };
 
 
 export const getCompanyDetailsService = async (sellerId) => {

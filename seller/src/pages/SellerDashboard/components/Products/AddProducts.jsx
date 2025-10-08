@@ -79,6 +79,7 @@ const AddProduct = () => {
       ...prev,
       productImages: [...prev.productImages, ...files],
     }));
+    console.log(formData)
   };
 
   const handleSubmit = async (e) => {

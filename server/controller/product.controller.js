@@ -13,7 +13,6 @@ import {
 // ✅ Add Product
 export const addProduct = async (req, res) => {
   try {
-    console.log(req.body)
     const savedProduct = await addProductService(req.body, req.files);
     res.status(201).json({
       success: true,

@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "@/utils/axios.utils";
 import { MoreVertical, Trash2 } from "lucide-react";
+import { set } from "zod";
+import { Spinner } from "@/components/ui/spinner";
 
 const ProductDetails = () => {
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -33,11 +36,14 @@ const ProductDetails = () => {
     if (!product) return;
     const newStatus = product.status === "active" ? "inactive" : "active";
     try {
+      setLoading(true);
       await api.patch(`/product/${product.id}/status`, { status: newStatus });
       setProduct({ ...product, status: newStatus });
       setEditData({ ...editData, status: newStatus });
     } catch (error) {
       console.error("Failed to update status:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,15 +51,19 @@ const ProductDetails = () => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
+      setLoading(true);
       await api.delete(`/product/${product.id}`);
       navigate("/sellerdashboard/products/list");
     } catch (error) {
       console.error("Failed to delete product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
     try {
+      setLoading(true);
       const updatedData = { ...editData };
       if (newImages.length > 0) {
         updatedData.productImages = [
@@ -74,6 +84,8 @@ const ProductDetails = () => {
     } catch (error) {
       console.error("Failed to save product:", error);
       alert("Failed to save product.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -397,12 +409,13 @@ const ProductDetails = () => {
 
           {/* Sticky Save Button */}
           {isEditing && (
-            <div className="  transform mt-10 ">
+            <div className=" transform mt-10 ">
               <button
                 onClick={handleSave}
-                className="bg-navyblue border border-navyblue text-white px-6 py-2 rounded-md shadow-lg cursor-pointer hover:bg-white hover:text-navyblue transition"
+                className="flex items-center gap-3 bg-navyblue border border-navyblue text-white px-6 py-2 rounded-md shadow-lg cursor-pointer hover:bg-white hover:text-navyblue transition"
               >
-                Save Changes
+                {loading && <Spinner />}
+                {loading ? "Saving..." : "Save Changes"}
               </button>
             </div>
           )}
