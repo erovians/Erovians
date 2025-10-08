@@ -79,7 +79,7 @@ const AddProduct = () => {
       ...prev,
       productImages: [...prev.productImages, ...files],
     }));
-    console.log(formData)
+    console.log(formData);
   };
 
   const handleSubmit = async (e) => {
@@ -133,11 +133,11 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="max-w-full mx-auto p-6 grid md:grid-cols-2 gap-8 ">
+    <div className="w-full mx-auto  grid md:grid-cols-2 gap-8 ">
       {/* Left side: Form */}
       <form
         onSubmit={handleSubmit}
-        className="max-w-3xl mx-auto bg-white rounded-2xl p-6 shadow-sm space-y-6"
+        className="max-w-3xl mx-auto bg-white p-6 shadow-sm space-y-6"
       >
         <h2 className="text-2xl font-semibold text-gray-800 text-center">
           Add New Product
@@ -410,7 +410,7 @@ const AddProduct = () => {
       </form>
 
       {/* Preview Section */}
-      <div className="min-w-full h-[25%] mx-auto bg-white border rounded-2xl shadow-md overflow-hidden flex flex-col md:flex-row">
+      <div className="min-w-full hidden h-[25%] mx-auto bg-white border rounded-2xl shadow-md overflow-hidden sm:flex flex-col md:flex-row">
         <div className="md:w-1/2 h-full p-2 flex flex-col">
           <div className=" rounded-lg overflow-hidden flex-1 mb-1">
             <img

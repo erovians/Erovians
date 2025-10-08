@@ -141,73 +141,81 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-100px)]">
+    <div className="flex flex-col h-[calc(100vh-150px)]">
       {/* Filters */}
-      <div className="sticky top-0 z-30 bg-white shadow-sm rounded-lg">
-        <div className="flex flex-wrap justify-between gap-4 items-center p-4">
-          <div className="flex gap-5 flex-wrap">
-            <Filter
-              label="Categories"
-              value={category}
-              onChange={setCategory}
-              options={[
-                { label: "All Categories", value: "all" },
-                { label: "Marble", value: "Marble" },
-                { label: "Granite", value: "Granite" },
-              ]}
-              loading={loading}
-            />
-            <Filter
-              label="SubCategory"
-              value={subCategory}
-              onChange={setSubCategory}
-              options={[
-                { label: "All Subcategories", value: "all" },
-                { label: "Polished", value: "Polished" },
-                { label: "Honed", value: "Honed" },
-                { label: "Natural", value: "Natural" },
-              ]}
-              loading={loading}
-            />
+
+      {/* Filters */}
+      <div className="static  z-30 sm:bg-white sm:shadow-sm rounded-lg p-4">
+        {/* Large screen view */}
+        <div className="hidden sm:flex flex-col gap-4">
+          {/* Filters and Search */}
+          <div className="flex flex-wrap justify-between gap-4 items-center">
+            <div className="flex gap-5 flex-wrap">
+              <Filter
+                label="Categories"
+                value={category}
+                onChange={setCategory}
+                options={[
+                  { label: "All Categories", value: "all" },
+                  { label: "Marble", value: "Marble" },
+                  { label: "Granite", value: "Granite" },
+                ]}
+                loading={loading}
+              />
+              <Filter
+                label="SubCategory"
+                value={subCategory}
+                onChange={setSubCategory}
+                options={[
+                  { label: "All Subcategories", value: "all" },
+                  { label: "Polished", value: "Polished" },
+                  { label: "Honed", value: "Honed" },
+                  { label: "Natural", value: "Natural" },
+                ]}
+                loading={loading}
+              />
+            </div>
+            <div className="w-auto">
+              <Search
+                value={search}
+                onChange={setSearch}
+                placeholder="Search product..."
+              />
+            </div>
           </div>
-          <Search
-            value={search}
-            onChange={setSearch}
-            placeholder="Search product..."
-          />
-        </div>
 
-        <div className="flex flex-wrap items-center  p-4">
-          {/* Status Filter Ribbon */}
-          <StatusFilterRibbon
-            statusCounts={statusCounts}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-          />
+          {/* Status Filter & Bulk Actions Buttons */}
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <StatusFilterRibbon
+              statusCounts={statusCounts}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+            />
 
-          {/* Bulk Action Buttons */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setBulkAction("activate")}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-green-100 transition-all duration-200"
-            >
-              Activate Multiple
-            </button>
-            <button
-              onClick={() => setBulkAction("deactivate")}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-red-100 transition-all duration-200"
-            >
-              Deactivate Multiple
-            </button>
-            <button
-              onClick={() => setBulkAction("delete")}
-              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm border hover:bg-purple-100 transition-all duration-200"
-            >
-              Delete Multiple
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setBulkAction("activate")}
+                className="px-3 py-2 border rounded hover:bg-green-100"
+              >
+                Activate
+              </button>
+              <button
+                onClick={() => setBulkAction("deactivate")}
+                className="px-3 py-2 border rounded hover:bg-red-100"
+              >
+                Deactivate
+              </button>
+              <button
+                onClick={() => setBulkAction("delete")}
+                className="px-3 py-2 border rounded hover:bg-purple-100"
+              >
+                Delete
+              </button>
+            </div>
 
+            {/* Bulk Action Confirm / Cancel buttons */}
             {bulkAction && (
-              <>
+              <div className="flex flex-wrap gap-2 mt-2">
                 <button
                   onClick={() => {
                     setBulkAction("");
@@ -218,17 +226,62 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                   Cancel
                 </button>
 
-                {selectedProducts.length > 0 && (
+                {selectedProducts.length > 0 ? (
                   <button
                     onClick={handleBulkAction}
                     className="px-3 py-2 bg-gray-500 text-white rounded"
                   >
                     Confirm {bulkAction} ({selectedProducts.length})
                   </button>
+                ) : (
+                  <span className="px-3 py-2 text-gray-500 rounded border">
+                    Select products to {bulkAction}
+                  </span>
                 )}
-              </>
+              </div>
             )}
           </div>
+        </div>
+
+        {/* Small screen view: Only Dropdown */}
+        <div className="sm:hidden mt-2">
+          <select
+            className="w-full rounded h-10  "
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.startsWith("category:"))
+                setCategory(value.split(":")[1]);
+              else if (value.startsWith("subcategory:"))
+                setSubCategory(value.split(":")[1]);
+              else if (value.startsWith("status:"))
+                setStatusFilter(value.split(":")[1]);
+              else setBulkAction(value);
+            }}
+            value={bulkAction || ""}
+          >
+            <option disabled>-- Categories --</option>
+            <option value="category:all">All Categories</option>
+            <option value="category:Marble">Marble</option>
+            <option value="category:Granite">Granite</option>
+
+            <option disabled>-- Subcategories --</option>
+            <option value="subcategory:all">All Subcategories</option>
+            <option value="subcategory:Polished">Polished</option>
+            <option value="subcategory:Honed">Honed</option>
+            <option value="subcategory:Natural">Natural</option>
+
+            <option disabled>-- Status --</option>
+            {Object.entries(statusCounts).map(([status, count]) => (
+              <option key={status} value={`status:${status}`}>
+                {status} ({count})
+              </option>
+            ))}
+
+            <option disabled>-- Bulk Actions --</option>
+            <option value="activate">Activate Multiple</option>
+            <option value="deactivate">Deactivate Multiple</option>
+            <option value="delete">Delete Multiple</option>
+          </select>
         </div>
       </div>
 
@@ -244,50 +297,12 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
           filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden bg-white items-center"
+              className="relative flex flex-col md:flex-row rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden bg-white justify-center items-center gap-1"
             >
-              {bulkAction && (
-                <input
-                  type="checkbox"
-                  className="m-4 h-5 w-5"
-                  checked={selectedProducts.includes(product.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedProducts([...selectedProducts, product.id]);
-                    } else {
-                      setSelectedProducts(
-                        selectedProducts.filter((id) => id !== product.id)
-                      );
-                    }
-                  }}
-                />
-              )}
-
-              {/* <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    product.status === "active"
-                      ? "bg-green-100 text-green-700 border border-green-300"
-                      : product.status === "inactive"
-                      ? "bg-red-100 text-red-700 border border-red-300"
-                      : product.status === "pending"
-                      ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
-                      : "bg-purple-100 text-purple-700 border border-purple-300"
-                  }`}
-                >
-                  {product.status === "active"
-                    ? "Active"
-                    : product.status === "inactive"
-                    ? "Inactive"
-                    : product.status === "pending"
-                    ? "Pending"
-                    : "Violation"}
-                </span>
-              </div> */}
               {/* 🔹 Status + Views Section */}
-              <div className="absolute top-3 right-3 flex items-center gap-3 z-10">
+              <div className="absolute top-3 right-3  items-center justify-center gap-3 z-10 hidden md:flex">
                 {/* 👁️ Views Count */}
-                <span className="flex items-center gap-1  text-gray-600 text-xs font-medium  px-2 py-1 rounded-full ">
+                <span className="flex items-center gap-1 text-gray-600 text-xs font-medium px-2 py-1 rounded-full">
                   👁️ {product.views || 0} views
                 </span>
                 {/* Status Badge */}
@@ -304,10 +319,28 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 >
                   {product.status}
                 </span>
+
+                {bulkAction && (
+                  <input
+                    type="checkbox"
+                    className="h-6 w-6"
+                    checked={selectedProducts.includes(product.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedProducts([...selectedProducts, product.id]);
+                      } else {
+                        setSelectedProducts(
+                          selectedProducts.filter((id) => id !== product.id)
+                        );
+                      }
+                    }}
+                  />
+                )}
               </div>
 
               {/* Images */}
-              <div className="md:w-1/3 w-full h-48 md:h-auto flex items-center justify-center bg-gray-50">
+              {/* Images */}
+              <div className="md:w-1/3 w-full mt-10 h-48 md:h-auto flex flex-col justify-end items-end  relative">
                 {product.productImages?.length > 0 ? (
                   <Carousel className="w-full h-full">
                     <CarouselContent>
@@ -332,12 +365,56 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                     No Image
                   </div>
                 )}
+
+                {/* Views + Status + Checkbox for small screens */}
+                <div className="mt-1 flex gap-2 items-center text-xs md:hidden self-end ">
+                  {/* Views */}
+                  <span className="text-gray-600 font-medium px-2 py-1 rounded ">
+                    👁️ {product.views || 0} views
+                  </span>
+
+                  {/* Status Badge */}
+                  <span
+                    className={`px-3 py-1 mr-4 rounded-full text-xs font-medium ${
+                      product.status === "active"
+                        ? "bg-green-100 text-green-700 border border-green-300"
+                        : product.status === "inactive"
+                        ? "bg-red-100 text-red-700 border border-red-300"
+                        : product.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                        : "bg-purple-100 text-purple-700 border border-purple-300"
+                    }`}
+                  >
+                    {product.status}
+                  </span>
+
+                  {/* Checkbox */}
+                  {bulkAction && (
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5"
+                      checked={selectedProducts.includes(product.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedProducts([
+                            ...selectedProducts,
+                            product.id,
+                          ]);
+                        } else {
+                          setSelectedProducts(
+                            selectedProducts.filter((id) => id !== product.id)
+                          );
+                        }
+                      }}
+                    />
+                  )}
+                </div>
               </div>
 
               {/* Details */}
               <Link
                 to={`/sellerdashboard/product/${product.id}`}
-                className="md:w-2/3 w-full p-4 flex flex-col justify-between"
+                className="md:w-2/3 w-full p-4 flex flex-col justify-between "
               >
                 <div>
                   <h3 className="text-lg md:text-xl font-semibold text-gray-800">
@@ -383,6 +460,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                   </span>
                 </div>
               </Link>
+
               {/* 🔹 Last Updated Timestamp */}
               <div className="absolute bottom-2 right-4 text-xs text-gray-400">
                 Last updated:{" "}
@@ -391,9 +469,6 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
                     })
                   : "N/A"}
               </div>

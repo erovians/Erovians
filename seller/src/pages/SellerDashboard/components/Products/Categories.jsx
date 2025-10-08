@@ -55,7 +55,7 @@ const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
               {items.length} Product{items.length !== 1 ? "s" : ""}
             </span>
           </div>
- 
+
           {/* Horizontal scrollable product carousel */}
           <div className="flex space-x-4 sm:space-x-6 overflow-x-aut o scrollbar-hide pb-4">
             {items.map((product) => (
@@ -64,7 +64,7 @@ const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 className="flex-shrink-0 w-56 sm:w-64 md:w-72 lg:w-80 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-all duration-300"
               >
                 {/* Product Image */}
-                <div className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden relative rounded-t-lg">   
+                <div className="h-40 sm:h-48 bg-gray-50 flex items-center justify-center overflow-hidden relative rounded-t-lg">
                   {product.productImages?.length ? (
                     <img
                       src={product.productImages[0]}
