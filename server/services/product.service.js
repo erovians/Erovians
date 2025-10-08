@@ -1,58 +1,97 @@
 import Product from "../models/product.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
+import mongoose from "mongoose";
 
 // ✅ Add Product
 export const addProductService = async (data, files) => {
-  const {
-    companyId,
-    productName,
-    category,
-    subCategory,
-    grade,
-    color,
-    origin,
-    size, // JSON string
-    weight,
-    weightMeasurement,
-    pricePerUnit,
-    priceUnit,
-    description,
-  } = data;
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  console.log("whole data", data);
+  const uploadedPublicIds = [];
 
-  const parsedSize = JSON.parse(size || "{}");
+  try {
+    // Step 1️⃣: Extract & validate fields
+    const {
+      companyId,
+      productName,
+      category,
+      subCategory,
+      grade,
+      color,
+      origin,
+      size,
+      weight,
+      weightMeasurement,
+      pricePerUnit,
+      priceUnit,
+      description,
+    } = data;
 
-  // Upload images to Cloudinary
-  const imageUrls = [];
-  for (const file of files) {
-    const uploaded = await uploadOnCloudinary(file.path, file.mimetype);
-    if (uploaded) imageUrls.push(uploaded.secure_url);
+    if (!companyId) throw new Error("Company ID is required");
+    if (!productName) throw new Error("Product name is required");
+
+    // ✅ Validate images (must be at least 3)
+    if (!files?.length || files.length < 3) {
+      throw new Error("At least 3 product images are required");
+    }
+
+    // Step 2️⃣: Parse size JSON if needed
+    const parsedSize = typeof size === "string" ? JSON.parse(size) : size;
+
+    // Step 3️⃣: Upload images to Cloudinary first
+    const uploadPromises = files.map(async (file) => {
+      const result = await uploadOnCloudinary(file.path, file.mimetype);
+      if (!result?.secure_url) throw new Error("Image upload failed");
+      uploadedPublicIds.push(result.public_id);
+      return {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    });
+
+    const uploadedImages = await Promise.all(uploadPromises);
+
+    // Step 4️⃣: Create product with uploaded image URLs
+    const [product] = await Product.create(
+      [
+        {
+          companyId,
+          productName,
+          category,
+          subCategory,
+          grade,
+          color,
+          origin,
+          size: parsedSize,
+          weight,
+          weightMeasurement,
+          pricePerUnit,
+          priceUnit,
+          description,
+          productImages: uploadedImages.map((i) => i.url),
+        },
+      ],
+      { session }
+    );
+
+    // Step 5️⃣: Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return product;
+  } catch (error) {
+    // ❌ Rollback DB
+    await session.abortTransaction();
+    session.endSession();
+
+    // ❌ Rollback Cloudinary uploads if any succeeded
+    await Promise.all(
+      uploadedPublicIds.map((id) => deleteFromCloudinary(id).catch(() => {}))
+    );
+
+    console.error("❌ addProductService failed:", error.message);
+    throw new Error(error.message || "Failed to add product");
   }
-
-  if (imageUrls.length < 3) {
-    throw new Error("At least 3 product images are required");
-  }
-
-  const product = new Product({
-    companyId,
-    productName,
-    productImages: imageUrls,
-    category,
-    subCategory,
-    grade,
-    color,
-    origin,
-    size: parsedSize,
-    weight,
-    weightMeasurement,
-    pricePerUnit,
-    priceUnit,
-    description,
-  });
-
-  const savedProduct = await product.save();
-  return savedProduct;
 };
 
 // ✅ List All Products
