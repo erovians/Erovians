@@ -8,14 +8,13 @@ import {
   Award,
   Globe,
   BadgeCheckIcon,
+  Dot,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
   const dispatch = useDispatch();
-  const { company, loading, error } = useSelector(
-    (state) => state.company
-  );
+  const { company, loading, error } = useSelector((state) => state.company);
   const products = company?.products || [];
   const [activeSection, setActiveSection] = useState("overview");
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
@@ -55,7 +54,9 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
     businessType: "Manufacturer",
     revenue: "Below US$1 Million",
     description: company?.companyIntro.companyDescription,
-    mainProducts: [
+    mainProducts: company?.companyBasicInfo?.subCategory
+      ?.split(",")
+      ?.map((item) => item.trim()) || [
       "PESTICIDES",
       "HERBICIDES",
       "FUNGICIDES",
@@ -85,6 +86,7 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
       image: product.productImages?.[0] || "/api/placeholder/200/250",
       grade: product.grade,
       description: product.description,
+      status: product.status,
     })) || [];
 
   const nextProduct = () =>
@@ -110,7 +112,7 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
             </div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            {companyData.name}
+            {companyData.name}.
           </h1>
           <div className="flex justify-center items-center gap-2 text-sm flex-wrap">
             <Badge
@@ -135,77 +137,56 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
         </div>
       </div>
 
-      {/* Navigation */}
-      {/* <div className="bg-white shadow sticky top-20 z-20">
-        <div className="max-w-7xl mx-auto overflow-x-auto">
-          <nav className="flex">
-            {["overview", "products", "capacity", "r&d", "trade"].map((section) => (
-              <button
-                key={section}
-                onClick={() => setActiveSection(section)}
-                className={`px-6 py-3 whitespace-nowrap font-medium transition-colors ${
-                  activeSection === section ? "bg-navyblue text-white" : "hover:bg-gray-100"
-                }`}
-              >
-                {{
-                  overview: "Company Overview",
-                  products: "Selected Products",
-                  capacity: "Production Capacity",
-                  "r&d": "R&D Capacity",
-                  trade: "Trade Capacity",
-                }[section]}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div> */}
-
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto md:py-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-50 ">
-            <div className="p-4 space-y-2">
-              {[
-                {
-                  icon: <Factory className="w-5 h-5" />,
-                  label: "Company Overview",
-                  section: "overview",
-                },
-                {
-                  icon: <Award className="w-5 h-5" />,
-                  label: "Selected Products",
-                  section: "products",
-                },
-                {
-                  icon: <TrendingUp className="w-5 h-5" />,
-                  label: "Production Capacity",
-                  section: "capacity",
-                },
-                {
-                  icon: <Users className="w-5 h-5" />,
-                  label: "R&D Capacity",
-                  section: "r&d",
-                },
-                {
-                  icon: <Globe className="w-5 h-5" />,
-                  label: "Trade Capacity",
-                  section: "trade",
-                },
-              ].map((item) => (
-                <button
-                  key={item.section}
-                  onClick={() => setActiveSection(item.section)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    activeSection === item.section
-                      ? "bg-navyblue text-white"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  <span className="font-medium text-sm">{item.label}</span>
-                </button>
-              ))}
+          <div className="bg-white rounded-lg shadow-md overflow-hidden lg:sticky lg:top-50">
+            {/* Outer wrapper makes it scrollable horizontally on small screens */}
+            <div className="p-2 lg:p-4 overflow-x-auto">
+              {/* Use flex-row on small screens, flex-col on large */}
+              <div className="flex flex-row lg:flex-col gap-2 min-w-max lg:min-w-0">
+                {[
+                  {
+                    icon: <Factory className="w-5 h-5" />,
+                    label: "Company Overview",
+                    section: "overview",
+                  },
+                  {
+                    icon: <Award className="w-5 h-5" />,
+                    label: "Selected Products",
+                    section: "products",
+                  },
+                  {
+                    icon: <TrendingUp className="w-5 h-5" />,
+                    label: "Production Capacity",
+                    section: "capacity",
+                  },
+                  {
+                    icon: <Users className="w-5 h-5" />,
+                    label: "R&D Capacity",
+                    section: "r&d",
+                  },
+                  {
+                    icon: <Globe className="w-5 h-5" />,
+                    label: "Trade Capacity",
+                    section: "trade",
+                  },
+                ].map((item) => (
+                  <button
+                    key={item.section}
+                    onClick={() => setActiveSection(item.section)}
+                    className={`flex items-center gap-3 px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+                      activeSection === item.section
+                        ? "bg-navyblue text-white"
+                        : "hover:bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {item.icon}
+                    <span className="font-medium text-sm">{item.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -296,16 +277,16 @@ const OverviewSection = ({ companyData, company }) => (
 );
 
 const ProductCarousel = ({ productItems, next, prev }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+  <div className="bg-white rounded-lg shadow-md overflow-hidden ">
     <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4 flex justify-between items-center">
-      <h2 className="text-2xl font-bold">SELECTED PRODUCTS</h2>
-      <p className="text-sm opacity-80">
+      <h2 className="text-xl md:text-2xl font-bold">PRODUCTS</h2>
+      <p className="text-xs md:text-sm opacity-80">
         Showing {productItems.length} products
       </p>
     </div>
 
-    <div className="p-6 relative">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="pt-6 md:p-6 relative">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 ">
         {productItems.map((product) => (
           <div
             key={product.id}
@@ -321,9 +302,28 @@ const ProductCarousel = ({ productItems, next, prev }) => (
               <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
                 {product.name}
               </h3>
-              {product.grade && (
-                <p className="text-xs text-gray-500">Grade: {product.grade}</p>
-              )}
+              <div className="flex justify-between">
+                {product.grade && (
+                  <p className="text-xs text-gray-500">
+                    Grade: {product.grade}
+                  </p>
+                )}
+                {product.status && (
+                  <p className="text-xs text-gray-500">
+                    <Dot
+                      size={15}
+                      strokeWidth={10}
+                      className={
+                        product.status === "active"
+                          ? "text-green-400"
+                          : product.status === "pending"
+                          ? "text-yellow-400"
+                          : "text-red-400"
+                      }
+                    />
+                  </p>
+                )}
+              </div>
               <p className="text-xs text-gray-600 line-clamp-3">
                 {product.description}
               </p>
