@@ -109,20 +109,21 @@ const ProductDetails = () => {
     return <div className="p-6 text-center text-gray-600">Loading...</div>;
 
   return (
-    <div className="max-w-full mx-auto p-6 rounded-xl relative">
-      <div className="flex flex-col md:flex-row gap-8">
+    <div className="max-w-full  rounded-xl relative">
+      <div className="flex flex-col md:flex-row gap-8  w-full">
         {/* Left: Thumbnails + Main Image */}
-        <div className="md:w-1/2 flex gap-4">
-          <div className="flex flex-col gap-3 w-20 overflow-y-auto">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Thumbnails */}
+          <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto w-full md:w-20">
             {editData.productImages?.map((img, idx) => (
-              <div key={idx} className="relative">
+              <div key={idx} className="relative flex-shrink-0">
                 <img
                   src={img}
                   alt={`${product.productName}-${idx}`}
                   onClick={() => setSelectedImg(img)}
-                  className={`w-20 h-20 object-contain border rounded-lg cursor-pointer p-1 transition ${
+                  className={`w-20 h-14  object-contain border rounded-lg cursor-pointer p-1 transition ${
                     selectedImg === img
-                      ? "border-blue-600 shadow-md"
+                      ? "border-blue-600  shadow-md"
                       : "border-gray-200"
                   }`}
                 />
@@ -138,7 +139,7 @@ const ProductDetails = () => {
             ))}
 
             {newImages.map((img, idx) => (
-              <div key={idx} className="relative">
+              <div key={idx} className="relative flex-shrink-0">
                 <img
                   src={img}
                   alt={`new-${idx}`}
@@ -159,7 +160,7 @@ const ProductDetails = () => {
             ))}
 
             {isEditing && (
-              <label className="cursor-pointer w-20 h-20 flex items-center justify-center border rounded-lg text-gray-500 hover:bg-gray-100">
+              <label className="cursor-pointer w-20 h-20 flex-shrink-0 flex items-center justify-center border rounded-lg text-gray-500 hover:bg-gray-100">
                 + Add
                 <input
                   type="file"
@@ -171,11 +172,12 @@ const ProductDetails = () => {
             )}
           </div>
 
+          {/* Main Image */}
           <div className="flex-1 rounded-xl flex items-center justify-center">
             <img
               src={selectedImg}
               alt={product.productName}
-              className="max-h-[450px] object-contain p-4"
+              className="max-h-[450px] min-h-[250px]  object-contain p-4 w-full"
             />
           </div>
         </div>
@@ -183,8 +185,10 @@ const ProductDetails = () => {
         {/* Right: Product Info */}
         <div className="md:w-1/2 flex flex-col p-6 rounded-2xl font-sans text-gray-800 relative">
           {/* Header: Product Name + Status + Menu */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex-1">
+          {/* Header: Product Name + Status + Menu */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 sm:gap-0">
+            {/* Product Title */}
+            <div className="flex-1 w-full">
               {isEditing ? (
                 <input
                   type="text"
@@ -192,19 +196,20 @@ const ProductDetails = () => {
                   onChange={(e) =>
                     setEditData({ ...editData, productName: e.target.value })
                   }
-                  className="text-3xl font-bold tracking-tight text-gray-900 border-b p-1 w-full"
+                  className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 border-b p-1 w-full"
                 />
               ) : (
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
                   {product.productName}
                 </h1>
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Status + Menu */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap mt-2 sm:mt-0">
               {/* Status Toggle */}
-              {/* Status Toggle */}
-              {product.status === "active" || product.status === "inactive" ? (
+              {(product.status === "active" ||
+                product.status === "inactive") && (
                 <button
                   onClick={handleToggleStatus}
                   className={`relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none ${
@@ -219,11 +224,11 @@ const ProductDetails = () => {
                     }`}
                   />
                 </button>
-              ) : null}
+              )}
 
-              {/* Status Label with colors */}
+              {/* Status Label */}
               <span
-                className={`text-sm font-medium px-2 py-1 rounded-full ${
+                className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-full whitespace-nowrap ${
                   product.status === "active"
                     ? "bg-green-100 text-green-700 border border-green-300"
                     : product.status === "inactive"
@@ -303,7 +308,7 @@ const ProductDetails = () => {
                 </>
               ) : (
                 <>
-                  <span className="text-3xl font-extralight text-black">
+                  <span className="text-3xl text-black">
                     ₹{product.pricePerUnit}
                   </span>
                   <span className="text-base text-gray-500">
@@ -314,11 +319,12 @@ const ProductDetails = () => {
             </div>
 
             {/* Specifications */}
+            {/* Specifications */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
                 Specifications
               </h2>
-              <ul className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs sm:text-sm text-gray-700">
                 {[
                   "category",
                   "subCategory",
@@ -336,7 +342,6 @@ const ProductDetails = () => {
                       ? editData[keys[0]]?.[keys[1]]
                       : editData[field];
 
-                  // Map fields to units
                   let unit = "";
                   if (field === "size.length")
                     unit = editData.size?.lengthMeasurement || "";
@@ -348,8 +353,11 @@ const ProductDetails = () => {
                     unit = editData.weightMeasurement || "";
 
                   return (
-                    <li key={idx} className="flex items-center">
-                      <span className="font-medium capitalize w-32">
+                    <li
+                      key={idx}
+                      className="flex items-center justify-between w-fit  gap-14 capitalize"
+                    >
+                      <span className="font-medium capitalize w-24 sm:w-32 text-xs sm:text-sm">
                         {keys.join(" ")}:
                       </span>
                       {isEditing ? (
@@ -372,10 +380,10 @@ const ProductDetails = () => {
                               });
                             }
                           }}
-                          className="border p-1 text-sm flex-1"
+                          className="border p-1 text-xs sm:text-sm flex-1"
                         />
                       ) : (
-                        <span className="text-gray-600">
+                        <span className="text-gray-600 text-xs sm:text-sm">
                           {value || "N/A"} {unit}
                         </span>
                       )}
