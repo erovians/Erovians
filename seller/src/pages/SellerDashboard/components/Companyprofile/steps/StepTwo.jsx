@@ -128,7 +128,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
       {/* Detailed Company Introduction */}
       <div className={formRowClass}>
         <label htmlFor="companyDescription" className={`${labelClass} pt-1`}>
-          <span className="text-red-500">*</span> Detailed Company <br />{" "}
+          <span className="text-red-500">*</span> Detailed Company <br />
           Introduction:
         </label>
         <div className={controlClass}>
@@ -137,12 +137,12 @@ export default function StepTwo({ formData, setFormData, errors }) {
             value={formData.companyDescription || ""}
             onChange={handleInputChange}
             name="companyDescription"
-            className={`w-full h-40 px-3 py-2 text-sm border rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none ${
+            className={`w-full h-40 px-3 py-2 text-sm border rounded-md focus:ring-2 focus:ring-navybluefocus:outline-none ${
               errors.companyDescription ? "border-red-500" : "border-gray-300"
             }`}
           />
           <p className="text-xs text-gray-500 mt-1 text-right">
-            Remaining:{" "}
+            Remaining:
             {MAX_DESC_LENGTH - (formData.companyDescription?.length || 0)}
           </p>
           {errors.companyDescription && (
@@ -155,7 +155,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
 
       {/* Company Photos */}
       <div className={formRowClass}>
-        <label className={`${labelClass} pt-1`}>Company Photo:</label>
+        <label className={`${labelClass} pt-1`}><span className="text-red-500">*</span> Company Photo:</label>
         <div className={controlClass}>
           <div className="flex flex-wrap gap-2 items-center">
             <button

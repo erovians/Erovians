@@ -81,15 +81,9 @@ export default function StepOne({ formData = {
   return (
     <div className="max-w-6xl mx-auto bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg">
       <div className="space-y-8">
-        
-        {/* Header Section
-        <div className="border-b border-gray-200 pb-4">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Company Information</h2>
-          <p className="text-gray-600">Please provide accurate details about your company</p>
-        </div> */}
 
         {/* Basic Information Card */}
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className="bg-white rounded-xl p-2 md:p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
             <Building className="text-navyblue" size={22} />
             Basic Information
