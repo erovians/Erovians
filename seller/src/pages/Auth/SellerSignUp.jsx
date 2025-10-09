@@ -269,18 +269,38 @@ const SellerSignUp = () => {
     dispatch(registerSeller(finalSellerData));
   };
 
+  // useEffect(() => {
+  //   if (successMessage) {
+  //     setModalMessage(successMessage);
+  //     setShowModal(true);
+  //     dispatch(clearSellerState());
+  //   }
+  //   if (error) {
+  //     setModalMessage(error);
+  //     setShowModal(true);
+  //     dispatch(clearSellerState());
+  //   }
+  // }, [successMessage, error, dispatch]);
   useEffect(() => {
     if (successMessage) {
       setModalMessage(successMessage);
       setShowModal(true);
+
+      // Redirect to login after 2 seconds or when modal is closed
+      const timer = setTimeout(() => {
+        navigate("/login"); // <-- redirect to login page
+      }, 2000); // 2 seconds delay
+
       dispatch(clearSellerState());
+
+      return () => clearTimeout(timer);
     }
     if (error) {
       setModalMessage(error);
       setShowModal(true);
       dispatch(clearSellerState());
     }
-  }, [successMessage, error, dispatch]);
+  }, [successMessage, error, dispatch, navigate]);
 
   const Modal = ({ message, onClose }) => (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
@@ -596,8 +616,17 @@ const SellerSignUp = () => {
         </div>
       </div>
 
-      {showModal && (
+      {/* {showModal && (
         <Modal message={modalMessage} onClose={() => setShowModal(false)} />
+      )} */}
+      {showModal && (
+        <Modal
+          message={modalMessage}
+          onClose={() => {
+            setShowModal(false);
+            if (successMessage) navigate("/login");
+          }}
+        />
       )}
     </div>
   );

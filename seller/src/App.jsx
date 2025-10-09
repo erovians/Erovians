@@ -23,7 +23,7 @@ function App() {
   const location = useLocation();
 
   // Public site routes where Navbar/Footer may be hidden
-  const hideNavbarRoutes = ["/start-selling"];
+  const hideNavbarRoutes = ["/login", "/start-selling"];
   const hideFooterRoutes = ["/login", "/start-selling"];
 
   const isSellerRoute = location.pathname.startsWith("/seller");
