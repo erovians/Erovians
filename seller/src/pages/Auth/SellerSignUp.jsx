@@ -269,26 +269,13 @@ const SellerSignUp = () => {
     dispatch(registerSeller(finalSellerData));
   };
 
-  // useEffect(() => {
-  //   if (successMessage) {
-  //     setModalMessage(successMessage);
-  //     setShowModal(true);
-  //     dispatch(clearSellerState());
-  //   }
-  //   if (error) {
-  //     setModalMessage(error);
-  //     setShowModal(true);
-  //     dispatch(clearSellerState());
-  //   }
-  // }, [successMessage, error, dispatch]);
   useEffect(() => {
     if (successMessage) {
       setModalMessage(successMessage);
       setShowModal(true);
 
-      // Redirect to login after 2 seconds or when modal is closed
       const timer = setTimeout(() => {
-        navigate("/login"); // <-- redirect to login page
+        navigate("/login");
       }, 2000); // 2 seconds delay
 
       dispatch(clearSellerState());
