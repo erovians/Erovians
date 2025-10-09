@@ -7,6 +7,7 @@ export const registerSeller = createAsyncThunk(
   async (sellerData, { rejectWithValue }) => {
     try {
       const response = await api.post("/seller/register", sellerData);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       if (error.response && error.response.data) {

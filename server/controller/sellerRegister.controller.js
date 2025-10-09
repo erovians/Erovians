@@ -82,6 +82,8 @@ export const registerSeller = async (req, res) => {
       businessName,
     } = req.body;
 
+    console.log("details", req.body);
+
     // Validations
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: "Valid email is required" });
@@ -123,10 +125,13 @@ export const registerSeller = async (req, res) => {
     }
 
     // File validation
-    if (!req.files || !req.files.file) {
+
+    const file = req.file;
+    console.log(file);
+
+    if (!file) {
       return res.status(400).json({ message: "GSTIN document is required." });
     }
-    const file = req.files.file;
     const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!acceptedTypes.includes(file.mimetype)) {
       return res.status(400).json({
@@ -150,7 +155,7 @@ export const registerSeller = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Upload GSTIN document
-    const uploadResult = await uploadOnCloudinary(file.tempFilePath);
+    const uploadResult = await uploadOnCloudinary(file.path);
     const documentUrl = uploadResult?.secure_url;
     if (!documentUrl) {
       return res
@@ -214,9 +219,13 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
+    // const seller = await Seller.findOne({
+    //   $or: [{ email: identifier }, { mobile: identifier }],
+    // });
+
     const seller = await Seller.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
-    });
+    }).select("+password"); // <-- explicitly include password
 
     if (!seller) {
       return res.status(400).json({ message: "Invalid credentials" });

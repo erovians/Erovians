@@ -54,13 +54,17 @@ const SellerProfile = () => {
 
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600 flex items-center gap-2">
-            <Dot size={18} strokeWidth={10} className="text-green-500" />Active Products</p>
+            <Dot size={18} strokeWidth={10} className="text-green-500" />
+            Active Products
+          </p>
           <p className=" text-green-600">{sellerData.activeProducts}</p>
         </div>
 
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600 flex items-center gap-2">
-            <Dot size={18} strokeWidth={10} className="text-red-500" />Inactive Products</p>
+            <Dot size={18} strokeWidth={10} className="text-red-500" />
+            Inactive Products
+          </p>
           <p className=" text-red-500">{sellerData.inactiveProducts}</p>
         </div>
       </div>
