@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/auth.utils.js";
 dotenv.config();
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -176,8 +180,8 @@ export const registerSeller = async (req, res) => {
 
     // JWT token
     const token = jwt.sign(
-      { id: savedSeller._id, email: savedSeller.email },
-      process.env.JWT_SECRET,
+      { id: savedSeller._id, email: savedSeller.email, role: "seller" },
+      process.env.JWT_ACCESS_SECRET,
       { expiresIn: "7d" }
     );
 
@@ -227,37 +231,86 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    if (!process.env.JWT_SECRET) {
+    if (!process.env.JWT_ACCESS_SECRET) {
       console.error("JWT_SECRET is not defined in .env file");
       return res.status(500).json({ message: "Server configuration error" });
     }
 
-    const token = jwt.sign(
-      { id: seller._id, email: seller.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const accessToken = generateAccessToken(seller);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    const refreshToken = generateRefreshToken(seller);
 
-    res.status(200).json({
-      message: "Login successful",
-      seller: {
-        id: seller._id,
-        email: seller.email,
-        mobile: seller.mobile,
-        businessName: seller.businessName,
-        category: seller.category,
-        isMobileVerified: seller.isMobileVerified,
-      },
-    });
+    res
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({
+        message: "Login successful",
+        user: { id: seller._id, name: seller.name },
+      });
+
+    // const token = jwt.sign(
+    //   { userId: seller._id, role: "seller" },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: "7d",
+    //     issuer: "erovians-ecommerce-app",
+    //     audience: "seller-dashboard",
+    //   }
+    // );
+
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "lax",
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
+
+    // res.status(200).json({
+    //   message: "Login successful",
+    //   seller: {
+    //     id: seller._id,
+    //     name: seller.sellername
+    //   },
+    // });
   } catch (error) {
     console.error("Error logging in seller:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const refreshTokenController = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken)
+    return res.status(401).json({ message: "No refresh token" });
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const newAccessToken = generateAccessToken({
+      _id: decoded.userId,
+      role: decoded.role,
+    });
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.json({ message: "Access token refreshed" });
+  } catch (err) {
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired refresh token" });
   }
 };

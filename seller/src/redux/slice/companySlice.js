@@ -32,9 +32,9 @@ export const editCompany = createAsyncThunk(
 // GET company details
 export const getCompany = createAsyncThunk(
   "company/getCompany",
-  async (companyId, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/company/details`);
+      const res = await api.get(`/company/details`,{ params });
       console.log(res.data);
       return res.data; // { company: {...} }
     } catch (err) {

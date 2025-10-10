@@ -14,7 +14,7 @@ import { Filter } from "../Helper/Filter";
 import { Search } from "../Helper/Search";
 import StatusFilterRibbon from "../Helper/StatusFilterRibbon";
 
-const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
+const ListProducts = () => {
   const dispatch = useDispatch();
 
   const {
@@ -47,10 +47,8 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
 
   // Fetch products via Redux thunk
   useEffect(() => {
-    if (companyId) {
-      dispatch(fetchProducts(companyId));
-    }
-  }, [companyId, dispatch]);
+      dispatch(fetchProducts());
+  }, [dispatch]);
 
   const filteredProducts = React.useMemo(() => {
     let filtered = [...products];

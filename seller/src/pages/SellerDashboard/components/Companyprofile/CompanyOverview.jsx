@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
+const CompanyOverview = () => {
   const dispatch = useDispatch();
   const { company, loading, error } = useSelector((state) => state.company);
   const products = company?.products || [];
@@ -20,9 +20,9 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
 
   useEffect(() => {
-    if (companyId) dispatch(getCompany(companyId));
+     dispatch(getCompany());
     console.log(company);
-  }, [companyId, dispatch]);
+  }, [dispatch]);
 
   if (loading)
     return <p className="text-center py-20">Loading company details...</p>;

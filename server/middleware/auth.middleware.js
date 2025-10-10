@@ -25,17 +25,33 @@ export const verifyUser = (req, res, next) => {
     }
 
     // Verify token
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401).json({ message: "Unauthorized, invalid token" });
-      }
+    jwt.verify(
+      token,
+      process.env.JWT_ACCESS_SECRET,
+      { issuer: "erovians-ecommerce-app"},
+      (err, decoded) => {
+        if (err) {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized, invalid token" });
+        }
 
-      // Attach user info to request object
-      req.user = decoded; // decoded contains whatever you signed (id, email)
-      next();
-    });
+        // Attach user info to request object
+        req.user = decoded; // decoded contains whatever you signed (id, email)
+        next();
+      }
+    );
   } catch (error) {
     console.error("Auth middleware error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export function allowRoles(...roles) {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    next();
+  };
+}
