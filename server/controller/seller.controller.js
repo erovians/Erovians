@@ -86,6 +86,8 @@ export const registerSeller = async (req, res) => {
       businessName,
     } = req.body;
 
+    console.log("details", req.body);
+
     // Validations
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: "Valid email is required" });
@@ -127,10 +129,13 @@ export const registerSeller = async (req, res) => {
     }
 
     // File validation
-    if (!req.files || !req.files.file) {
+
+    const file = req.file;
+    console.log(file);
+
+    if (!file) {
       return res.status(400).json({ message: "GSTIN document is required." });
     }
-    const file = req.files.file;
     const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (!acceptedTypes.includes(file.mimetype)) {
       return res.status(400).json({
@@ -154,7 +159,7 @@ export const registerSeller = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Upload GSTIN document
-    const uploadResult = await uploadOnCloudinary(file.tempFilePath);
+    const uploadResult = await uploadOnCloudinary(file.path);
     const documentUrl = uploadResult?.secure_url;
     if (!documentUrl) {
       return res
@@ -218,9 +223,10 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
+
     const seller = await Seller.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
-    });
+    }).select("+password");
 
     if (!seller) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -312,5 +318,20 @@ export const refreshTokenController = async (req, res) => {
     return res
       .status(403)
       .json({ message: "Invalid or expired refresh token" });
+  }
+};
+
+export const logoutSeller = (req, res) => {
+  try {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true, // must match what was set
+      sameSite: "lax", // must match what was set
+    });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out seller:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

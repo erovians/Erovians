@@ -1,129 +1,181 @@
 import api from "@/utils/axios.utils";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { assets } from "@/assets/assets";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Login() {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loginType, setLoginType] = useState("mobile");
+  const [loading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
+  // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
     try {
+      setIsLoading(true);
       const res = await api.post("/seller/login", formData);
-
       setSuccess(res.data.message);
       console.log("Seller data:", res.data.seller);
+
+      setTimeout(() => {
+        navigate("/sellerdashboard");
+      }, 1000);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[90vh]">
-      <div className="w-full max-w-md rounded-2xl p-8">
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-navyblue mb-2">
-          Welcome Back 👋
-        </h2>
-        <p className="text-center text-gray-500 mb-8">
-          Login to access your account
-        </p>
+    <div className="min-h-screen bg-white font-sans flex flex-col">
+      {/* Header */}
+      <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
+        <Link to={"/"}>
+          <img
+            src={assets.logo}
+            alt="Logo"
+            className="h-6 sm:h-8 md:h-10 w-auto object-contain"
+          />
+        </Link>
+      </header>
 
-        {/* Error / Success Messages */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        {success && (
-          <p className="text-green-600 text-center mb-4">{success}</p>
-        )}
+      {/* Main Content */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 px-4 sm:px-6 md:px-12 py-8 md:py-12 max-w-6xl mx-auto max-h-[90vh] overflow-hidden justify-center items-center">
+        {/* Login Form */}
+        <div className="flex justify-center h-[80%] overflow-auto">
+          <div className="w-[95%] bg-white rounded-2xl shadow-lg p-10 border border-gray-300">
+            {/* Logo */}
+            <div className="flex mb-6">
+              <img
+                src={assets.logo}
+                alt="Erovians"
+                className="h-8 object-contain"
+              />
+            </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email or Mobile */}
-          <div>
-            <label
-              htmlFor="identifier"
-              className="block text-gray-700 font-medium mb-2"
-            >
-              Email or Mobile
-            </label>
-            <div className="relative">
+            {/* Title */}
+            <h2 className="text-center text-base font-semibold text-gray-700 border-t border-dashed p-2">
+              Welcome to World’s fastest platform!
+            </h2>
+
+            {/* Login Type Selection */}
+            <div className="flex justify-center gap-6 mt-6 mb-4">
+              <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                <input
+                  type="radio"
+                  name="loginType"
+                  value="mobile"
+                  checked={loginType === "mobile"}
+                  onChange={(e) => setLoginType(e.target.value)}
+                  className="accent-navyblue focus:ring-navyblue"
+                />
+                Login with Mobile Number
+              </label>
+
+              <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                <input
+                  type="radio"
+                  name="loginType"
+                  value="email"
+                  checked={loginType === "email"}
+                  onChange={(e) => setLoginType(e.target.value)}
+                  className="accent-navyblue focus:ring-navyblue"
+                />
+                Login with Email ID
+              </label>
+            </div>
+
+            {/* Error / Success Messages */}
+            {error && (
+              <p className="text-red-500 text-center text-sm mb-2">{error}</p>
+            )}
+            {success && (
+              <p className="text-green-600 text-center text-sm mb-2">
+                {success}
+              </p>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit}>
+              {/* Identifier */}
               <input
-                type="text"
-                id="identifier"
+                type={loginType === "mobile" ? "tel" : "email"}
                 name="identifier"
                 value={formData.identifier}
                 onChange={handleChange}
+                placeholder={
+                  loginType === "mobile" ? "Mobile Number" : "Email ID"
+                }
+                className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
                 required
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navyblue focus:outline-none"
-                placeholder="you@example.com or 9876543210"
               />
-              <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                📧
-              </span>
-            </div>
-          </div>
 
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-medium mb-2"
-            >
-              Password
-            </label>
-            <div className="relative">
+              {/* Password */}
               <input
                 type="password"
-                id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                placeholder="Password"
+                className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
                 required
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navyblue focus:outline-none"
-                placeholder="••••••••"
               />
-              <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                🔒
-              </span>
-            </div>
+
+              {/* Proceed Button */}
+              <button
+                type="submit"
+                className="w-full mt-5 border border-navyblue bg-navyblue text-white py-3 rounded-md font-semibold text-sm hover:bg-white hover:text-navyblue transition flex items-center justify-center gap-3"
+              >
+                {loading && <Spinner />}
+                {loading ? "Proceeding..." : "Proceed"}
+              </button>
+            </form>
+
+            {/* Register Link */}
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Don’t have an account?{" "}
+              <Link
+                to={"/start-selling"}
+                className="text-navyblue font-medium hover:underline"
+              >
+                Register Now!
+              </Link>
+            </p>
           </div>
+        </div>
 
-          {/* Forgot Password */}
-          <div className="flex justify-end">
-            <a
-              href="/forgot-password"
-              className="text-sm text-navyblue hover:underline"
-            >
-              Forgot Password?
-            </a>
+        {/* Right Side Image Section */}
+        <div className="hidden md:flex flex-col gap-6">
+          <div className="p-4 rounded-md shadow-sm">
+            <p className="text-sm text-gray-700 mb-2">
+              List with Erovians, Grow With Erovians, Explore with Erovians !!
+            </p>
+            <p className="text-xs text-gray-500">
+              List your products to sell them worldwide.
+            </p>
           </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-navyblue text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-900 transition transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Login
-          </button>
-        </form>
-
-        {/* Extra Links */}
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <Link
-            to="/start-selling"
-            className="text-navyblue font-medium hover:underline"
-          >
-            Sign Up
-          </Link>
+          <div className="h-[60%] flex justify-center">
+            <img
+              src={assets.SellerSignupform}
+              alt="Seller Banner"
+              className="rounded-md h-full object-contain"
+            />
+          </div>
         </div>
       </div>
     </div>
