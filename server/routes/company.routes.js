@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.post(
   "/register",
+  verifyUser,
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
