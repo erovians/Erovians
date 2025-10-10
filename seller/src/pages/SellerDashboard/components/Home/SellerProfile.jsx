@@ -51,7 +51,7 @@ const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
               <h3 className="font-bold text-lg text-gray-800">
                 {companyInfo.companyName}
               </h3>
-              <Link to="#" className="text-blue-600 text-xs">
+              <Link to="/sellerdashboard/company/overview" className="text-blue-600 text-xs">
                 View details
               </Link>
             </div>
