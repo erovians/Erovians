@@ -3,12 +3,14 @@ import express from "express";
 import {
   registerSeller,
   loginSeller,
-  checkUniqueSeller,
+  checkUniqueSeller, refreshTokenController
 } from "../controller/sellerRegister.controller.js";
 import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
 import  {upload}  from "../middleware/multer.middleware.js";
 
 const router = express.Router();
+
+router.post("/refresh", refreshTokenController); // Route to refresh JWT tokens
 
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);

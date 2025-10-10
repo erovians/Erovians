@@ -257,12 +257,15 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
   };
 
 
-export const getCompanyDetailsService = async (sellerId) => {
+export const getCompanyDetailsService = async ({sellerId, companyId }) => {
   try {
-    if (!sellerId) throw new Error("SellerId is required");
+    const matchFilter = {};
+
+    if (sellerId) matchFilter.sellerId = new mongoose.Types.ObjectId(sellerId);
+    if (companyId) matchFilter._id = new mongoose.Types.ObjectId(companyId);
 
     const result = await CompanyDetails.aggregate([
-      { $match: { SellerId: new mongoose.Types.ObjectId(sellerId) } },
+      { $match: matchFilter },
       {
         $lookup: {
           from: "products",
@@ -281,7 +284,7 @@ export const getCompanyDetailsService = async (sellerId) => {
 
     return result[0];
   } catch (err) {
-    logger.error("getCompanyDetailsService failed", { sellerId, error: err.message });
+    logger.error("getCompanyDetailsService failed", { sellerId,companyId, error: err.message });
     throw err;
   }
 };

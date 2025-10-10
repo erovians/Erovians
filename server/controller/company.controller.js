@@ -78,18 +78,32 @@ export const registerCompany = async (req, res) => {
 
 export const getCompanyDetails = async (req, res) => {
   try {
-    // const sellerId = req.user._id; // safe, from auth middleware
+    let sellerId;
+    let companyId;
 
-    const sellerId = "6870e6e558e2ba32d6b1eb33";
+    if (req.user.role === "seller") {
+      // Seller can only see their own company
+      sellerId = req.user.userId;
+      if (!sellerId) {
+        return res.status(400).json({
+          success: false,
+          message: "SellerId is required",
+        });
+      }
+    } else if (req.user.role === "buyer" || req.user.role === "admin") {
+      // Buyer/Admin can pass either sellerId or companyId in query
+      sellerId = req.query.sellerId;
+      companyId = req.query.companyId;
 
-    if (!sellerId) {
-      return res.status(400).json({
-        success: false,
-        message: "SellerId is required",
-      });
+      if (!sellerId && !companyId) {
+        return res.status(400).json({
+          success: false,
+          message: "sellerId or companyId is required",
+        });
+      }
     }
 
-    const companyData = await getCompanyDetailsService(sellerId);
+    const companyData = await getCompanyDetailsService({ sellerId, companyId });
 
     return res.status(200).json({
       success: true,
