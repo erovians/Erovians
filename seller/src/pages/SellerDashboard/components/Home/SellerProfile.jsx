@@ -5,32 +5,34 @@ import { Package, Dot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
+const SellerProfile = () => {
   const dispatch = useDispatch();
   const { company, loading, error } = useSelector((state) => state.company);
 
   useEffect(() => {
-    if (companyId) dispatch(getCompany(companyId));
-  }, [companyId, dispatch]);
+    dispatch(getCompany());
+  }, [dispatch]);
 
   if (loading) return <p>Loading company data...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
   if (!company) return null;
 
   const totalProducts = company?.products?.length || 0;
-  const activeProducts = company?.products?.filter((p) => p.status === "active").length || 0;
+  const activeProducts =
+    company?.products?.filter((p) => p.status === "active").length || 0;
   const inactiveProducts = totalProducts - activeProducts;
 
   const companyInfo = {
     companyName: company?.companyBasicInfo?.companyName || "Unnamed Company",
     companyDetails:
-      company?.companyBasicInfo?.subCategory ||
-      "Business Details Unavailable",
+      company?.companyBasicInfo || "Business Details Unavailable",
     sellerName: company?.companyIntro?.contactPersonName || "Seller",
-    yearsActive:
-      company?.companyBasicInfo?.companyRegistrationYear
-        ? `${new Date().getFullYear() - company.companyBasicInfo.companyRegistrationYear} Years`
-        : "N/A",
+    yearsActive: company?.companyBasicInfo?.companyRegistrationYear
+      ? `${
+          new Date().getFullYear() -
+          company.companyBasicInfo.companyRegistrationYear
+        } Years`
+      : "N/A",
   };
 
   return (
@@ -42,20 +44,24 @@ const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
             <Link to="#" className="text-gray-600 hover:text-blue-500">
               <Avatar className="rounded-sm w-12 h-12">
                 <AvatarImage src={company?.companyIntro?.logo} />
-                <AvatarFallback>{companyInfo.companyName?.slice(0, 3)}</AvatarFallback>
+                <AvatarFallback>
+                  {companyInfo.companyName?.slice(0, 3)}
+                </AvatarFallback>
               </Avatar>
             </Link>
           </div>
           <div>
             <div className="flex justify-between">
               <h3 className="font-bold text-lg text-gray-800">
-                {companyInfo.companyName}
+                {companyInfo.companyName}.
               </h3>
-              <Link to="#" className="text-blue-600 text-xs">
+              <Link to="#" className="text-blue-600 text-xs m-auto ml-5 hover:underline">
                 View details
               </Link>
             </div>
-            <p className="text-sm text-gray-500">{companyInfo.companyDetails}</p>
+            <p className="text-sm text-gray-500">
+              {companyInfo.companyDetails.locationOfRegistration}
+            </p>
             <p className="text-xs text-gray-400">
               Active since {companyInfo.yearsActive}
             </p>

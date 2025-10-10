@@ -48,11 +48,13 @@ import {
   registerCompanyService,
   getCompanyDetailsService,
 } from "../services/company.service.js";
+import CompanyDetails from "../models/company.model.js";
 
 export const registerCompany = async (req, res) => {
   try {
+    const sellerId = req.user.userId;
     console.log("RegisterCompany Request Body:", req.body);
-    const company = await registerCompanyService(req.body, req.files);
+    const company = await registerCompanyService(req.body, req.files, sellerId);
     return res.status(201).json({
       success: true,
       message: "Company registered successfully.",
@@ -80,6 +82,7 @@ export const getCompanyDetails = async (req, res) => {
   try {
     let sellerId;
     let companyId;
+    console.log(req.user)
 
     if (req.user.role === "seller") {
       // Seller can only see their own company
@@ -90,6 +93,15 @@ export const getCompanyDetails = async (req, res) => {
           message: "SellerId is required",
         });
       }
+       // ✅ Automatically fetch companyId for this seller
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found for this seller",
+      });
+    }
+    companyId = company._id;
     } else if (req.user.role === "buyer" || req.user.role === "admin") {
       // Buyer/Admin can pass either sellerId or companyId in query
       sellerId = req.query.sellerId;

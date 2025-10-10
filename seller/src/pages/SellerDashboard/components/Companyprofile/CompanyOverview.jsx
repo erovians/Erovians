@@ -295,13 +295,13 @@ const ProductCarousel = ({ productItems, next, prev }) => (
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-contain"
               loading="lazy"
             />
-            <div className="p-3 space-y-1">
-              <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+            <div className="p-3">
+              <h4 className="text-sm font-semibold text-gray-900 line-clamp-2">
                 {product.name}
-              </h3>
+              </h4>
               <div className="flex justify-between">
                 {product.grade && (
                   <p className="text-xs text-gray-500">
