@@ -24,7 +24,7 @@ const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
   const companyInfo = {
     companyName: company?.companyBasicInfo?.companyName || "Unnamed Company",
     companyDetails:
-      company?.companyBasicInfo?.subCategory ||
+      company?.companyBasicInfo||
       "Business Details Unavailable",
     sellerName: company?.companyIntro?.contactPersonName || "Seller",
     yearsActive:
@@ -40,7 +40,7 @@ const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
         <div className="flex items-center">
           <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-3">
             <Link to="#" className="text-gray-600 hover:text-blue-500">
-              <Avatar className="rounded-sm w-12 h-12">
+              <Avatar className="rounded-sm w-17 h-17">
                 <AvatarImage src={company?.companyIntro?.logo} />
                 <AvatarFallback>{companyInfo.companyName?.slice(0, 3)}</AvatarFallback>
               </Avatar>
@@ -51,13 +51,13 @@ const SellerProfile = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
               <h3 className="font-bold text-lg text-gray-800">
                 {companyInfo.companyName}
               </h3>
-              <Link to="/sellerdashboard/company/overview" className="text-blue-600 text-xs">
+              <Link to="/sellerdashboard/company/overview" className="text-blue-600 text-xs ml-5 m-auto hover:underline  ">
                 View details
               </Link>
             </div>
-            <p className="text-sm text-gray-500">{companyInfo.companyDetails}</p>
+            <p className="text-sm text-gray-500">{companyInfo.companyDetails.locationOfRegistration}</p>
             <p className="text-xs text-gray-400">
-              Active since {companyInfo.yearsActive}
+              Legal Owner - {companyInfo.companyDetails.legalowner}
             </p>
           </div>
         </div>
