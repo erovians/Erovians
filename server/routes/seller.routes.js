@@ -4,6 +4,7 @@ import {
   registerSeller,
   loginSeller,
   checkUniqueSeller,
+  logoutSeller
 } from "../controller/sellerRegister.controller.js";
 import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -17,5 +18,6 @@ router.post("/verify-otp", verifyOtp);
 router.post("/check-unique", checkUniqueSeller);
 router.post("/register", upload.single("file"), registerSeller);
 router.post("/login", loginSeller);
+router.post("/logout", logoutSeller);
 
 export default router;

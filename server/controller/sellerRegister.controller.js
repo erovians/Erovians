@@ -219,13 +219,10 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    // const seller = await Seller.findOne({
-    //   $or: [{ email: identifier }, { mobile: identifier }],
-    // });
 
     const seller = await Seller.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
-    }).select("+password"); // <-- explicitly include password
+    }).select("+password");
 
     if (!seller) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -267,6 +264,22 @@ export const loginSeller = async (req, res) => {
     });
   } catch (error) {
     console.error("Error logging in seller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const logoutSeller = (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true, // must match what was set
+      sameSite: "lax", // must match what was set
+    });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out seller:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
