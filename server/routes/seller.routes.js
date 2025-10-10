@@ -6,7 +6,7 @@ import {
   checkUniqueSeller,
   refreshTokenController,
   logoutSeller,
-} from "../controller/sellerRegister.controller.js";
+} from "../controller/seller.controller.js";
 import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 

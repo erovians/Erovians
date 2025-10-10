@@ -9,11 +9,36 @@ import {
   bulkDeactivateProductsService,
   bulkDeleteProductsService,
 } from "../services/product.service.js";
+import CompanyDetails from "../models/company.model.js";
 
 // ✅ Add Product
 export const addProduct = async (req, res) => {
   try {
-    const savedProduct = await addProductService(req.body, req.files, req.user.userId);
+    const sellerId = req.user.userId;
+    if (!sellerId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "sellerId is required" });
+    }
+
+    let companyId;
+
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+
+    companyId = company?._id;
+    if (!companyId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Company not found for this seller. Please register a company first.",
+      });
+    }
+    const savedProduct = await addProductService(
+      req.body,
+      req.files,
+      sellerId,
+      companyId
+    );
     res.status(201).json({
       success: true,
       message: "Product added successfully",
@@ -31,7 +56,9 @@ export const addProduct = async (req, res) => {
 // ✅ List All Products
 export const listAllProducts = async (req, res) => {
   try {
+    console.log(req.user);
     const products = await listAllProductsService(req.query, req.user);
+
     res.status(200).json({
       success: true,
       data: products,

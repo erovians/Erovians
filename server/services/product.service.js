@@ -7,7 +7,7 @@ import {
 import mongoose from "mongoose";
 
 // ✅ Add Product
-export const addProductService = async (data, files, sellerId) => {
+export const addProductService = async (data, files, sellerId, companyId) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -16,7 +16,6 @@ export const addProductService = async (data, files, sellerId) => {
   try {
     // Step 1️⃣: Extract & validate fields
     const {
-      companyId,
       productName,
       category,
       subCategory,

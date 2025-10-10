@@ -129,7 +129,7 @@ const ListProducts = () => {
 
       setBulkAction("");
       setSelectedProducts([]);
-      dispatch(fetchProducts(companyId)); // Refresh after bulk action
+      dispatch(fetchProducts()); // Refresh after bulk action
     } catch (err) {
       console.error(err);
       alert("Bulk action failed!");
