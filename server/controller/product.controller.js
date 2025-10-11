@@ -13,7 +13,9 @@ import {
 // ✅ Add Product
 export const addProduct = async (req, res) => {
   try {
+  
     const savedProduct = await addProductService(req.body, req.files);
+    
     res.status(201).json({
       success: true,
       message: "Product added successfully",

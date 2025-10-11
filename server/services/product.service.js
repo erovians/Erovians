@@ -12,7 +12,7 @@ export const addProductService = async (data, files) => {
   try {
     // Step 1️⃣: Extract & validate fields
     const {
-      companyId,
+     
       productName,
       category,
       subCategory,

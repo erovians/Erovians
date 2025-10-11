@@ -18,6 +18,7 @@ import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/C
 import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
 import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
+import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
 
 function App() {
   const location = useLocation();
@@ -56,6 +57,8 @@ function App() {
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
             <Route path="company/overview" element={<CompanyOverview />} />
+            <Route path="company/add" element={<CompanyCertification />} />
+            
 
             {/* products */}
             <Route path="products/add" element={<AddProducts />} />
