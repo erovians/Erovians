@@ -10,7 +10,6 @@ const AddProduct = () => {
   );
 
   const [formData, setFormData] = useState({
-    companyId: "",
     productName: "",
     productImages: [],
     category: "Granite",
@@ -103,7 +102,6 @@ const AddProduct = () => {
 
       // Reset form only after success
       setFormData({
-        companyId: "",
         productName: "",
         productImages: [],
         category: "Granite",
@@ -151,14 +149,7 @@ const AddProduct = () => {
 
         {/* Company & Product Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="companyId"
-            placeholder="Company ID"
-            value={formData.companyId}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-gray-500 focus:outline-none"
-          />
+          
 
           <input
             type="text"
@@ -410,7 +401,7 @@ const AddProduct = () => {
       </form>
 
       {/* Preview Section */}
-      <div className="min-w-full hidden h-[25%] mx-auto bg-white border rounded-2xl shadow-md overflow-hidden sm:flex flex-col md:flex-row">
+      <div className="min-w-full hidden h-[35%] mx-auto bg-white border rounded-2xl shadow-md overflow-hidden sm:flex flex-col md:flex-row">
         <div className="md:w-1/2 h-full p-2 flex flex-col">
           <div className=" rounded-lg overflow-hidden flex-1 mb-1">
             <img
