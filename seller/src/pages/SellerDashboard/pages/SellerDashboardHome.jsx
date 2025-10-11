@@ -5,10 +5,10 @@ import SellerPieChart from "../components/Home/SellerPieChart";
 
 const SellerDashboardHome = () => {
   return (
-    <div className="flex flex-col lg:flex-row h-auto lg:h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[85vh]  bg-gray-50 ">
       {/* Left Section (Main Chart) */}
       <div className="flex-1 p-4 lg:p-6">
-        <div className="bg-white p-3 lg:p-5 rounded shadow h-[350px] sm:h-[400px] md:h-[500px] lg:h-[85%] flex flex-col">
+        <div className="bg-white p-3 lg:p-5 rounded shadow h-[350px] sm:h-[400px] md:h-[500px] lg:h-[100%] flex flex-col">
           <SellerChart />
         </div>
       </div>
@@ -21,7 +21,7 @@ const SellerDashboardHome = () => {
         </div>
 
         {/* Pie chart Card */}
-        <div className="shadow rounded-md bg-white h-[350px] sm:h-[400px] lg:h-[45%] flex flex-col">
+        <div className="shadow rounded-md bg-white h-[350px] sm:h-[400px] lg:h-[80%] flex flex-col">
           <h3 className="text-center mt-4 font-semibold text-base sm:text-lg text-gray-800">
             Top Selling Products
           </h3>
