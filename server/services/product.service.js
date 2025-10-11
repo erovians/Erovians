@@ -1,5 +1,8 @@
 import Product from "../models/product.model.js";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinaryUpload.utils.js";
 import mongoose from "mongoose";
 
 // ✅ Add Product
@@ -12,7 +15,6 @@ export const addProductService = async (data, files) => {
   try {
     // Step 1️⃣: Extract & validate fields
     const {
-     
       productName,
       category,
       subCategory,

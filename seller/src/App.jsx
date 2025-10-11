@@ -57,8 +57,10 @@ function App() {
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
             <Route path="company/overview" element={<CompanyOverview />} />
-            <Route path="company/add" element={<CompanyCertification />} />
-            
+            <Route
+              path="company/addcertificate"
+              element={<CompanyCertification />}
+            />
 
             {/* products */}
             <Route path="products/add" element={<AddProducts />} />

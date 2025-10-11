@@ -89,7 +89,10 @@ const SellerSidebar = () => {
                 to: "/sellerdashboard/company/profile",
                 label: "Company Profile",
               },
-              { to: "/sellerdashboard/company/add", label: "Certification" },
+              {
+                to: "/sellerdashboard/company/addcertificate",
+                label: "Certification",
+              },
             ],
           },
           {
