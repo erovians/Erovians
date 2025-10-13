@@ -124,22 +124,22 @@ const OrderCompletedList = () => {
       </div>
 
       {/* Scrollable Order List */}
-      <div className="bg-white shadow rounded-lg divide-y divide-gray-200 overflow-y-auto flex-1 hide-scrollbar">
+      <div className="overflow-y-auto flex-1 hide-scrollbar flex flex-col gap-4">
         {filteredOrders.length > 0 ? (
           filteredOrders.map((order) => (
             <div
               key={order.id}
-              className="flex items-center justify-between px-6 py-5 hover:bg-blue-50 transition"
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-4 sm:px-6 sm:py-5 hover:bg-blue-50 transition gap-4 sm:gap-0 bg-white rounded-lg shadow"
             >
               {/* Left: Product Image */}
               <img
                 src={order.product.image}
                 alt={order.product.name}
-                className="w-20 h-20 object-cover rounded-md shadow-sm border"
+                className="w-full sm:w-20 h-40 sm:h-20 object-cover rounded-md shadow-sm border"
               />
 
               {/* Center: Order + Product Details */}
-              <div className="flex-1 px-6">
+              <div className="flex-1 px-0 sm:px-6">
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <span className="text-sm text-green-600 font-semibold">
@@ -155,7 +155,7 @@ const OrderCompletedList = () => {
                 <p className="text-sm text-gray-500 mt-1">
                   <span className="font-medium text-gray-700">Customer:</span>{" "}
                   {order.customer}
-                  <span className="ml-4 font-medium text-gray-700">
+                  <span className="ml-0 sm:ml-4 font-medium text-gray-700">
                     Order ID:
                   </span>{" "}
                   {order.id}
@@ -167,7 +167,7 @@ const OrderCompletedList = () => {
               </div>
 
               {/* Right: Total & Button */}
-              <div className="text-right space-y-2">
+              <div className="text-left sm:text-right space-y-2 mt-2 sm:mt-0">
                 <div className="text-md font-semibold text-gray-800">
                   {order.total}
                 </div>
