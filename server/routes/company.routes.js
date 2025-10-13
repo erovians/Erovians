@@ -4,8 +4,10 @@ import {
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { uploadCertificate } from "../controller/certificate.controller.js";
-
+import {
+  uploadCertificate,
+  getCertificates,
+} from "../controller/certificate.controller.js";
 
 const router = express.Router();
 
@@ -20,6 +22,7 @@ router.post(
 );
 router.get("/details", getCompanyDetails);
 
-router.post("/uploadcertificate", upload.single("file"), uploadCertificate);
+router.post("/upload", upload.single("file"), uploadCertificate);
+router.get("/certificates", getCertificates);
 
 export default router;
