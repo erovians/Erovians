@@ -153,7 +153,7 @@ const OrderPendingList = () => {
               </div>
               <button
                 onClick={() => handleViewDetails(order.product.productId)}
-                className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline font-medium"
+                className="inline-flex items-center gap-1 text-sm text-navyblue hover:underline font-medium"
               >
                 See Details
                 <ArrowRight className="w-4 h-4" />
