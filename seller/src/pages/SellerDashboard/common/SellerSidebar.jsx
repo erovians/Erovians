@@ -111,8 +111,8 @@ const SellerSidebar = () => {
             label: "Orders",
             subLinks: [
               { to: "/sellerdashboard/orders/completed", label: "Completed" },
-              { to: "/seller/orders/pending", label: "Pending" },
-              { to: "/seller/orders/reviews", label: "Reviews" },
+              { to: "/sellerdashboard/orders/pending", label: "Pending" },
+              { to: "/sellerdashboard/orders/reviews", label: "Reviews" },
             ],
           },
         ].map((menu) => (
