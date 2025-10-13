@@ -20,6 +20,7 @@ import ProductDetails from "./pages/SellerDashboard/components/Products/ProductD
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
 import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
 import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
+import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
 
 function App() {
   const location = useLocation();
@@ -74,6 +75,7 @@ function App() {
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
+            <Route path="orders/pending" element={<OrderPendingList />} />
 
           </Route>  
         )}
