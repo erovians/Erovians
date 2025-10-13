@@ -4,6 +4,8 @@ import {
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { uploadCertificate } from "../controller/certificate.controller.js";
+
 
 const router = express.Router();
 
@@ -17,5 +19,7 @@ router.post(
   registerCompany
 );
 router.get("/details", getCompanyDetails);
+
+router.post("/uploadcertificate", upload.single("file"), uploadCertificate);
 
 export default router;

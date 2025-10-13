@@ -110,7 +110,7 @@ const SellerSidebar = () => {
             icon: <ShoppingCart size={20} />,
             label: "Orders",
             subLinks: [
-              { to: "/seller/orders/completed", label: "Completed" },
+              { to: "/sellerdashboard/orders/completed", label: "Completed" },
               { to: "/seller/orders/pending", label: "Pending" },
               { to: "/seller/orders/reviews", label: "Reviews" },
             ],

@@ -66,22 +66,63 @@ export default function CertificateDialog() {
     setForm((s) => ({ ...s, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // prepare payload
-    const payload = new FormData();
-    payload.append("type", selectedType);
-    payload.append("certificationName", form.certificationName);
-    payload.append("legalOwner", form.legalOwner);
-    payload.append("expiryDate", form.expiryDate);
-    payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
-    payload.append("comments", form.comments);
-    if (form.file) payload.append("file", form.file);
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // prepare payload
+  //   const payload = new FormData();
+  //   payload.append("type", selectedType);
+  //   payload.append("certificationName", form.certificationName);
+  //   payload.append("legalOwner", form.legalOwner);
+  //   payload.append("expiryDate", form.expiryDate);
+  //   payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
+  //   payload.append("comments", form.comments);
+  //   if (form.file) payload.append("file", form.file);
 
-    // TODO: send payload to your API (fetch/axios)
-    console.log("Submitting certificate:", selectedType, form);
+  //   // TODO: send payload to your API (fetch/axios)
+  //   console.log("Submitting certificate:", selectedType, form);
+  //   setOpen(false);
+  //   // reset
+  //   setForm({
+  //     certificationName: "",
+  //     legalOwner: "",
+  //     expiryDate: "",
+  //     sameAsRegistered: false,
+  //     comments: "",
+  //     file: null,
+  //   });
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = new FormData();
+  payload.append("type", selectedType);
+  payload.append("certificationName", form.certificationName);
+  payload.append("legalOwner", form.legalOwner);
+  payload.append("expiryDate", form.expiryDate);
+  payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
+  payload.append("comments", form.comments);
+  if (form.file) payload.append("file", form.file);
+
+  try {
+ 
+    const response = await fetch("/api/company/uploadcertificate", {
+      method: "POST",
+      body: payload,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Upload failed");
+    }
+
+    console.log("Certificate uploaded:", data);
+    alert("Certificate uploaded successfully");
+
+    // Close dialog
     setOpen(false);
-    // reset
+
+    // Reset form
     setForm({
       certificationName: "",
       legalOwner: "",
@@ -90,7 +131,11 @@ export default function CertificateDialog() {
       comments: "",
       file: null,
     });
-  };
+  } catch (error) {
+    console.error("Error uploading certificate:", error.message);
+    alert(error.message || "Something went wrong");
+  }
+};
 
   return (
     <div className="flex flex-wrap justify-end items-center gap-2">
