@@ -19,6 +19,7 @@ import ListProducts from "./pages/SellerDashboard/components/Products/ListProduc
 import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
 import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
+import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
 
 function App() {
   const location = useLocation();
@@ -68,7 +69,13 @@ function App() {
             <Route path="product/:id" element={<ProductDetails />} />
             {/* /sellerdashboard/products/categories */}
             <Route path="products/categories" element={<Categories />} />
-          </Route>
+
+
+
+            {/* orders */}
+            <Route path="orders/completed" element={<OrderCompletedList />} />
+
+          </Route>  
         )}
       </Routes>
 

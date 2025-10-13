@@ -1,0 +1,155 @@
+import React from "react";
+import { CheckCircle, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const orders = [
+  {
+    id: "ORD2001",
+    customer: "Michael Stone",
+    date: "2025-09-15",
+    total: "$1,200.00",
+    product: {
+      name: "Italian Marble Slab",
+      image:
+        "https://5.imimg.com/data5/AD/ZK/CV/SELLER-2497267/best-quality-italian-marble-in-new-delhi-500x500.jpg",
+      description: "Premium Italian marble slab, perfect for countertops and flooring.",
+      productId: "marble-101",
+    },
+  },
+  {
+    id: "ORD2002",
+    customer: "Sarah Granite",
+    date: "2025-09-20",
+    total: "$950.00",
+    product: {
+      name: "Black Granite Tile",
+      image:
+        "https://server.orientbell.com/media/catalog/product/o/c/ocg_spider_black_granite_f1.jpg",
+      description: "Durable and elegant black granite tiles for indoor and outdoor use.",
+      productId: "granite-102",
+    },
+  },
+  {
+    id: "ORD2003",
+    customer: "Daniel Marble",
+    date: "2025-09-25",
+    total: "$1,500.00",
+    product: {
+      name: "White Marble Countertop",
+      image:
+        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
+      description: "Sleek white marble countertop with polished finish for kitchens.",
+      productId: "marble-103",
+    },
+  },
+  {
+    id: "ORD2001",
+    customer: "Michael Stone",
+    date: "2025-09-15",
+    total: "$1,200.00",
+    product: {
+      name: "Italian Marble Slab",
+      image:
+        "https://5.imimg.com/data5/AD/ZK/CV/SELLER-2497267/best-quality-italian-marble-in-new-delhi-500x500.jpg",
+      description: "Premium Italian marble slab, perfect for countertops and flooring.",
+      productId: "marble-101",
+    },
+  },
+  {
+    id: "ORD2003",
+    customer: "Daniel Marble",
+    date: "2025-09-25",
+    total: "$1,500.00",
+    product: {
+      name: "White Marble Countertop",
+      image:
+        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
+      description: "Sleek white marble countertop with polished finish for kitchens.",
+      productId: "marble-103",
+    },
+  },
+  {
+    id: "ORD2003",
+    customer: "Daniel Marble",
+    date: "2025-09-25",
+    total: "$1,500.00",
+    product: {
+      name: "White Marble Countertop",
+      image:
+        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
+      description: "Sleek white marble countertop with polished finish for kitchens.",
+      productId: "marble-103",
+    },
+  },
+];
+
+const OrderCompletedList = () => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
+  return (
+   <div className="w-full h-[85vh] p-5 flex flex-col">
+  <h2 className="text-2xl font-semibold text-gray-800 mb-10 flex-shrink-0">
+    <span className="flex gap-3 items-center"> <CheckCircle className="h-8 w-8 text-green-500" /> Completed Orders</span>
+  </h2>
+
+  {/* Scrollable area */}
+  <div className="bg-white shadow rounded-lg divide-y divide-gray-200 overflow-y-auto flex-1">
+    {orders.map((order) => (
+      <div
+        key={order.id}
+        className="flex items-center justify-between px-6 py-5 hover:bg-blue-50 transition"
+      >
+        {/* Left: Product Image */}
+        <img
+          src={order.product.image}
+          alt={order.product.name}
+          className="w-20 h-20 object-cover rounded-md shadow-sm border"
+        />
+
+        {/* Center: Order + Product Details */}
+        <div className="flex-1 px-6">
+          <div className="flex items-center gap-2 mb-1">
+            <CheckCircle className="h-5 w-5 text-green-500" />
+            <span className="text-sm text-green-600 font-semibold">
+              Completed
+            </span>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900">
+            {order.product.name}
+          </h3>
+          <p className="text-sm text-gray-500">{order.product.description}</p>
+          <p className="text-sm text-gray-500 mt-1">
+            <span className="font-medium text-gray-700">Customer:</span> {order.customer}
+            <span className="ml-4 font-medium text-gray-700">Order ID:</span> {order.id}
+          </p>
+          <p className="text-sm text-gray-500">
+            <span className="font-medium text-gray-700">Date:</span> {order.date}
+          </p>
+        </div>
+
+        {/* Right: Total & Button */}
+        <div className="text-right space-y-2">
+          <div className="text-md font-semibold text-gray-800">
+            {order.total}
+          </div>
+          <button
+            onClick={() => handleViewDetails(order.product.productId)}
+            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline font-medium"
+          >
+            See Details
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+  );
+};
+
+export default OrderCompletedList;
