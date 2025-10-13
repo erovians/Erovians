@@ -81,6 +81,45 @@ const orders = [
       productId: "marble-103",
     },
   },
+  {
+    id: "ORD2001",
+    customer: "Michael Stone",
+    date: "2025-09-15",
+    total: "$1,200.00",
+    product: {
+      name: "Italian Marble Slab",
+      image:
+        "https://5.imimg.com/data5/AD/ZK/CV/SELLER-2497267/best-quality-italian-marble-in-new-delhi-500x500.jpg",
+      description: "Premium Italian marble slab, perfect for countertops and flooring.",
+      productId: "marble-101",
+    },
+  },
+  {
+    id: "ORD2003",
+    customer: "Daniel Marble",
+    date: "2025-09-25",
+    total: "$1,500.00",
+    product: {
+      name: "White Marble Countertop",
+      image:
+        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
+      description: "Sleek white marble countertop with polished finish for kitchens.",
+      productId: "marble-103",
+    },
+  },
+  {
+    id: "ORD2003",
+    customer: "Daniel Marble",
+    date: "2025-09-25",
+    total: "$1,500.00",
+    product: {
+      name: "White Marble Countertop",
+      image:
+        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
+      description: "Sleek white marble countertop with polished finish for kitchens.",
+      productId: "marble-103",
+    },
+  },
 ];
 
 const OrderCompletedList = () => {
@@ -97,7 +136,7 @@ const OrderCompletedList = () => {
   </h2>
 
   {/* Scrollable area */}
-  <div className="bg-white shadow rounded-lg divide-y divide-gray-200 overflow-y-auto flex-1">
+  <div className="bg-white shadow rounded-lg divide-y divide-gray-200 overflow-y-auto flex-1 hide-scrollbar">
     {orders.map((order) => (
       <div
         key={order.id}
