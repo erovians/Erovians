@@ -25,7 +25,7 @@ const SellerDashboardHome = () => {
           <h3 className="text-center mt-4 font-semibold text-base sm:text-lg text-gray-800">
             Top Selling Products
           </h3>
-          <div className="flex-1 mt-2">
+          <div className="flex-1 mt-2 ">
             <SellerPieChart />
           </div>
         </div>

@@ -29,7 +29,7 @@ const renderCustomizedLabel = ({
       x={x}
       y={y}
       fill="white"
-      fontSize={12}
+      fontSize={16}
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
@@ -46,7 +46,7 @@ export default function SellerPieChart() {
       const width = window.innerWidth;
       if (width < 480) setOuterRadius(90);
       else if (width < 768) setOuterRadius(100);
-      else setOuterRadius(110);
+      else setOuterRadius(140);
     };
 
     handleResize();
@@ -55,7 +55,7 @@ export default function SellerPieChart() {
   }, []);
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" >
       <PieChart>
         <Pie
           data={data}
