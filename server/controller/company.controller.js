@@ -50,11 +50,12 @@ import {
 } from "../services/company.service.js";
 import CompanyDetails from "../models/company.model.js";
 
-import Certificate from "../models/certificate.model.js";
+
 
 export const registerCompany = async (req, res) => {
   try {
     const sellerId = req.user.userId;
+  
     console.log("RegisterCompany Request Body:", req.body);
     const company = await registerCompanyService(req.body, req.files, sellerId);
     return res.status(201).json({
