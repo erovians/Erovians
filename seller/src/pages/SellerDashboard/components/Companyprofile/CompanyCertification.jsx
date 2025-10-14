@@ -99,8 +99,9 @@ export default function CertificateDialog() {
     });
   };
 
+
   return (
-    <div className="flex flex-wrap justify-end items-center gap-2">
+    <div classNGame="flex flex-wrap justify-end items-center gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
