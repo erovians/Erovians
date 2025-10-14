@@ -3,6 +3,7 @@ import sellerReducer from "./slice/sellerSlice";
 import sidebarReducer from "./slice/sellerSidebarSlice";
 import productReducer from "./slice/productSlice";
 import companyReducer from "./slice/companySlice";
+import certificatesReducer from './slice/certificatesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     sidebar: sidebarReducer,
     products: productReducer,
     company: companyReducer,
+    certificates: certificatesReducer,
   },
 });
 

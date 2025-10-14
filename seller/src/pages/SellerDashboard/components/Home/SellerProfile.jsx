@@ -40,7 +40,7 @@ const SellerProfile = () => {
       {/* Header: Seller + Company */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-3">
+          <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-7 ">
             <Link to="#" className="text-gray-600 hover:text-blue-500">
               <Avatar className="rounded-sm w-17 h-17">
                 <AvatarImage src={company?.companyIntro?.logo} />
@@ -51,18 +51,18 @@ const SellerProfile = () => {
             </Link>
           </div>
           <div>
-            <div className="flex justify-between">
-              <h3 className="font-bold text-lg text-gray-800">
+            <div className="flex justify-between flex-col sm:flex-row">
+              <h4 className="font-bold text-base sm:text-xl text-gray-800">
                 {companyInfo.companyName}.
-              </h3>
-              <Link to="#" className="text-blue-600 text-xs m-auto ml-5 hover:underline">
+              </h4>
+              <Link to="#" className="text-blue-600 text-xs sm:m-auto  sm:ml-5 hover:underline">
                 View details
               </Link>
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               {companyInfo.companyDetails.locationOfRegistration}
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs  text-gray-400">
               Legal Owner - {companyInfo.companyDetails.legalowner}
             </p>
           </div>

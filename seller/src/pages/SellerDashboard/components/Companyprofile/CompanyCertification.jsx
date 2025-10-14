@@ -34,12 +34,21 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import api from "@/utils/axios.utils";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCertificates } from '../../../../redux/slice/certificatesSlice';
 
 export default function CertificateDialog() {
   const [open, setOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
-  const [certificates, setCertificates] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+
+
+const dispatch = useDispatch();
+const { items: certificates, loading, error } = useSelector((state) => state.certificates);
+
+useEffect(() => {
+  dispatch(fetchCertificates());
+}, [dispatch]);
 
   const [form, setForm] = useState({
     certificationName: "",
@@ -69,17 +78,7 @@ export default function CertificateDialog() {
     setForm((s) => ({ ...s, [name]: value }));
   };
 
-  const fetchCertificates = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get("/company/certificates");
-      setCertificates(res.data.certificates);
-    } catch (err) {
-      console.error("Failed to fetch certificates:", err);
-    }
-    setLoading(false);
-  };
-
+ 
   useEffect(() => {
     fetchCertificates();
   }, []);
@@ -102,7 +101,7 @@ export default function CertificateDialog() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Uploaded:", res.data);
-      await fetchCertificates(); // Refresh list
+    dispatch(fetchCertificates());
     } catch (err) {
       console.error("Upload failed:", err.response?.data || err.message);
     }
@@ -160,43 +159,52 @@ export default function CertificateDialog() {
       </div>
 
       {/* Certificate List */}
-      <div className="mt-6 w-full">
-        <h2 className="text-lg font-semibold mb-2">Uploaded Certificates</h2>
+     <div className="mt-8 w-full">
+  <h2 className="text-xl font-semibold text-navyblue mb-4">Uploaded Certificates</h2>
 
-        {loading ? (
-          <p>Loading certificates...</p>
-        ) : certificates.length === 0 ? (
-          <p>No certificates uploaded yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {certificates.map((cert) => (
-              <li
-                key={cert._id}
-                className="p-4 bg-gray-100 rounded-md flex justify-between items-center"
-              >
-                <div>
-                  <p className="font-medium">{cert.certificationName}</p>
-                  <p className="text-sm text-gray-600">
-                    Owner: {cert.legalOwner} | Issue:{" "}
-                    {new Date(cert.issueDate).toLocaleDateString()} | Expires:{" "}
-                    {new Date(cert.expiryDate).toLocaleDateString()}
-                  </p>
-                </div>
-                {cert.fileUrl && (
-                  <a
-                    href={cert.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline text-sm"
-                  >
-                    View File
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+  {loading ? (
+    <div className="text-gray-600">Loading certificates...</div>
+  ) : certificates.length === 0 ? (
+    <div className="text-gray-500 italic">No certificates uploaded yet.</div>
+  ) : (
+    <ul className="space-y-4">
+      {certificates.map((cert) => (
+        <li
+          key={cert._id}
+          className="flex justify-between items-center w-full border border-gray-200 bg-white rounded-lg shadow-sm px-6 py-4 hover:shadow-md transition"
+        >
+          <div className="flex flex-col gap-1 text-sm">
+            <p className="text-base font-semibold text-gray-800">
+              {cert.certificationName}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-medium">Owner:</span> {cert.legalOwner}
+            </p>
+            <p className="text-gray-600">
+              <span className="font-medium">Issue:</span>{" "}
+              {cert.issueDate ? new Date(cert.issueDate).toLocaleDateString() : "N/A"}
+              {"  "} |{" "}
+              <span className="font-medium">Expires:</span>{" "}
+              {cert.expiryDate ? new Date(cert.expiryDate).toLocaleDateString() : "N/A"}
+            </p>
+          </div>
+
+          {cert.fileUrl && (
+            <a
+              href={cert.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-4 shrink-0 inline-block px-4 py-2 text-sm font-medium text-white bg-navyblue rounded hover:bg-blue-900 transition"
+            >
+              View File
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
       {/* Upload Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>

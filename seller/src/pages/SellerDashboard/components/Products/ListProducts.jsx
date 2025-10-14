@@ -337,7 +337,7 @@ const ListProducts = () => {
               </div>
 
               {/* Images */}
-              <div className="md:w-1/3 w-full mt-10 h-48 md:h-auto flex flex-col justify-end items-end  relative">
+              <div className="md:w-1/3 w-full mt-10 h-48 md:h-auto flex flex-col justify-end items-end relative">
                 {product.productImages?.length > 0 ? (
                   <Carousel className="w-full h-full">
                     <CarouselContent>
