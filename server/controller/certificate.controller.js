@@ -73,7 +73,8 @@ export const uploadCertificate = async (req, res) => {
 
 export const getCertificates = async (req, res) => {
   try {
-    const sellerId = req.user?.sellerId || req.user?.id;
+    // const sellerId = req.user?.sellerId || req.user?.id;
+    const sellerId = "6870e6e558e2ba32d6b1eb32";
 
     const company = await Company.findOne({ sellerId });
     if (!company) {

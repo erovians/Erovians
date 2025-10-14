@@ -49,6 +49,8 @@ import {
   getCompanyDetailsService,
 } from "../services/company.service.js";
 
+import Certificate from "../models/certificate.model.js";
+
 export const registerCompany = async (req, res) => {
   try {
     console.log("RegisterCompany Request Body:", req.body);
@@ -102,3 +104,4 @@ export const getCompanyDetails = async (req, res) => {
     });
   }
 };
+
