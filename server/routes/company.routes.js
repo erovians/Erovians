@@ -4,7 +4,8 @@ import {
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { verifyUser } from "../middleware/auth.middleware.js";
+import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
+import { uploadCertificate, getCertificates } from "../controller/certificate.controller.js";  
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.post(
 );
 router.get("/details", verifyUser, getCompanyDetails);
 
-router.post("/upload", upload.single("file"), uploadCertificate);
-router.get("/certificates", getCertificates);
+router.post("/upload",verifyUser, allowRoles("seller"), upload.single("file"), uploadCertificate);
+router.get("/certificates",verifyUser, getCertificates);
 
 export default router;
