@@ -87,7 +87,7 @@ export const getCertificates = async (req, res) => {
    
    
     const sellerId = req.user.userId ;
-    console.log("User ID:", sellerId);
+    
 
     if (!sellerId) {
       return res.status(400).json({ message: "SellerId is required" });
