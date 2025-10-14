@@ -80,7 +80,7 @@ const CompanyIntroSchema = new mongoose.Schema(
 
 const CompanyDataSchema = new mongoose.Schema(
   {
-    SellerId: {
+    sellerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "seller",
       required: true,

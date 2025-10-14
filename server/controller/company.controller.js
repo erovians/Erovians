@@ -48,13 +48,15 @@ import {
   registerCompanyService,
   getCompanyDetailsService,
 } from "../services/company.service.js";
+import CompanyDetails from "../models/company.model.js";
 
 import Certificate from "../models/certificate.model.js";
 
 export const registerCompany = async (req, res) => {
   try {
+    const sellerId = req.user.userId;
     console.log("RegisterCompany Request Body:", req.body);
-    const company = await registerCompanyService(req.body, req.files);
+    const company = await registerCompanyService(req.body, req.files, sellerId);
     return res.status(201).json({
       success: true,
       message: "Company registered successfully.",
@@ -80,18 +82,42 @@ export const registerCompany = async (req, res) => {
 
 export const getCompanyDetails = async (req, res) => {
   try {
-    // const sellerId = req.user._id; // safe, from auth middleware
+    let sellerId;
+    let companyId;
+    console.log(req.user)
 
-    const sellerId = "6870e6e558e2ba32d6b1eb33";
-
-    if (!sellerId) {
-      return res.status(400).json({
+    if (req.user.role === "seller") {
+      // Seller can only see their own company
+      sellerId = req.user.userId;
+      if (!sellerId) {
+        return res.status(400).json({
+          success: false,
+          message: "SellerId is required",
+        });
+      }
+       // ✅ Automatically fetch companyId for this seller
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+    if (!company) {
+      return res.status(404).json({
         success: false,
-        message: "SellerId is required",
+        message: "Company not found for this seller",
       });
     }
+    companyId = company._id;
+    } else if (req.user.role === "buyer" || req.user.role === "admin") {
+      // Buyer/Admin can pass either sellerId or companyId in query
+      sellerId = req.query.sellerId;
+      companyId = req.query.companyId;
 
-    const companyData = await getCompanyDetailsService(sellerId);
+      if (!sellerId && !companyId) {
+        return res.status(400).json({
+          success: false,
+          message: "sellerId or companyId is required",
+        });
+      }
+    }
+
+    const companyData = await getCompanyDetailsService({ sellerId, companyId });
 
     return res.status(200).json({
       success: true,

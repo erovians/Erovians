@@ -106,7 +106,7 @@ const ProductSchema = new Schema(
     sellerId: {
       type: Schema.Types.ObjectId,
       ref: "Seller",
-      required: false,
+      required: true,
       index: true,
     }, // denormalized: speeds common reads
     productName: {

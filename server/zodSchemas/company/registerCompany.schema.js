@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const registerCompanySchema = z.object({
-  SellerId: z.string().length(24, "Invalid SellerId"), // ObjectId as string
+  sellerId: z.string().length(24, "Invalid SellerId"), // ObjectId as string
   companyBasicInfo: z.object({
     companyName: z
       .string()
