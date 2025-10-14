@@ -1,4 +1,5 @@
 import Product from "../models/product.model.js";
+import Company from "../models/company.model.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
@@ -6,7 +7,7 @@ import {
 import mongoose from "mongoose";
 
 // ✅ Add Product
-export const addProductService = async (data, files) => {
+export const addProductService = async (data, files, sellerId, companyId) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -31,6 +32,10 @@ export const addProductService = async (data, files) => {
 
     if (!companyId) throw new Error("Company ID is required");
     if (!productName) throw new Error("Product name is required");
+
+    // Validate that seller owns the company
+    const company = await Company.findOne({ _id: companyId, sellerId });
+    if (!company) throw new Error("Invalid companyId for this seller");
 
     // ✅ Validate images (must be at least 3)
     if (!files?.length || files.length < 3) {
@@ -58,6 +63,7 @@ export const addProductService = async (data, files) => {
       [
         {
           companyId,
+          sellerId,
           productName,
           category,
           subCategory,
@@ -97,9 +103,27 @@ export const addProductService = async (data, files) => {
 };
 
 // ✅ List All Products
-export const listAllProductsService = async (query) => {
-  const { companyId, category, subCategory, search, status } = query;
-  const filter = { companyId };
+export const listAllProductsService = async (query, user) => {
+  const { category, subCategory, search, status } = query;
+  const filter = {};
+
+  if (user.role === "seller") {
+    // Seller dashboard → ignore any sellerId/companyId from frontend
+    const company = await Company.findOne({ sellerId: user.userId });
+    if (!company) throw new Error("Seller company not found");
+
+    filter.sellerId = user.userId;
+    filter.companyId = company._id;
+  } else if (user.role === "buyer" || user.role === "admin") {
+    // Buyer/Admin → frontend must pass sellerId or companyId
+    const { sellerId, companyId } = query;
+    if (sellerId) filter.sellerId = sellerId;
+    if (companyId) filter.companyId = companyId;
+
+    if (!sellerId && !companyId) {
+      throw new Error("sellerId or companyId required for buyers/admin");
+    }
+  }
 
   if (category) filter.category = category;
   if (subCategory) filter.subCategory = subCategory;
