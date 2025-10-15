@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import ReviewStep from "./steps/ReviewStep";
-import { stepOneSchema, stepTwoSchema } from "./utils/validation";
+import { stepOneSchema, stepTwoSchema } from "../../schema/companyRegistrationForm.schema";
 import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { registerCompany, clearCompanyState } from "@/redux/slice/companySlice";
+import { toast } from "sonner";
 
 const steps = [
   {
@@ -249,7 +250,8 @@ export default function CompanyProfileForm() {
       console.log("Files appended successfully ✅");
 
       const result = await dispatch(registerCompany(form)).unwrap(); // redux disptach
-      alert(result.message);
+      // alert(result.message);
+      toast.success(result.message);
       localStorage.removeItem("companyFormData");
       localStorage.removeItem("currentStep");
       dispatch(clearCompanyState());
@@ -272,7 +274,7 @@ export default function CompanyProfileForm() {
       ) {
         setCurrentStep(2);
       }
-      alert(err);
+      toast.error(err.message || "Something went wrong");
     }
   };
 
