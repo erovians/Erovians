@@ -4,7 +4,25 @@ export const productFormSchema = z.object({
   productName: z
     .string()
     .min(3, "Product name is required and must be at least 3 characters."),
-  productImages: z.array(z.any()).min(3, "Please upload at least 3 images."),
+  productImages: z
+    .array(z.instanceof(File))
+    .default([]) // 👈 ensures we always get an array, never undefined
+    .refine((files) => files.length > 3, {
+      message: "At least 3 images are required",
+    })
+    .refine(
+      (files) =>
+        files.every(
+          (file) => file.type === "image/jpeg" || file.type === "image/png"
+        ),
+      {
+        message: "Each photo must be JPEG or PNG format",
+      }
+    )
+    .refine((files) => files.every((file) => file.size <= 200 * 1024), {
+      message: "Each photo must not exceed 200 KB",
+    }),
+
   category: z.string().min(1, "Category is required."),
   subCategory: z.string().superRefine((val, ctx) => {
     if (!val || val.trim() === "") {
