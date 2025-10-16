@@ -141,7 +141,7 @@ const AddProduct = () => {
       // alert(resultAction.message || "Product added successfully!");
       toast.success(resultAction.message);
     } catch (err) {
-      alert(err || "Something went wrong");
+      toast.error(err || "Something went wrong");
     }
   };
 
@@ -156,7 +156,7 @@ const AddProduct = () => {
           Add New Product
         </h2>
 
-        {message && (
+        {/* {message && (
           <div className="p-3 text-sm rounded bg-green-100 text-green-700 border border-green-300 text-center">
             {message}
           </div>
@@ -165,7 +165,7 @@ const AddProduct = () => {
           <div className="p-3 text-sm rounded bg-red-100 text-red-700 border border-red-300 text-center">
             {error}
           </div>
-        )}
+        )} */}
 
         <div className="flex flex-col">
           <input
@@ -515,7 +515,7 @@ const AddProduct = () => {
 
       {/* Right: Enhanced Preview Panel */}
       <div className="hidden lg:block sticky top-6 h-fit">
-        <div className="=rounded-xl shadow-lg overflow-hidden border border-gray-200">
+        <div className="rounded-xl shadow-lg overflow-hidden border border-gray-200">
           {/* Preview Header */}
           <div className="bg-white border-b border-gray-200 px-6 py-4">
             <div className="flex items-center gap-2">
