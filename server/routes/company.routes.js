@@ -6,6 +6,11 @@ import {
 import { upload } from "../middleware/multer.middleware.js";
 import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
 import { uploadCertificate, getCertificates } from "../controller/certificate.controller.js";  
+import {
+  uploadCertificate,
+  getCertificates,
+} from "../controller/certificate.controller.js";
+import { verifyUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
