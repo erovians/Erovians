@@ -54,7 +54,7 @@ const SellerProfile = () => {
             <div className="flex justify-between flex-col sm:flex-row">
               <h4 className="font-bold text-base sm:text-xl text-gray-800">
                 {companyInfo.companyName}.
-              </h3>
+              </h4>
               <Link to="#" className="text-blue-600 text-xs m-auto ml-5 hover:underline">
                 View details
               </Link>
