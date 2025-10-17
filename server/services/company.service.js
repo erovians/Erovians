@@ -4,18 +4,17 @@ import CompanyDetails from "../models/company.model.js";
 import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
 
-  export const registerCompanyService = async (data, files) => {
+  export const registerCompanyService = async (data, files, sellerId) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     const uploadedFiles = [];
 
     try {
-      const SellerId = "6870e6e558e2ba32d6b1eb47";
-      if (!SellerId) throw new Error("SellerId is required");
+      if (!sellerId) throw new Error("sellerId is required");
 
       // ✅ Step 1: Check for existing company
-      const existingCompany = await CompanyDetails.findOne({ SellerId })
+      const existingCompany = await CompanyDetails.findOne({ sellerId })
         .session(session)
         .lean();
 
@@ -27,7 +26,7 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
         typeof data.address === "string" ? JSON.parse(data.address) : data.address;
 
       const validated = await registerCompanySchema.parseAsync({
-        SellerId,
+        sellerId,
         companyBasicInfo: {
           companyName: data.companyName,
           address,
@@ -113,14 +112,15 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
   };
 
 
-export const getCompanyDetailsService = async (sellerId) => {
+export const getCompanyDetailsService = async ({sellerId, companyId }) => {
   try {
+    const matchFilter = {};
 
-    
-    if (!sellerId) throw new Error("SellerId is required");
+    if (sellerId) matchFilter.sellerId = new mongoose.Types.ObjectId(sellerId);
+    if (companyId) matchFilter._id = new mongoose.Types.ObjectId(companyId);
 
     const result = await CompanyDetails.aggregate([
-      { $match: { sellerId: new mongoose.Types.ObjectId(sellerId) } },
+      { $match: matchFilter },
       {
         $lookup: {
           from: "products",
@@ -139,7 +139,7 @@ export const getCompanyDetailsService = async (sellerId) => {
 
     return result[0];
   } catch (err) {
-   
+    // logger.error("getCompanyDetailsService failed", { sellerId,companyId, error: err.message });
     throw err;
   }
 };
