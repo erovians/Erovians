@@ -21,7 +21,6 @@ const CompanyOverview = () => {
 
   useEffect(() => {
      dispatch(getCompany());
-    console.log(company);
   }, [dispatch]);
 
   if (loading)
@@ -33,7 +32,7 @@ const CompanyOverview = () => {
         <p className="text-red-500 mb-4">{error}</p>
         <button
           className="px-4 py-2 bg-orange-500 text-white rounded-lg"
-          onClick={() => dispatch(getCompany(companyId))}
+          onClick={() => dispatch(getCompany())}
         >
           Retry
         </button>
