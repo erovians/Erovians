@@ -11,6 +11,7 @@ export const uploadCertificate = async (req, res) => {
       legalOwner,
       issueDate,
       expiryDate,
+      Description,
       sameAsRegistered,
       comments,
     } = req.body;
@@ -30,6 +31,7 @@ export const uploadCertificate = async (req, res) => {
       !certificationName ||
       !legalOwner ||
       !issueDate ||
+      !Description ||
       !expiryDate
     ) {
       return res.status(400).json({
@@ -67,6 +69,7 @@ export const uploadCertificate = async (req, res) => {
       legalOwner,
       issueDate,
       expiryDate,
+      Description,
       sameAsRegistered: sameAsRegistered === "1" || sameAsRegistered === true,
       comments,
       fileUrl,
@@ -106,6 +109,42 @@ export const getCertificates = async (req, res) => {
     return res.json({ certificates });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const deleteCertificate = async (req, res) => {
+  try {
+    console.log("Delete request params:");
+    const sellerId = req.user.userId;
+    const certificateId = req.params.id;
+
+    if (!sellerId) {
+      return res.status(400).json({ message: "SellerId is required" });
+    }
+
+    // Find the company for this seller
+    const company = await Company.findOne({ sellerId });
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    // Find the certificate and ensure it belongs to this company
+    const certificate = await Certificate.findOne({
+      _id: certificateId,
+      companyId: company._id,
+    });
+
+    if (!certificate) {
+      return res.status(404).json({ message: "Certificate not found or not authorized" });
+    }
+
+    // Delete the certificate
+    await Certificate.deleteOne({ _id: certificateId });
+
+    return res.status(200).json({ message: "Certificate deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
