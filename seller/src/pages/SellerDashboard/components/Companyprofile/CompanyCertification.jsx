@@ -34,21 +34,25 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import api from "@/utils/axios.utils";
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCertificates } from '../../../../redux/slice/certificatesSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCertificates } from "../../../../redux/slice/certificatesSlice";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function CertificateDialog() {
   const [open, setOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
+  const [uploading, setUpoloading] = useState(false);
 
+  const dispatch = useDispatch();
+  const {
+    items: certificates,
+    loading,
+    error,
+  } = useSelector((state) => state.certificates);
 
-
-const dispatch = useDispatch();
-const { items: certificates, loading, error } = useSelector((state) => state.certificates);
-
-useEffect(() => {
-  dispatch(fetchCertificates());
-}, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchCertificates());
+  }, [dispatch]);
 
   const [form, setForm] = useState({
     certificationName: "",
@@ -78,7 +82,6 @@ useEffect(() => {
     setForm((s) => ({ ...s, [name]: value }));
   };
 
- 
   useEffect(() => {
     fetchCertificates();
   }, []);
@@ -93,17 +96,21 @@ useEffect(() => {
     payload.append("expiryDate", form.expiryDate);
     payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
     payload.append("comments", form.comments);
-   
+
     if (form.file) payload.append("file", form.file);
 
     try {
+      setUpoloading(true);
       const res = await api.post("/company/upload", payload, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Uploaded:", res.data);
-    dispatch(fetchCertificates());
+      setUpoloading(true);
+      dispatch(fetchCertificates());
     } catch (err) {
       console.error("Upload failed:", err.response?.data || err.message);
+    } finally {
+      setUpoloading(false);
     }
 
     setOpen(false);
@@ -134,7 +141,9 @@ useEffect(() => {
 
           <DropdownMenuContent align="end" className="w-64">
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => openFor("Business Registration")}>
+              <DropdownMenuItem
+                onClick={() => openFor("Business Registration")}
+              >
                 <FileTextIcon className="mr-2 h-4 w-4" />
                 Business Registration
               </DropdownMenuItem>
@@ -145,7 +154,9 @@ useEffect(() => {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => openFor("Import Export Code (IEC)")}>
+              <DropdownMenuItem
+                onClick={() => openFor("Import Export Code (IEC)")}
+              >
                 <GlobeIcon className="mr-2 h-4 w-4" />
                 Import Export Code (IEC)
               </DropdownMenuItem>
@@ -159,52 +170,59 @@ useEffect(() => {
       </div>
 
       {/* Certificate List */}
-     <div className="mt-8 w-full">
-  <h2 className="text-xl font-semibold text-navyblue mb-4">Uploaded Certificates</h2>
+      <div className="mt-8 w-full">
+        <h2 className="text-xl font-semibold text-navyblue mb-4">
+          Uploaded Certificates
+        </h2>
 
-  {loading ? (
-    <div className="text-gray-600">Loading certificates...</div>
-  ) : certificates.length === 0 ? (
-    <div className="text-gray-500 italic">No certificates uploaded yet.</div>
-  ) : (
-    <ul className="space-y-4">
-      {certificates.map((cert) => (
-        <li
-          key={cert._id}
-          className="flex justify-between items-center w-full border border-gray-200 bg-white rounded-lg shadow-sm px-6 py-4 hover:shadow-md transition"
-        >
-          <div className="flex flex-col gap-1 text-sm">
-            <p className="text-base font-semibold text-gray-800">
-              {cert.certificationName}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-medium">Owner:</span> {cert.legalOwner}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-medium">Issue:</span>{" "}
-              {cert.issueDate ? new Date(cert.issueDate).toLocaleDateString() : "N/A"}
-              {"  "} |{" "}
-              <span className="font-medium">Expires:</span>{" "}
-              {cert.expiryDate ? new Date(cert.expiryDate).toLocaleDateString() : "N/A"}
-            </p>
+        {loading ? (
+          <div className="text-gray-600">Loading certificates...</div>
+        ) : certificates.length === 0 ? (
+          <div className="text-gray-500 italic">
+            No certificates uploaded yet.
           </div>
+        ) : (
+          <ul className="space-y-4">
+            {certificates.map((cert) => (
+              <li
+                key={cert._id}
+                className="flex justify-between items-center w-full border border-gray-200 bg-white rounded-lg shadow-sm px-6 py-4 hover:shadow-md transition"
+              >
+                <div className="flex flex-col gap-1 text-sm">
+                  <p className="text-base font-semibold text-gray-800">
+                    {cert.certificationName}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-medium">Owner:</span>{" "}
+                    {cert.legalOwner}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-medium">Issue:</span>{" "}
+                    {cert.issueDate
+                      ? new Date(cert.issueDate).toLocaleDateString()
+                      : "N/A"}
+                    {"  "} | <span className="font-medium">Expires:</span>{" "}
+                    {cert.expiryDate
+                      ? new Date(cert.expiryDate).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
 
-          {cert.fileUrl && (
-            <a
-              href={cert.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ml-4 shrink-0 inline-block px-4 py-2 text-sm font-medium text-white bg-navyblue rounded hover:bg-blue-900 transition"
-            >
-              View File
-            </a>
-          )}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
+                {cert.fileUrl && (
+                  <a
+                    href={cert.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-4 shrink-0 inline-block px-4 py-2 text-sm font-medium text-white bg-navyblue rounded hover:bg-blue-900 transition"
+                  >
+                    View File
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {/* Upload Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -240,7 +258,9 @@ useEffect(() => {
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="legalOwner">Legal Owner Name</FieldLabel>
+                    <FieldLabel htmlFor="legalOwner">
+                      Legal Owner Name
+                    </FieldLabel>
                     <Input
                       id="legalOwner"
                       name="legalOwner"
@@ -308,9 +328,20 @@ useEffect(() => {
                 </FieldGroup>
               </FieldSet>
 
-              <Field orientation="horizontal" className="justify-end gap-2 mt-4">
-                <Button type="submit">Upload Certificate</Button>
-                <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+              <Field
+                orientation="horizontal"
+                className="justify-end gap-2 mt-4"
+              >
+                <Button type="submit" onClick={() => setUpoloading(true)}>
+                  {" "}
+                  {uploading && <Spinner />}
+                  {uploading ? "Uploading .." : "Upload Certificate"}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setOpen(false)}
+                >
                   Cancel
                 </Button>
               </Field>
@@ -323,19 +354,3 @@ useEffect(() => {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
