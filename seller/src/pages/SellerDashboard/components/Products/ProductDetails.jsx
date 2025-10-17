@@ -110,9 +110,9 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-full  rounded-xl relative">
-      <div className="flex flex-col md:flex-row gap-8  w-full">
+      <div className="flex flex-col md:flex-row gap-8 w-full md:h-auto">
         {/* Left: Thumbnails + Main Image */}
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4 md:w-[50%]">
           {/* Thumbnails */}
           <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto w-full md:w-20">
             {editData.productImages?.map((img, idx) => (
@@ -518,7 +518,7 @@ const ProductDetails = () => {
                   rows={4}
                 />
               ) : (
-                <p className="text-gray-600 leading-relaxed text-sm">
+                <p className="text-gray-600 hide-scrollbar leading-relaxed text-sm max-h-[300px] scroll-smooth  overflow-y-auto overflow-x-hidden">
                   {product.description || "No description available."}
                 </p>
               )}

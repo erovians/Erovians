@@ -4,6 +4,10 @@ import {
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
+import {
+  uploadCertificate,
+  getCertificates,
+} from "../controller/certificate.controller.js";
 import { verifyUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
