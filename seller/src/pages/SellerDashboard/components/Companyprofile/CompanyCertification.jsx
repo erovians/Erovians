@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import AlertDialogMenu from "../Helper/AlertDialogMenu";
+import { ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -45,6 +47,7 @@ export default function CertificateDialog() {
   const [viewOpen, setViewOpen] = useState(false);
 const [selectedCertificate, setSelectedCertificate] = useState(null);
 const [zoomedImage, setZoomedImage] = useState(null);
+const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
 
 
@@ -54,9 +57,10 @@ const handleViewCertificate = (cert) => {
 };
 
   const handleDeleteCertificate = async () => {
-  const confirm = window.confirm("Are you sure you want to delete this certificate?");
+  // const confirm = window.confirm("Are you sure you want to delete this certificate?");
+
+  
    
-  if (!confirm || !selectedCertificate?._id) return;
 
   try {
     await api.delete(`/company/certificates/${selectedCertificate._id}`);
@@ -240,7 +244,7 @@ const handleViewCertificate = (cert) => {
                       ? new Date(cert.expiryDate).toLocaleDateString()
                       : "N/A"}
                   </p>
-                  <p>Description : {cert.Description || "no description"} </p>
+                  <p className="line-clamp-2">Description : {cert.Description || "no description"} </p>
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
@@ -314,16 +318,7 @@ const handleViewCertificate = (cert) => {
                     <FieldLabel htmlFor="Description">
                       Certificate Description
                     </FieldLabel>
-                    {/* <Input
-                      id="Description"
-                      name="Description"
-                      rows={7}  
-                      cols={40}
-                      placeholder="Certificate Description"
-                      value={form.Description}
-                      onChange={handleChange}
-                      required
-                    /> */}
+                    
                     <textarea
                     id="Description"
                     className="border p-2"
@@ -340,7 +335,7 @@ const handleViewCertificate = (cert) => {
 
 
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
                     <Field>
                       <FieldLabel htmlFor="issueDate">Issue Date</FieldLabel>
                       <Input
@@ -360,7 +355,6 @@ const handleViewCertificate = (cert) => {
                         type="date"
                         value={form.expiryDate}
                         onChange={handleChange}
-                        required
                       />
                     </Field>
                   </div>
@@ -374,18 +368,26 @@ const handleViewCertificate = (cert) => {
                   <Field>
                     <FieldLabel>Upload Certificate</FieldLabel>
                     <div className="flex items-center gap-3">
-                      <input
-                        id="file"
-                        name="file"
-                        type="file"
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        onChange={handleChange}
-                      />
-                      {form.file && (
+                      <label className="flex items-center w-[45%] gap-2 border border-gray-300 p-3  rounded-lg cursor-pointer focus-within:ring-2 focus-within:ring-navyblue">
+            <ImageUp className="w-5 h-5 text-gray-500" />
+            <span className="text-gray-500 text-sm">Upload Cetificate</span>
+            <input
+              type="file"
+               id="file"
+               name="file"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={handleChange}
+              className="hidden"
+            />
+             {form.file && (
                         <div className="text-sm truncate max-w-xs">
                           {form.file.name}
                         </div>
                       )}
+          </label>
+                      
+                     
                     </div>
                     <FieldDescription>
                       Accepted: PDF, JPG, PNG. Max size: (validate on server).
@@ -480,7 +482,7 @@ const handleViewCertificate = (cert) => {
       <Button variant="outline" onClick={() => setViewOpen(false)}>
         Close
       </Button>
-    <Button variant="destructive" onClick={handleDeleteCertificate}>
+    <Button variant="destructive" onClick={() => setOpenDeleteDialog(true)}>
   Delete
 </Button>
 
@@ -506,6 +508,19 @@ const handleViewCertificate = (cert) => {
 </Dialog>
 
 
+
+
+{/*  alert dilog is here */}
+<AlertDialogMenu
+open={openDeleteDialog}
+onOpenChange={setOpenDeleteDialog}
+title="Delete Certificate"
+description="Are you sure you want to delete this certificate? This action cannot be undone."
+confirmText="Delete"
+cancelText="Cancel"
+variant="danger"
+onConfirm={()=>{setOpenDeleteDialog(false),handleDeleteCertificate()}}
+/>
     </div>
   );
 }

@@ -31,8 +31,7 @@ export const uploadCertificate = async (req, res) => {
       !certificationName ||
       !legalOwner ||
       !issueDate ||
-      !Description ||
-      !expiryDate
+      !Description
     ) {
       return res.status(400).json({
         success: false,
