@@ -9,13 +9,74 @@ import {
   bulkDeactivateProductsService,
   bulkDeleteProductsService,
 } from "../services/product.service.js";
+import CompanyDetails from "../models/company.model.js";
+import { addProductSchema } from "../zodSchemas/Product/addProduct.schema.js";
 
 // ✅ Add Product
 export const addProduct = async (req, res) => {
   try {
-  
-    const savedProduct = await addProductService(req.body, req.files);
-    
+    const sellerId = req.user.userId;
+    if (!sellerId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "sellerId is required" });
+    }
+
+    // 1️⃣ Validate text fields
+    if (req.body.size && typeof req.body.size === "string") { //validate the size field 
+      try {
+        req.body.size = JSON.parse(req.body.size);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid JSON format in size field",
+        });
+      }
+    }
+
+    const parsedBody = addProductSchema.safeParse(req.body);
+
+    if (!parsedBody.success) {
+      const formatErrors = (issues, parent = "") => {
+        const messages = [];
+        for (const key in issues) {
+          if (key === "_errors") {
+            if (issues[key].length > 0 && parent)
+              messages.push(`${parent}: ${issues[key].join(", ")}`);
+            continue;
+          }
+          messages.push(
+            ...formatErrors(issues[key], parent ? `${parent}.${key}` : key)
+          );
+        }
+        return messages;
+      };
+
+      const zodErrors = parsedBody.error.format();
+      const messages = formatErrors(zodErrors);
+
+      return res.status(400).json({
+        success: false,
+        message: messages.join("; "),
+      });
+    }
+
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+
+    const companyId = company?._id;
+    if (!companyId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Company not found for this seller. Please register a company first.",
+      });
+    }
+    const savedProduct = await addProductService(
+      parsedBody.data,  //passing the validated data from zod schema
+      req.files,
+      sellerId,
+      companyId
+    );
     res.status(201).json({
       success: true,
       message: "Product added successfully",
@@ -33,7 +94,9 @@ export const addProduct = async (req, res) => {
 // ✅ List All Products
 export const listAllProducts = async (req, res) => {
   try {
-    const products = await listAllProductsService(req.query);
+    console.log(req.user);
+    const products = await listAllProductsService(req.query, req.user);
+
     res.status(200).json({
       success: true,
       data: products,

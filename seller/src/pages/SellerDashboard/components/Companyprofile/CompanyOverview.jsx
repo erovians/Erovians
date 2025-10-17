@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
+const CompanyOverview = () => {
   const dispatch = useDispatch();
   const { company, loading, error } = useSelector((state) => state.company);
   const products = company?.products || [];
@@ -20,9 +20,8 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
 
   useEffect(() => {
-    if (companyId) dispatch(getCompany(companyId));
-    console.log(company);
-  }, [companyId, dispatch]);
+     dispatch(getCompany());
+  }, [dispatch]);
 
   if (loading)
     return <p className="text-center py-20">Loading company details...</p>;
@@ -33,7 +32,7 @@ const CompanyOverview = ({ companyId = "6870e6e558e2ba32d6b1eb33" }) => {
         <p className="text-red-500 mb-4">{error}</p>
         <button
           className="px-4 py-2 bg-orange-500 text-white rounded-lg"
-          onClick={() => dispatch(getCompany(companyId))}
+          onClick={() => dispatch(getCompany())}
         >
           Retry
         </button>
@@ -295,13 +294,13 @@ const ProductCarousel = ({ productItems, next, prev }) => (
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-contain"
               loading="lazy"
             />
-            <div className="p-3 space-y-1">
-              <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
+            <div className="p-3">
+              <h4 className="text-sm font-semibold text-gray-900 line-clamp-2">
                 {product.name}
-              </h3>
+              </h4>
               <div className="flex justify-between">
                 {product.grade && (
                   <p className="text-xs text-gray-500">

@@ -14,7 +14,7 @@ import { Filter } from "../Helper/Filter";
 import { Search } from "../Helper/Search";
 import StatusFilterRibbon from "../Helper/StatusFilterRibbon";
 
-const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
+const ListProducts = () => {
   const dispatch = useDispatch();
 
   const {
@@ -47,10 +47,8 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
 
   // Fetch products via Redux thunk
   useEffect(() => {
-    if (companyId) {
-      dispatch(fetchProducts(companyId));
-    }
-  }, [companyId, dispatch]);
+      dispatch(fetchProducts());
+  }, [dispatch]);
 
   const filteredProducts = React.useMemo(() => {
     let filtered = [...products];
@@ -131,7 +129,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
 
       setBulkAction("");
       setSelectedProducts([]);
-      dispatch(fetchProducts(companyId)); // Refresh after bulk action
+      dispatch(fetchProducts()); // Refresh after bulk action
     } catch (err) {
       console.error(err);
       alert("Bulk action failed!");
@@ -145,7 +143,7 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
       {/* Filters */}
 
       {/* Filters */}
-      <div className="static  z-30 sm:bg-white sm:shadow-sm rounded-lg p-4">
+      <div className="static  z-30 sm:bg-white sm:shadow-sm rounded-lg md:p-4">
         {/* Large screen view */}
         <div className="hidden sm:flex flex-col gap-4">
           {/* Filters and Search */}
@@ -338,7 +336,6 @@ const ListProducts = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 )}
               </div>
 
-              {/* Images */}
               {/* Images */}
               <div className="md:w-1/3 w-full mt-10 h-48 md:h-auto flex flex-col justify-end items-end  relative">
                 {product.productImages?.length > 0 ? (
