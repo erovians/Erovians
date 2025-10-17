@@ -12,11 +12,10 @@ export const uploadCertificate = async (req, res) => {
       issueDate,
       expiryDate,
       sameAsRegistered,
-      comments
+      comments,
     } = req.body;
 
-      
-    const sellerId = req.user.userId ;
+    const sellerId = req.user.userId;
     console.log("User ID:", sellerId);
 
     if (!sellerId) {
@@ -26,7 +25,13 @@ export const uploadCertificate = async (req, res) => {
     const companyId = await Company.findOne({ sellerId });
 
     // Validate required fields
-    if (!type || !certificationName || !legalOwner || !issueDate || !expiryDate) {
+    if (
+      !type ||
+      !certificationName ||
+      !legalOwner ||
+      !issueDate ||
+      !expiryDate
+    ) {
       return res.status(400).json({
         success: false,
         message: "All required fields must be provided.",
@@ -84,10 +89,7 @@ export const uploadCertificate = async (req, res) => {
 
 export const getCertificates = async (req, res) => {
   try {
-   
-   
-    const sellerId = req.user.userId ;
-    
+    const sellerId = req.user.userId;
 
     if (!sellerId) {
       return res.status(400).json({ message: "SellerId is required" });
