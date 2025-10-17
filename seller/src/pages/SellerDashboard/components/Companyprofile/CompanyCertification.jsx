@@ -42,6 +42,33 @@ export default function CertificateDialog() {
   const [open, setOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [uploading, setUpoloading] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+const [selectedCertificate, setSelectedCertificate] = useState(null);
+const [zoomedImage, setZoomedImage] = useState(null);
+
+
+
+const handleViewCertificate = (cert) => {
+  setSelectedCertificate(cert);
+  setViewOpen(true);
+};
+
+  const handleDeleteCertificate = async () => {
+  const confirm = window.confirm("Are you sure you want to delete this certificate?");
+   
+  if (!confirm || !selectedCertificate?._id) return;
+
+  try {
+    await api.delete(`/company/certificates/${selectedCertificate._id}`);
+  
+    dispatch(fetchCertificates());
+    setViewOpen(false);
+  } catch (error) {
+    console.error("Failed to delete certificate:", error);
+    alert("Error deleting certificate. Please try again.");
+  }
+};
+
 
   const dispatch = useDispatch();
   const {
@@ -59,6 +86,7 @@ export default function CertificateDialog() {
     legalOwner: "",
     issueDate: "",
     expiryDate: "",
+    Description:"",
     sameAsRegistered: false,
     comments: "",
     file: null,
@@ -94,6 +122,7 @@ export default function CertificateDialog() {
     payload.append("legalOwner", form.legalOwner);
     payload.append("issueDate", form.issueDate);
     payload.append("expiryDate", form.expiryDate);
+    payload.append("Description", form.Description);
     payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
     payload.append("comments", form.comments);
 
@@ -118,11 +147,16 @@ export default function CertificateDialog() {
       certificationName: "",
       legalOwner: "",
       expiryDate: "",
+      Description:"",
+      issueDate: "",
       sameAsRegistered: false,
       comments: "",
       file: null,
     });
   };
+
+
+
 
   return (
     <div className="flex flex-col gap-6">
@@ -206,18 +240,18 @@ export default function CertificateDialog() {
                       ? new Date(cert.expiryDate).toLocaleDateString()
                       : "N/A"}
                   </p>
+                  <p>Description : {cert.Description || "no description"} </p>
                 </div>
 
-                {cert.fileUrl && (
-                  <a
-                    href={cert.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-4 shrink-0 inline-block px-4 py-2 text-sm font-medium text-white bg-navyblue rounded hover:bg-blue-900 transition"
-                  >
-                    View File
-                  </a>
-                )}
+                <div className="flex flex-col items-center gap-2">
+      <Button
+        variant="outline"
+        onClick={() => handleViewCertificate(cert)}
+        className="px-4 py-2 cursor-pointer text-sm font-medium border-navyblue rounded 900 transition"
+      >
+        View Details
+      </Button>
+    </div>
               </li>
             ))}
           </ul>
@@ -273,6 +307,38 @@ export default function CertificateDialog() {
                       Name exactly as on the legal document.
                     </FieldDescription>
                   </Field>
+
+
+
+                      <Field>
+                    <FieldLabel htmlFor="Description">
+                      Certificate Description
+                    </FieldLabel>
+                    {/* <Input
+                      id="Description"
+                      name="Description"
+                      rows={7}  
+                      cols={40}
+                      placeholder="Certificate Description"
+                      value={form.Description}
+                      onChange={handleChange}
+                      required
+                    /> */}
+                    <textarea
+                    id="Description"
+                    className="border p-2"
+                    name="Description"
+                    rows={4}
+                    cols={40}
+                    placeholder="Certificate Description"
+                    value={form.Description}
+                    onChange={handleChange}
+                    required
+                  />
+                  
+                  </Field>
+
+
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field>
@@ -351,6 +417,95 @@ export default function CertificateDialog() {
           <DialogFooter />
         </DialogContent>
       </Dialog>
+
+      <Dialog open={viewOpen} onOpenChange={setViewOpen}>
+  <DialogContent className="sm:max-w-lg w-full">
+    <DialogHeader>
+      <DialogTitle>Certificate Details</DialogTitle>
+    </DialogHeader>
+
+    {selectedCertificate && (
+      <div className="space-y-4 text-sm">
+        <div>
+          <strong>Certification Name:</strong>{" "}
+          {selectedCertificate.certificationName}
+        </div>
+        <div>
+          <strong>Legal Owner:</strong> {selectedCertificate.legalOwner}
+        </div>
+        <div>
+          <strong>Description:</strong>{" "}
+          {selectedCertificate.Description || "N/A"}
+        </div>
+        <div>
+          <strong>Issue Date:</strong>{" "}
+          {selectedCertificate.issueDate
+            ? new Date(selectedCertificate.issueDate).toLocaleDateString()
+            : "N/A"}
+        </div>
+        <div>
+          <strong>Expiry Date:</strong>{" "}
+          {selectedCertificate.expiryDate
+            ? new Date(selectedCertificate.expiryDate).toLocaleDateString()
+            : "N/A"}
+        </div>
+       
+
+      {selectedCertificate.fileUrl && (
+  <div className="mt-4">
+    <strong>Uploaded Certificate:</strong>
+    <div className="mt-2">
+      {selectedCertificate.fileUrl.endsWith(".pdf") ? (
+        <iframe
+          src={selectedCertificate.fileUrl}
+          title="PDF Preview"
+          className="w-full h-96 border rounded"
+        />
+      ) : (
+       <img
+  src={selectedCertificate.fileUrl}
+  alt="Certificate"
+  className="max-w-full max-h-[400px] border rounded shadow cursor-zoom-in transition"
+  onClick={() => setZoomedImage(selectedCertificate.fileUrl)}
+/>
+
+      )}
+    </div>
+  </div>
+)}
+
+      </div>
+    )}
+    <DialogFooter>
+      <Button variant="outline" onClick={() => setViewOpen(false)}>
+        Close
+      </Button>
+    <Button variant="destructive" onClick={handleDeleteCertificate}>
+  Delete
+</Button>
+
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+<Dialog open={!!zoomedImage} onOpenChange={() => setZoomedImage(null)}>
+  <DialogContent className="sm:max-w-4xl p-4  rounded-lg">
+    <div className="flex justify-center items-center">
+      <img
+        src={zoomedImage}
+        alt="Zoomed Certificate"
+        className="max-h-[80vh] object-contain"
+      />
+    </div>
+    <DialogFooter className="flex justify-center pt-4 border-navyblue">
+      <Button variant="outline" onClick={() => setZoomedImage(null)}>
+        Close
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
     </div>
   );
 }

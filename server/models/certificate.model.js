@@ -9,6 +9,7 @@ const certificateSchema = new mongoose.Schema(
     legalOwner: String,
     issueDate: Date,
     expiryDate: Date,
+    Description: String,
     sameAsRegistered: Boolean,
     comments: String,
     fileUrl: String,

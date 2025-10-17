@@ -8,6 +8,7 @@ import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
 import {
   uploadCertificate,
   getCertificates,
+  deleteCertificate
 } from "../controller/certificate.controller.js";
 
 const router = express.Router();
@@ -32,5 +33,6 @@ router.post(
   uploadCertificate
 );
 router.get("/certificates", verifyUser, getCertificates);
+router.delete("/certificates/:id", verifyUser, deleteCertificate);
 
 export default router;
