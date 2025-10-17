@@ -102,11 +102,11 @@ const OrderCompletedList = () => {
   );
 
   return (
-    <div className="w-full h-[85vh] p-5 flex flex-col">
+    <div className="w-full h-screen sm:h-[85vh] p-3 flex flex-col">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-          <CheckCircle className="h-8 w-8 text-green-500" />
+        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2 ">
+          <CheckCircle className="h-7 w-7 text-green-500" />
           Completed Orders
         </h2>
 

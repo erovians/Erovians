@@ -149,7 +149,7 @@ const ProductSchema = new Schema(
       required: true,
       trim: true,
       minlength: 50,
-      maxlength: 1500,
+      maxlength: 3500,
     },
     status: {
       type: String,

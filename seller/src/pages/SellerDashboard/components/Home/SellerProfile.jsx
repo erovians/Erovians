@@ -54,15 +54,15 @@ const SellerProfile = () => {
             <div className="flex justify-between flex-col sm:flex-row">
               <h4 className="font-bold text-base sm:text-xl text-gray-800">
                 {companyInfo.companyName}.
-              </h4>
-              <Link to="#" className="text-blue-600 text-xs sm:m-auto  sm:ml-5 hover:underline">
+              </h3>
+              <Link to="#" className="text-blue-600 text-xs m-auto ml-5 hover:underline">
                 View details
               </Link>
             </div>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-sm text-gray-500">
               {companyInfo.companyDetails.locationOfRegistration}
             </p>
-            <p className="text-xs  text-gray-400">
+            <p className="text-xs text-gray-400">
               Legal Owner - {companyInfo.companyDetails.legalowner}
             </p>
           </div>
