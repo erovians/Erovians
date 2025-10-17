@@ -24,8 +24,7 @@ const SellerProfile = () => {
 
   const companyInfo = {
     companyName: company?.companyBasicInfo?.companyName || "Unnamed Company",
-    companyDetails:
-      company?.companyBasicInfo || "Business Details Unavailable",
+    companyDetails: company?.companyBasicInfo || "Business Details Unavailable",
     sellerName: company?.companyIntro?.contactPersonName || "Seller",
     yearsActive: company?.companyBasicInfo?.companyRegistrationYear
       ? `${
@@ -55,7 +54,10 @@ const SellerProfile = () => {
               <h4 className="font-bold text-base sm:text-xl text-gray-800">
                 {companyInfo.companyName}.
               </h4>
-              <Link to="#" className="text-blue-600 text-xs m-auto ml-5 hover:underline">
+              <Link
+                to="#"
+                className="text-blue-600 text-xs m-auto ml-5 hover:underline"
+              >
                 View details
               </Link>
             </div>
