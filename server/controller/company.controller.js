@@ -85,7 +85,6 @@ export const getCompanyDetails = async (req, res) => {
   try {
     let sellerId;
     let companyId;
-   
 
     if (req.user.role === "seller") {
       // Seller can only see their own company

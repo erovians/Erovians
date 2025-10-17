@@ -42,6 +42,16 @@ export const addProductService = async (data, files, sellerId, companyId) => {
       throw new Error("At least 3 product images are required");
     }
 
+    // Check each file size — 200 KB = 200 * 1024 bytes
+    const maxSize = 200 * 1024; // 200 KB
+
+    const oversized = files.filter((file) => file.size > maxSize);
+
+    if (oversized.length > 0) {
+      const names = oversized.map((f) => f.originalname).join(", ");
+      throw new Error(`These images exceed 200KB: ${names}`);
+    }
+
     // Step 2️⃣: Parse size JSON if needed
     const parsedSize = typeof size === "string" ? JSON.parse(size) : size;
 
