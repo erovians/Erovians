@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StarIcon } from "lucide-react"; // or use your own icon
+import { StarIcon } from "lucide-react"; 
 
 const mockReviews = [
   {
