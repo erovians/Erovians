@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StarIcon } from "lucide-react"; 
 
+
 const mockReviews = [
   {
     id: 1,
