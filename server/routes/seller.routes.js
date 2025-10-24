@@ -23,4 +23,7 @@ router.post("/register", upload.single("file"), registerSeller);
 router.post("/login", loginSeller);
 router.post("/logout", logoutSeller);
 
+
+
+
 export default router;

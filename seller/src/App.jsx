@@ -23,6 +23,9 @@ import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderC
 import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
+import ProtectedRoute from "./utils/ProtectedRoute";
+
+
 function App() {
   const location = useLocation();
 
@@ -54,7 +57,8 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard" element={<SellerDashboardLayout />}>
+          <Route path="/sellerdashboard" element={<ProtectedRoute> <SellerDashboardLayout /></ProtectedRoute>}>
+            
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* company */}
