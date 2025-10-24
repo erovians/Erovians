@@ -276,9 +276,9 @@ const SellerSignUp = () => {
 
       const timer = setTimeout(() => {
         navigate("/login");
-      }, 2000); // 2 seconds delay
+        dispatch(clearSellerState());
+      }, 1000); // 2 seconds delay
 
-      dispatch(clearSellerState());
 
       return () => clearTimeout(timer);
     }

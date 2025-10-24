@@ -55,7 +55,7 @@ const SellerProfile = () => {
                 {companyInfo.companyName}.
               </h4>
               <Link
-                to="#"
+                to="/sellerdashboard/company/overview"
                 className="text-blue-600 text-xs m-auto ml-5 hover:underline"
               >
                 View details
