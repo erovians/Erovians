@@ -5,6 +5,7 @@ import sellerRoutes from "./routes/seller.routes.js";
 import companyRoutes from "./routes/company.routes.js";
 import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
 
 const app = express();
 // app.use(express.json({ limit: "10mb" }));
@@ -39,6 +40,8 @@ app.use("/api/company", companyRoutes);
 
 // Product routes
 app.use("/api/product", productRoutes);
+
+
 
 
 
