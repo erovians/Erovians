@@ -46,6 +46,7 @@ export default function SellerPieChart() {
       const width = window.innerWidth;
       if (width < 480) setOuterRadius(90);
       else if (width < 768) setOuterRadius(100);
+      else if (width < 1500) setOuterRadius(120);
       else setOuterRadius(140);
     };
 
@@ -55,7 +56,7 @@ export default function SellerPieChart() {
   }, []);
 
   return (
-    <ResponsiveContainer width="100%" height="100%" >
+    <ResponsiveContainer width="100%" height="100%">
       <PieChart>
         <Pie
           data={data}
