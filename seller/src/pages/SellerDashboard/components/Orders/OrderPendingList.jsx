@@ -110,7 +110,7 @@ const OrderPendingList = () => {
           <div
             key={order.id}
             className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-4 sm:px-6 sm:py-5 hover:bg-yellow-50 transition bg-white rounded-lg shadow"
-          > 
+          >
             {/* Product Image */}
             <img
               src={order.product.image}
