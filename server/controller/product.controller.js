@@ -23,7 +23,8 @@ export const addProduct = async (req, res) => {
     }
 
     // 1️⃣ Validate text fields
-    if (req.body.size && typeof req.body.size === "string") { //validate the size field 
+    if (req.body.size && typeof req.body.size === "string") {
+      //validate the size field
       try {
         req.body.size = JSON.parse(req.body.size);
       } catch (err) {
@@ -72,7 +73,7 @@ export const addProduct = async (req, res) => {
       });
     }
     const savedProduct = await addProductService(
-      parsedBody.data,  //passing the validated data from zod schema
+      parsedBody.data, //passing the validated data from zod schema
       req.files,
       sellerId,
       companyId
