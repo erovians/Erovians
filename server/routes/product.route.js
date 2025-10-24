@@ -23,10 +23,10 @@ router.post(
   upload.array("productImages", 10),
   addProduct
 );
-router.get("/list", verifyUser, listAllProducts);  // here keeping the :sellerId? optional because if admin and buyer send api request then it will get sellerId From frontend and if seller hit api it self then it will get from token. 
-router.get("/:productId", verifyUser, getProductById); //get the perticular product details by product id
-router.delete("/:productId", verifyUser, allowRoles("seller"), deleteProduct); // delete the perticular product by product id
-router.put("/:productId", verifyUser, allowRoles("seller"), updateProductData); //
+router.get("/list", verifyUser, listAllProducts);
+router.get("/:productId", verifyUser, getProductById);
+router.delete("/:productId", verifyUser, allowRoles("seller"), deleteProduct);
+router.put("/:productId", verifyUser, allowRoles("seller"), updateProductData);
 router.post(
   "/bulk-activate",
   verifyUser,
