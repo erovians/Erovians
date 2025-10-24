@@ -47,7 +47,7 @@ const ListProducts = () => {
 
   // Fetch products via Redux thunk
   useEffect(() => {
-      dispatch(fetchProducts());
+    dispatch(fetchProducts());
   }, [dispatch]);
 
   const filteredProducts = React.useMemo(() => {
