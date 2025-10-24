@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import React from "react";
 
-
 export function AlertDialogMenu({
   open,
   onOpenChange,
@@ -19,7 +18,7 @@ export function AlertDialogMenu({
   onConfirm,
   confirmText = "Continue",
   cancelText = "Cancel",
-  variant = "default", 
+  variant = "default", // ✅ "default" | "danger"
   loading = false,
 }) {
   const danger = variant === "danger";
@@ -67,5 +66,3 @@ export function AlertDialogMenu({
     </AlertDialog>
   );
 }
-
-export default AlertDialogMenu;
