@@ -11,6 +11,7 @@ import {
 } from "../services/product.service.js";
 import CompanyDetails from "../models/company.model.js";
 import { addProductSchema } from "../zodSchemas/Product/addProduct.schema.js";
+import Product from "../models/product.model.js";
 
 // ✅ Add Product
 export const addProduct = async (req, res) => {
@@ -112,15 +113,45 @@ export const listAllProducts = async (req, res) => {
 };
 
 // ✅ Get Product by ID
+// export const getProductById = async (req, res) => {
+//   try {
+//     const product = await getProductByIdService(req.params.productId);
+//     if (!product) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Product not found" });
+//     }
+//     res.status(200).json({ success: true, data: product });
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: error.message || "Something went wrong while fetching product",
+//     });
+//   }
+// };
 export const getProductById = async (req, res) => {
   try {
-    const product = await getProductByIdService(req.params.productId);
+    const productId = req.params.productId;
+
+    // ✅ Increase view count every time product is viewed
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
-    res.status(200).json({ success: true, data: product });
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
   } catch (error) {
     console.error("Error fetching product:", error);
     res.status(500).json({
