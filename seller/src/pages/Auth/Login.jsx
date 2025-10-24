@@ -27,9 +27,10 @@ export default function Login() {
 
     try {
       setIsLoading(true);
+   
       const res = await api.post("/seller/login", formData);
       setSuccess(res.data.message);
-      console.log("Seller data:", res.data.seller);
+      
 
       setTimeout(() => {
         navigate("/sellerdashboard");
