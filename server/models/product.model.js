@@ -1,81 +1,3 @@
-// import mongoose from "mongoose";
-
-// const ProductSchema = new mongoose.Schema(
-//   {
-//     companyId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "Company",
-//       required: true,
-//       index: true,
-//     },
-//     productName: {
-//       type: String,
-//       required: true,
-//       trim: true,
-//       minlength: 2,
-//       maxlength: 100,
-//     },
-//     productImages: {
-//       type: [String],
-//       validate: {
-//         validator: (val) => Array.isArray(val) && val.length >= 3,
-//         message: "At least 3 product images are required",
-//       },
-//       required: true,
-//     },
-//     category: {
-//       type: String,
-//       required: true,
-//       enum: ["Granite", "Marble"],
-//       index: true,
-//     },
-//     subCategory: { type: String, required: true, index: true },
-//     grade: { type: String, required: true, enum: ["A", "B", "C"] },
-//     color: { type: String, required: true, trim: true },
-//     origin: { type: String, required: true, trim: true },
-//     size: {
-//       length: { type: Number, required: true, min: 1 },
-//       lengthMeasurement: { type: String, enum: ["ft", "m"], default: "ft" },
-//       width: { type: Number, required: true, min: 1 },
-//       widthMeasurement: { type: String, enum: ["ft", "m"], default: "ft" },
-//       thickness: { type: Number, required: true, min: 1 },
-//       thicknessMeasurement: {
-//         type: String,
-//         enum: ["inch", "cm"],
-//         default: "inch",
-//       },
-//     },
-//     weight: { type: Number, required: true, min: 1 },
-//     weightMeasurement: { type: String, enum: ["kg", "ton"], default: "kg" },
-//     pricePerUnit: { type: Number, required: true, min: 1 },
-//     priceUnit: {
-//       type: String,
-//       enum: ["sq.ft", "sq.m", "piece"],
-//       default: "sq.ft",
-//     },
-//     description: {
-//       type: String,
-//       required: true,
-//       trim: true,
-//       minlength: 50,
-//       maxlength: 1500,
-//     },
-//     status: {
-//       type: String,
-//       enum: ["active", "inactive", "pending", "violation"],
-//       default: "pending",
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// ProductSchema.index({ companyId: 1, category: 1 });
-// ProductSchema.index({ category: 1, pricePerUnit: 1 });
-
-// const Product = mongoose.model("Product", ProductSchema);
-// export default Product;
-
-// models/Product.js
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
@@ -123,7 +45,10 @@ const ProductSchema = new Schema(
         validator: (val) => Array.isArray(val) && val.length >= 3,
         message: "At least 3 product images are required",
       },
-      views: { type: Number, default: 0 },
+    },
+    views: {
+      type: Number,
+      default: 0,
     },
     category: {
       type: String,
