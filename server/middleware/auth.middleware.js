@@ -28,7 +28,7 @@ export const verifyUser = (req, res, next) => {
     jwt.verify(
       accessToken,
       process.env.JWT_ACCESS_SECRET,
-      { issuer: "erovians-ecommerce-app"},
+      { issuer: "erovians-ecommerce-app" },
       (err, decoded) => {
         if (err) {
           return res
@@ -36,8 +36,7 @@ export const verifyUser = (req, res, next) => {
             .json({ message: "Unauthorized, invalid token" });
         }
 
-        // Attach user info to request object
-        req.user = decoded; // decoded contains whatever you signed (id, email)
+        req.user = decoded;
         next();
       }
     );

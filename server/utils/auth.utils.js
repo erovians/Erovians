@@ -22,4 +22,4 @@ export function generateRefreshToken(user) {
   );
 }
 
-// module.exports = { generateAccessToken, generateRefreshToken };
+
