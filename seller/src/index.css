@@ -60,6 +60,25 @@ h3 {
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+ /* Base colors */
+    --toast-bg: hsl(0 0% 100%);
+    --toast-text: hsl(220 9% 20%);
+    --toast-border: hsl(220 9% 90%);
+    --radius: 0.5rem;
+
+    /* Rich toast colors */
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
+
+    --error: 0 84.2% 60.2%;
+    --error-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
@@ -71,6 +90,26 @@ h3 {
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.439 0 0);
+
+
+    /* Base colors */
+    --toast-bg: hsl(0 0% 100%);
+    --toast-text: hsl(220 9% 20%);
+    --toast-border: hsl(220 9% 90%);
+    --radius: 0.5rem;
+
+    /* Rich toast colors */
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
+
+    --error: 0 84.2% 60.2%;
+    --error-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
   }
 }
 
