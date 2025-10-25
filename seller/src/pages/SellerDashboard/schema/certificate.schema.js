@@ -11,5 +11,5 @@ export const certificateSchema = z.object({
   file: z
     .any()
     .refine((file) => file instanceof File, "File is required")
-    .optional(), // make optional if you want file not required
+    .optional(),
 });

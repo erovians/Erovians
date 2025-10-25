@@ -46,7 +46,7 @@ export default function SellerPieChart() {
       const width = window.innerWidth;
       if (width < 480) setOuterRadius(90);
       else if (width < 768) setOuterRadius(100);
-      else if (width < 1500) setOuterRadius(120);
+      else if (width < 1500) setOuterRadius(110);
       else setOuterRadius(140);
     };
 

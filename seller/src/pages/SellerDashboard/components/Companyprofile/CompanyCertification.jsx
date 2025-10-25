@@ -114,73 +114,44 @@ export default function CertificateDialog() {
     fetchCertificates();
   }, []);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const payload = new FormData();
-  //   payload.append("type", selectedType);
-  //   payload.append("certificationName", form.certificationName);
-  //   payload.append("legalOwner", form.legalOwner);
-  //   payload.append("issueDate", form.issueDate);
-  //   payload.append("expiryDate", form.expiryDate);
-  //   payload.append("Description", form.Description);
-  //   payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
-  //   payload.append("comments", form.comments);
-
-  //   if (form.file) payload.append("file", form.file);
-
-  //   try {
-  //     setUpoloading(true);
-  //     const res = await api.post("/company/upload", payload, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-  //     console.log("Uploaded:", res.data);
-  //     setUpoloading(true);
-  //     dispatch(fetchCertificates());
-  //   } catch (err) {
-  //     console.error("Upload failed:", err.response?.data || err.message);
-  //   } finally {
-  //     setUpoloading(false);
-  //   }
-
-  //   setOpen(false);
-  //   setForm({
-  //     certificationName: "",
-  //     legalOwner: "",
-  //     expiryDate: "",
-  //     Description: "",
-  //     issueDate: "",
-  //     sameAsRegistered: false,
-  //     comments: "",
-  //     file: null,
-  //   });
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const validatedData = certificateSchema.parse(form);
+    const result = certificateSchema.safeParse(form);
 
-      setFormErrors({});
+    if (!result.success) {
+      const errors = {};
 
-      const payload = new FormData();
-      payload.append("type", selectedType);
-      payload.append("certificationName", validatedData.certificationName);
-      payload.append("legalOwner", validatedData.legalOwner);
-      payload.append("issueDate", validatedData.issueDate);
-      payload.append("expiryDate", validatedData.expiryDate || "");
-      payload.append("Description", validatedData.Description);
-      payload.append(
-        "sameAsRegistered",
-        validatedData.sameAsRegistered ? "1" : "0"
-      );
-      payload.append("comments", validatedData.comments || "");
-
-      if (validatedData.file) payload.append("file", validatedData.file);
-
-      setUpoloading(true);
-      const res = await api.post("/company/upload", payload, {
-        headers: { "Content-Type": "multipart/form-data" },
+      result.error.issues.forEach((e) => {
+        const fieldName = e.path[0];
+        if (fieldName) errors[fieldName] = e.message;
       });
+      setFormErrors(errors);
+      return;
+    }
+
+    // Validation passed
+    setFormErrors({});
+    const validatedData = result.data;
+
+    const payload = new FormData();
+    payload.append("type", selectedType);
+    payload.append("certificationName", validatedData.certificationName);
+    payload.append("legalOwner", validatedData.legalOwner);
+    payload.append("issueDate", validatedData.issueDate);
+    payload.append("expiryDate", validatedData.expiryDate || "");
+    payload.append("Description", validatedData.Description);
+    payload.append(
+      "sameAsRegistered",
+      validatedData.sameAsRegistered ? "1" : "0"
+    );
+    payload.append("comments", validatedData.comments || "");
+
+    if (validatedData.file) payload.append("file", validatedData.file);
+
+    try {
+      setUpoloading(true);
+      const res = await api.post("/company/upload", payload);
 
       console.log("Uploaded:", res.data);
       dispatch(fetchCertificates());
@@ -197,16 +168,8 @@ export default function CertificateDialog() {
         file: null,
       });
     } catch (err) {
-      if (err.name === "ZodError") {
-        const errors = {};
-        err.errors.forEach((e) => {
-          const fieldName = e.path?.[0];
-          if (fieldName) errors[fieldName] = e.message;
-        });
-        setFormErrors(errors);
-      } else {
-        console.error("Upload failed:", err.response?.data || err.message);
-      }
+      console.error("Upload failed:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Upload failed. Please try again.");
     } finally {
       setUpoloading(false);
     }
@@ -348,7 +311,7 @@ export default function CertificateDialog() {
                       onChange={handleChange}
                     />
                     {formErrors.certificationName && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="text-red-500 text-xs ">
                         {formErrors.certificationName}
                       </p>
                     )}
@@ -358,6 +321,10 @@ export default function CertificateDialog() {
                     <FieldLabel htmlFor="legalOwner">
                       Legal Owner Name
                     </FieldLabel>
+                    <p className="text-gray-500 text-xs mt-1">
+                      Name exactly as on the legal document.
+                    </p>
+
                     <Input
                       id="legalOwner"
                       name="legalOwner"
@@ -365,11 +332,9 @@ export default function CertificateDialog() {
                       value={form.legalOwner}
                       onChange={handleChange}
                     />
-                    <FieldDescription>
-                      Name exactly as on the legal document.
-                    </FieldDescription>
+
                     {formErrors.legalOwner && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="text-red-500 text-xs ">
                         {formErrors.legalOwner}
                       </p>
                     )}
@@ -390,6 +355,11 @@ export default function CertificateDialog() {
                       value={form.Description}
                       onChange={handleChange}
                     />
+                    {formErrors.legalOwner && (
+                      <p className="text-red-500 text-xs ">
+                        {formErrors.Description}
+                      </p>
+                    )}
                   </Field>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
@@ -402,6 +372,11 @@ export default function CertificateDialog() {
                         value={form.issueDate}
                         onChange={handleChange}
                       />
+                      {formErrors.legalOwner && (
+                        <p className="text-red-500 text-xs ">
+                          {formErrors.issueDate}
+                        </p>
+                      )}
                     </Field>
                     <Field>
                       <FieldLabel htmlFor="expiryDate">Expiry Date</FieldLabel>
@@ -445,9 +420,14 @@ export default function CertificateDialog() {
                         )}
                       </label>
                     </div>
-                    <FieldDescription>
+                    <p className="text-gray-500 text-xs ">
+                      {" "}
                       Accepted: PDF, JPG, PNG. Max size: (validate on server).
-                    </FieldDescription>
+                    </p>
+
+                    {formErrors.legalOwner && (
+                      <p className="text-red-500 text-xs ">{formErrors.file}</p>
+                    )}
                   </Field>
                 </FieldGroup>
               </FieldSet>
