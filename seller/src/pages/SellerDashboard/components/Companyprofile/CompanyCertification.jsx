@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {AlertDialogMenu }from "../Helper/AlertDialogMenu";
+import { AlertDialogMenu } from "../Helper/AlertDialogMenu";
 import { ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { certificateSchema } from "../../schema/certificate.schema";
 import {
   Field,
   FieldDescription,
@@ -45,34 +46,29 @@ export default function CertificateDialog() {
   const [selectedType, setSelectedType] = useState("");
   const [uploading, setUpoloading] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
-const [selectedCertificate, setSelectedCertificate] = useState(null);
-const [zoomedImage, setZoomedImage] = useState(null);
-const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
-
-
-const handleViewCertificate = (cert) => {
-  setSelectedCertificate(cert);
-  setViewOpen(true);
-};
+  const handleViewCertificate = (cert) => {
+    setSelectedCertificate(cert);
+    setViewOpen(true);
+  };
 
   const handleDeleteCertificate = async () => {
-  // const confirm = window.confirm("Are you sure you want to delete this certificate?");
+    // const confirm = window.confirm("Are you sure you want to delete this certificate?");
 
-  
-   
+    try {
+      await api.delete(`/company/certificates/${selectedCertificate._id}`);
 
-  try {
-    await api.delete(`/company/certificates/${selectedCertificate._id}`);
-  
-    dispatch(fetchCertificates());
-    setViewOpen(false);
-  } catch (error) {
-    console.error("Failed to delete certificate:", error);
-    alert("Error deleting certificate. Please try again.");
-  }
-};
-
+      dispatch(fetchCertificates());
+      setViewOpen(false);
+    } catch (error) {
+      console.error("Failed to delete certificate:", error);
+      alert("Error deleting certificate. Please try again.");
+    }
+  };
 
   const dispatch = useDispatch();
   const {
@@ -90,7 +86,7 @@ const handleViewCertificate = (cert) => {
     legalOwner: "",
     issueDate: "",
     expiryDate: "",
-    Description:"",
+    Description: "",
     sameAsRegistered: false,
     comments: "",
     file: null,
@@ -118,49 +114,103 @@ const handleViewCertificate = (cert) => {
     fetchCertificates();
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const payload = new FormData();
+  //   payload.append("type", selectedType);
+  //   payload.append("certificationName", form.certificationName);
+  //   payload.append("legalOwner", form.legalOwner);
+  //   payload.append("issueDate", form.issueDate);
+  //   payload.append("expiryDate", form.expiryDate);
+  //   payload.append("Description", form.Description);
+  //   payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
+  //   payload.append("comments", form.comments);
+
+  //   if (form.file) payload.append("file", form.file);
+
+  //   try {
+  //     setUpoloading(true);
+  //     const res = await api.post("/company/upload", payload, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     console.log("Uploaded:", res.data);
+  //     setUpoloading(true);
+  //     dispatch(fetchCertificates());
+  //   } catch (err) {
+  //     console.error("Upload failed:", err.response?.data || err.message);
+  //   } finally {
+  //     setUpoloading(false);
+  //   }
+
+  //   setOpen(false);
+  //   setForm({
+  //     certificationName: "",
+  //     legalOwner: "",
+  //     expiryDate: "",
+  //     Description: "",
+  //     issueDate: "",
+  //     sameAsRegistered: false,
+  //     comments: "",
+  //     file: null,
+  //   });
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = new FormData();
-    payload.append("type", selectedType);
-    payload.append("certificationName", form.certificationName);
-    payload.append("legalOwner", form.legalOwner);
-    payload.append("issueDate", form.issueDate);
-    payload.append("expiryDate", form.expiryDate);
-    payload.append("Description", form.Description);
-    payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
-    payload.append("comments", form.comments);
-
-    if (form.file) payload.append("file", form.file);
 
     try {
+      const validatedData = certificateSchema.parse(form);
+
+      setFormErrors({});
+
+      const payload = new FormData();
+      payload.append("type", selectedType);
+      payload.append("certificationName", validatedData.certificationName);
+      payload.append("legalOwner", validatedData.legalOwner);
+      payload.append("issueDate", validatedData.issueDate);
+      payload.append("expiryDate", validatedData.expiryDate || "");
+      payload.append("Description", validatedData.Description);
+      payload.append(
+        "sameAsRegistered",
+        validatedData.sameAsRegistered ? "1" : "0"
+      );
+      payload.append("comments", validatedData.comments || "");
+
+      if (validatedData.file) payload.append("file", validatedData.file);
+
       setUpoloading(true);
       const res = await api.post("/company/upload", payload, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
       console.log("Uploaded:", res.data);
-      setUpoloading(true);
       dispatch(fetchCertificates());
+      setOpen(false);
+
+      setForm({
+        certificationName: "",
+        legalOwner: "",
+        issueDate: "",
+        expiryDate: "",
+        Description: "",
+        sameAsRegistered: false,
+        comments: "",
+        file: null,
+      });
     } catch (err) {
-      console.error("Upload failed:", err.response?.data || err.message);
+      if (err.name === "ZodError") {
+        const errors = {};
+        err.errors.forEach((e) => {
+          const fieldName = e.path?.[0];
+          if (fieldName) errors[fieldName] = e.message;
+        });
+        setFormErrors(errors);
+      } else {
+        console.error("Upload failed:", err.response?.data || err.message);
+      }
     } finally {
       setUpoloading(false);
     }
-
-    setOpen(false);
-    setForm({
-      certificationName: "",
-      legalOwner: "",
-      expiryDate: "",
-      Description:"",
-      issueDate: "",
-      sameAsRegistered: false,
-      comments: "",
-      file: null,
-    });
   };
-
-
-
 
   return (
     <div className="flex flex-col gap-6">
@@ -244,18 +294,20 @@ const handleViewCertificate = (cert) => {
                       ? new Date(cert.expiryDate).toLocaleDateString()
                       : "N/A"}
                   </p>
-                  <p className="line-clamp-2">Description : {cert.Description || "no description"} </p>
+                  <p className="line-clamp-2">
+                    Description : {cert.Description || "no description"}{" "}
+                  </p>
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-      <Button
-        variant="outline"
-        onClick={() => handleViewCertificate(cert)}
-        className="px-4 py-2 cursor-pointer text-sm font-medium border-navyblue rounded 900 transition"
-      >
-        View Details
-      </Button>
-    </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleViewCertificate(cert)}
+                    className="px-4 py-2 cursor-pointer text-sm font-medium border-navyblue rounded 900 transition"
+                  >
+                    View Details
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>
@@ -264,7 +316,7 @@ const handleViewCertificate = (cert) => {
 
       {/* Upload Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-2xl w-full">
+        <DialogContent className="sm:max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle>Upload: {selectedType || "Certificate"}</DialogTitle>
             <DialogDescription>
@@ -272,7 +324,10 @@ const handleViewCertificate = (cert) => {
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="mt-4">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-4 flex-1 overflow-y-auto pr-2"
+          >
             <FieldGroup>
               <FieldSet>
                 <FieldLegend>Certificate Details</FieldLegend>
@@ -291,8 +346,12 @@ const handleViewCertificate = (cert) => {
                       placeholder="e.g. MSME Registration"
                       value={form.certificationName}
                       onChange={handleChange}
-                      required
                     />
+                    {formErrors.certificationName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.certificationName}
+                      </p>
+                    )}
                   </Field>
 
                   <Field>
@@ -305,35 +364,33 @@ const handleViewCertificate = (cert) => {
                       placeholder="Registered entity / owner's name"
                       value={form.legalOwner}
                       onChange={handleChange}
-                      required
                     />
                     <FieldDescription>
                       Name exactly as on the legal document.
                     </FieldDescription>
+                    {formErrors.legalOwner && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formErrors.legalOwner}
+                      </p>
+                    )}
                   </Field>
 
-
-
-                      <Field>
+                  <Field>
                     <FieldLabel htmlFor="Description">
                       Certificate Description
                     </FieldLabel>
-                    
+
                     <textarea
-                    id="Description"
-                    className="border p-2"
-                    name="Description"
-                    rows={4}
-                    cols={40}
-                    placeholder="Certificate Description"
-                    value={form.Description}
-                    onChange={handleChange}
-                    required
-                  />
-                  
+                      id="Description"
+                      className="border p-2"
+                      name="Description"
+                      rows={4}
+                      cols={40}
+                      placeholder="Certificate Description"
+                      value={form.Description}
+                      onChange={handleChange}
+                    />
                   </Field>
-
-
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
                     <Field>
@@ -344,7 +401,6 @@ const handleViewCertificate = (cert) => {
                         type="date"
                         value={form.issueDate}
                         onChange={handleChange}
-                        required
                       />
                     </Field>
                     <Field>
@@ -369,25 +425,25 @@ const handleViewCertificate = (cert) => {
                     <FieldLabel>Upload Certificate</FieldLabel>
                     <div className="flex items-center gap-3">
                       <label className="flex items-center w-[45%] gap-2 border border-gray-300 p-3  rounded-lg cursor-pointer focus-within:ring-2 focus-within:ring-navyblue">
-            <ImageUp className="w-5 h-5 text-gray-500" />
-            <span className="text-gray-500 text-sm">Upload Cetificate</span>
-            <input
-              type="file"
-               id="file"
-               name="file"
-              multiple
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={handleChange}
-              className="hidden"
-            />
-             {form.file && (
-                        <div className="text-sm truncate max-w-xs">
-                          {form.file.name}
-                        </div>
-                      )}
-          </label>
-                      
-                     
+                        <ImageUp className="w-5 h-5 text-gray-500" />
+                        <span className="text-gray-500 text-sm">
+                          Upload Cetificate
+                        </span>
+                        <input
+                          type="file"
+                          id="file"
+                          name="file"
+                          multiple
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={handleChange}
+                          className="hidden"
+                        />
+                        {form.file && (
+                          <div className="text-sm truncate max-w-xs">
+                            {form.file.name}
+                          </div>
+                        )}
+                      </label>
                     </div>
                     <FieldDescription>
                       Accepted: PDF, JPG, PNG. Max size: (validate on server).
@@ -421,106 +477,108 @@ const handleViewCertificate = (cert) => {
       </Dialog>
 
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-  <DialogContent className="sm:max-w-lg w-full">
-    <DialogHeader>
-      <DialogTitle>Certificate Details</DialogTitle>
-    </DialogHeader>
+        <DialogContent className="sm:max-w-lg w-full">
+          <DialogHeader>
+            <DialogTitle>Certificate Details</DialogTitle>
+          </DialogHeader>
 
-    {selectedCertificate && (
-      <div className="space-y-4 text-sm">
-        <div>
-          <strong>Certification Name:</strong>{" "}
-          {selectedCertificate.certificationName}
-        </div>
-        <div>
-          <strong>Legal Owner:</strong> {selectedCertificate.legalOwner}
-        </div>
-        <div>
-          <strong>Description:</strong>{" "}
-          {selectedCertificate.Description || "N/A"}
-        </div>
-        <div>
-          <strong>Issue Date:</strong>{" "}
-          {selectedCertificate.issueDate
-            ? new Date(selectedCertificate.issueDate).toLocaleDateString()
-            : "N/A"}
-        </div>
-        <div>
-          <strong>Expiry Date:</strong>{" "}
-          {selectedCertificate.expiryDate
-            ? new Date(selectedCertificate.expiryDate).toLocaleDateString()
-            : "N/A"}
-        </div>
-       
+          {selectedCertificate && (
+            <div className="space-y-4 text-sm">
+              <div>
+                <strong>Certification Name:</strong>{" "}
+                {selectedCertificate.certificationName}
+              </div>
+              <div>
+                <strong>Legal Owner:</strong> {selectedCertificate.legalOwner}
+              </div>
+              <div>
+                <strong>Description:</strong>{" "}
+                {selectedCertificate.Description || "N/A"}
+              </div>
+              <div>
+                <strong>Issue Date:</strong>{" "}
+                {selectedCertificate.issueDate
+                  ? new Date(selectedCertificate.issueDate).toLocaleDateString()
+                  : "N/A"}
+              </div>
+              <div>
+                <strong>Expiry Date:</strong>{" "}
+                {selectedCertificate.expiryDate
+                  ? new Date(
+                      selectedCertificate.expiryDate
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </div>
 
-      {selectedCertificate.fileUrl && (
-  <div className="mt-4">
-    <strong>Uploaded Certificate:</strong>
-    <div className="mt-2">
-      {selectedCertificate.fileUrl.endsWith(".pdf") ? (
-        <iframe
-          src={selectedCertificate.fileUrl}
-          title="PDF Preview"
-          className="w-full h-96 border rounded"
-        />
-      ) : (
-       <img
-  src={selectedCertificate.fileUrl}
-  alt="Certificate"
-  className="max-w-full max-h-[400px] border rounded shadow cursor-zoom-in transition"
-  onClick={() => setZoomedImage(selectedCertificate.fileUrl)}
-/>
+              {selectedCertificate.fileUrl && (
+                <div className="mt-4">
+                  <strong>Uploaded Certificate:</strong>
+                  <div className="mt-2">
+                    {selectedCertificate.fileUrl.endsWith(".pdf") ? (
+                      <iframe
+                        src={selectedCertificate.fileUrl}
+                        title="PDF Preview"
+                        className="w-full h-96 border rounded"
+                      />
+                    ) : (
+                      <img
+                        src={selectedCertificate.fileUrl}
+                        alt="Certificate"
+                        className="max-w-full max-h-[400px] border rounded shadow cursor-zoom-in transition"
+                        onClick={() =>
+                          setZoomedImage(selectedCertificate.fileUrl)
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewOpen(false)}>
+              Close
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => setOpenDeleteDialog(true)}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      )}
-    </div>
-  </div>
-)}
+      <Dialog open={!!zoomedImage} onOpenChange={() => setZoomedImage(null)}>
+        <DialogContent className="sm:max-w-4xl p-4  rounded-lg">
+          <div className="flex justify-center items-center">
+            <img
+              src={zoomedImage}
+              alt="Zoomed Certificate"
+              className="max-h-[80vh] object-contain"
+            />
+          </div>
+          <DialogFooter className="flex justify-center pt-4 border-navyblue">
+            <Button variant="outline" onClick={() => setZoomedImage(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      </div>
-    )}
-    <DialogFooter>
-      <Button variant="outline" onClick={() => setViewOpen(false)}>
-        Close
-      </Button>
-    <Button variant="destructive" onClick={() => setOpenDeleteDialog(true)}>
-  Delete
-</Button>
-
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-
-<Dialog open={!!zoomedImage} onOpenChange={() => setZoomedImage(null)}>
-  <DialogContent className="sm:max-w-4xl p-4  rounded-lg">
-    <div className="flex justify-center items-center">
-      <img
-        src={zoomedImage}
-        alt="Zoomed Certificate"
-        className="max-h-[80vh] object-contain"
+      {/*  alert dilog is here */}
+      <AlertDialogMenu
+        open={openDeleteDialog}
+        onOpenChange={setOpenDeleteDialog}
+        title="Delete Certificate"
+        description="Are you sure you want to delete this certificate? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        onConfirm={() => {
+          setOpenDeleteDialog(false), handleDeleteCertificate();
+        }}
       />
-    </div>
-    <DialogFooter className="flex justify-center pt-4 border-navyblue">
-      <Button variant="outline" onClick={() => setZoomedImage(null)}>
-        Close
-      </Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-
-
-
-
-{/*  alert dilog is here */}
-<AlertDialogMenu
-open={openDeleteDialog}
-onOpenChange={setOpenDeleteDialog}
-title="Delete Certificate"
-description="Are you sure you want to delete this certificate? This action cannot be undone."
-confirmText="Delete"
-cancelText="Cancel"
-variant="danger"
-onConfirm={()=>{setOpenDeleteDialog(false),handleDeleteCertificate()}}
-/>
     </div>
   );
 }
