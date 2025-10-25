@@ -7,7 +7,7 @@ export const productFormSchema = z.object({
   productImages: z
     .array(z.instanceof(File))
     .default([]) // 👈 ensures we always get an array, never undefined
-    .refine((files) => files.length > 3, {
+    .refine((files) => files.length > 2, {
       message: "At least 3 images are required",
     })
     .refine(

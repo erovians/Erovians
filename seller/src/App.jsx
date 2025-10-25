@@ -21,6 +21,10 @@ import Categories from "./pages/SellerDashboard/components/Products/Categories";
 import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
 import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
 import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
+import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
+
+import ProtectedRoute from "./utils/ProtectedRoute";
+
 
 function App() {
   const location = useLocation();
@@ -53,7 +57,8 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard" element={<SellerDashboardLayout />}>
+          <Route path="/sellerdashboard" element={<ProtectedRoute> <SellerDashboardLayout /></ProtectedRoute>}>
+            
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* company */}
@@ -76,6 +81,7 @@ function App() {
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
             <Route path="orders/pending" element={<OrderPendingList />} />
+            <Route path="orders/reviews" element={<ReviewSection />} />
 
           </Route>  
         )}

@@ -46,7 +46,7 @@ const orders = [
     },
   },
   {
-    id: "ORD2001",
+    id: "ORD2004",
     customer: "Michael Stone",
     date: "2025-09-15",
     total: "$1,200.00",
@@ -60,7 +60,7 @@ const orders = [
     },
   },
   {
-    id: "ORD2002",
+    id: "ORD2005",
     customer: "Sarah Granite",
     date: "2025-09-20",
     total: "$950.00",
@@ -74,7 +74,7 @@ const orders = [
     },
   },
   {
-    id: "ORD2003",
+    id: "ORD2006",
     customer: "Daniel Marble",
     date: "2025-09-25",
     total: "$1,500.00",

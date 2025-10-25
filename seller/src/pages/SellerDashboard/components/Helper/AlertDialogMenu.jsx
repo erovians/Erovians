@@ -18,7 +18,7 @@ export function AlertDialogMenu({
   onConfirm,
   confirmText = "Continue",
   cancelText = "Cancel",
-  variant = "default", // ✅ "default" | "danger"
+  variant = "default",
   loading = false,
 }) {
   const danger = variant === "danger";
