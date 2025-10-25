@@ -7,7 +7,6 @@ export const certificateSchema = z.object({
   expiryDate: z.string().optional(),
   Description: z.string().min(1, "Description is required"),
   sameAsRegistered: z.boolean().optional(),
-  comments: z.string().optional(),
   file: z
     .any()
     .refine((file) => file instanceof File, "File is required")

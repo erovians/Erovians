@@ -114,26 +114,87 @@ export default function CertificateDialog() {
     fetchCertificates();
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const result = certificateSchema.safeParse(form);
+
+  //   if (!result.success) {
+  //     const errors = {};
+
+  //     result.error.issues.forEach((e) => {
+  //       const fieldName = e.path[0];
+  //       if (fieldName) errors[fieldName] = e.message;
+  //     });
+  //     setFormErrors(errors);
+  //     return;
+  //   }
+
+  //   // Validation passed
+  //   setFormErrors({});
+  //   const validatedData = result.data;
+
+  //   const payload = new FormData();
+  //   payload.append("type", selectedType);
+  //   payload.append("certificationName", validatedData.certificationName);
+  //   payload.append("legalOwner", validatedData.legalOwner);
+  //   payload.append("issueDate", validatedData.issueDate);
+  //   payload.append("expiryDate", validatedData.expiryDate || "");
+  //   payload.append("Description", validatedData.Description);
+  //   payload.append(
+  //     "sameAsRegistered",
+  //     validatedData.sameAsRegistered ? "1" : "0"
+  //   );
+  //   payload.append("comments", validatedData.comments || "");
+
+  //   if (validatedData.file) payload.append("file", validatedData.file);
+
+  //   try {
+  //     setUpoloading(true);
+  //     const res = await api.post("/company/upload", payload);
+
+  //     console.log("Uploaded:", res.data);
+  //     dispatch(fetchCertificates());
+  //     setOpen(false);
+
+  //     setForm({
+  //       certificationName: "",
+  //       legalOwner: "",
+  //       issueDate: "",
+  //       expiryDate: "",
+  //       Description: "",
+  //       sameAsRegistered: false,
+  //       comments: "",
+  //       file: null,
+  //     });
+  //   } catch (err) {
+  //     console.error("Upload failed:", err.response?.data || err.message);
+  //     alert(err.response?.data?.message || "Upload failed. Please try again.");
+  //   } finally {
+  //     setUpoloading(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 1️⃣ Client-side validation with Zod
     const result = certificateSchema.safeParse(form);
 
     if (!result.success) {
       const errors = {};
-
-      result.error.issues.forEach((e) => {
-        const fieldName = e.path[0];
-        if (fieldName) errors[fieldName] = e.message;
+      result.error.issues.forEach((err) => {
+        const field = err.path[0];
+        errors[field] = err.message;
       });
       setFormErrors(errors);
-      return;
+      return; // ❌ Stop here if form has errors
     }
 
-    // Validation passed
+    // ✅ No validation errors → continue
     setFormErrors({});
     const validatedData = result.data;
 
+    // 2️⃣ Prepare FormData only after validation passes
     const payload = new FormData();
     payload.append("type", selectedType);
     payload.append("certificationName", validatedData.certificationName);
@@ -146,17 +207,24 @@ export default function CertificateDialog() {
       validatedData.sameAsRegistered ? "1" : "0"
     );
     payload.append("comments", validatedData.comments || "");
-
     if (validatedData.file) payload.append("file", validatedData.file);
 
+    console.log(payload);
     try {
+      // ✅ Only set uploading now (after form is valid)
       setUpoloading(true);
-      const res = await api.post("/company/upload", payload);
+
+      const res = await api.post("/company/upload", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log("Uploaded:", res.data);
       dispatch(fetchCertificates());
       setOpen(false);
 
+      // Reset form after success
       setForm({
         certificationName: "",
         legalOwner: "",
@@ -355,7 +423,7 @@ export default function CertificateDialog() {
                       value={form.Description}
                       onChange={handleChange}
                     />
-                    {formErrors.legalOwner && (
+                    {formErrors.Description && (
                       <p className="text-red-500 text-xs ">
                         {formErrors.Description}
                       </p>
@@ -372,7 +440,7 @@ export default function CertificateDialog() {
                         value={form.issueDate}
                         onChange={handleChange}
                       />
-                      {formErrors.legalOwner && (
+                      {formErrors.issueDate && (
                         <p className="text-red-500 text-xs ">
                           {formErrors.issueDate}
                         </p>
@@ -436,11 +504,11 @@ export default function CertificateDialog() {
                 orientation="horizontal"
                 className="justify-end gap-2 mt-4"
               >
-                <Button type="submit" onClick={() => setUpoloading(true)}>
-                  {" "}
+                <Button type="submit" disabled={uploading}>
                   {uploading && <Spinner />}
-                  {uploading ? "Uploading .." : "Upload Certificate"}
+                  {uploading ? "Uploading..." : "Upload Certificate"}
                 </Button>
+
                 <Button
                   variant="outline"
                   type="button"
