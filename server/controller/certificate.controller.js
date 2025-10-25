@@ -2,47 +2,26 @@ import Certificate from "../models/certificate.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
 import fs from "fs";
 import Company from "../models/company.model.js";
+import { certificateSchema } from "../zodSchemas/company/certificate.schema.js";
 
 export const uploadCertificate = async (req, res) => {
   try {
-    const {
-      type,
-      certificationName,
-      legalOwner,
-      issueDate,
-      expiryDate,
-      Description,
-      sameAsRegistered,
-      comments,
-    } = req.body;
-
     const sellerId = req.user.userId;
-    console.log("User ID:", sellerId);
 
     if (!sellerId) {
       return res.status(400).json({ message: "SellerId is required" });
     }
 
-    const companyId = await Company.findOne({ sellerId });
-
-    // Validate required fields
-    if (
-      !type ||
-      !certificationName ||
-      !legalOwner ||
-      !issueDate ||
-      !Description
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All required fields must be provided.",
-      });
+    const company = await Company.findOne({ sellerId });
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
     }
+
+    const parsedData = certificateSchema.parse(req.body);
 
     let fileUrl = "";
     let cloudinaryId = "";
 
-    // Upload file to Cloudinary if provided
     if (req.file) {
       const uploadResult = await uploadOnCloudinary(
         req.file.path,
@@ -54,23 +33,17 @@ export const uploadCertificate = async (req, res) => {
         cloudinaryId = uploadResult.public_id;
       }
 
-      // Remove temp file
       if (fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path);
       }
     }
 
-    // Save to MongoDB
     const newCertificate = await Certificate.create({
-      companyId,
-      type,
-      certificationName,
-      legalOwner,
-      issueDate,
-      expiryDate,
-      Description,
-      sameAsRegistered: sameAsRegistered === "1" || sameAsRegistered === true,
-      comments,
+      companyId: company._id,
+      ...parsedData,
+      sameAsRegistered:
+        parsedData.sameAsRegistered === "1" ||
+        parsedData.sameAsRegistered === true,
       fileUrl,
       cloudinaryId,
     });
@@ -81,6 +54,10 @@ export const uploadCertificate = async (req, res) => {
       data: newCertificate,
     });
   } catch (error) {
+    if (error.name === "ZodError") {
+      return res.status(400).json({ success: false, errors: error.errors });
+    }
+
     console.error("Error uploading certificate:", error);
     return res.status(500).json({
       success: false,
@@ -135,13 +112,17 @@ export const deleteCertificate = async (req, res) => {
     });
 
     if (!certificate) {
-      return res.status(404).json({ message: "Certificate not found or not authorized" });
+      return res
+        .status(404)
+        .json({ message: "Certificate not found or not authorized" });
     }
 
     // Delete the certificate
     await Certificate.deleteOne({ _id: certificateId });
 
-    return res.status(200).json({ message: "Certificate deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Certificate deleted successfully" });
   } catch (err) {
     console.error("Delete error:", err);
     return res.status(500).json({ message: "Server error" });

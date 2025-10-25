@@ -11,7 +11,7 @@ import api from "@/utils/axios.utils";
 import { Link } from "react-router-dom";
 import {
   Carousel,
-  CarouselContent,  
+  CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
@@ -37,19 +37,6 @@ const STATUS_TYPES = {
   PENDING: "pending",
   VIOLATION: "violation",
 };
-
-// const CATEGORY_OPTIONS = [
-//   { label: "All Categories", value: "all" },
-//   { label: "Marble", value: "Marble" },
-//   { label: "Granite", value: "Granite" },
-// ];
-
-// const SUBCATEGORY_OPTIONS = [
-//   { label: "All Subcategories", value: "all" },
-//   { label: "Polished", value: "Polished" },
-//   { label: "Honed", value: "Honed" },
-//   { label: "Natural", value: "Natural" },
-// ];
 
 const ListProducts = () => {
   const dispatch = useDispatch();
@@ -621,7 +608,7 @@ const ProductCard = React.memo(
         </div>
 
         {/* Images */}
-        <div className="md:w-1/3 w-full mt-10 h-48 md:h-auto flex flex-col justify-end items-end relative">
+        <div className="md:w-1/3 w-full  h-48 md:h-auto flex flex-col justify-end items-end relative">
           {product.productImages?.length > 0 ? (
             <Carousel className="w-full h-full">
               <CarouselContent>
@@ -630,13 +617,15 @@ const ProductCard = React.memo(
                     key={idx}
                     className="flex items-center justify-center"
                   >
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      src={img}
-                      alt={`${product.productName} ${idx + 1}`}
-                      className="w-full h-48 md:h-56 object-contain"
-                    />
+                    <div className="w-full md:w-[90%] border overflow-hidden rounded-lg">
+                      <img
+                        src={img}
+                        alt={`${product.productName} ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
