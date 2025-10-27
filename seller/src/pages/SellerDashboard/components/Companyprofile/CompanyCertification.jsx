@@ -114,46 +114,6 @@ export default function CertificateDialog() {
     fetchCertificates();
   }, []);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const payload = new FormData();
-  //   payload.append("type", selectedType);
-  //   payload.append("certificationName", form.certificationName);
-  //   payload.append("legalOwner", form.legalOwner);
-  //   payload.append("issueDate", form.issueDate);
-  //   payload.append("expiryDate", form.expiryDate);
-  //   payload.append("Description", form.Description);
-  //   payload.append("sameAsRegistered", form.sameAsRegistered ? "1" : "0");
-  //   payload.append("comments", form.comments);
-
-  //   if (form.file) payload.append("file", form.file);
-
-  //   try {
-  //     setUpoloading(true);
-  //     const res = await api.post("/company/upload", payload, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-  //     console.log("Uploaded:", res.data);
-  //     setUpoloading(true);
-  //     dispatch(fetchCertificates());
-  //   } catch (err) {
-  //     console.error("Upload failed:", err.response?.data || err.message);
-  //   } finally {
-  //     setUpoloading(false);
-  //   }
-
-  //   setOpen(false);
-  //   setForm({
-  //     certificationName: "",
-  //     legalOwner: "",
-  //     expiryDate: "",
-  //     Description: "",
-  //     issueDate: "",
-  //     sameAsRegistered: false,
-  //     comments: "",
-  //     file: null,
-  //   });
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
