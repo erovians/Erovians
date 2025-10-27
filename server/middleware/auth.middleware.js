@@ -5,15 +5,12 @@ export const verifyUser = (req, res, next) => {
   try {
     let accessToken;
 
-  
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
       accessToken = req.headers.authorization.split(" ")[1];
-    }
-    
-    else if (req.cookies && req.cookies.accessToken) {
+    } else if (req.cookies && req.cookies.accessToken) {
       accessToken = req.cookies.accessToken;
     }
 
