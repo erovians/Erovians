@@ -468,7 +468,7 @@ export default function CertificateDialog() {
                           className="hidden"
                         />
                         {form.file && (
-                          <div className="text-sm truncate max-w-xs">
+                          <div className="text-sm truncate max-w-xs ">
                             {form.file.name}
                           </div>
                         )}
@@ -480,7 +480,7 @@ export default function CertificateDialog() {
                     </p>
 
                     {formErrors.file && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="text-red-500 text-xs -mt-1.5">
                         {formErrors.file}
                       </p>
                     )}
