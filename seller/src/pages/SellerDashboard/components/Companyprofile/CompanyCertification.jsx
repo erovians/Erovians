@@ -99,81 +99,57 @@ export default function CertificateDialog() {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
+
+    // ✅ Handle checkbox
     if (type === "checkbox") {
       setForm((s) => ({ ...s, [name]: checked }));
       return;
     }
+
+    // ✅ Handle file upload with size validation (300KB = 300 * 1024 bytes)
     if (files) {
-      setForm((s) => ({ ...s, file: files[0] }));
+      const file = files[0];
+      if (file) {
+        if (file.size > 300 * 1024) {
+          setFormErrors((prev) => ({
+            ...prev,
+            file: "File size must be less than 300KB",
+          }));
+          return;
+        }
+
+        // If valid file size, set file & clear error
+        setForm((s) => ({ ...s, file }));
+        setFormErrors((prev) => ({ ...prev, file: "" }));
+      }
       return;
     }
+
+    // ✅ Handle normal inputs
     setForm((s) => ({ ...s, [name]: value }));
+
+    // ✅ Validate issueDate < expiryDate
+    if (name === "issueDate" || name === "expiryDate") {
+      setFormErrors((prev) => {
+        const issue = name === "issueDate" ? value : form.issueDate;
+        const expiry = name === "expiryDate" ? value : form.expiryDate;
+
+        if (issue && expiry && new Date(expiry) <= new Date(issue)) {
+          return {
+            ...prev,
+            expiryDate: "Expiry date must be greater than issue date",
+          };
+        } else {
+          return { ...prev, expiryDate: "" };
+        }
+      });
+    }
   };
 
   useEffect(() => {
     fetchCertificates();
   }, []);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const result = certificateSchema.safeParse(form);
-
-  //   if (!result.success) {
-  //     const errors = {};
-
-  //     result.error.issues.forEach((e) => {
-  //       const fieldName = e.path[0];
-  //       if (fieldName) errors[fieldName] = e.message;
-  //     });
-  //     setFormErrors(errors);
-  //     return;
-  //   }
-
-  //   // Validation passed
-  //   setFormErrors({});
-  //   const validatedData = result.data;
-
-  //   const payload = new FormData();
-  //   payload.append("type", selectedType);
-  //   payload.append("certificationName", validatedData.certificationName);
-  //   payload.append("legalOwner", validatedData.legalOwner);
-  //   payload.append("issueDate", validatedData.issueDate);
-  //   payload.append("expiryDate", validatedData.expiryDate || "");
-  //   payload.append("Description", validatedData.Description);
-  //   payload.append(
-  //     "sameAsRegistered",
-  //     validatedData.sameAsRegistered ? "1" : "0"
-  //   );
-  //   payload.append("comments", validatedData.comments || "");
-
-  //   if (validatedData.file) payload.append("file", validatedData.file);
-
-  //   try {
-  //     setUpoloading(true);
-  //     const res = await api.post("/company/upload", payload);
-
-  //     console.log("Uploaded:", res.data);
-  //     dispatch(fetchCertificates());
-  //     setOpen(false);
-
-  //     setForm({
-  //       certificationName: "",
-  //       legalOwner: "",
-  //       issueDate: "",
-  //       expiryDate: "",
-  //       Description: "",
-  //       sameAsRegistered: false,
-  //       comments: "",
-  //       file: null,
-  //     });
-  //   } catch (err) {
-  //     console.error("Upload failed:", err.response?.data || err.message);
-  //     alert(err.response?.data?.message || "Upload failed. Please try again.");
-  //   } finally {
-  //     setUpoloading(false);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -375,11 +351,12 @@ export default function CertificateDialog() {
                       id="certificationName"
                       name="certificationName"
                       placeholder="e.g. MSME Registration"
+                      className="placeholder:text-xs"
                       value={form.certificationName}
                       onChange={handleChange}
                     />
                     {formErrors.certificationName && (
-                      <p className="text-red-500 text-xs ">
+                      <p className="text-red-500 text-xs -mt-1.5">
                         {formErrors.certificationName}
                       </p>
                     )}
@@ -398,11 +375,12 @@ export default function CertificateDialog() {
                       name="legalOwner"
                       placeholder="Registered entity / owner's name"
                       value={form.legalOwner}
+                      className="placeholder:text-xs"
                       onChange={handleChange}
                     />
 
                     {formErrors.legalOwner && (
-                      <p className="text-red-500 text-xs ">
+                      <p className="text-red-500 text-xs -mt-1.5">
                         {formErrors.legalOwner}
                       </p>
                     )}
@@ -415,7 +393,7 @@ export default function CertificateDialog() {
 
                     <textarea
                       id="Description"
-                      className="border p-2"
+                      className="placeholder:text-xs border-1 p-2"
                       name="Description"
                       rows={4}
                       cols={40}
@@ -424,7 +402,7 @@ export default function CertificateDialog() {
                       onChange={handleChange}
                     />
                     {formErrors.Description && (
-                      <p className="text-red-500 text-xs ">
+                      <p className="text-red-500 text-xs -mt-1.5">
                         {formErrors.Description}
                       </p>
                     )}
@@ -437,11 +415,12 @@ export default function CertificateDialog() {
                         id="issueDate"
                         name="issueDate"
                         type="date"
+                        className="text-xs"
                         value={form.issueDate}
                         onChange={handleChange}
                       />
                       {formErrors.issueDate && (
-                        <p className="text-red-500 text-xs ">
+                        <p className="text-red-500 text-xs -mt-1.5">
                           {formErrors.issueDate}
                         </p>
                       )}
@@ -452,9 +431,16 @@ export default function CertificateDialog() {
                         id="expiryDate"
                         name="expiryDate"
                         type="date"
+                        className="text-xs"
+                        min={form.issueDate || ""}
                         value={form.expiryDate}
                         onChange={handleChange}
                       />
+                      {formErrors.expiryDate && (
+                        <p className="text-red-500 text-xs -mt-1.5">
+                          {formErrors.expiryDate}
+                        </p>
+                      )}
                     </Field>
                   </div>
                 </FieldGroup>
@@ -493,8 +479,10 @@ export default function CertificateDialog() {
                       Accepted: PDF, JPG, PNG. Max size: (validate on server).
                     </p>
 
-                    {formErrors.legalOwner && (
-                      <p className="text-red-500 text-xs ">{formErrors.file}</p>
+                    {formErrors.file && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.file}
+                      </p>
                     )}
                   </Field>
                 </FieldGroup>
