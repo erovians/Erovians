@@ -39,6 +39,13 @@ export const uploadCertificate = async (req, res) => {
       });
     }
 
+    if (req.file && req.file.size > 300 * 1024) {
+      return res.status(400).json({
+        success: false,
+        message: "File size must not exceed 300KB.",
+      });
+    }
+
     let fileUrl = "";
     let cloudinaryId = "";
 
