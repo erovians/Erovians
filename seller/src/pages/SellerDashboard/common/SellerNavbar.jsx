@@ -8,7 +8,7 @@ import { toggleSidebar } from "../../../redux/slice/sellerSidebarSlice";
 import { assets } from "../../../assets/assets";
 import { Menu, Search, Headset, Bell, HelpCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +22,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import api from "@/utils/axios.utils";
 
 const SellerNavbar = () => {
@@ -31,15 +31,14 @@ const SellerNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-const handleLogout = async () => {
-  try {
-    await api.post("/seller/logout", {}, { withCredentials: true });
-    navigate("/login");
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
-
+  const handleLogout = async () => {
+    try {
+      await api.post("/seller/logout", {}, { withCredentials: true });
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -58,7 +57,7 @@ const handleLogout = async () => {
         </div>
 
         {/* Right: Icons / Profile */}
-        <div className="flex items-center space-x-4 relative border border-red-500">
+        <div className="flex items-center space-x-4 relative">
           {/* Center: Search bar (Desktop only) */}
           <div className="hidden md:flex flex-grow max-w-fit mx-6 h-9">
             <div className="flex w-full border border-gray-300 rounded-md overflow-hidden">
@@ -84,44 +83,41 @@ const handleLogout = async () => {
               <HelpCircle size={22} />
             </Link>
             <Link to="#" className="text-gray-600 hover:text-navyblue">
-              
               <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>Ero</AvatarFallback>
-              </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-66 mr-10 mt-3" align="start">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          <Link to="/sellerdashboard/company/overview">
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⌘</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          </Link>
-          
-           <Link to="/sellerdashboard/company/profile">
-           
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘</DropdownMenuShortcut>
-          </DropdownMenuItem>
-           </Link>
-         
-        </DropdownMenuGroup>
-      
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
+                    <Avatar>
+                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarFallback>Ero</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-66 mr-10 mt-3" align="start">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuGroup>
+                    <Link to="/sellerdashboard/company/overview">
+                      <DropdownMenuItem>
+                        Profile
+                        <DropdownMenuShortcut>⌘</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </Link>
 
-        
-        <DropdownMenuItem  onClick={handleLogout}>
-          Log out
-         
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                    <Link to="/sellerdashboard/company/profile">
+                      <DropdownMenuItem>
+                        Settings
+                        <DropdownMenuShortcut>⌘</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </Link>
           </div>
 
