@@ -265,59 +265,86 @@ export default function CertificateDialog() {
       </div>
 
       {/* Certificate List */}
-      <div className="mt-8 w-full">
-        <h2 className="text-xl font-semibold text-navyblue mb-4">
+      <div className="mt-10 w-full">
+        <h2 className="text-2xl font-semibold text-navyblue mb-6 border-b pb-2">
           Uploaded Certificates
         </h2>
 
         {loading ? (
-          <div className="text-gray-600">Loading certificates...</div>
+          <div className="text-gray-600 text-center py-8">
+            Loading certificates...
+          </div>
         ) : certificates.length === 0 ? (
-          <div className="text-gray-500 italic">
+          <div className="text-gray-500 italic text-center py-8">
             No certificates uploaded yet.
           </div>
         ) : (
-          <ul className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {certificates.map((cert) => (
-              <li
+              <div
                 key={cert._id}
-                className="flex justify-between items-center w-full border border-gray-200 bg-white rounded-lg shadow-sm px-6 py-4 hover:shadow-md transition"
+                className="relative bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg hover:border-navyblue/40 transition-all duration-200 p-5 flex flex-col"
               >
-                <div className="flex flex-col gap-1 text-sm">
-                  <p className="text-base font-semibold text-gray-800">
+                {/* Header */}
+                <div className="space-y-2 mb-3">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     {cert.certificationName}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-medium">Owner:</span>{" "}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-700">Owner:</span>{" "}
                     {cert.legalOwner}
                   </p>
-                  <p className="text-gray-600">
-                    <span className="font-medium">Issue:</span>{" "}
+                </div>
+
+                {/* Details */}
+                <div className="space-y-1 text-sm text-gray-600 flex-1">
+                  <p>
+                    <span className="font-medium text-gray-700">Issue:</span>{" "}
                     {cert.issueDate
                       ? new Date(cert.issueDate).toLocaleDateString()
                       : "N/A"}
-                    {"  "} | <span className="font-medium">Expires:</span>{" "}
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-700">Expires:</span>{" "}
                     {cert.expiryDate
                       ? new Date(cert.expiryDate).toLocaleDateString()
                       : "N/A"}
                   </p>
-                  <p className="line-clamp-2">
-                    Description : {cert.Description || "no description"}{" "}
+                  <p className="text-gray-600 line-clamp-2">
+                    <span className="font-medium text-gray-700">
+                      Description:
+                    </span>{" "}
+                    {cert.Description || "No description provided."}
                   </p>
                 </div>
 
-                <div className="flex flex-col items-center gap-2">
+                {/* Footer / Actions */}
+                <div className="mt-4 flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-gray-100">
+                  {cert.fileUrl && (
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      {cert.fileUrl.endsWith(".pdf") ? (
+                        <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs font-medium">
+                          PDF
+                        </span>
+                      ) : (
+                        <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs font-medium">
+                          Image
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   <Button
                     variant="outline"
                     onClick={() => handleViewCertificate(cert)}
-                    className="px-4 py-2 cursor-pointer text-sm font-medium border-navyblue rounded 900 transition"
+                    className="px-4 py-1.5 text-sm font-medium border-navyblue text-navyblue rounded-lg hover:bg-navyblue hover:text-white transition-colors w-full sm:w-auto"
                   >
                     View Details
                   </Button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
@@ -507,60 +534,89 @@ export default function CertificateDialog() {
               </Field>
             </FieldGroup>
           </form>
-
           <DialogFooter />
         </DialogContent>
       </Dialog>
 
+      {/* Dialog box for company details */}
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="sm:max-w-lg w-full">
+        <DialogContent
+          className="sm:max-w-full w-full h-full  shadow-lg p-6 bg-gradient-to-b from-white to-gray-50 
+               overflow-y-auto  sm:rounded-xl"
+        >
           <DialogHeader>
-            <DialogTitle>Certificate Details</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-gray-800 border-b pb-2">
+              Certificate Details
+            </DialogTitle>
           </DialogHeader>
 
           {selectedCertificate && (
-            <div className="space-y-4 text-sm">
-              <div>
-                <strong>Certification Name:</strong>{" "}
-                {selectedCertificate.certificationName}
-              </div>
-              <div>
-                <strong>Legal Owner:</strong> {selectedCertificate.legalOwner}
-              </div>
-              <div>
-                <strong>Description:</strong>{" "}
-                {selectedCertificate.Description || "N/A"}
-              </div>
-              <div>
-                <strong>Issue Date:</strong>{" "}
-                {selectedCertificate.issueDate
-                  ? new Date(selectedCertificate.issueDate).toLocaleDateString()
-                  : "N/A"}
-              </div>
-              <div>
-                <strong>Expiry Date:</strong>{" "}
-                {selectedCertificate.expiryDate
-                  ? new Date(
-                      selectedCertificate.expiryDate
-                    ).toLocaleDateString()
-                  : "N/A"}
+            <div className="mt-4 space-y-4 text-sm text-gray-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 uppercase">
+                    Certification Name
+                  </p>
+                  <p className="font-medium">
+                    {selectedCertificate.certificationName}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase">Legal Owner</p>
+                  <p className="font-medium">
+                    {selectedCertificate.legalOwner}
+                  </p>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <p className="text-xs text-gray-500 uppercase">Description</p>
+                  <p className="font-medium">
+                    {selectedCertificate.Description || "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase">Issue Date</p>
+                  <p className="font-medium">
+                    {selectedCertificate.issueDate
+                      ? new Date(
+                          selectedCertificate.issueDate
+                        ).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase">Expiry Date</p>
+                  <p className="font-medium">
+                    {selectedCertificate.expiryDate
+                      ? new Date(
+                          selectedCertificate.expiryDate
+                        ).toLocaleDateString()
+                      : "N/A"}
+                  </p>
+                </div>
               </div>
 
               {selectedCertificate.fileUrl && (
-                <div className="mt-4">
-                  <strong>Uploaded Certificate:</strong>
-                  <div className="mt-2">
+                <div className="mt-6">
+                  <p className="text-xs text-gray-500 uppercase mb-2">
+                    Uploaded Certificate
+                  </p>
+
+                  <div className="border w-full sm:w-[70%] rounded-lg overflow-hidden shadow-sm bg-white hover:shadow-md transition-shadow duration-200">
                     {selectedCertificate.fileUrl.endsWith(".pdf") ? (
                       <iframe
                         src={selectedCertificate.fileUrl}
                         title="PDF Preview"
-                        className="w-full h-96 border rounded"
+                        className="w-full h-96"
                       />
                     ) : (
                       <img
                         src={selectedCertificate.fileUrl}
                         alt="Certificate"
-                        className="max-w-full max-h-[400px] border rounded shadow cursor-zoom-in transition"
+                        className="w-full h-auto max-h-[400px] object-contain cursor-zoom-in transition-transform duration-300 hover:scale-105"
                         onClick={() =>
                           setZoomedImage(selectedCertificate.fileUrl)
                         }
@@ -571,12 +627,18 @@ export default function CertificateDialog() {
               )}
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setViewOpen(false)}>
+
+          <DialogFooter className="mt-6 flex justify-end gap-3">
+            <Button
+              variant="outline"
+              className="rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100"
+              onClick={() => setViewOpen(false)}
+            >
               Close
             </Button>
             <Button
               variant="destructive"
+              className="rounded-lg shadow hover:shadow-md"
               onClick={() => setOpenDeleteDialog(true)}
             >
               Delete
