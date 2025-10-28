@@ -8,7 +8,6 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       trim: true,
       minlength: 2,
       maxlength: 100,
-      index: true,
     },
     address: {
       street: { type: String, trim: true, required: true },
@@ -33,16 +32,15 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     },
 
     mainCategory: {
-      type: String,
+      type: [String],
+      enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
       required: true,
-      enum: ["Marble", "Granite"],
+      set: (arr) => [...new Set(arr.map((v) => v.trim().toLowerCase()))],
     },
     subCategory: {
-      type: String,
+      type: [String],
       required: true,
-      trim: true,
-      minlength: 2,
-      maxlength: 50,
+      set: (arr) => [...new Set(arr.map((v) => v.trim().toLowerCase()))],
     },
     acceptedCurrency: [{ type: String }],
     acceptedPaymentType: {
@@ -84,8 +82,6 @@ const CompanyDataSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "seller",
       required: true,
-      unique: true,
-      index: true,
     },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
     companyIntro: { type: CompanyIntroSchema, required: true },
@@ -93,9 +89,13 @@ const CompanyDataSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+CompanyDataSchema.index(
+  { sellerId: 1 },
+  { unique: true, partialFilterExpression: { sellerId: { $exists: true } } }
+);
+
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
-CompanyDataSchema.index({ "companyBasicInfo.acceptedCurrency": 1 });
 
 // text index for quick name/description search (weights help rank)
 CompanyDataSchema.index(

@@ -56,7 +56,7 @@ export const registerCompany = async (req, res) => {
   try {
     const sellerId = req.user.userId;
   
-    console.log("RegisterCompany Request Body:", req.body);
+    // console.log("RegisterCompany Request Body:", req.body);
     const company = await registerCompanyService(req.body, req.files, sellerId);
     return res.status(201).json({
       success: true,

@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import ReviewStep from "./steps/ReviewStep";
-import { stepOneSchema, stepTwoSchema } from "../../schema/companyRegistrationForm.schema";
+import {
+  stepOneSchema,
+  stepTwoSchema,
+} from "../../schema/companyRegistrationForm.schema";
 import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -54,7 +57,7 @@ export default function CompanyProfileForm() {
             countryOrRegion: "",
             postalCode: "",
           },
-          mainCategory: "",
+          mainCategory: [],
           mainProduct: [],
           acceptedCurrency: [],
           acceptedPaymentType: [],
@@ -218,8 +221,8 @@ export default function CompanyProfileForm() {
       form.append("locationOfRegistration", formData.locationOfRegistration);
       form.append("companyRegistrationYear", formData.companyRegistrationYear);
       form.append("address", JSON.stringify(formData.address));
-      form.append("mainCategory", formData.mainCategory);
-      form.append("subCategory", formData.mainProduct.join(","));
+      form.append("mainCategory", JSON.stringify(formData.mainCategory));
+      form.append("subCategory", JSON.stringify(formData.mainProduct));  
       form.append("acceptedCurrency", formData.acceptedCurrency.join(","));
       form.append(
         "acceptedPaymentType",
