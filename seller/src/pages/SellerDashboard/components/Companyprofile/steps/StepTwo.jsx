@@ -137,7 +137,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
             value={formData.companyDescription || ""}
             onChange={handleInputChange}
             name="companyDescription"
-            className={`w-full h-40 px-3 py-2 text-sm border rounded-md focus:ring-2 focus:ring-navybluefocus:outline-none ${
+            className={`w-full h-40 px-3 py-2 text-sm border rounded-md focus:outline-none focus:border-navyblue ${
               errors.companyDescription ? "border-red-500" : "border-gray-300"
             }`}
           />

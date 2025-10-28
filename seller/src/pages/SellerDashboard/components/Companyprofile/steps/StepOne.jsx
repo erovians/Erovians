@@ -1,5 +1,24 @@
 import React from "react";
-import { User, MapPin, Calendar, Building, Layers, X, DollarSign, CreditCard, Globe } from "lucide-react";
+import {
+  User,
+  MapPin,
+  Calendar,
+  Building,
+  Layers,
+  X,
+  Plus,
+  DollarSign,
+  CreditCard,
+  Globe,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const currencies = [
   "USD",
@@ -38,18 +57,28 @@ const languages = [
   "Italian",
 ];
 
-export default function StepOne({ formData = {
-  companyName: "",
-  legalowner: "",
-  locationOfRegistration: "",
-  companyRegistrationYear: "",
-  address: {},
-  mainCategory: "",
-  mainProduct: [""],
-  acceptedCurrency: [],
-  acceptedPaymentType: [],
-  languageSpoken: []
-}, setFormData = () => {}, errors = {} }) {
+const categories = [
+  "Natural Stones",
+  "Ceramic & Tiles",
+  "Alternatives & Finishes",
+];
+
+export default function StepOne({
+  formData = {
+    companyName: "",
+    legalowner: "",
+    locationOfRegistration: "",
+    companyRegistrationYear: "",
+    address: {},
+    mainCategory: [""],
+    mainProduct: [""],
+    acceptedCurrency: [],
+    acceptedPaymentType: [],
+    languageSpoken: [],
+  },
+  setFormData = () => {},
+  errors = {},
+}) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -75,20 +104,21 @@ export default function StepOne({ formData = {
 
   const inputClass = (hasErr) =>
     `text-sm w-full pl-3 pr-3 py-3 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-navyblue focus:border-transparent ${
-      hasErr ? "border-red-400" : "border-gray-300 bg-white hover:border-gray-400"
+      hasErr
+        ? "border-red-400"
+        : "border-gray-300 bg-white hover:border-gray-400"
     }`;
 
   return (
     <div className="max-w-6xl mx-auto bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg">
       <div className="space-y-8">
-
         {/* Basic Information Card */}
         <div className="bg-white rounded-xl p-2 md:p-6 shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2">
             <Building className="text-navyblue" size={22} />
             Basic Information
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Company Name */}
             <div className="flex flex-col">
@@ -102,7 +132,9 @@ export default function StepOne({ formData = {
                   value={formData.companyName}
                   onChange={handleChange}
                   placeholder=" "
-                  className={`${inputClass(Boolean(errors.companyName))} pl-10 peer`}
+                  className={`${inputClass(
+                    Boolean(errors.companyName)
+                  )} pl-10 peer`}
                 />
                 <label
                   className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600 
@@ -132,7 +164,9 @@ export default function StepOne({ formData = {
                   value={formData.legalowner}
                   onChange={handleChange}
                   placeholder=" "
-                  className={`${inputClass(Boolean(errors.legalowner))} pl-10 peer`}
+                  className={`${inputClass(
+                    Boolean(errors.legalowner)
+                  )} pl-10 peer`}
                 />
                 <label
                   className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600 
@@ -162,7 +196,9 @@ export default function StepOne({ formData = {
                   value={formData.locationOfRegistration}
                   onChange={handleChange}
                   placeholder=" "
-                  className={`${inputClass(Boolean(errors.locationOfRegistration))} pl-10 peer`}
+                  className={`${inputClass(
+                    Boolean(errors.locationOfRegistration)
+                  )} pl-10 peer`}
                 />
                 <label
                   className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600 
@@ -170,12 +206,14 @@ export default function StepOne({ formData = {
                      peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
                      peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-600"
                 >
-                  Location of registration <span className="text-red-500">*</span>
+                  Location of registration{" "}
+                  <span className="text-red-500">*</span>
                 </label>
               </div>
               {errors.locationOfRegistration && (
                 <p className="text-red-500 text-xs mt-1.5 ml-1 flex items-center gap-1">
-                  <span className="font-medium">⚠</span> {errors.locationOfRegistration}
+                  <span className="font-medium">⚠</span>{" "}
+                  {errors.locationOfRegistration}
                 </p>
               )}
             </div>
@@ -191,17 +229,19 @@ export default function StepOne({ formData = {
                   name="companyRegistrationYear"
                   value={formData.companyRegistrationYear}
                   onChange={handleChange}
-                  className={`${inputClass(Boolean(errors.companyRegistrationYear))} pl-10`}
+                  className={`${inputClass(
+                    Boolean(errors.companyRegistrationYear)
+                  )} pl-10`}
                 />
-                <label
-                  className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600"
-                >
-                  Year Company Registered <span className="text-red-500">*</span>
+                <label className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600">
+                  Year Company Registered{" "}
+                  <span className="text-red-500">*</span>
                 </label>
               </div>
               {errors.companyRegistrationYear && (
                 <p className="text-red-500 text-xs mt-1.5 ml-1 flex items-center gap-1">
-                  <span className="font-medium">⚠</span> {errors.companyRegistrationYear}
+                  <span className="font-medium">⚠</span>{" "}
+                  {errors.companyRegistrationYear}
                 </p>
               )}
             </div>
@@ -214,7 +254,7 @@ export default function StepOne({ formData = {
             <MapPin className="text-navyblue" size={22} />
             Company Operational Address <span className="text-red-500">*</span>
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { field: "street", label: "Street address" },
@@ -236,7 +276,9 @@ export default function StepOne({ formData = {
                       value={formData.address?.[field] || ""}
                       onChange={handleAddressChange}
                       placeholder=" "
-                      className={`${inputClass(Boolean(errors[errorKey]))} pl-10 peer`}
+                      className={`${inputClass(
+                        Boolean(errors[errorKey])
+                      )} pl-10 peer`}
                     />
                     <label
                       className="absolute left-10 -top-2.5 bg-white px-2 text-xs font-medium text-gray-600 
@@ -266,7 +308,7 @@ export default function StepOne({ formData = {
           </h3>
 
           {/* Main Category */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="relative">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">
                 <Layers className="text-gray-400" size={20} />
@@ -295,6 +337,106 @@ export default function StepOne({ formData = {
                 <span className="font-medium">⚠</span> {errors.mainCategory}
               </p>
             )}
+          </div> */}
+          {/* Main Categories */}
+          <div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-4">
+              Main Categories <span className="text-red-500">*</span>
+            </label>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {(formData.mainCategory?.length > 0
+                ? formData.mainCategory
+                : [""]
+              ).map((cat, index) => (
+                <div
+                  key={index}
+                  className="relative flex items-center gap-2 group transition-all"
+                >
+                  <div className="flex-1 relative">
+                    {/* Left icon */}
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                      <Layers size={18} />
+                    </div>
+
+                    {/* Select dropdown */}
+                    <Select
+                      value={cat}
+                      onValueChange={(value) => {
+                        const newCategories = [
+                          ...(formData.mainCategory || []),
+                        ];
+                        newCategories[index] = value;
+                        setFormData((prev) => ({
+                          ...prev,
+                          mainCategory: newCategories,
+                        }));
+                      }}
+                    >
+                      <SelectTrigger
+                        className={`w-full pl-10 h-14 text-sm rounded-lg border transition-all
+                ${
+                  errors.mainCategory
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-navyblue focus:border-navyblue"
+                }
+              `}
+                      >
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectGroup>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {/* Remove button (only for extra fields) */}
+                    {index > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newCategories = formData.mainCategory.filter(
+                            (_, i) => i !== index
+                          );
+                          setFormData((prev) => ({
+                            ...prev,
+                            mainCategory: newCategories,
+                          }));
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all p-1"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add another category */}
+            <button
+              type="button"
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  mainCategory: [...(prev.mainCategory || []), ""],
+                }))
+              }
+              className="flex items-center gap-2 text-sm text-navyblue font-medium hover:underline mt-2"
+            >
+              <Plus size={16} /> Add another category
+            </button>
+
+            {/* Validation error */}
+            {errors.mainCategory && (
+              <p className="text-xs text-red-500 mt-1">{errors.mainCategory}</p>
+            )}
           </div>
 
           {/* Main Products */}
@@ -304,7 +446,10 @@ export default function StepOne({ formData = {
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {(formData.mainProduct.length > 0 ? formData.mainProduct : [""]).map((sub, index) => (
+              {(formData.mainProduct.length > 0
+                ? formData.mainProduct
+                : [""]
+              ).map((sub, index) => (
                 <div key={index} className="relative flex items-center gap-2">
                   <div className="flex-1 relative">
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -316,17 +461,27 @@ export default function StepOne({ formData = {
                       onChange={(e) => {
                         const newSubs = [...formData.mainProduct];
                         newSubs[index] = e.target.value;
-                        setFormData((prev) => ({ ...prev, mainProduct: newSubs }));
+                        setFormData((prev) => ({
+                          ...prev,
+                          mainProduct: newSubs,
+                        }));
                       }}
                       placeholder={`Product ${index + 1}`}
-                      className={`${inputClass(Boolean(errors.mainProduct))} pl-9 pr-10`}
+                      className={`${inputClass(
+                        Boolean(errors.mainProduct)
+                      )} pl-9 pr-10`}
                     />
                     {index > 0 && (
                       <button
                         type="button"
                         onClick={() => {
-                          const newSubs = formData.mainProduct.filter((_, i) => i !== index);
-                          setFormData((prev) => ({ ...prev, mainProduct: newSubs }));
+                          const newSubs = formData.mainProduct.filter(
+                            (_, i) => i !== index
+                          );
+                          setFormData((prev) => ({
+                            ...prev,
+                            mainProduct: newSubs,
+                          }));
                         }}
                         className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors"
                       >
@@ -385,7 +540,9 @@ export default function StepOne({ formData = {
                   <input
                     type="checkbox"
                     checked={(formData.acceptedCurrency || []).includes(c)}
-                    onChange={() => handleCheckboxGroupChange("acceptedCurrency", c)}
+                    onChange={() =>
+                      handleCheckboxGroupChange("acceptedCurrency", c)
+                    }
                     className="w-4 h-4 text-navyblue rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <span className="text-sm font-medium">{c}</span>
@@ -418,7 +575,9 @@ export default function StepOne({ formData = {
                   <input
                     type="checkbox"
                     checked={(formData.acceptedPaymentType || []).includes(c)}
-                    onChange={() => handleCheckboxGroupChange("acceptedPaymentType", c)}
+                    onChange={() =>
+                      handleCheckboxGroupChange("acceptedPaymentType", c)
+                    }
                     className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <span className="text-sm font-medium">{c}</span>
@@ -427,7 +586,8 @@ export default function StepOne({ formData = {
             </div>
             {errors.acceptedPaymentType && (
               <p className="text-red-500 text-xs mt-2 ml-1 flex items-center gap-1">
-                <span className="font-medium">⚠</span> {errors.acceptedPaymentType}
+                <span className="font-medium">⚠</span>{" "}
+                {errors.acceptedPaymentType}
               </p>
             )}
           </div>
@@ -451,7 +611,9 @@ export default function StepOne({ formData = {
                   <input
                     type="checkbox"
                     checked={(formData.languageSpoken || []).includes(c)}
-                    onChange={() => handleCheckboxGroupChange("languageSpoken", c)}
+                    onChange={() =>
+                      handleCheckboxGroupChange("languageSpoken", c)
+                    }
                     className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <span className="text-sm font-medium">{c}</span>
@@ -465,7 +627,6 @@ export default function StepOne({ formData = {
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

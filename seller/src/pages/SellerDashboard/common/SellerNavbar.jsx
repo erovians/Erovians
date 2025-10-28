@@ -58,10 +58,10 @@ const handleLogout = async () => {
         </div>
 
         {/* Right: Icons / Profile */}
-        <div className="flex items-center space-x-4 relative border border-red-500">
+        <div className="flex items-center space-x-4 relative ">
           {/* Center: Search bar (Desktop only) */}
           <div className="hidden md:flex flex-grow max-w-fit mx-6 h-9">
-            <div className="flex w-full border border-gray-300 rounded-md overflow-hidden">
+            <div className="flex w-full border border-gray-300 rounded-md overflow-hidden ">
               <button className=" text-black px-2 py-2 cursor-pointer">
                 <Search size={20} />
               </button>

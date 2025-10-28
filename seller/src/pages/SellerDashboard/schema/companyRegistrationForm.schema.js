@@ -46,7 +46,9 @@ export const stepOneSchema = z.object({
       .min(4, "Postal code must be at least 4 characters"),
   }),
 
-  mainCategory: z.string().nonempty("Main category is required"),
+  mainCategory: z
+    .array(z.string().trim().min(1, "Category name cannot be empty"))
+    .min(1, "At least one main category is required"),
 
   mainProduct: z
     .array(z.string().trim().min(1, "Product name cannot be empty"))
@@ -90,6 +92,6 @@ export const stepTwoSchema = z.object({
     .refine((files) => files.every((file) => file.size <= 200 * 1024), {
       message: "Each photo must not exceed 200 KB",
     }),
-    
+
   companyVideos: z.array(z.any()).optional(),
 });
