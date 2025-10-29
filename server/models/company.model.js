@@ -95,7 +95,7 @@ const CompanyDataSchema = new mongoose.Schema(
 
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
-CompanyDataSchema.index({ "companyBasicInfo.acceptedCurrency": 1 });
+
 
 // text index for quick name/description search (weights help rank)
 CompanyDataSchema.index(
