@@ -5,14 +5,14 @@ export const createQuotation = async (req, res) => {
   try {
     const { userId, quantity, unitType, message } = req.body;
     // const userId = req.user?.userId;
-    const { productId } = req.params; 
+    const { productId } = req.params;
 
     if (!userId || !productId || !quantity) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
         message: "Product ID, quantity, and authentication are required.",
       });
-    } 
+    }
 
     const product = await Product.findById(productId).select("sellerId");
     if (!product) {
@@ -27,7 +27,6 @@ export const createQuotation = async (req, res) => {
       sellerId: product.sellerId,
       productId,
       quantity,
-      unitType,
       message,
     });
 
@@ -45,4 +44,3 @@ export const createQuotation = async (req, res) => {
     });
   }
 };
- 

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const quotationSchema = new mongoose.Schema(
   {
-    userId: {
+    BuyerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -21,10 +21,6 @@ const quotationSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 1,
-    },
-    unitType: {
-      type: String,
-      default: "sqft",
     },
     message: {
       type: String,

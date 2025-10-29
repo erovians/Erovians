@@ -27,6 +27,8 @@ import {
   CheckCircleIcon,
   GlobeIcon,
   ReceiptIcon,
+  FileText,
+  Image,
 } from "lucide-react";
 import {
   Dialog,
@@ -323,12 +325,12 @@ export default function CertificateDialog() {
                   {cert.fileUrl && (
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       {cert.fileUrl.endsWith(".pdf") ? (
-                        <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs font-medium">
-                          PDF
+                        <span className=" text-red-600 px-2 py-0.5 rounded-full text-xs font-medium">
+                          <FileText />
                         </span>
                       ) : (
-                        <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs font-medium">
-                          Image
+                        <span className=" text-blue-600 px-2 py-0.5 rounded-full text-xs font-medium">
+                          <Image />
                         </span>
                       )}
                     </div>
