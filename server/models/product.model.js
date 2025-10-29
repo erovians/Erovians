@@ -30,7 +30,7 @@ const ProductSchema = new Schema(
       ref: "Seller",
       required: true,
       index: true,
-    }, 
+    },
     productName: {
       type: String,
       required: true,

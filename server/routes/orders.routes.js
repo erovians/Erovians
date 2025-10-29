@@ -2,7 +2,6 @@
 import express from "express";
 import {
   createOrder,
-  getOrders,
   getOrderById,
   getSellerOrders,
   getUserOrders,
