@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import locationRoutes from "./routes/location.route.js"
 import sellerRoutes from "./routes/seller.routes.js";
 import companyRoutes from "./routes/company.routes.js";
 import productRoutes from "./routes/product.route.js";
@@ -25,6 +26,9 @@ app.use(cookieParser());
 
 // Serve static files
 app.use("/api/uploads", express.static("uploads"));
+
+//locattion route 
+app.use("/api/location", locationRoutes);
 
 // Verify User Route
 app.use("/api/auth", authRoutes);
