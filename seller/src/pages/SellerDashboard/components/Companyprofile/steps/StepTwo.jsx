@@ -120,7 +120,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
             </div>
           </div>
           {errors.logo && (
-            <p className="text-red-500 text-sm mt-2">{errors.logo}</p>
+            <p className="text-xs text-red-500 mt-1">{errors.logo}</p>
           )}
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
             {MAX_DESC_LENGTH - (formData.companyDescription?.length || 0)}
           </p>
           {errors.companyDescription && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-xs text-red-500 mt-1">
               {errors.companyDescription}
             </p>
           )}
@@ -214,7 +214,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
               </div>
             )}
           {errors.companyPhotos && (
-            <p className="text-red-500 text-sm mt-2">{errors.companyPhotos}</p>
+            <p className="text-xs text-red-500 mt-1">{errors.companyPhotos}</p>
           )}
         </div>
       </div>
