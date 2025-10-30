@@ -44,7 +44,7 @@ const CompanyOverview = () => {
   const companyData = {
     name:
       company?.companyBasicInfo.companyName ||
-      "VOLKSCHEM CROP SCIENCE PRIVATE LIMITED",
+      "No name found",
     verified: true,
     yearEstablished:
       company?.companyBasicInfo.companyRegistrationYear || "2011",
@@ -53,9 +53,7 @@ const CompanyOverview = () => {
     businessType: "Manufacturer",
     revenue: "Below US$1 Million",
     description: company?.companyIntro.companyDescription,
-    mainProducts: company?.companyBasicInfo?.subCategory
-      ?.split(",")
-      ?.map((item) => item.trim()) || [
+    mainProducts: company?.companyBasicInfo?.subCategory || [
       "PESTICIDES",
       "HERBICIDES",
       "FUNGICIDES",
