@@ -46,16 +46,10 @@ const ListProducts = () => {
 
   const { categories, subCategories } = useMemo(() => {
     const main =
-      company?.companyBasicInfo?.mainCategory
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean) || [];
+      company?.companyBasicInfo?.mainCategory || [];
 
     const sub =
-      company?.companyBasicInfo?.subCategory
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean) || [];
+      company?.companyBasicInfo?.subCategory || [];
 
     // Always include “All” at the top for universal filter UX
     const mappedCategories = [

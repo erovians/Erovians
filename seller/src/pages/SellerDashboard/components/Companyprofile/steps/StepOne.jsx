@@ -419,7 +419,7 @@ export default function StepOne({
                   mainCategory: [...(prev.mainCategory || []), ""],
                 }))
               }
-              variant="outline"
+              variant="secondary"
             >
               <Plus size={16} /> Add another category
             </Button>
@@ -505,7 +505,7 @@ export default function StepOne({
                   mainProduct: [...prev.mainProduct, ""],
                 }))
               }
-              variant="outline"
+              variant="secondary"
             >
               <Plus size={16} />
               Add another product

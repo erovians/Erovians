@@ -729,12 +729,8 @@ const ProductDetails = () => {
 
   // Get company data from Redux for categories
   const { company } = useSelector((state) => state.company);
-  const subCategories = company?.companyBasicInfo?.subCategory
-    ? company.companyBasicInfo.subCategory.split(",").map((s) => s.trim())
-    : [];
-  const categories = company?.companyBasicInfo?.mainCategory
-    ? company.companyBasicInfo.mainCategory.split(",").map((s) => s.trim())
-    : [];
+  const subCategories = company?.companyBasicInfo?.subCategory || [];
+  const categories = company?.companyBasicInfo?.mainCategory || [];
 
   console.log("categories", categories, "subCategories", subCategories);
 
