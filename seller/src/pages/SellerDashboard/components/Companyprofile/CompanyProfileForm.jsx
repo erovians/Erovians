@@ -345,7 +345,7 @@ export default function CompanyProfileForm() {
         <div className="mt-6 flex gap-2 justify-between items-center">
           <div>
             {currentStep > 1 && (
-              <Button onClick={prevStep}  variant="outline">
+              <Button onClick={prevStep}  variant="secondary">
                 Back
               </Button>
             )}
@@ -353,7 +353,7 @@ export default function CompanyProfileForm() {
 
           <div className="flex flex-col items-center gap-2">
             {currentStep < steps.length ? (
-              <Button onClick={nextStep}  variant="outline">
+              <Button onClick={nextStep}  variant="secondary">
                 Next <MoveRight size={20} />
               </Button>
             ) : (
