@@ -795,7 +795,7 @@ const ProductDetails = () => {
           return;
         }
         console.error("Error fetching product:", err);
-        toast.error("Failed to load product. Try again later.");
+        toast.error(err.response.data.message);
       } finally {
         if (isMountedRef.current) setIsFetching(false);
       }

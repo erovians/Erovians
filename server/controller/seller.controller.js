@@ -260,7 +260,7 @@ export const loginSeller = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
-        message: "Login successful",
+        message: "Login successfully",
         user: { id: seller._id, name: seller.name },
       });
 
