@@ -112,34 +112,13 @@ export const listAllProducts = async (req, res) => {
   }
 };
 
-// ✅ Get Product by ID
-// export const getProductById = async (req, res) => {
-//   try {
-//     const product = await getProductByIdService(req.params.productId);
-//     if (!product) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Product not found" });
-//     }
-//     res.status(200).json({ success: true, data: product });
-//   } catch (error) {
-//     console.error("Error fetching product:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: error.message || "Something went wrong while fetching product",
-//     });
-//   }
-// };
+// get product by ID
 export const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
+    const seller = req.user.userId;
 
-    // ✅ Increase view count every time product is viewed
-    const product = await Product.findByIdAndUpdate(
-      productId,
-      { $inc: { views: 1 } },
-      { new: true }
-    );
+    const product = await Product.findOne({ _id: productId, sellerId: seller });
 
     if (!product) {
       return res.status(404).json({

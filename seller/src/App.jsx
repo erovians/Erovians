@@ -24,7 +24,7 @@ import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPen
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
-
+import Inquries from "./pages/SellerDashboard/Messages/Inquries";
 
 function App() {
   const location = useLocation();
@@ -57,8 +57,15 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard" element={<ProtectedRoute> <SellerDashboardLayout /></ProtectedRoute>}>
-            
+          <Route
+            path="/sellerdashboard"
+            element={
+              <ProtectedRoute>
+                {" "}
+                <SellerDashboardLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* company */}
@@ -76,14 +83,14 @@ function App() {
             {/* /sellerdashboard/products/categories */}
             <Route path="products/categories" element={<Categories />} />
 
-
+            {/* messages */}
+            <Route path="messages/inquires" element={<Inquries />} />
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
             <Route path="orders/pending" element={<OrderPendingList />} />
             <Route path="orders/reviews" element={<ReviewSection />} />
-
-          </Route>  
+          </Route>
         )}
       </Routes>
 
