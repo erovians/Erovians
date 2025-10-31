@@ -44,6 +44,6 @@ app.use("/api/product", productRoutes);
 app.use("/api/orders", orderRoutes);
 
 //Quotation routes
-app.use("/api/quote", quoteRoute);
+app.use("/api/inquiry", quoteRoute);
 
 export { app };

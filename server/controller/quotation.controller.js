@@ -1,9 +1,10 @@
 import { Quotation } from "../models/quotation.model.js";
 import Product from "../models/product.model.js";
 
+// user will create quotation
 export const createQuotation = async (req, res) => {
   try {
-    const { userId, quantity, unitType, message } = req.body;
+    const { userId, quantity, message } = req.body;
     // const userId = req.user?.userId;
     const { productId } = req.params;
 
@@ -40,6 +41,37 @@ export const createQuotation = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Something went wrong while sending quotation.",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+//seller will see the quotation
+export const getQuotationsBySeller = async (req, res) => {
+  try {
+    const sellerId = req.user?.userId;
+
+    if (!sellerId) {
+      return res.status(400).json({
+        success: false,
+        message: "Seller ID is required or unauthorized.",
+      });
+    }
+
+    const quotations = await Quotation.find({ sellerId })
+      // .populate("userId").  BuyerId
+      .populate("productId")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      quotations,
+    });
+  } catch (error) {
+    console.error("Error fetching quotations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch quotations.",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
