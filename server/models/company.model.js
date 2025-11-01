@@ -30,7 +30,11 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
-
+    companyRegistrationYear: {
+      type: String,
+      required: true,
+      trim: true
+    },
     mainCategory: {
       type: [String],
       enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
