@@ -25,6 +25,7 @@ import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Inquries from "./pages/SellerDashboard/Messages/Inquries";
+import InquiryDetail from "./pages/SellerDashboard/Messages/InquiryDetail";
 
 function App() {
   const location = useLocation();
@@ -85,6 +86,10 @@ function App() {
 
             {/* messages */}
             <Route path="messages/inquires" element={<Inquries />} />
+            <Route
+              path="messages/inquirydetail/:id"
+              element={<InquiryDetail />}
+            />
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
