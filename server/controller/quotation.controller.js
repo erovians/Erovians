@@ -77,6 +77,7 @@ export const getQuotationsBySeller = async (req, res) => {
   }
 };
 
+// Inquiry
 export const getSellerQuotationById = async (req, res) => {
   try {
     const { id } = req.params;
