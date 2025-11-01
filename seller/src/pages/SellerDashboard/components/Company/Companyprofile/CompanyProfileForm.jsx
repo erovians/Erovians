@@ -5,7 +5,7 @@ import ReviewStep from "./steps/ReviewStep";
 import {
   stepOneSchema,
   stepTwoSchema,
-} from "../../schema/companyRegistrationForm.schema";
+} from "../../../schema/companyRegistrationForm.schema";
 import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -222,7 +222,7 @@ export default function CompanyProfileForm() {
       form.append("companyRegistrationYear", formData.companyRegistrationYear);
       form.append("address", JSON.stringify(formData.address));
       form.append("mainCategory", JSON.stringify(formData.mainCategory));
-      form.append("subCategory", JSON.stringify(formData.mainProduct));  
+      form.append("subCategory", JSON.stringify(formData.mainProduct));
       form.append("acceptedCurrency", formData.acceptedCurrency.join(","));
       form.append(
         "acceptedPaymentType",
@@ -282,7 +282,7 @@ export default function CompanyProfileForm() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto rounded">
+    <div className="max-w-7xl mx-auto rounded bg-white">
       <div className="p-2 md:p-4">
         <div className="flex justify-between mb-2">
           <span className="font-medium">Progress</span>
@@ -335,7 +335,7 @@ export default function CompanyProfileForm() {
         </div>
       </div>
 
-      <div className="pt-6 md:p-6">
+      <div className="pt-6 md:p-6 ">
         <CurrentComponent
           formData={formData}
           setFormData={setFormData}
@@ -345,7 +345,7 @@ export default function CompanyProfileForm() {
         <div className="mt-6 flex gap-2 justify-between items-center">
           <div>
             {currentStep > 1 && (
-              <Button onClick={prevStep}  variant="secondary">
+              <Button onClick={prevStep} variant="secondary">
                 Back
               </Button>
             )}
@@ -353,7 +353,7 @@ export default function CompanyProfileForm() {
 
           <div className="flex flex-col items-center gap-2">
             {currentStep < steps.length ? (
-              <Button onClick={nextStep}  variant="secondary">
+              <Button onClick={nextStep} variant="secondary">
                 Next <MoveRight size={20} />
               </Button>
             ) : (

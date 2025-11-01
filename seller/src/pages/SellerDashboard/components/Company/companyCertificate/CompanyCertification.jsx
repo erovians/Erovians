@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { AlertDialogMenu } from "../Helper/AlertDialogMenu";
+import { AlertDialogMenu } from "../../Helper/AlertDialogMenu";
 import { ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { certificateSchema } from "../../schema/certificate.schema";
+import { certificateSchema } from "../../../schema/certificate.schema";
 import {
   Field,
   FieldDescription,
@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import api from "@/utils/axios.utils";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCertificates } from "../../../../redux/slice/certificatesSlice";
+import { fetchCertificates } from "../../../../../redux/slice/certificatesSlice";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function CertificateDialog() {

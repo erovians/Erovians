@@ -61,7 +61,7 @@ h3 {
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
 
- /* Base colors */
+    /* Base colors */
     --toast-bg: hsl(0 0% 100%);
     --toast-text: hsl(220 9% 20%);
     --toast-border: hsl(220 9% 90%);
@@ -90,7 +90,6 @@ h3 {
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.439 0 0);
-
 
     /* Base colors */
     --toast-bg: hsl(0 0% 100%);
@@ -127,6 +126,12 @@ h3 {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
