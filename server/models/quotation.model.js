@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const quotationSchema = new mongoose.Schema(
   {
-    BuyerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
