@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import http from "http";
 import cookieParser from "cookie-parser";
 import sellerRoutes from "./routes/seller.routes.js";
 import companyRoutes from "./routes/company.routes.js";
@@ -8,6 +9,9 @@ import authRoutes from "./routes/auth.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
 import quoteRoute from "./routes/quotation.routes.js";
 
+import { Server } from "socket.io";
+import chatRoutes from "./routes/chat.routes.js";
+import { setupSocket } from "./socket/socket.js";
 const app = express();
 // app.use(express.json({ limit: "10mb" }));
 
@@ -45,5 +49,19 @@ app.use("/api/orders", orderRoutes);
 
 //Quotation routes
 app.use("/api/inquiry", quoteRoute);
+
+// Socket IO
+app.use("/api/chat", chatRoutes);
+
+// HTTP + Socket server
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+// Setup socket events
+setupSocket(io);
 
 export { app };
