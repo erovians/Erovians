@@ -1,6 +1,6 @@
 import Chat from "../models/chat.model.js";
-import Message from "../models/message.model.js";
 
+// ✅ Create or get chat between two users
 export const createChat = async (req, res) => {
   const { senderId, receiverId } = req.body;
   try {
@@ -9,7 +9,10 @@ export const createChat = async (req, res) => {
     });
 
     if (!chat) {
-      chat = await Chat.create({ members: [senderId, receiverId] });
+      chat = await Chat.create({
+        members: [senderId, receiverId],
+        messages: [],
+      });
     }
 
     res.status(200).json(chat);
@@ -18,6 +21,7 @@ export const createChat = async (req, res) => {
   }
 };
 
+// ✅ Get all chats for a user
 export const userChats = async (req, res) => {
   try {
     const chats = await Chat.find({
@@ -30,23 +34,34 @@ export const userChats = async (req, res) => {
   }
 };
 
+// ✅ Send message (push to messages array)
 export const sendMessage = async (req, res) => {
   const { chatId, senderId, text } = req.body;
+
   try {
-    const message = await Message.create({ chatId, senderId, text });
-    res.status(200).json(message);
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
+
+    chat.messages.push({ senderId, text });
+    await chat.save();
+
+    res.status(200).json(chat);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// ✅ Get all messages of a chat
 export const getMessages = async (req, res) => {
   try {
-    const messages = await Message.find({ chatId: req.params.chatId }).populate(
-      "senderId",
+    const chat = await Chat.findById(req.params.chatId).populate(
+      "messages.senderId",
       "name role"
     );
-    res.status(200).json(messages);
+
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
+
+    res.status(200).json(chat.messages);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
