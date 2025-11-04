@@ -129,9 +129,3 @@ h3 {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
