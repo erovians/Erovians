@@ -729,12 +729,8 @@ const ProductDetails = () => {
 
   // Get company data from Redux for categories
   const { company } = useSelector((state) => state.company);
-  const subCategories = company?.companyBasicInfo?.subCategory
-    ? company.companyBasicInfo.subCategory.split(",").map((s) => s.trim())
-    : [];
-  const categories = company?.companyBasicInfo?.mainCategory
-    ? company.companyBasicInfo.mainCategory.split(",").map((s) => s.trim())
-    : [];
+  const subCategories = company?.companyBasicInfo?.subCategory || [];
+  const categories = company?.companyBasicInfo?.mainCategory || [];
 
   console.log("categories", categories, "subCategories", subCategories);
 
@@ -799,7 +795,7 @@ const ProductDetails = () => {
           return;
         }
         console.error("Error fetching product:", err);
-        toast.error("Failed to load product. Try again later.");
+        toast.error(err.response.data.message);
       } finally {
         if (isMountedRef.current) setIsFetching(false);
       }
@@ -1267,7 +1263,23 @@ const ProductDetails = () => {
                   />
 
                   {/* Dropdown for priceUnit */}
-                  <select
+                  <Select
+                    value={editData.priceUnit}
+                    onValueChange={(value) =>
+                      setEditData({ ...editData, priceUnit: value })
+                    }
+                  >
+                    <SelectTrigger className="border p-2 rounded w-28">
+                      <SelectValue placeholder="Select Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sq.ft">sq.ft</SelectItem>
+                      <SelectItem value="sq.m">sq.m</SelectItem>
+                      <SelectItem value="piece">piece</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* <select
                     value={editData.priceUnit}
                     onChange={(e) =>
                       setEditData({ ...editData, priceUnit: e.target.value })
@@ -1275,9 +1287,9 @@ const ProductDetails = () => {
                     className="text-base border p-1 w-28"
                   >
                     <option value="sq.ft">sq.ft</option>
-                    <option value="sq.m">sq.m</option>
+                    <option value="sq.ft">sq.m</option>
                     <option value="piece">piece</option>
-                  </select>
+                  </select> */}
                 </>
               ) : (
                 <>
@@ -1394,7 +1406,7 @@ const ProductDetails = () => {
                         onChange={(e) =>
                           setEditData({ ...editData, [field]: e.target.value })
                         }
-                        className="border p-2 rounded w-full"
+                        className="border p-2 rounded w-full focus:outline-none focus:border-navyblue"
                       />
                     ) : (
                       <span className="text-gray-600">
@@ -1442,9 +1454,9 @@ const ProductDetails = () => {
                               size: { ...editData.size, [key]: e.target.value },
                             })
                           }
-                          className="border p-2 rounded w-full"
+                          className="border p-2 rounded w-full focus:outline-none focus:border-navyblue"
                         />
-                        <select
+                        {/* <select
                           value={editData.size?.[unitKey] || units[0]}
                           onChange={(e) =>
                             setEditData({
@@ -1462,7 +1474,30 @@ const ProductDetails = () => {
                               {unit}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+                        <Select
+                          value={editData.size?.[unitKey] || units[0]}
+                          onValueChange={(value) =>
+                            setEditData({
+                              ...editData,
+                              size: {
+                                ...editData.size,
+                                [unitKey]: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger className="border p-2 rounded w-28">
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {units.map((unit) => (
+                              <SelectItem key={unit} value={unit}>
+                                {unit}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     ) : (
                       <span className="text-gray-600">
@@ -1484,9 +1519,9 @@ const ProductDetails = () => {
                         onChange={(e) =>
                           setEditData({ ...editData, weight: e.target.value })
                         }
-                        className="border p-2 rounded w-full"
+                        className="border p-2 rounded w-full focus:outline-none focus:border-navyblue"
                       />
-                      <select
+                      {/* <select
                         value={editData.weightMeasurement || "kg"}
                         onChange={(e) =>
                           setEditData({
@@ -1498,7 +1533,24 @@ const ProductDetails = () => {
                       >
                         <option value="kg">kg</option>
                         <option value="ton">ton</option>
-                      </select>
+                      </select> */}
+                      <Select
+                        value={editData.weightMeasurement || "kg"}
+                        onValueChange={(value) =>
+                          setEditData({
+                            ...editData,
+                            weightMeasurement: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger className="border p-2 rounded w-28">
+                          <SelectValue placeholder="Select unit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="kg">kg</SelectItem>
+                          <SelectItem value="ton">ton</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   ) : (
                     <span className="text-gray-600">
@@ -1520,7 +1572,7 @@ const ProductDetails = () => {
                   onChange={(e) =>
                     setEditData({ ...editData, description: e.target.value })
                   }
-                  className="w-full h-40 border p-2 text-sm"
+                  className="w-full h-40 border p-2 text-sm focus:outline-none focus:border-navyblue"
                   rows={4}
                 />
               ) : (

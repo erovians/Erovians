@@ -17,12 +17,8 @@ import { toast } from "sonner"
 const AddProduct = () => {
   const dispatch = useDispatch();
   const { company } = useSelector((state) => state.company);
-  const subCategories = company?.companyBasicInfo?.subCategory
-    ? company.companyBasicInfo.subCategory.split(",").map((s) => s.trim())
-    : [];
-  const categories = company?.companyBasicInfo?.mainCategory
-    ? company.companyBasicInfo.mainCategory.split(",").map((s) => s.trim())
-    : [];
+  const subCategories = company?.companyBasicInfo?.subCategory || [];
+  const categories = company?.companyBasicInfo?.mainCategory || [];
 
   const { product, loading, message, error } = useSelector(
     (state) => state.products || {}

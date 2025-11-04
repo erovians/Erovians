@@ -14,11 +14,14 @@ export const verifyUser = (req, res, next) => {
       accessToken = req.cookies.accessToken;
     }
 
-    // No token found
+    // --- 🔑 Core Logic Change for Public Access ---
     if (!accessToken) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized, no token provided" });
+      // If no token is found, assign a default 'public' role
+      req.user = {
+        _id: null, // No user ID
+        role: "public",
+      };
+      return next(); // Proceed to the next middleware (e.g., allowRoles)
     }
 
     // Verify token

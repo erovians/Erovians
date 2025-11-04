@@ -89,5 +89,5 @@ export const productFormSchema = z.object({
   priceUnit: z.string().min(1, "Price unit is required."),
   description: z
     .string()
-    .min(10, "Description must be at least 10 characters."),
+    .min(50, "Description must be at least 10 characters."),
 });

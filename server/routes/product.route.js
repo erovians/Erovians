@@ -24,7 +24,7 @@ router.post(
   addProduct
 );
 router.get("/list", verifyUser, listAllProducts);
-router.get("/:productId", verifyUser, getProductById);
+router.get("/:productId", verifyUser, allowRoles("seller", "admin", "buyer", "public"), getProductById);
 router.delete("/:productId", verifyUser, allowRoles("seller"), deleteProduct);
 router.put("/:productId", verifyUser, allowRoles("seller"), updateProductData);
 router.post(
