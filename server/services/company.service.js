@@ -12,7 +12,7 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
 
     try {
       if (!sellerId) throw new Error("sellerId is required");
-
+  
       // ✅ Step 1: Check for existing company
       const existingCompany = await CompanyDetails.findOne({ sellerId })
         .session(session)
@@ -22,8 +22,11 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
         throw new Error("Company already registered for this seller");
 
       // ✅ Step 2: Parse and validate input
-      const address =
-        typeof data.address === "string" ? JSON.parse(data.address) : data.address;
+      const address = typeof data.address === "string" ? JSON.parse(data.address) : data.address;
+
+      const mainCategory= typeof data.mainCategory === "string" ? JSON.parse(data.mainCategory) : data.mainCategory;
+      const subCategory= typeof data.subCategory === "string" ? JSON.parse(data.subCategory) : data.subCategory;
+
 
       const validated = await registerCompanySchema.parseAsync({
         sellerId,
@@ -33,8 +36,8 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpl
           legalowner: data.legalowner,
           locationOfRegistration: data.locationOfRegistration,
           companyRegistrationYear: data.companyRegistrationYear,
-          mainCategory: data.mainCategory,
-          subCategory: data.subCategory,
+          mainCategory,
+          subCategory,
           acceptedCurrency: data.acceptedCurrency,
           acceptedPaymentType: data.acceptedPaymentType,
           languageSpoken: data.languageSpoken,

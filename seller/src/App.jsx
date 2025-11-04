@@ -12,13 +12,13 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
-import CompanyProfile from "./pages/SellerDashboard/components/Companyprofile/CompanyProfileForm";
+import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";
 import AddProducts from "./pages/SellerDashboard/components/Products/AddProducts";
-import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/CompanyOverview";
+import CompanyOverview from "./pages/SellerDashboard/components/Company/companyOverview/CompanyOverview";
 import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
 import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
-import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
+import CompanyCertification from "./pages/SellerDashboard/components/Company/companyCertificate/CompanyCertification";
 import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
 import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
