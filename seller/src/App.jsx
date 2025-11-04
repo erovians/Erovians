@@ -26,6 +26,7 @@ import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Inquries from "./pages/SellerDashboard/Messages/Inquries";
 import InquiryDetail from "./pages/SellerDashboard/Messages/InquiryDetail";
+import ChatApp from "./pages/chat/ChatApp";
 
 function App() {
   const location = useLocation();
@@ -95,6 +96,9 @@ function App() {
             <Route path="orders/completed" element={<OrderCompletedList />} />
             <Route path="orders/pending" element={<OrderPendingList />} />
             <Route path="orders/reviews" element={<ReviewSection />} />
+
+            {/* chats */}
+            <Route path="chats/:userId" element={<ChatApp />} />
           </Route>
         )}
       </Routes>
