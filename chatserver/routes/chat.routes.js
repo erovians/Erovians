@@ -10,7 +10,7 @@ import { verifyUser } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/:userId", verifyUser, createChat);
-router.get("/:userId",verifyUser, userChats);
+router.get("/",verifyUser, userChats);
 router.post("/message", sendMessage);
 router.get("/messages/:chatId", getMessages);
 

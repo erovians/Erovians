@@ -17,13 +17,12 @@ export default function ChatApp() {
 
       try {
         const res = await chatApi.post(`/chat/${userId}`);
-        console.log("Chat created or fetched:", res.data);
 
        
         setTimeout(() => {
           setChat(res.data);
           setLoading(false);
-        }, 10000);
+        }, 3000);
       } catch (err) {
         console.error("Error creating chat:", err);
         setLoading(false);
