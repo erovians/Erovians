@@ -23,26 +23,12 @@ export const createChat = async (req, res) => {
   }
 };
 
-// export const userChats = async (req, res) => {
-//   try {
-//     const  userId  = req.user.userId;
 
-//     const chats = await Chat.find({
-//       $or: [{ userId }, { sellerId: userId }],
-//     })
-//       .populate("userId", "name email role")
-//       .populate("sellerId", "name email role");
-
-//     res.status(200).json(chats);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 export const userChats = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Find chats where the user is either a buyer or a seller
+   
     const chats = await Chat.find({
       $or: [
         { "members.userId": userId },
