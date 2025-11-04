@@ -5,7 +5,7 @@ import { chatApi } from "@/utils/axios.utils";
 export default function Sidebar() {
   const [chats, setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   useEffect(() => {
     const fetchChats = async () => {
       try {
