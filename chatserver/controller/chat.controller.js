@@ -23,21 +23,43 @@ export const createChat = async (req, res) => {
   }
 };
 
+// export const userChats = async (req, res) => {
+//   try {
+//     const  userId  = req.user.userId;
+
+//     const chats = await Chat.find({
+//       $or: [{ userId }, { sellerId: userId }],
+//     })
+//       .populate("userId", "name email role")
+//       .populate("sellerId", "name email role");
+
+//     res.status(200).json(chats);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 export const userChats = async (req, res) => {
   try {
-    const  userId  = req.user.userId;
+    const userId = req.user.userId;
 
+    // Find chats where the user is either a buyer or a seller
     const chats = await Chat.find({
-      $or: [{ userId }, { sellerId: userId }],
+      $or: [
+        { "members.userId": userId },
+        { "members.sellerId": userId },
+      ],
     })
-      .populate("userId", "name email role")
-      .populate("sellerId", "name email role");
+      // .populate("members.userId", "name email")
+      .populate("members.sellerId", "name email")
+      .sort({ updatedAt: -1 });
 
-    res.status(200).json(chats);
+    res.status(200).json({ userId, chats });
   } catch (error) {
+    console.error("Error fetching user chats:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const sendMessage = async (req, res) => {
   const { chatId, senderId, text } = req.body;
