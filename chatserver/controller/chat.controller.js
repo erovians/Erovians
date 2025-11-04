@@ -1,13 +1,14 @@
 import Chat from "../models/message.model.js";
 
 export const createChat = async (req, res) => {
-  const { userId, sellerId } = req.body;
-
+  const { userId } = req.params;         
+  const sellerId = req.user.userId;  
   try {
     let chat = await Chat.findOne({
       "members.userId": userId,
       "members.sellerId": sellerId,
     });
+
 
     if (!chat) {
       chat = await Chat.create({
@@ -24,7 +25,7 @@ export const createChat = async (req, res) => {
 
 export const userChats = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  = req.user.userId;
 
     const chats = await Chat.find({
       $or: [{ userId }, { sellerId: userId }],

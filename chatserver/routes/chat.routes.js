@@ -5,11 +5,12 @@ import {
   sendMessage,
   getMessages,
 } from "../controller/chat.controller.js";
+import { verifyUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", createChat);
-router.get("/:userId", userChats);
+router.post("/:userId", verifyUser, createChat);
+router.get("/:userId",verifyUser, userChats);
 router.post("/message", sendMessage);
 router.get("/messages/:chatId", getMessages);
 

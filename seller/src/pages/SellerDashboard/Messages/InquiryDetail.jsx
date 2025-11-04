@@ -191,8 +191,8 @@ const InquiryDetail = () => {
 
       <div className="flex justify-end gap-4 px-6 pb-8 mt-2">
         <button
-          // onClick={() => navigate(`/chat/${q.userId?._id}`)}
-          onClick={() => alert("Please wait ,chat will be avilable soon !!")}
+          onClick={() => navigate(`/sellerdashboard/chats/${q.userId}`)}
+          // onClick={() => alert("Please wait ,chat will be avilable soon !!")}
           className="flex items-center gap-2 bg-navyblue text-white border border-navyblue  px-5 py-2 rounded-xl text-sm font-medium hover:bg-white hover:text-navyblue  transition"
         >
           <MessageCircle size={24} />
