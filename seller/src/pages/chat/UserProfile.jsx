@@ -29,7 +29,7 @@ export default function UserProfile() {
             src={src}
             alt="media"
             className="rounded-lg w-full h-16 sm:h-20 object-cover"
-          />
+          /> 
         ))}
       </div>
 

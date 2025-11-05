@@ -6,6 +6,8 @@ import { Server } from "socket.io";
 import chatRoutes from "./routes/chat.routes.js";
 import { setupSocket } from "./socket/socket.js";
 const app = express();
+import User from "./models/user.model.js";
+import Chat from "./models/chat.model.js";
 
 // Enable JSON parsing for non-file routes
 app.use(express.json({ limit: "10mb" }));
