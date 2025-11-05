@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
 
-export default function Sidebar() {
+export default function Sidebar({ onSelectChat }) {
   const [chatUsers, setChatUsers] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -21,7 +21,6 @@ export default function Sidebar() {
   const filteredUsers = chatUsers.filter((item) =>
     item.user?.email?.toLowerCase().includes(search.toLowerCase())
   );
-
   return (
     <div className="h-full flex flex-col bg-[#0B235A] text-white">
       <div className="p-4 text-lg font-semibold">Erovians 💬</div>
@@ -38,16 +37,17 @@ export default function Sidebar() {
       <div className="flex-1 overflow-y-auto">
         {filteredUsers.length > 0 ? (
           filteredUsers.map((chat, idx) => (
-            <div
-              key={idx}
-              className="px-4 py-3 hover:bg-[#102F7A] cursor-pointer transition"
-            >
+          <div
+            key={idx}
+            onClick={() => onSelectChat(chat)} 
+            className="px-4 py-3 hover:bg-[#102F7A] cursor-pointer transition"
+          >
               <div className="flex justify-between items-center">
 
               <p className="font-medium">Sandeep Nautiyal</p>
               <p className="text-xs">12:05</p>
               </div>
-              <p className="text-xs line-clamp-1">Hi !! How are you sandeep ?</p>
+              <p className="text-xs line-clamp-1">Hi ! How are you sandeep ?Hi ! How are you sandeep ?Hi ! How are you sandeep ?</p>
 
              
               {chat.lastMessage && (

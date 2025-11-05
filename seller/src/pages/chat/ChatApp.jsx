@@ -9,6 +9,7 @@ export default function ChatApp() {
   const { userId } = useParams(); 
   const [chat, setChat] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
 
   useEffect(() => {
     const createChat = async () => {
@@ -37,13 +38,15 @@ export default function ChatApp() {
 
       {/* Left Sidebar */}
       <div className="bg-navyblue text-white w-full md:w-1/3 lg:w-1/4">
-        <Sidebar />
+        {/* <Sidebar /> */}
+        <Sidebar onSelectChat={setSelectedChat} />
       </div>
 
       {/* Chat Window */}
       <div className="bg-gray-50 border-t md:border-t-0 md:border-x border-gray-200 w-full md:w-2/3 lg:w-2/4">
         {chat ? (
-          <ChatWindow chat={chat} />
+          // <ChatWindow chat={chat} />
+          <ChatWindow selectedChat={selectedChat} />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             Select a user to start chatting 💬
