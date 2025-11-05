@@ -1,5 +1,5 @@
 import Chat from "../models/chat.model.js";
-
+import Message from "../models/message.model.js";
 
 // frst user will create chat with seller
 export const createChat = async (req, res) => {
@@ -79,47 +79,36 @@ export const getMyChatUsers = async (req, res) => {
 };
 
 
+export const sendMessage = async (req, res) => {
+  try {
+    const { chatId, text } = req.body;
+    const senderId = req.user.userId; 
 
+   
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
 
-// export const userChats = async (req, res) => {
-//   try {
-//     const userId = req.user.userId; 
+    // 2. Create message document
+    const message = await Message.create({
+      chatId,
+      senderId,
+      text,
+    });
 
-//     const chats = await Chat.find({
-//       $or: [
-//         { "members.userId": userId },
-//         { "members.sellerId": userId }
-//       ]
-//     })
-//       .populate("members.userId")
-//       .populate("members.sellerId")
-//       .sort({ updatedAt: -1 });
+    res.status(201).json({
+      success: true,
+      message: "Message sent successfully",
+      data: message,
+    });
 
-//     console.log("Fetched chats for user:", userId, chats);
+  } catch (error) {
+    console.error("Error sending message:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
-//     res.status(200).json({ userId, chats });
-//   } catch (error) {
-//     console.error("Error fetching user chats:", error);
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
-// export const sendMessage = async (req, res) => {
-//   const { chatId, senderId, text } = req.body;
-
-//   try {
-//     const chat = await Chat.findById(chatId);
-//     if (!chat) return res.status(404).json({ message: "Chat not found" });
-
-//     chat.messages.push({ senderId, text });
-//     await chat.save();
-
-//     res.status(200).json(chat);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 // export const getMessages = async (req, res) => {
 //   try {
