@@ -32,10 +32,8 @@ app.use("/api/chat", chatRoutes);
 // HTTP + Socket server
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
+  cors: { origin: ["http://localhost:5173", "http://192.168.29.142:5173"], credentials: true },
+});;
 
 // Setup socket events
 setupSocket(io);
