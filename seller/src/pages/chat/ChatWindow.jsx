@@ -134,8 +134,8 @@ export default function ChatWindow({ selectedChat }) {
         className={`px-3 py-2 rounded-xl max-w-[70%] text-sm 
           ${
             msg.senderId === selectedChat.user._id
-              ? "bg-gray-200 text-gray-800"   // Other user (LEFT) → Gray
-              : "bg-blue-500 text-white"       // You (RIGHT) → Blue
+              ? "bg-gray-200 text-gray-800"   
+              : "bg-blue-500 text-white"       
           }`}
       >
         {msg.text}
