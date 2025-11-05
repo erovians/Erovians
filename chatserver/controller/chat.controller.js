@@ -36,8 +36,7 @@ export const getMyChatUsers = async (req, res) => {
         { "members.sellerId": loggedInUserId }
       ]
     })
-      .populate("members.userId", "email mobile role")
-      .populate("members.sellerId", "email mobile role")
+      .populate("members.userId")
       .sort({ updatedAt: -1 });
 
     const chatUsers = chats
@@ -78,49 +77,58 @@ export const getMyChatUsers = async (req, res) => {
   }
 };
 
-
+// send message in chat BY ANY USER WHICH IS LOGGED IN 
 export const sendMessage = async (req, res) => {
   try {
-    const { chatId, text } = req.body;
-    const senderId = req.user.userId; 
+    const { chatId, text, receiverId } = req.body;
+    const senderId = req.user.userId;
 
-   
-    const chat = await Chat.findById(chatId);
-    if (!chat) {
-      return res.status(404).json({ message: "Chat not found" });
-    }
-
-    // 2. Create message document
     const message = await Message.create({
       chatId,
       senderId,
+      receiverId, 
       text,
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Message sent successfully",
-      data: message,
-    });
-
+    res.status(201).json({ success: true, data: message });
   } catch (error) {
-    console.error("Error sending message:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
+// Controller to Fetch Messages of a Chat
+export const getMessages = async (req, res) => {
+  try {
+    const { chatId } = req.params;
+    const { selectedUserId } = req.query; // coming from frontend
+    const loggedInUserId = req.user.userId;
 
-// export const getMessages = async (req, res) => {
-//   try {
-//     const chat = await Chat.findById(req.params.chatId).populate(
-//       "messages.senderId",
-//       "name role"
-//     );
+    // 1. Validate chat exists
+    const chat = await Chat.findById(chatId);
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
 
-//     if (!chat) return res.status(404).json({ message: "Chat not found" });
+    // 2. Verify logged-in user is part of chat
+    const isParticipant =
+      chat.members.userId.toString() === loggedInUserId.toString() ||
+      chat.members.sellerId.toString() === loggedInUserId.toString();
 
-//     res.status(200).json(chat.messages);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+    if (!isParticipant) {
+      return res.status(403).json({ message: "Access denied to this chat" });
+    }
+
+    // 3. Filter messages exchanged only between these two users
+    const messages = await Message.find({
+      chatId,
+      $or: [
+        { senderId: loggedInUserId, receiverId: selectedUserId },
+        { senderId: selectedUserId, receiverId: loggedInUserId },
+      ],
+    }).sort({ createdAt: 1 });
+
+    res.status(200).json({ success: true, messages });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
