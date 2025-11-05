@@ -77,27 +77,3 @@ export const getQuotationsBySeller = async (req, res) => {
   }
 };
 
-// Inquiry
-export const getSellerQuotationById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const sellerId = req.user.userId;
-
-    const quotation = await Quotation.findOne({ _id: id, sellerId }).populate(
-      "productId",
-      "productName category subCategory productImages origin pricePerUnit priceUnit color grade weight weightMeasurement size"
-    );
-    // .populate("userId");
-
-    if (!quotation) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Inquiry not found" });
-    }
-
-    res.status(200).json({ success: true, quotation });
-  } catch (error) {
-    console.error("Error fetching quotation detail:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};

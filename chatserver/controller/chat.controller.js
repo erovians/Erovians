@@ -1,5 +1,7 @@
 import Chat from "../models/chat.model.js";
 
+
+// frst user will create chat with seller
 export const createChat = async (req, res) => {
   const { userId } = req.params;         
   const sellerId = req.user.userId;  
@@ -23,7 +25,7 @@ export const createChat = async (req, res) => {
   }
 };
 
-
+// second user (seller or user) will get all chat users
 export const getMyChatUsers = async (req, res) => {
   try {
     const loggedInUserId = req.user.userId;
