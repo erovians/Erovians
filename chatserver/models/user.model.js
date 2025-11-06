@@ -36,6 +36,9 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "suspended"],
       default: "active",
     },
+    bio:{
+      type: String,
+    }
   },
   {
     timestamps: true,

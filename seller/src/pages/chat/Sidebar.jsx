@@ -19,8 +19,8 @@ export default function Sidebar({ onSelectChat }) {
   }, []);
 
   const filteredUsers = chatUsers.filter((item) =>
-    item.user?.email?.toLowerCase().includes(search.toLowerCase())
-  );
+    item?.user?.name?.toLowerCase().includes(search.toLowerCase())
+  );     
   return (
     <div className="h-full flex flex-col bg-[#0B235A] text-white">
       <div className="p-4 text-lg font-semibold">Erovians 💬</div>
