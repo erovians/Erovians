@@ -56,7 +56,7 @@ export default function ChatApp() {
 
       {/* Right Sidebar */}
       <div className="hidden lg:block w-1/4 bg-navyblue text-white">
-        <UserProfile chat={chat} />
+        <UserProfile user={selectedChat?.user} />
       </div>
 
       {/* 🔹 Loading Popup Overlay */}

@@ -43,8 +43,10 @@ export default function ChatWindow({ selectedChat }) {
   };
 
   if (!selectedChat) {
-    return <div className="h-full flex items-center justify-center">Select a chat...</div>;
+    return <div className="h-full flex text-gray-400 items-center justify-center">Welcome to Erovians Chat ..</div>;
   }
+
+  console.log("Selected Chat in ChatWindow:", selectedChat);
 
   return (
     <div className="h-full flex flex-col">
