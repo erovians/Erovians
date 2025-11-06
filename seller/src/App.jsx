@@ -28,6 +28,12 @@ import Inquries from "./pages/SellerDashboard/Messages/Inquries";
 import InquiryDetail from "./pages/SellerDashboard/Messages/InquiryDetail";
 import ChatApp from "./pages/chat/ChatApp";
 
+function NotFound() {
+  return <div  className=" h-full flex" >
+<h1 className="m-auto">404 - Page Not Found</h1>
+  </div> 
+}
+
 function App() {
   const location = useLocation();
 
@@ -36,6 +42,7 @@ function App() {
   const hideFooterRoutes = ["/login", "/start-selling"];
 
   const isSellerRoute = location.pathname.startsWith("/seller");
+
 
   return (
     <>
@@ -99,6 +106,7 @@ function App() {
 
             {/* chats */}
             <Route path="chats/:userId" element={<ChatApp />} />
+            <Route path="*" element={<NotFound/>} />
           </Route>
         )}
       </Routes>
