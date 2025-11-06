@@ -170,7 +170,7 @@ export default function ChatWindow({ selectedChat }) {
           <img
             src={selectedChat.user?.image}
             alt="profile"
-            className="w-10 h-10 rounded-full"
+            className="w-8 h-8 rounded-full"
           />
           <div>
             <h2 className="font-semibold text-sm">{selectedChat.user?.name}</h2>
@@ -200,14 +200,14 @@ export default function ChatWindow({ selectedChat }) {
               <img
                 src={selectedChat.user.image}
                 alt="avatar"
-                className="w-8 h-8 rounded-full mr-2"
+                className="w-6 h-6 rounded-full mr-2"
               />
             )}
             <div
               className={`px-4 py-2 rounded-lg max-w-[70%] ${
                 msg.senderId === selectedChat.user._id
                   ? "bg-white border border-gray-200 text-gray-800"
-                  : "bg-blue-500 text-white"
+                  : "bg-navyblue text-white"
               }`}
             >
               <p className="text-sm">{msg.text}</p>
@@ -247,7 +247,7 @@ export default function ChatWindow({ selectedChat }) {
           
           <button
             onClick={sendMessage}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition text-sm font-medium"
+            className="bg-navyblue text-white px-4 py-2 rounded hover:bg-blue-950 transition text-sm font-medium"
           >
             Send
           </button>

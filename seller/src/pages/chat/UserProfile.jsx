@@ -76,7 +76,7 @@ export default function UserProfile({ user }) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white border-l overflow-y-auto">
+    <div className="h-full flex flex-col bg-white  overflow-y-auto">
      
 
       {/* Profile Info */}
@@ -87,7 +87,7 @@ export default function UserProfile({ user }) {
               <img
                 src={user.image || "https://i.pravatar.cc/100"}
                 alt="profile"
-                className="w-12 h-12 rounded-full"
+                className="w-10 h-10 rounded-full"
               />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
             </div>
@@ -101,7 +101,7 @@ export default function UserProfile({ user }) {
               </div>
             </div>
           </div>
-          <button className="text-blue-600 text-sm hover:underline">
+          <button  className="bg-navyblue hover:bg-blue-950 hover:cursor-pointer text-white px-3 py-2 rounded  transition text-xs font-medium">
             Add as Customer
           </button>
         </div>
@@ -129,14 +129,19 @@ export default function UserProfile({ user }) {
         {/* Preference Tags */}
         <div className="py-4 border-b">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium">Preference Tags</h3>
+            <h3 className="text-sm font-medium">Media</h3>
             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div className="flex flex-wrap gap-2">
-            <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full">{user.tags}</span>
-            
+            {/* <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full">{user.tags}</span> */}
+            {
+              media.map((src, i) => (
+                <img src={src} alt="" className="w-30 h-30"/>
+
+              ))
+            }
           </div>
         </div>
 
