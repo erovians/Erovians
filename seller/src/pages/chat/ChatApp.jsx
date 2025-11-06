@@ -34,7 +34,7 @@ export default function ChatApp() {
   }, [userId]);
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+    <div className="relative w-full max-w-full mx-auto  sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
 
       {/* Left Sidebar */}
       <div className="bg-navyblue text-white w-full md:w-1/3 lg:w-1/4">
