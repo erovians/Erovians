@@ -166,7 +166,7 @@ export const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
     const userRole = req.user.role; // Access the role set by your middleware
-    const userId = req.user._id;
+    const userId = req.user.UserId;
 
     let findFilter = { _id: productId };
     let updateViews = false;

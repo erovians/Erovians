@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchInquiryById } from "../../../redux/slice/inquirySlice";
+import { fetchInquiryById } from "../../../../redux/slice/inquirySlice";
 import { MessageCircle } from "lucide-react";
 
 const InquiryDetail = () => {
