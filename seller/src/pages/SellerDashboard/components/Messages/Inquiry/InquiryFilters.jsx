@@ -22,7 +22,7 @@ const InquiryFilters = ({
   onSortChange,
   searchQuery,
   onSearchChange,
-  counts
+  counts,
 }) => {
   return (
     <div className="border-b border-gray-200">
@@ -106,7 +106,7 @@ const InquiryFilters = ({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search"
-                className="w-64 pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-64 pl-3 pr-10 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navyblue focus:border-transparent"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                 <Search className="w-4 h-4" />

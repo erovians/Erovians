@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { Flag, RotateCcw } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const formatTime = (dateString) => {
   if (!dateString) return "--:--";
@@ -7,7 +8,7 @@ const formatTime = (dateString) => {
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false
+    hour12: false,
   });
 };
 
@@ -16,7 +17,7 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
     month: "short",
-    day: "numeric"
+    day: "numeric",
   });
 };
 
@@ -42,10 +43,26 @@ const getInitials = (name) => {
 
 const getStatusConfig = (status) => {
   const configs = {
-    Ongoing: { bg: "bg-yellow-100", text: "text-yellow-700", border: "border-yellow-200" },
-    Completed: { bg: "bg-green-100", text: "text-green-700", border: "border-green-200" },
-    Pending: { bg: "bg-orange-100", text: "text-orange-700", border: "border-orange-200" },
-    Cancelled: { bg: "bg-red-100", text: "text-red-700", border: "border-red-200" },
+    Ongoing: {
+      bg: "bg-yellow-100",
+      text: "text-yellow-700",
+      border: "border-yellow-200",
+    },
+    Completed: {
+      bg: "bg-green-100",
+      text: "text-green-700",
+      border: "border-green-200",
+    },
+    Pending: {
+      bg: "bg-orange-100",
+      text: "text-orange-700",
+      border: "border-orange-200",
+    },
+    Cancelled: {
+      bg: "bg-red-100",
+      text: "text-red-700",
+      border: "border-red-200",
+    },
   };
   return configs[status] || configs.Ongoing;
 };
@@ -60,17 +77,21 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
     status = "Ongoing",
     country,
     countryCode,
+    user,
+    seller,
     createdAt,
     updatedAt,
-    flagged = false,
-    unread = false
+    isFlagged = false,
+    unread = false,
   } = inquiry;
 
+  console.log(inquiry);
+
   const inquiryId = _id ? _id.slice(-10) : "----------";
-  const username = userId?.username || "Saurabh";
+  const username = user?.name || "John Doe";
   const productName = productId?.productName || "Product";
   const initials = getInitials(username);
-  const ownerName = owner || "Rajesh Kumar";
+  const ownerName = seller.name || "Rajesh Kumar";
   const statusConfig = getStatusConfig(status);
 
   return (
@@ -93,14 +114,17 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
         />
         <button
           className={`p-1 rounded hover:bg-gray-100 transition-colors ${
-            flagged ? "text-orange-600" : "text-gray-400"
+            isFlagged ? "text-orange-600" : "text-gray-400"
           }`}
           onClick={(e) => {
             e.stopPropagation();
             console.log("Toggle flag:", _id);
           }}
         >
-          <Flag className="w-4 h-4" fill={flagged ? "currentColor" : "none"} />
+          <Flag
+            className="w-4 h-4"
+            fill={isFlagged ? "currentColor" : "none"}
+          />
         </button>
       </div>
 
@@ -110,10 +134,13 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Inquiry ID:</span>
-            <span className="text-xs font-medium text-gray-900">{inquiryId}</span>
+            <span className="text-xs font-medium text-gray-900">
+              {inquiryId}
+            </span>
           </div>
           <div className="text-xs text-gray-400">
-            Updated on: {formatTime(updatedAt)} &nbsp;•&nbsp; Created on: {formatTime(createdAt)}
+            Updated on: {formatTime(updatedAt)} &nbsp;•&nbsp; Created on:{" "}
+            {formatTime(createdAt)}
           </div>
         </div>
 
@@ -121,7 +148,10 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
         <div className="flex items-center gap-2">
           {/* Avatar */}
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-            {initials}
+            <Avatar>
+              <AvatarImage src={user.profileImage} alt="@shadcn" />
+              <AvatarFallback> {initials}</AvatarFallback>
+            </Avatar>
           </div>
 
           {/* Username and country */}
@@ -157,9 +187,7 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
       {/* Right section: Owner, Status, Actions */}
       <div className="flex items-center gap-4 min-w-fit">
         {/* Owner */}
-        <div className="text-sm text-gray-700 w-28 truncate">
-          {ownerName}
-        </div>
+        <div className="text-sm text-gray-700 w-28 truncate">{ownerName}</div>
 
         {/* Status badge */}
         <div
