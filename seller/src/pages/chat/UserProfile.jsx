@@ -101,7 +101,7 @@ export default function UserProfile({ user }) {
               </div>
             </div>
           </div>
-          <button  className="bg-navyblue hover:bg-blue-950 hover:cursor-pointer text-white px-3 py-2 rounded  transition text-xs font-medium">
+          <button  className=" text-blue-500 hover:cursor-pointer transition text-xs font-medium">
             Add as Customer
           </button>
         </div>
