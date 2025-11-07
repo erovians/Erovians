@@ -17,7 +17,7 @@ export default function UserProfile({ user }) {
   }
 
   return (
-    <div className="h-full  flex flex-col bg-white  overflow-y-auto">
+    <div className="h-full  flex flex-col bg-white  overflow-y-auto ">
       {/* Profile Info */}
       <div className="p-4">
         <div className="flex items-start justify-between mb-4">
@@ -48,7 +48,9 @@ export default function UserProfile({ user }) {
         <div className="space-y-3 pb-4 border-b">
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Company Name</span>
-            <span className="font-medium text-gray-500">Sandeep Pvt Ltd</span>
+            <span className="font-medium text-gray-500">
+              {user.companyName || "Sandeep Pvt Ltd ."}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Email</span>
