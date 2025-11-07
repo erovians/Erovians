@@ -25,7 +25,7 @@ const InquiryDetail = () => {
   if (!q)
     return <p className="text-center text-gray-600">Inquiry not found.</p>;
   return (
-    <div className="w-full h-full rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+    <div className="w-full h-fit rounded-2xl shadow-md border border-gray-100 overflow-hidden">
       <div className="p-4 flex justify-between items-center border-b">
         <div>
           <p className="text-xs text-gray-600">
