@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import locationRoutes from "./routes/location.route.js"
+import locationRoutes from "./routes/location.route.js";
 import sellerRoutes from "./routes/seller.routes.js";
 import companyRoutes from "./routes/company.routes.js";
 import productRoutes from "./routes/product.route.js";
@@ -10,7 +10,6 @@ import orderRoutes from "./routes/orders.routes.js";
 import quoteRoute from "./routes/quotation.routes.js";
 
 const app = express();
-// app.use(express.json({ limit: "10mb" }));
 
 // Enable JSON parsing for non-file routes
 app.use(express.json({ limit: "10mb" }));
@@ -29,7 +28,7 @@ app.use(cookieParser());
 // Serve static files
 app.use("/api/uploads", express.static("uploads"));
 
-//locattion route 
+//locattion route
 app.use("/api/location", locationRoutes);
 
 // Verify User Route
@@ -49,7 +48,5 @@ app.use("/api/orders", orderRoutes);
 
 //Quotation routes
 app.use("/api/inquiry", quoteRoute);
-
-
 
 export { app };
