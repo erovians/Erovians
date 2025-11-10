@@ -10,9 +10,9 @@ const MAIN_TABS = [
 ];
 
 const STATUS_TABS = [
-  { id: "All", label: "All" },
-  { id: "Pending for reply", label: "Pending for reply" },
-  { id: "New inquiry", label: "New inquiry" },
+  { id: "All", label: "All", query: {} },
+  { id: "Pending for reply", label: "Pending for reply", query: { status: "Pending for reply" } },
+  { id: "New inquiry", label: "New inquiry", query: { isNew: true } },
 ];
 
 const InquiryFilters = ({

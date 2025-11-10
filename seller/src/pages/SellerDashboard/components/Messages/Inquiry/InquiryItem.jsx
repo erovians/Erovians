@@ -1,25 +1,26 @@
 import React, { memo } from "react";
 import { Flag, RotateCcw } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatSmartDate } from "@/utils/formatDate.utils";
 
-const formatTime = (dateString) => {
-  if (!dateString) return "--:--";
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-};
+// const formatTime = (dateString) => {
+//   if (!dateString) return "--:--";
+//   const date = new Date(dateString);
+//   return date.toLocaleTimeString("en-US", {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: false,
+//   });
+// };
 
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-};
+// const formatDate = (dateString) => {
+//   if (!dateString) return "";
+//   const date = new Date(dateString);
+//   return date.toLocaleDateString("en-US", {
+//     month: "short",
+//     day: "numeric",
+//   });
+// };
 
 const CountryFlag = ({ code }) => {
   if (!code) return null;
@@ -139,8 +140,8 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
             </span>
           </div>
           <div className="text-xs text-gray-400">
-            Updated on: {formatTime(updatedAt)} &nbsp;•&nbsp; Created on:{" "}
-            {formatTime(createdAt)}
+            Updated: <span>{formatSmartDate(updatedAt)}</span>
+            &nbsp;•&nbsp; Created: <span>{formatSmartDate(createdAt)}</span>
           </div>
         </div>
 

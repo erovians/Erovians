@@ -280,6 +280,7 @@ import InquiryToolbar from "./InquiryToolbar";
 import InquiryItem from "./InquiryItem";
 import InquirySkeleton from "./InquirySkeleton";
 import { AlertDialogMenu } from "../../Helper/AlertDialogMenu";
+import { toast } from "sonner";
 
 const Inquiry = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
