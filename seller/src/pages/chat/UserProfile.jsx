@@ -135,9 +135,9 @@ export default function UserProfile({ user, onlineUsers = [] }) {
             </div>
 
             <div>
-              <h2 className="font-semibold text-base">{user.name}</h2>
+              <h2 className="font-semibold text-xs text-black">{user?.name}</h2>
               <p className="text-xs text-gray-500 mt-1">
-                {isOnline ? "🟢 Active Now" : "⚪ Offline"}
+                {isOnline ? " Active Now" : " Offline"}
               </p>
             </div>
           </div>
