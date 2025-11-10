@@ -118,7 +118,7 @@ export default function ChatApp() {
             Select a user to start chatting 💬
           </div>
         )}
-      </div>                
+      </div>
 
       {/* Right Sidebar */}
       <div className="hidden lg:block w-1/4  text-white">
