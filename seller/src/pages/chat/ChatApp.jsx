@@ -103,14 +103,14 @@ export default function ChatApp() {
   }, [userId]);
 
   return (
-    <div className="relative w-full max-w-full mx-auto sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+    <div className="relative w-full max-w-full  mx-auto sm:h-[85vh]  flex flex-col md:flex-row overflow-hidden">
       {/* Left Sidebar */}
-      <div className="bg-navyblue text-white w-full md:w-1/3 lg:w-1/4">
+      <div className=" text-white w-full md:w-1/3 lg:w-1/4">
         <Sidebar onSelectChat={setSelectedChat} onlineUsers={onlineUsers} />
       </div>
 
       {/* Chat Window */}
-      <div className="bg-gray-50 border-t md:border-t-0 h-[400px] sm:h-full md:border-x border-gray-200 w-full md:w-2/3 lg:w-2/4">
+      <div className="  h-[400px] sm:h-full  w-full md:w-2/3 lg:w-2/4">
         {chat ? (
           <ChatWindow selectedChat={selectedChat} onlineUsers={onlineUsers} />
         ) : (
@@ -118,15 +118,15 @@ export default function ChatApp() {
             Select a user to start chatting 💬
           </div>
         )}
-      </div>
+      </div>                
 
       {/* Right Sidebar */}
-      <div className="hidden lg:block w-1/4 bg-navyblue text-white">
+      <div className="hidden lg:block w-1/4  text-white">
         <UserProfile user={selectedChat?.user} onlineUsers={onlineUsers} />
       </div>
 
       {/* 🔹 Loading Popup Overlay */}
-      {loading && (
+      {/* {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm z-50">
           <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 text-center max-w-sm w-full transform transition-all duration-300 scale-105">
             <div className="flex justify-center mb-4">
@@ -142,7 +142,7 @@ export default function ChatApp() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
