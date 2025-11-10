@@ -112,7 +112,7 @@ export default function Sidebar({ onSelectChat, selectedChatId }) {
                 {/* Profile */}
                 <div className="relative">
                   <img
-                    src={chat.user.image}
+                    src={chat.user.profileImage}
                     alt={chat.user.name}
                     className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                   />

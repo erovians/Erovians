@@ -55,7 +55,7 @@ export default function ChatWindow({ selectedChat }) {
       <div className="hidden md:flex items-center justify-between px-4 py-3 border-b bg-white">
         <div className="flex items-center space-x-3">
           <img
-            src={selectedChat.user?.image}
+            src={selectedChat.user?.profileImage}
             alt="profile"
             className="w-8 h-8 rounded-full"
           />
@@ -99,7 +99,7 @@ export default function ChatWindow({ selectedChat }) {
           >
             {msg.senderId === selectedChat.user._id && (
               <img
-                src={selectedChat.user.image}
+                src={selectedChat.user.profileImage}
                 alt="avatar"
                 className="w-6 h-6 rounded-full mr-2"
               />
