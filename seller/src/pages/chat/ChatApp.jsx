@@ -1,15 +1,86 @@
+// import Sidebar from "./Sidebar";
+// import ChatWindow from "./ChatWindow";
+// import UserProfile from "./UserProfile";
+// import { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import { chatApi } from "@/utils/axios.utils";
+
+// export default function ChatApp() {
+//   const { userId } = useParams();
+//   const [chat, setChat] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [selectedChat, setSelectedChat] = useState(null);
+
+//   useEffect(() => {
+//     const createChat = async () => {
+//       if (!userId) return;
+//       setLoading(true);
+
+//       try {
+//         const res = await chatApi.post(`/chat/${userId}`);
+
+//         setTimeout(() => {
+//           setChat(res.data);
+//           setLoading(false);
+//         }, 3000);
+//       } catch (err) {
+//         console.error("Error creating chat:", err);
+//         setLoading(false);
+//       }
+//     };
+
+//     createChat();
+//   }, [userId]);
+
+//   return (
+//     <div className="relative w-full max-w-full mx-auto  sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+//       {/* Left Sidebar */}
+//       <div className="bg-navyblue text-white w-full md:w-1/3 lg:w-1/4">
+//         {/* <Sidebar /> */}
+//         <Sidebar onSelectChat={setSelectedChat} />
+//       </div>
+
+//       {/* Chat Window */}
+//       <div className="bg-gray-50 border-t md:border-t-0 h-[400px] sm:h-full md:border-x border-gray-200 w-full md:w-2/3 lg:w-2/4">
+//         {chat ? (
+//           // <ChatWindow chat={chat} />
+//           <ChatWindow selectedChat={selectedChat} />
+//         ) : (
+//           <div className="flex items-center justify-center h-full text-gray-500">
+//             Select a user to start chatting 💬
+//           </div>
+//         )}
+//       </div>
+
+//       {/* Right Sidebar */}
+//       <div className="hidden lg:block w-1/4 bg-navyblue text-white">
+//         <UserProfile user={selectedChat?.user} />
+//       </div>
+
 import Sidebar from "./Sidebar";
 import ChatWindow from "./ChatWindow";
 import UserProfile from "./UserProfile";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { chatApi } from "@/utils/axios.utils";
+import { chatApi } from "../../utils/axios.utils";
+import { socket, connectSocket } from "../../utils/socket";
 
 export default function ChatApp() {
   const { userId } = useParams();
   const [chat, setChat] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  useEffect(() => {
+    connectSocket();
+
+    socket.on("getUsers", (users) => {
+      setOnlineUsers(users);
+    });
+
+    return () => socket.off("getUsers");
+  }, []);
 
   useEffect(() => {
     const createChat = async () => {
@@ -18,7 +89,6 @@ export default function ChatApp() {
 
       try {
         const res = await chatApi.post(`/chat/${userId}`);
-
         setTimeout(() => {
           setChat(res.data);
           setLoading(false);
@@ -33,18 +103,16 @@ export default function ChatApp() {
   }, [userId]);
 
   return (
-    <div className="relative w-full max-w-full mx-auto  sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+    <div className="relative w-full max-w-full mx-auto sm:h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
       {/* Left Sidebar */}
       <div className="bg-navyblue text-white w-full md:w-1/3 lg:w-1/4">
-        {/* <Sidebar /> */}
-        <Sidebar onSelectChat={setSelectedChat} />
+        <Sidebar onSelectChat={setSelectedChat} onlineUsers={onlineUsers} />
       </div>
 
       {/* Chat Window */}
       <div className="bg-gray-50 border-t md:border-t-0 h-[400px] sm:h-full md:border-x border-gray-200 w-full md:w-2/3 lg:w-2/4">
         {chat ? (
-          // <ChatWindow chat={chat} />
-          <ChatWindow selectedChat={selectedChat} />
+          <ChatWindow selectedChat={selectedChat} onlineUsers={onlineUsers} />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             Select a user to start chatting 💬
@@ -54,7 +122,7 @@ export default function ChatApp() {
 
       {/* Right Sidebar */}
       <div className="hidden lg:block w-1/4 bg-navyblue text-white">
-        <UserProfile user={selectedChat?.user} />
+        <UserProfile user={selectedChat?.user} onlineUsers={onlineUsers} />
       </div>
 
       {/* 🔹 Loading Popup Overlay */}
