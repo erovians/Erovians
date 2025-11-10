@@ -24,7 +24,7 @@ export default function UserProfile({ user }) {
           <div className="flex items-center space-x-3">
             <div className="relative">
               <img
-                src={user.image || "https://i.pravatar.cc/100"}
+                src={user.profileImage || "https://i.pravatar.cc/100"}
                 alt="profile"
                 className="w-10 h-10 rounded-full"
               />
