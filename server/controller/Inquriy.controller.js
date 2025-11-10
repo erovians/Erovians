@@ -671,6 +671,7 @@ export const listInquires = async (req, res, next) => {
           readInfo: 1,
           orderId: 1,
           country: 1,
+          countryCode: 1,
           platform: 1,
           updatedAt: 1,
           createdAt: 1,
