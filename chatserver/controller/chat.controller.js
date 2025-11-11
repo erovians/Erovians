@@ -129,6 +129,7 @@ export const getMyChatUsers = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { chatId, text, receiverId } = req.body;
+    // const senderId = req.user.userId;
     const senderId = req.user.userId;
 
     const message = await Message.create({

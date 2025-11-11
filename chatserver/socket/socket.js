@@ -9,7 +9,7 @@ let activeUsers = [];
  * Helper: add user to activeUsers using socket.user.userId
  */
 function registerActiveUser(userId, socketId) {
-  const exists = activeUsers.find(u => u.userId === userId);
+  const exists = activeUsers.find((u) => u.userId === userId);
   if (!exists) activeUsers.push({ userId, socketId });
 }
 
@@ -17,14 +17,14 @@ function registerActiveUser(userId, socketId) {
  * Helper: remove socket on disconnect
  */
 function unregisterSocket(socketId) {
-  activeUsers = activeUsers.filter(u => u.socketId !== socketId);
+  activeUsers = activeUsers.filter((u) => u.socketId !== socketId);
 }
 
 /**
  * Helper: find a user's active socket
  */
 function findUserSocket(userId) {
-  return activeUsers.find(u => String(u.userId) === String(userId));
+  return activeUsers.find((u) => String(u.userId) === String(userId));
 }
 
 export const setupSocket = (io) => {
@@ -90,7 +90,10 @@ export const setupSocket = (io) => {
         // (optional) ensure receiver is the other member
         if (
           receiverId &&
-          ![String(chat.members?.userId), String(chat.members?.sellerId)].includes(String(receiverId))
+          ![
+            String(chat.members?.userId),
+            String(chat.members?.sellerId),
+          ].includes(String(receiverId))
         ) {
           throw new Error("Receiver is not part of this chat");
         }

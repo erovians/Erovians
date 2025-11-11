@@ -117,7 +117,7 @@ export default function UserProfile({ user, onlineUsers = [] }) {
   const isOnline = onlineUsers.some((u) => u.userId === user._id);
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-y-auto">
+    <div className="h-full flex flex-col bg-white overflow-y-auto hide-scrollbar">
       <div className="p-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">

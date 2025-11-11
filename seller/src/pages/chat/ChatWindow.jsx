@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
+import { assets } from "@/assets/assets";
 
 export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   const [messages, setMessages] = useState([]);
@@ -48,7 +49,9 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
     return (
       <div className="h-full flex items-center justify-center text-gray-400 bg-gray-50">
         <div className="text-center">
-          <div className="text-6xl mb-4">💬</div>
+          <div className="text-6xl mb-4">
+            <img src={assets.logo} alt="" width={100} className="m-auto" />
+          </div>
           <p>Select a conversation to start chatting</p>
         </div>
       </div>
@@ -100,7 +103,7 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-50 hide-scrollbar">
         {messages.map((msg, i) => (
           <div
             key={i}
