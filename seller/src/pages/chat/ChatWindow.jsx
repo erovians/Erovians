@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
-export default function ChatWindow({ selectedChat }) {
+
+export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+
+  // ✅ Check if selected user is online (same logic as UserProfile)
+  const isOnline = onlineUsers.some(
+    (u) => u.userId === selectedChat?.user?._id
+  );
 
   useEffect(() => {
     if (!selectedChat) return;
@@ -51,39 +57,46 @@ export default function ChatWindow({ selectedChat }) {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden">
-      {/* Header – hidden on small screens */}
+      {/* Header with User Online Status */}
       <div className="hidden md:flex items-center justify-between px-4 py-3 border-b bg-white">
         <div className="flex items-center space-x-3">
-          <img
-            src={selectedChat.user?.profileImage}
-            alt="profile"
-            className="w-8 h-8 rounded-full"
-          />
+          <div className="relative">
+            <img
+              src={selectedChat.user?.profileImage}
+              alt="profile"
+              className="w-9 h-9 rounded-full"
+            />
+
+            {/* ✅ Online/Offline Dot */}
+            <span
+              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white 
+              ${isOnline ? "bg-green-500" : "bg-gray-400"}`}
+            />
+          </div>
+
           <div>
             <h2 className="font-semibold text-sm">{selectedChat.user?.name}</h2>
             <p className="text-xs text-gray-500">
-              {selectedChat.user?.country || "Online"}
+              {isOnline ? "Active Now" : "Offline"}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <button className="p-2 hover:bg-gray-100 rounded">
-            <svg
-              className="w-5 h-5 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-              />
-            </svg>
-          </button>
-        </div>
+        <button className="p-2 hover:bg-gray-100 rounded">
+          <svg
+            className="w-5 h-5 text-gray-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+            />
+          </svg>
+        </button>
       </div>
 
       {/* Messages */}

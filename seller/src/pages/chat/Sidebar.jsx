@@ -83,7 +83,7 @@ export default function Sidebar({ onSelectChat, selectedChatId }) {
         >
           Unread
         </button>
-        <button
+        {/* <button
           className={`flex-1 py-2 md:py-3 ${
             activeTab === "reply"
               ? "text-navyblue border-b-2 border-navyblue"
@@ -92,7 +92,7 @@ export default function Sidebar({ onSelectChat, selectedChatId }) {
           onClick={() => setActiveTab("reply")}
         >
           To reply
-        </button>
+        </button> */}
       </div>
 
       {/* Chat List */}

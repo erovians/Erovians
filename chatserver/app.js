@@ -41,4 +41,4 @@ const io = new Server(server, {
 // Setup socket events
 setupSocket(io);
 
-export { app };
+export { app, server };

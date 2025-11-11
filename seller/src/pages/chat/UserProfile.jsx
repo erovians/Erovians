@@ -190,7 +190,7 @@ export default function UserProfile({ user, onlineUsers = [] }) {
           <div className="flex flex-wrap gap-2">
             {/* <span className="bg-blue-50 text-blue-700 text-xs px-3 py-1 rounded-full">{user.tags}</span> */}
             {media.map((src, i) => (
-              <img src={src} alt="" className="w-30 h-30" />
+              <img key={i} src={src} alt="" className="w-30 h-30" />
             ))}
           </div>
         </div>
