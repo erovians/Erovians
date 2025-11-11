@@ -126,7 +126,7 @@ export default function ChatApp() {
       </div>
 
       {/* 🔹 Loading Popup Overlay */}
-      {/* {loading && (
+      {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm z-50">
           <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 text-center max-w-sm w-full transform transition-all duration-300 scale-105">
             <div className="flex justify-center mb-4">
@@ -142,7 +142,7 @@ export default function ChatApp() {
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

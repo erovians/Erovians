@@ -12,8 +12,17 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    receiverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     text: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["unread", "read"],
+      default: "unread",
+    },
   },
   { timestamps: true }
 );
