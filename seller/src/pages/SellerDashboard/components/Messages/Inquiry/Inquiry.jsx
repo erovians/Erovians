@@ -270,10 +270,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   fetchInquiries,
-  performBulkInquiryAction, // Import the new thunk
+  performBulkInquiryAction,
+  markInquiryAsViewed,
+  optimisticallyMarkAsViewed,
 } from "../../../../../redux/slice/inquirySlice";
-import api from "@/utils/axios.utils"; // Import api for file download
-import { saveAs } from "file-saver"; // Import file-saver
+import api from "@/utils/axios.utils";
+import { saveAs } from "file-saver";
 import InquiryHeader from "./InquiryHeader";
 import InquiryFilters from "./InquiryFilters.jsx";
 import InquiryToolbar from "./InquiryToolbar";
@@ -289,19 +291,18 @@ const Inquiry = () => {
   const navigate = useNavigate();
 
   const inquiries = useSelector((state) => state.inquiries.list);
-  const { loading, error, total, counts } = useSelector(
+  const { loading, error, total, counts, bulkActionLoading } = useSelector(
     (state) => state.inquiries
   );
 
   // Local state for filters and selections
   const [selectedTab, setSelectedTab] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All"); // This is now 'statusTab' for the API
   const [selectedInquiries, setSelectedInquiries] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("Latest");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(25);
-  const [showOnlyUnread, setShowOnlyUnread] = useState(false); // Lifted state
+  const [showOnlyUnread, setShowOnlyUnread] = useState(false);
 
   // --- REUSABLE FETCH FUNCTION ---
   const getInquiries = useCallback(() => {
@@ -310,48 +311,43 @@ const Inquiry = () => {
         page,
         limit,
         tab: selectedTab,
-        statusTab: statusFilter,
+        statusTab: selectedTab, // Use selectedTab for both
         sortBy,
         q: searchQuery,
-        showOnlyUnread, // Pass the new filter
+        showOnlyUnread,
       })
     );
-  }, [
-    dispatch,
-    page,
-    limit,
-    selectedTab,
-    statusFilter,
-    sortBy,
-    searchQuery,
-    showOnlyUnread,
-  ]);
+  }, [dispatch, page, limit, selectedTab, sortBy, searchQuery, showOnlyUnread]);
 
   // Initial fetch and re-fetch on filter changes
   useEffect(() => {
     getInquiries();
-  }, [getInquiries]); // This effect now just depends on the memoized function
+  }, [getInquiries]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setPage(1);
+    setSelectedInquiries([]); // Clear selections on filter change
+  }, [selectedTab, searchQuery, sortBy, showOnlyUnread]);
 
   // --- REUSABLE BULK ACTION HANDLER ---
   const handleBulkAction = useCallback(
     async (action) => {
       if (selectedInquiries.length === 0) {
-        alert("Please select inquiries first.");
+        toast.error("Please select inquiries first.");
         return;
       }
 
-      // Dispatch the thunk
       const result = await dispatch(
         performBulkInquiryAction({ action, ids: selectedInquiries })
       );
 
-      // Check if the action was successful before refetching
       if (performBulkInquiryAction.fulfilled.match(result)) {
-        setSelectedInquiries([]); // Clear selection
-        getInquiries(); // Re-fetch the list with current filters
+        toast.success(`Action "${action}" completed successfully`);
+        setSelectedInquiries([]);
+        getInquiries();
       } else {
-        // Error is already handled in the slice, but you could show a toast here
-        console.error("Bulk action failed:", result.payload);
+        toast.error(result.payload || "Action failed");
       }
     },
     [dispatch, selectedInquiries, getInquiries]
@@ -375,22 +371,40 @@ const Inquiry = () => {
     [inquiries]
   );
 
-  // --- Handlers for toolbar actions ---
+  // --- Handler for viewing inquiry details ---
   const handleView = useCallback(
-    (id) => {
+    async (id) => {
+      // Optimistically update UI
+      dispatch(optimisticallyMarkAsViewed(id));
+      
+      // Navigate to detail page
       navigate(`/sellerdashboard/messages/inquirydetail/${id}`);
+      
+      // Mark as viewed in background (non-blocking)
+      try {
+        await dispatch(markInquiryAsViewed(id));
+      } catch (error) {
+        console.error("Failed to mark inquiry as viewed:", error);
+        // Optionally show a subtle notification, but don't block user
+      }
     },
-    [navigate]
+    [navigate, dispatch]
   );
 
   // Open dialogs
   const handleDelete = () => {
-    if (selectedInquiries.length === 0) return;
+    if (selectedInquiries.length === 0) {
+      toast.error("Please select inquiries to delete");
+      return;
+    }
     setDeleteDialogOpen(true);
   };
-  
+
   const handleReportSpam = () => {
-     if (selectedInquiries.length === 0) return;
+    if (selectedInquiries.length === 0) {
+      toast.error("Please select inquiries to report as spam");
+      return;
+    }
     setSpamDialogOpen(true);
   };
 
@@ -398,45 +412,45 @@ const Inquiry = () => {
   const confirmDelete = () => handleBulkAction("delete");
   const confirmSpam = () => handleBulkAction("mark_spam");
 
-  // New handlers for "More" menu
+  // Handlers for "More" menu
   const handleMarkAsRead = () => handleBulkAction("mark_read");
   const handleMarkAsUnread = () => handleBulkAction("mark_unread");
 
-  // New handler for export
+  // Handler for export
   const handleExportSelected = async () => {
     if (selectedInquiries.length === 0) {
-      alert("Please select inquiries to export");
+      toast.error("Please select inquiries to export");
       return;
     }
+    
     try {
-      // We don't use Redux for file downloads
+      toast.loading("Exporting inquiries...");
+      
       const response = await api.post(
         "/inquiry/export",
         { ids: selectedInquiries },
-        { responseType: "blob" } // Important for file downloads
+        { responseType: "blob" }
       );
 
-      saveAs(response.data, "inquiries.xlsx"); // Use file-saver
-      setSelectedInquiries([]); // Clear selection after export
+      saveAs(response.data, `inquiries_${Date.now()}.xlsx`);
+      setSelectedInquiries([]);
+      
+      toast.dismiss();
+      toast.success("Inquiries exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Failed to export inquiries.");
+      toast.dismiss();
+      toast.error(error.response?.data?.message || "Failed to export inquiries");
     }
   };
-
-  // --- CLIENT-SIDE FILTERING IS REMOVED ---
-  // We now render the `inquiries` array directly from Redux.
 
   return (
     <>
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-[1400px] mx-auto p-4 space-y-4">
-          {/* Header with reception data */}
           <InquiryHeader />
 
-          {/* Main content card */}
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-            {/* Filter tabs */}
             <InquiryFilters
               selectedTab={selectedTab}
               onTabChange={setSelectedTab}
@@ -447,27 +461,22 @@ const Inquiry = () => {
               counts={counts}
             />
 
-            {/* Toolbar */}
             <InquiryToolbar
               selectedCount={selectedInquiries.length}
-              totalCount={inquiries.length} // Use inquiries list from Redux
+              totalCount={inquiries.length}
               onSelectAll={handleSelectAll}
               onDelete={handleDelete}
               onReportSpam={handleReportSpam}
-              // Pass down new handlers
               onMarkAsRead={handleMarkAsRead}
               onMarkAsUnread={handleMarkAsUnread}
               onExportSelected={handleExportSelected}
-              // Pass down lifted state
               showOnlyUnread={showOnlyUnread}
               onShowOnlyUnreadChange={setShowOnlyUnread}
-              // Note: We removed statusFilter props, as that logic seems to be
-              // in InquiryFilters or part of the main 'selectedTab'
+              bulkActionLoading={bulkActionLoading}
             />
 
-            {/* Inquiry list */}
             <div className="p-4">
-              {loading && inquiries.length === 0 ? ( // Show skeleton only on initial load
+              {loading && inquiries.length === 0 ? (
                 <div className="space-y-2">
                   {[...Array(5)].map((_, i) => (
                     <InquirySkeleton key={i} />
@@ -477,7 +486,7 @@ const Inquiry = () => {
                 <div className="text-center py-12">
                   <p className="text-red-500 mb-2">{error}</p>
                   <button
-                    onClick={getInquiries} // Use the specific fetch function
+                    onClick={getInquiries}
                     className="text-blue-600 hover:underline"
                   >
                     Try again
@@ -486,16 +495,13 @@ const Inquiry = () => {
               ) : inquiries.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-gray-600">
-                    {searchQuery ||
-                    statusFilter !== "All" ||
-                    selectedTab !== "All"
+                    {searchQuery || selectedTab !== "All"
                       ? "No inquiries match your filters"
                       : "No inquiries found"}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {/* Map over `inquiries` from Redux */}
                   {inquiries.map((inq) => (
                     <InquiryItem
                       key={inq._id}
@@ -509,15 +515,13 @@ const Inquiry = () => {
               )}
             </div>
 
-            {/* Pagination (if needed) */}
             {inquiries.length > 0 && (
               <div className="px-4 py-3 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">
                     Showing {inquiries.length} of {total} inquiries
                   </p>
-                  {/* TODO: Add a real pagination component here */}
-                  {/* It would control the 'page' and 'limit' state */}
+                  {/* TODO: Add pagination component */}
                 </div>
               </div>
             )}
@@ -525,7 +529,6 @@ const Inquiry = () => {
         </div>
       </div>
 
-      {/*Dialog menu for delete and spam button = */}
       <AlertDialogMenu
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
