@@ -1,5 +1,10 @@
 import Chat from "../models/chat.model.js";
 import Message from "../models/message.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
+import multer from "multer";
+import mongoose from "mongoose";
+
+const upload = multer({ dest: "uploads/" });
 
 // frst user will create chat with seller
 export const createChat = async (req, res) => {
@@ -128,8 +133,8 @@ export const getMyChatUsers = async (req, res) => {
 // send message in chat BY ANY USER WHICH IS LOGGED IN
 export const sendMessage = async (req, res) => {
   try {
-    const { chatId, text, receiverId } = req.body;
-    // const senderId = req.user.userId;
+    const { chatId, text } = req.body;
+    const receiverId = req.user.userId;
     const senderId = "690ae30913ffba8b7869fd75";
 
     const message = await Message.create({
@@ -150,7 +155,7 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const { selectedUserId } = req.query; 
+    const { selectedUserId } = req.query;
     const loggedInUserId = req.user.userId;
 
     // 1. Validate chat exists

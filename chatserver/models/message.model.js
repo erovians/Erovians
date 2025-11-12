@@ -18,6 +18,8 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     text: { type: String, required: true },
+    fileUrl: String,
+    fileType: String,
     status: {
       type: String,
       enum: ["unread", "read"],
