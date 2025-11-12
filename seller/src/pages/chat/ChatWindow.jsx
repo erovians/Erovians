@@ -207,6 +207,7 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const isOnline = onlineUsers.some(
     (u) => u.userId === selectedChat?.user?._id
@@ -356,7 +357,8 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
                   <img
                     src={msg.fileUrl}
                     alt="uploaded"
-                    className={`rounded-lg max-w-full mb-2 ${
+                    onClick={() => setPreviewImage(msg.fileUrl)}
+                    className={`rounded-lg max-w-full h-[130px] mb-2 cursor-pointer hover:opacity-80 transition ${
                       msg.pending ? "opacity-80" : ""
                     }`}
                   />
@@ -391,11 +393,12 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
       <div className="px-4 py-3 border-t bg-white flex items-center space-x-2">
         {/* Upload Button */}
         <button
-          className="p-2 hover:bg-gray-100 rounded"
+          className="p-2 hover:bg-gray-100 rounded relative"
           onClick={() => fileInputRef.current.click()}
         >
           <CloudUpload />
         </button>
+
         <input
           type="file"
           ref={fileInputRef}
@@ -404,12 +407,47 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
           onChange={handleFileSelect}
         />
 
+        {/* ✅ Show preview if file selected */}
         {file && (
-          <p className="text-xs text-gray-600 truncate max-w-[100px]">
-            {file.name}
-          </p>
+          <div className="flex items-center space-x-2">
+            {file.type.startsWith("image/") ? (
+              // 🖼️ Image preview
+              <div className="relative w-10 h-10">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt="preview"
+                  className="w-10 h-10 rounded object-cover border"
+                />
+                {/* Small close/remove button */}
+                <button
+                  onClick={() => {
+                    setFile(null);
+                    fileInputRef.current.value = "";
+                  }}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full px-[4px] py-[1px]"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              // 📄 Non-image file indicator
+              <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded">
+                <span className="text-sm">📄 {file.name.slice(0, 12)}...</span>
+                <button
+                  onClick={() => {
+                    setFile(null);
+                    fileInputRef.current.value = "";
+                  }}
+                  className="text-red-500 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
         )}
 
+        {/* Message Input */}
         <input
           type="text"
           value={text}
@@ -426,6 +464,31 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
           Send
         </button>
       </div>
+
+      {/* ✅ Fullscreen Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute top-3 right-3 text-white bg-black/50 rounded-full p-2 hover:bg-black transition"
+            >
+              ✕
+            </button>
+
+            {/* Full Image */}
+            <img
+              src={previewImage}
+              alt="Full Preview"
+              className="max-w-[90vw] max-h-[90vh] rounded-lg shadow-lg"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
