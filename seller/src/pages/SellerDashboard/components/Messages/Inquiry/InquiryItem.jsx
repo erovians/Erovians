@@ -92,7 +92,6 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
   const username = user?.name || "John Doe";
   const productName = productId?.productName || "Product";
   const initials = getInitials(username);
-  const ownerName = seller.name || "Rajesh Kumar";
   const statusConfig = getStatusConfig(status);
 
   return (
@@ -188,7 +187,7 @@ const InquiryItem = ({ inquiry, selected, onSelect, onView }) => {
       {/* Right section: Owner, Status, Actions */}
       <div className="flex items-center gap-4 min-w-fit">
         {/* Owner */}
-        <div className="text-sm text-gray-700 w-28 truncate">{ownerName}</div>
+        <div className="text-sm text-gray-700 w-28 truncate">{productName}</div>
 
         {/* Status badge */}
         <div
