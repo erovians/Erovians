@@ -25,7 +25,7 @@ const InquiryDetail = () => {
   if (!q)
     return <p className="text-center text-gray-600">Inquiry not found.</p>;
   return (
-    <div className="w-full h-fit rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+    <div className="w-full h-fit sm:h-full md:h-fit lg:h-full rounded-2xl shadow-md border border-gray-100 overflow-hidden">
       <div className="p-4 flex justify-between items-center border-b">
         <div>
           <p className="text-xs text-gray-600">
@@ -189,7 +189,7 @@ const InquiryDetail = () => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 px-6 pb-8 mt-2">
+      <div className="flex justify-end gap-4 px-6 pb-8 ">
         <button
           onClick={() => navigate(`/sellerdashboard/chats/${q.userId}`)}
           // onClick={() => alert("Please wait ,chat will be avilable soon !!")}
