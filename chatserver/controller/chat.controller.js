@@ -150,7 +150,7 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const { selectedUserId } = req.query; // coming from frontend
+    const { selectedUserId } = req.query; 
     const loggedInUserId = req.user.userId;
 
     // 1. Validate chat exists

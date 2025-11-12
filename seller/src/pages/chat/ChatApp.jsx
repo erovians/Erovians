@@ -102,6 +102,10 @@ export default function ChatApp() {
     createChat();
   }, [userId]);
 
+
+
+  console.log("Online Users:", onlineUsers);
+
   return (
     <div className="relative w-full max-w-full  mx-auto sm:h-[85vh]  flex flex-col md:flex-row overflow-hidden">
       {/* Left Sidebar */}
