@@ -8,7 +8,7 @@ let activeUsers = [];
 /**
  * Helper: add user to activeUsers using socket.user.userId
  */
-function registerActiveUser(userId, socketId) {
+export function registerActiveUser(userId, socketId) {
   const exists = activeUsers.find((u) => u.userId === userId);
   if (!exists) activeUsers.push({ userId, socketId });
 }
