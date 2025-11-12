@@ -151,21 +151,25 @@ export default function UserProfile({ user, onlineUsers = [] }) {
         <div className="space-y-3 pb-4 border-b">
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Company Name</span>
-            <span className="font-medium text-gray-500">
-              {user.companyName || "Sandeep Pvt Ltd ."}
+            <span className="text-gray-600 font-medium text-[13px]">
+              {user.companyName || "Sandeep Pvt Ltd."}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Email</span>
-            <span className="text-gray-700">{user.email || "none"}</span>
+            <span className="text-gray-600 font-medium text-[13px]">
+              {user.email || "none"}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Registration Time</span>
-            <span className="text-gray-700">2024-03-12</span>
+            <span className="text-gray-600 font-medium text-[13px]">
+              2024-03-12
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Buyer Tag</span>
-            <span className="text-gray-700">-</span>
+            <span className="text-gray-600 font-medium text-[13px]">-</span>
           </div>
         </div>
 
