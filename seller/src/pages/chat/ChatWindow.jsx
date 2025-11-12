@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
 import { assets } from "@/assets/assets";
+import { CloudUpload } from "lucide-react";
 
 export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   const [messages, setMessages] = useState([]);
@@ -145,7 +146,9 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
       {/* Message Input */}
       <div className="px-4 py-3 border-t bg-white">
         <div className="flex items-center space-x-2">
-          <button className="p-2 hover:bg-gray-100 rounded">📎</button>
+          <button className="p-2 hover:bg-gray-100 rounded">
+            <CloudUpload />
+          </button>
 
           <input
             type="text"
