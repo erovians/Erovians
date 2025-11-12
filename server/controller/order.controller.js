@@ -5,6 +5,7 @@ export const createOrder = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
     const userId = req.user.userId;
+    // const userId = "690ae30913ffba8sb7869fd75";
 
     if (!productId || !userId) {
       return res.status(400).json({
@@ -33,7 +34,7 @@ export const createOrder = async (req, res) => {
     const newOrder = await Order.create({
       productId,
       userId,
-      sellerId: product.sellerId._id,
+      sellerId: product.sellerId,
       quantity,
       totalPrice,
       status: "pending",
@@ -100,9 +101,9 @@ export const getUserOrders = async (req, res) => {
 export const getSellerOrders = async (req, res) => {
   try {
     const sellerId = req.user.userId;
-    const orders = await Order.find({ sellerId })
-      .populate("productId", "name pricePerUnit")
-      .populate("userId", "name email")
+    const orders = await Order.find( { sellerId:sellerId } )
+      .populate("productId")
+      .populate("userId")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, count: orders.length, orders });
