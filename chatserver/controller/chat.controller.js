@@ -4,29 +4,10 @@ import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
 
 // send message in chat BY ANY USER WHICH IS LOGGED IN
 export const sendMessage = async (req, res) => {
-  // try {
-  //   const { chatId, text } = req.body;
-  //   const receiverId = req.user.userId;
-  //   const senderId = "690ae30913ffba8b7869fd75";
-
-  //   const message = await Message.create({
-  //     chatId,
-  //     senderId,
-  //     receiverId,
-  //     text,
-  //     status: "unread",
-  //   });
-
-  //   res.status(201).json({ success: true, data: message });
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
-
   try {
-    const { chatId, text } = req.body;
-    // const senderId = req.user.userId; // logged-in user
+    const { chatId, text, receiverId } = req.body;
     const senderId = req.user.userId;
-    const receiverId = "690ae30913ffba8b7869fd75";
+    // const receiverId = "690ae30913ffba8b7869fd75";
 
     let fileUrl = null;
     let fileType = null;
