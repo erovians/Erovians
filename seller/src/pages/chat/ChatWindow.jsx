@@ -1,20 +1,193 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+// import { chatApi } from "@/utils/axios.utils";
+// import { assets } from "@/assets/assets";
+// import { CloudUpload } from "lucide-react";
+
+// export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
+//   const [messages, setMessages] = useState([]);
+//   const [text, setText] = useState("");
+
+//   // ✅ Check if selected user is online (same logic as UserProfile)
+//   const isOnline = onlineUsers.some(
+//     (u) => u.userId === selectedChat?.user?._id
+//   );
+
+//   useEffect(() => {
+//     if (!selectedChat) return;
+
+//     const fetchMessages = async () => {
+//       try {
+//         const res = await chatApi.get(
+//           `/chat/${selectedChat.chatId}/messages/?selectedUserId=${selectedChat.user._id}`
+//         );
+//         setMessages(res.data.messages);
+//       } catch (error) {
+//         console.error("Error fetching messages:", error);
+//       }
+//     };
+
+//     fetchMessages();
+//   }, [selectedChat]);
+
+//   const sendMessage = async () => {
+//     if (!text.trim()) return;
+
+//     try {
+//       const res = await chatApi.post("/chat/send-message", {
+//         chatId: selectedChat.chatId,
+//         text,
+//         receiverId: selectedChat.user._id,
+//       });
+
+//       setMessages((prev) => [...prev, res.data.data]);
+//       setText("");
+//     } catch (error) {
+//       console.error("Error sending message:", error);
+//     }
+//   };
+
+//   if (!selectedChat) {
+//     return (
+//       <div className="h-full flex items-center justify-center text-gray-400 bg-gray-50">
+//         <div className="text-center">
+//           <div className="text-6xl mb-4">
+//             <img src={assets.logo} alt="" width={100} className="m-auto" />
+//           </div>
+//           <p>Select a conversation to start chatting</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="h-full flex flex-col bg-white overflow-hidden">
+//       {/* Header with User Online Status */}
+//       <div className="hidden md:flex items-center justify-between px-4 py-3 border-b bg-white">
+//         <div className="flex items-center space-x-3">
+//           <div className="relative">
+//             <img
+//               src={selectedChat.user?.profileImage}
+//               alt="profile"
+//               className="w-9 h-9 rounded-full"
+//             />
+
+//             {/* ✅ Online/Offline Dot */}
+//             <span
+//               className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
+//               ${isOnline ? "bg-green-500" : "bg-gray-400"}`}
+//             />
+//           </div>
+
+//           <div>
+//             <h2 className="font-semibold text-sm">{selectedChat.user?.name}</h2>
+//             <p className="text-xs text-gray-500">
+//               {isOnline ? "Active Now" : "Offline"}
+//             </p>
+//           </div>
+//         </div>
+
+//         <button className="p-2 hover:bg-gray-100 rounded">
+//           <svg
+//             className="w-5 h-5 text-gray-600"
+//             fill="none"
+//             stroke="currentColor"
+//             viewBox="0 0 24 24"
+//           >
+//             <path
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               strokeWidth={2}
+//               d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+//             />
+//           </svg>
+//         </button>
+//       </div>
+
+//       {/* Messages */}
+//       <div className="flex-1 overflow-y-auto p-4 bg-gray-50 hide-scrollbar">
+//         {messages.map((msg, i) => (
+//           <div
+//             key={i}
+//             className={`flex mb-4 ${
+//               msg.senderId === selectedChat.user._id
+//                 ? "justify-start"
+//                 : "justify-end"
+//             }`}
+//           >
+//             {msg.senderId === selectedChat.user._id && (
+//               <img
+//                 src={selectedChat.user.profileImage}
+//                 alt="avatar"
+//                 className="w-6 h-6 rounded-full mr-2"
+//               />
+//             )}
+//             <div
+//               className={`px-4 py-2 rounded-lg max-w-[70%] ${
+//                 msg.senderId === selectedChat.user._id
+//                   ? "bg-white border border-gray-200 text-gray-800"
+//                   : "bg-navyblue text-white"
+//               }`}
+//             >
+//               <p className="text-sm">{msg.text}</p>
+//               <p
+//                 className={`text-xs mt-1 ${
+//                   msg.senderId === selectedChat.user._id
+//                     ? "text-gray-400"
+//                     : "text-blue-100"
+//                 }`}
+//               >
+//                 {msg.timestamp}
+//               </p>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* Message Input */}
+//       <div className="px-4 py-3 border-t bg-white">
+//         <div className="flex items-center space-x-2">
+//           <button className="p-2 hover:bg-gray-100 rounded">
+//             <CloudUpload />
+//           </button>
+
+//           <input
+//             type="text"
+//             value={text}
+//             onChange={(e) => setText(e.target.value)}
+//             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+//             placeholder="Enter your message..."
+//             className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+//           />
+
+//           <button
+//             onClick={sendMessage}
+//             className="bg-navyblue text-white px-4 py-2 rounded hover:bg-blue-950 transition text-sm font-medium"
+//           >
+//             Send
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+import { useEffect, useRef, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
-import { assets } from "@/assets/assets";
 import { CloudUpload } from "lucide-react";
+import { assets } from "@/assets/assets";
 
 export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef(null);
 
-  // ✅ Check if selected user is online (same logic as UserProfile)
   const isOnline = onlineUsers.some(
     (u) => u.userId === selectedChat?.user?._id
   );
 
+  // Fetch previous messages
   useEffect(() => {
     if (!selectedChat) return;
-
     const fetchMessages = async () => {
       try {
         const res = await chatApi.get(
@@ -25,34 +198,43 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
         console.error("Error fetching messages:", error);
       }
     };
-
     fetchMessages();
   }, [selectedChat]);
 
+  // ✅ Send text + optional file
   const sendMessage = async () => {
-    if (!text.trim()) return;
+    if (!text.trim() && !file) return;
+
+    const formData = new FormData();
+    formData.append("chatId", selectedChat.chatId);
+    formData.append("receiverId", selectedChat.user._id);
+    if (text) formData.append("text", text);
+    if (file) formData.append("file", file);
 
     try {
-      const res = await chatApi.post("/chat/send-message", {
-        chatId: selectedChat.chatId,
-        text,
-        receiverId: selectedChat.user._id,
+      const res = await chatApi.post("/chat/send-message", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       setMessages((prev) => [...prev, res.data.data]);
       setText("");
+      setFile(null);
+      fileInputRef.current.value = "";
     } catch (error) {
       console.error("Error sending message:", error);
     }
+  };
+
+  const handleFileSelect = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) setFile(selectedFile);
   };
 
   if (!selectedChat) {
     return (
       <div className="h-full flex items-center justify-center text-gray-400 bg-gray-50">
         <div className="text-center">
-          <div className="text-6xl mb-4">
-            <img src={assets.logo} alt="" width={100} className="m-auto" />
-          </div>
+          <img src={assets.logo} alt="" width={100} className="m-auto mb-4" />
           <p>Select a conversation to start chatting</p>
         </div>
       </div>
@@ -61,7 +243,7 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden">
-      {/* Header with User Online Status */}
+      {/* Header */}
       <div className="hidden md:flex items-center justify-between px-4 py-3 border-b bg-white">
         <div className="flex items-center space-x-3">
           <div className="relative">
@@ -70,14 +252,12 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
               alt="profile"
               className="w-9 h-9 rounded-full"
             />
-
-            {/* ✅ Online/Offline Dot */}
             <span
-              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white 
-              ${isOnline ? "bg-green-500" : "bg-gray-400"}`}
+              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                isOnline ? "bg-green-500" : "bg-gray-400"
+              }`}
             />
           </div>
-
           <div>
             <h2 className="font-semibold text-sm">{selectedChat.user?.name}</h2>
             <p className="text-xs text-gray-500">
@@ -85,22 +265,6 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
             </p>
           </div>
         </div>
-
-        <button className="p-2 hover:bg-gray-100 rounded">
-          <svg
-            className="w-5 h-5 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-            />
-          </svg>
-        </button>
       </div>
 
       {/* Messages */}
@@ -128,7 +292,27 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
                   : "bg-navyblue text-white"
               }`}
             >
-              <p className="text-sm">{msg.text}</p>
+              {/* If image/file exists */}
+              {msg.fileUrl &&
+                (msg.fileType === "image" ? (
+                  <img
+                    src={msg.fileUrl}
+                    alt="uploaded"
+                    className="rounded-lg max-w-full mb-2"
+                  />
+                ) : (
+                  <a
+                    href={msg.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-blue-400 text-sm mb-2 block"
+                  >
+                    📄 View File
+                  </a>
+                ))}
+
+              {msg.text && <p className="text-sm">{msg.text}</p>}
+
               <p
                 className={`text-xs mt-1 ${
                   msg.senderId === selectedChat.user._id
@@ -144,28 +328,43 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
       </div>
 
       {/* Message Input */}
-      <div className="px-4 py-3 border-t bg-white">
-        <div className="flex items-center space-x-2">
-          <button className="p-2 hover:bg-gray-100 rounded">
-            <CloudUpload />
-          </button>
+      <div className="px-4 py-3 border-t bg-white flex items-center space-x-2">
+        {/* Upload Button */}
+        <button
+          className="p-2 hover:bg-gray-100 rounded"
+          onClick={() => fileInputRef.current.click()}
+        >
+          <CloudUpload />
+        </button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept=".jpg,.jpeg,.png,.pdf,.heic"
+          className="hidden"
+          onChange={handleFileSelect}
+        />
 
-          <input
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Enter your message..."
-            className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-          />
+        {file && (
+          <p className="text-xs text-gray-600 truncate max-w-[100px]">
+            {file.name}
+          </p>
+        )}
 
-          <button
-            onClick={sendMessage}
-            className="bg-navyblue text-white px-4 py-2 rounded hover:bg-blue-950 transition text-sm font-medium"
-          >
-            Send
-          </button>
-        </div>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          placeholder="Enter your message..."
+          className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+        />
+
+        <button
+          onClick={sendMessage}
+          className="bg-navyblue text-white px-4 py-2 rounded hover:bg-blue-950 transition text-sm font-medium"
+        >
+          Send
+        </button>
       </div>
     </div>
   );

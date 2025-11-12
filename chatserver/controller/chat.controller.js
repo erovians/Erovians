@@ -1,10 +1,63 @@
 import Chat from "../models/chat.model.js";
 import Message from "../models/message.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinaryUpload.utils.js";
-import multer from "multer";
-import mongoose from "mongoose";
 
-const upload = multer({ dest: "uploads/" });
+// send message in chat BY ANY USER WHICH IS LOGGED IN
+export const sendMessage = async (req, res) => {
+  // try {
+  //   const { chatId, text } = req.body;
+  //   const receiverId = req.user.userId;
+  //   const senderId = "690ae30913ffba8b7869fd75";
+
+  //   const message = await Message.create({
+  //     chatId,
+  //     senderId,
+  //     receiverId,
+  //     text,
+  //     status: "unread",
+  //   });
+
+  //   res.status(201).json({ success: true, data: message });
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+
+  try {
+    const { chatId, text } = req.body;
+    // const senderId = req.user.userId; // logged-in user
+    const senderId = req.user.userId;
+    const receiverId = "690ae30913ffba8b7869fd75";
+
+    let fileUrl = null;
+    let fileType = null;
+
+    // ✅ If user uploaded a file, send to Cloudinary
+    if (req.file) {
+      const result = await uploadOnCloudinary(req.file.path, req.file.mimetype);
+      if (!result?.secure_url)
+        return res.status(500).json({ message: "File upload failed" });
+
+      fileUrl = result.secure_url;
+      fileType = req.file.mimetype.startsWith("image/") ? "image" : "file";
+    }
+
+    // ✅ Create message (text + optional file)
+    const message = await Message.create({
+      chatId,
+      senderId,
+      receiverId,
+      text: text || "",
+      fileUrl,
+      fileType,
+      status: "unread",
+    });
+
+    res.status(201).json({ success: true, data: message });
+  } catch (error) {
+    console.error("sendMessage failed:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // frst user will create chat with seller
 export const createChat = async (req, res) => {
@@ -126,27 +179,6 @@ export const getMyChatUsers = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching chat users:", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// send message in chat BY ANY USER WHICH IS LOGGED IN
-export const sendMessage = async (req, res) => {
-  try {
-    const { chatId, text } = req.body;
-    const receiverId = req.user.userId;
-    const senderId = "690ae30913ffba8b7869fd75";
-
-    const message = await Message.create({
-      chatId,
-      senderId,
-      receiverId,
-      text,
-      status: "unread",
-    });
-
-    res.status(201).json({ success: true, data: message });
-  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };

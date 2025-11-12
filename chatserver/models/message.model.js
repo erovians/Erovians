@@ -17,9 +17,9 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    text: { type: String, required: true },
-    fileUrl: String,
-    fileType: String,
+    text: { type: String },
+    fileUrl: { type: String },
+    fileType: { type: String },
     status: {
       type: String,
       enum: ["unread", "read"],
