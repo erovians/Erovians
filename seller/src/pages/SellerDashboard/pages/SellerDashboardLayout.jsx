@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SellerNavbar from "../common/SellerNavbar";
 import SellerSidebar from "../common/SellerSidebar";
-import { Toaster } from "@/components/ui/sonner";
+
 
 const SellerDashboardLayout = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.isOpen);
@@ -19,7 +19,6 @@ const SellerDashboardLayout = () => {
           className={`flex-1 overflow-auto p-4 transition-all duration-300`}
         >
           <Outlet />
-          <Toaster position="top-right" richColors closeButton />
         </main>
       </div>
     </div>

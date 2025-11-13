@@ -12,19 +12,22 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
-import CompanyProfile from "./pages/SellerDashboard/components/Companyprofile/CompanyProfileForm";
+import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";
 import AddProducts from "./pages/SellerDashboard/components/Products/AddProducts";
-import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/CompanyOverview";
+import CompanyOverview from "./pages/SellerDashboard/components/Company/companyOverview/CompanyOverview";
 import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
 import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
-import CompanyCertification from "./pages/SellerDashboard/components/Companyprofile/CompanyCertification";
+import CompanyCertification from "./pages/SellerDashboard/components/Company/companyCertificate/CompanyCertification";
 import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
 import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
-
+import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry"
+// import Inquries from "./pages/SellerDashboard/components/Messages/Inquries";
+import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
+import ChatApp from "./pages/chat/ChatApp";
 
 function App() {
   const location = useLocation();
@@ -57,8 +60,15 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard" element={<ProtectedRoute> <SellerDashboardLayout /></ProtectedRoute>}>
-            
+          <Route
+            path="/sellerdashboard"
+            element={
+              <ProtectedRoute>
+                {" "}
+                <SellerDashboardLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* company */}
@@ -76,14 +86,21 @@ function App() {
             {/* /sellerdashboard/products/categories */}
             <Route path="products/categories" element={<Categories />} />
 
-
+            {/* messages */}
+            <Route path="messages/inquires" element={<Inquiry />} />
+            <Route
+              path="messages/inquirydetail/:id"
+              element={<InquiryDetail />}
+            />
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
             <Route path="orders/pending" element={<OrderPendingList />} />
             <Route path="orders/reviews" element={<ReviewSection />} />
 
-          </Route>  
+            {/* chats */}
+            <Route path="chats/:userId" element={<ChatApp />} />
+          </Route>
         )}
       </Routes>
 

@@ -20,8 +20,11 @@ export const addProductSchema = z.object({
   category: z
     .string()
     .min(1, "Category is required")
-    .refine((val) => /^[A-Za-z\s]+$/.test(val), "Category must contain only letters"),
-
+     .refine(
+    (val) => /^[A-Za-z&\-\s]+$/.test(val),
+    "Category may only contain letters, spaces, '&', or '-'"
+  ),
+  
   subCategory: z
     .string()
     .min(1, "Subcategory is required")

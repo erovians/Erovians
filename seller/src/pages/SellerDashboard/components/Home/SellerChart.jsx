@@ -67,7 +67,7 @@ export default function SellerChart() {
           value={view}
           onValueChange={setView}
         >
-          <SelectTrigger className="border p-2 rounded w-1/8">
+          <SelectTrigger className="border p-2 rounded">
             <SelectValue placeholder="Select Type" />
           </SelectTrigger>
           <SelectContent>
