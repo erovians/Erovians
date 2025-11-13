@@ -24,8 +24,9 @@ import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPen
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
-import Inquries from "./pages/SellerDashboard/Messages/Inquries";
-import InquiryDetail from "./pages/SellerDashboard/Messages/InquiryDetail";
+import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry"
+// import Inquries from "./pages/SellerDashboard/components/Messages/Inquries";
+import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
 import ChatApp from "./pages/chat/ChatApp";
 
 function NotFound() {
@@ -93,7 +94,7 @@ function App() {
             <Route path="products/categories" element={<Categories />} />
 
             {/* messages */}
-            <Route path="messages/inquires" element={<Inquries />} />
+            <Route path="messages/inquires" element={<Inquiry />} />
             <Route
               path="messages/inquirydetail/:id"
               element={<InquiryDetail />}

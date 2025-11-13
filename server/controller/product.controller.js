@@ -166,20 +166,21 @@ export const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
     const userRole = req.user.role; // Access the role set by your middleware
-    const userId = req.user._id;
+    const userId = req.user.userId;
+    console.log(userId)
 
     let findFilter = { _id: productId };
     let updateViews = false;
-    
+
     // --- Authorization Logic ---
-    if (userRole === 'seller') {
+    if (userRole === "seller") {
       // Seller can only view their own product
-      findFilter.sellerId = userId; 
-    } else if (userRole === 'buyer' || userRole === 'public') {
+      findFilter.sellerId = userId;
+    } else if (userRole === "buyer" || userRole === "public") {
       // Public/Buyer view: only show published products and increment views
-      findFilter.status = 'active'; 
+      findFilter.status = "active";
       updateViews = true;
-    } else if (userRole === 'admin') {
+    } else if (userRole === "admin") {
       // Admin can view any product, published or not. No extra filter needed.
     }
 
@@ -204,7 +205,6 @@ export const getProductById = async (req, res) => {
       success: true,
       data: product,
     });
-    
   } catch (error) {
     console.error(`Fetch Error:`, error);
     res.status(500).json({
