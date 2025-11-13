@@ -81,7 +81,7 @@ export default function UserProfile({ user, onlineUsers = [], media = [] }) {
           </div>
 
           {/* Scrollable Media Grid */}
-          <div className="max-h-fit flex-1 overflow-y-auto pr-2 hide-scrollbar border">
+          <div className="max-h-fit flex-1 overflow-y-auto pr-2 hide-scrollbar">
             <div className="flex flex-wrap gap-2">
               {userMedia.length === 0 && (
                 <p className="text-xs text-gray-500">No media shared yet.</p>
