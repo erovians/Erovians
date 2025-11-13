@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { success } from "zod";
 
 // Middleware to verify JWT
 export const verifyUser = (req, res, next) => {
