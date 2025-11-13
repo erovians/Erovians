@@ -124,14 +124,14 @@ export const listAllProductsService = async (query, user) => {
 
     filter.sellerId = user.userId;
     filter.companyId = company._id;
-  } else if (user.role === "buyer" || user.role === "admin") {
+  } else if (user.role === "buyer" || user.role === "admin" || user.role === "public") {
     // Buyer/Admin → frontend must pass sellerId or companyId
     const { sellerId, companyId } = query;
     if (sellerId) filter.sellerId = sellerId;
     if (companyId) filter.companyId = companyId;
 
     if (!sellerId && !companyId) {
-      throw new Error("sellerId or companyId required for buyers/admin");
+      throw new Error("sellerId or companyId required for buyers/admin/public");
     }
   }
 

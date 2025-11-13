@@ -16,6 +16,16 @@ import api from "@/utils/axios.utils"; // adjust path to your axios instance
 import { saveAs } from "file-saver";
 import { toast } from "sonner";
 
+const CountryFlag = ({ code }) => {
+  if (!code) return null;
+  try {
+    const chars = [...code.toUpperCase()].map((c) => 127397 + c.charCodeAt());
+    return <span className="ml-1.5">{String.fromCodePoint(...chars)}</span>;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Senior-quality InquiryDetail
  * - Responsive: mobile-first, collapses/expands gracefully
@@ -271,7 +281,7 @@ const InquiryDetail = () => {
             <div className="flex justify-between">
               <dt className="text-gray-500">Country</dt>
               <dd className="text-gray-800 flex items-center gap-2">
-                <MapPin size={14} />
+                <CountryFlag code={inquiry.countryCode} />
                 {inquiry.country || "N/A"}
               </dd>
             </div>
