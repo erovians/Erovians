@@ -100,9 +100,9 @@ const SellerSidebar = () => {
             icon: <MessageSquare size={20} />,
             label: "Messages",
             subLinks: [
-              { to: "/seller/messages/inquires", label: "Inquires" },
-              { to: "/seller/messages/contacts", label: "Contacts" },
-              { to: "/seller/messages/settings", label: "Settings" },
+              { to: "/sellerdashboard/messages/inquires", label: "Inquires" },
+              { to: "/sellerdashboard/messages/contacts", label: "Contacts" },
+              { to: "/sellerdashboard/messages/settings", label: "Settings" },
             ],
           },
           {

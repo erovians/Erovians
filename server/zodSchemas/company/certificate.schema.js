@@ -10,8 +10,4 @@ export const certificateSchema = z.object({
     .preprocess((val) => (val ? new Date(val) : val), z.date())
     .optional(),
   Description: z.string().min(1, "Description is required"),
-  sameAsRegistered: z.boolean().optional(),
-  comments: z.string().optional(),
-  fileUrl: z.string().url().optional(),
-  cloudinaryId: z.string().optional(),
 });

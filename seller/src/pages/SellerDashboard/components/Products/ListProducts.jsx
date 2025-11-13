@@ -46,16 +46,10 @@ const ListProducts = () => {
 
   const { categories, subCategories } = useMemo(() => {
     const main =
-      company?.companyBasicInfo?.mainCategory
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean) || [];
+      company?.companyBasicInfo?.mainCategory || [];
 
     const sub =
-      company?.companyBasicInfo?.subCategory
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean) || [];
+      company?.companyBasicInfo?.subCategory || [];
 
     // Always include “All” at the top for universal filter UX
     const mappedCategories = [
@@ -197,7 +191,7 @@ const ListProducts = () => {
     debouncedSearch,
     statusFilter,
     bulkAction,
-    statusCounts, // Include to prevent infinite loop
+    statusCounts,
   ]);
 
   // Clear selections when bulk action changes
@@ -723,200 +717,3 @@ const ProductCard = React.memo(
 ProductCard.displayName = "ProductCard";
 
 export default ListProducts;
-
-//chat gpt best approch
-// import React, { useEffect, useState, useCallback, useRef } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchProducts } from "../../../../redux/slice/productSlice";
-// import { AlertDialogMenu } from "../Helper/AlertDialogMenu";
-// import { Loader2, Trash2, Edit, Package } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import * as RW from "react-window";
-// const List = RW.FixedSizeList;
-// import { useInView } from "react-intersection-observer";
-
-// const ProductList = () => {
-//   const dispatch = useDispatch();
-//   const { products, total, loading } = useSelector((state) => state.products);
-
-//   const [page, setPage] = useState(1);
-//   const [deleteDialog, setDeleteDialog] = useState(false);
-//   const [selectedProduct, setSelectedProduct] = useState(null);
-//   const [deleting, setDeleting] = useState(false);
-
-//   const { ref, inView } = useInView({ threshold: 0 });
-
-//   // 🔄 Fetch paginated products
-//   const  loadProducts = useCallback(
-//     async (pageNum = 1) => {
-//       try {
-//          dispatch(fetchProducts({ page: pageNum, limit: 20 }));
-//       } catch (err) {
-//         console.error("Error loading products", err);
-//       }
-//     },
-//     [dispatch]
-//   );
-
-//   useEffect(() => {
-//     loadProducts(1);
-//   }, [loadProducts]);
-
-//   // 🔁 Infinite scroll
-//   useEffect(() => {
-//     if (inView && !loading && products.length < total) {
-//       setPage((prev) => {
-//         const next = prev + 1;
-//         loadProducts(next);
-//         return next;
-//       });
-//     }
-//   }, [inView, loading, products.length, total, loadProducts]);
-
-//   // 🗑️ Delete
-//   const handleDelete = async () => {
-//     if (!selectedProduct) return;
-//     setDeleting(true);
-//     try {
-//       // call your delete API here
-//       await new Promise((r) => setTimeout(r, 1000));
-//       console.log("Deleted:", selectedProduct);
-//     } catch (err) {
-//       console.error(err);
-//     } finally {
-//       setDeleting(false);
-//       setDeleteDialog(false);
-//     }
-//   };
-
-//   // ♻️ Render Row
-//   const Row = ({ index, style }) => {
-//     const product = products[index];
-//     if (!product) return null;
-
-//     return (
-//       <div
-//         style={style}
-//         className="flex items-center justify-between border-b border-gray-200 px-4 py-3 hover:bg-gray-50"
-//       >
-//         <div className="flex items-center gap-3">
-//           <LazyImage
-//             src={product.image}
-//             alt={product.name}
-//             className="w-12 h-12 rounded object-cover"
-//           />
-//           <div>
-//             <h3 className="font-medium text-gray-900">{product.name}</h3>
-//             <p className="text-sm text-gray-500">{product.category}</p>
-//           </div>
-//         </div>
-
-//         <div className="flex items-center gap-2">
-//           <Button
-//             size="sm"
-//             variant="outline"
-//             onClick={() => console.log("Edit", product.id)}
-//           >
-//             <Edit className="w-4 h-4 mr-1" /> Edit
-//           </Button>
-
-//           <Button
-//             size="sm"
-//             variant="destructive"
-//             onClick={() => {
-//               setSelectedProduct(product);
-//               setDeleteDialog(true);
-//             }}
-//           >
-//             <Trash2 className="w-4 h-4 mr-1" /> Delete
-//           </Button>
-//         </div>
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <div className="max-w-5xl mx-auto px-4 py-6">
-//       <h1 className="text-2xl font-semibold flex items-center gap-2 mb-6">
-//         <Package className="w-6 h-6 text-blue-600" /> Products
-//       </h1>
-
-//       {loading && products.length === 0 ? (
-//         <div className="flex items-center justify-center py-20">
-//           <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
-//         </div>
-//       ) : (
-//         <>
-//           <List
-//             height={600}
-//             itemCount={products.length}
-//             itemSize={70}
-//             width="100%"
-//           >
-//             {Row}
-//           </List>
-
-//           <div ref={ref} className="h-10" />
-
-//           {loading && products.length > 0 && (
-//             <div className="flex justify-center py-6 text-gray-500">
-//               <Loader2 className="w-5 h-5 animate-spin" />
-//             </div>
-//           )}
-//         </>
-//       )}
-
-//       <AlertDialogMenu
-//         open={deleteDialog}
-//         onOpenChange={setDeleteDialog}
-//         title="Delete this product?"
-//         description={`Are you sure you want to delete "${selectedProduct?.name}"? This action cannot be undone.`}
-//         confirmText={deleting ? "Deleting..." : "Delete"}
-//         cancelText="Cancel"
-//         variant="danger"
-//         loading={deleting}
-//         onConfirm={handleDelete}
-//       />
-//     </div>
-//   );
-// };
-
-// export default ProductList;
-
-// // ⚡ LazyImage
-// const LazyImage = ({ src, alt, className }) => {
-//   const [visible, setVisible] = useState(false);
-//   const imgRef = useRef();
-
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry], obs) => {
-//         if (entry.isIntersecting) {
-//           setVisible(true);
-//           obs.disconnect();
-//         }
-//       },
-//       { threshold: 0.1 }
-//     );
-//     if (imgRef.current) observer.observe(imgRef.current);
-//     return () => observer.disconnect();
-//   }, []);
-
-//   return (
-//     <div
-//       ref={imgRef}
-//       className={`bg-gray-100 ${className} flex items-center justify-center`}
-//     >
-//       {visible ? (
-//         <img
-//           src={src}
-//           alt={alt}
-//           loading="lazy"
-//           className={`${className} object-cover`}
-//         />
-//       ) : (
-//         <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
-//       )}
-//     </div>
-//   );
-// };

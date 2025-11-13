@@ -1,12 +1,10 @@
-import Seller from "../models/sellerSingnup.model.js"
-
+import Seller from "../models/sellerSingnup.model.js";
 
 export const validateUser = async (req, res) => {
   try {
     const userId = req?.user?.userId;
-    console.log("validateUser - userId:", userId);
-     
-      if (!userId) {
+
+    if (!userId) {
       return res.status(400).json({ valid: false, message: "Invalid user ID" });
     }
 
@@ -19,15 +17,12 @@ export const validateUser = async (req, res) => {
       valid: true,
       user,
     });
-
   } catch (error) {
+    console.error("validateUser error:", error);
 
-      console.error("validateUser error:", error);
-
-     return res.status(500).json({
+    return res.status(500).json({
       valid: false,
       message: "Internal server error",
     });
   }
-}
-
+};

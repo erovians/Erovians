@@ -5,23 +5,23 @@ export const verifyUser = (req, res, next) => {
   try {
     let accessToken;
 
-    // 1. Check Authorization header
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
       accessToken = req.headers.authorization.split(" ")[1];
-    }
-    // 2. Check cookies
-    else if (req.cookies && req.cookies.accessToken) {
+    } else if (req.cookies && req.cookies.accessToken) {
       accessToken = req.cookies.accessToken;
     }
 
-    // No token found
+    // --- 🔑 Core Logic Change for Public Access ---
     if (!accessToken) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized, no token provided" });
+      // If no token is found, assign a default 'public' role
+      req.user = {
+        _id: null, // No user ID
+        role: "public",
+      };
+      return next(); // Proceed to the next middleware (e.g., allowRoles)
     }
 
     // Verify token

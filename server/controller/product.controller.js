@@ -112,7 +112,7 @@ export const listAllProducts = async (req, res) => {
   }
 };
 
-// ✅ Get Product by ID
+// ✅ Get Product by ID  (old approch and problem that everyone can see and edit that product)
 // export const getProductById = async (req, res) => {
 //   try {
 //     const product = await getProductByIdService(req.params.productId);
@@ -130,22 +130,75 @@ export const listAllProducts = async (req, res) => {
 //     });
 //   }
 // };
+// export const getProductById = async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
+
+//     // ✅ Increase view count every time product is viewed
+//     const product = await Product.findByIdAndUpdate(
+//       productId,
+//       { $inc: { views: 1 } },
+//       { new: true }
+//     );
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: product,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: error.message || "Something went wrong while fetching product",
+//     });
+//   }
+// };
+
+//best approch because handling everything in this role base access and just to add View Count Logic (Conditional and Debounced)
 export const getProductById = async (req, res) => {
   try {
     const productId = req.params.productId;
+    const userRole = req.user.role; // Access the role set by your middleware
+    const userId = req.user.userId;
+    console.log(userId)
 
-    // ✅ Increase view count every time product is viewed
-    const product = await Product.findByIdAndUpdate(
-      productId,
-      { $inc: { views: 1 } },
-      { new: true }
-    );
+    let findFilter = { _id: productId };
+    let updateViews = false;
+
+    // --- Authorization Logic ---
+    if (userRole === "seller") {
+      // Seller can only view their own product
+      findFilter.sellerId = userId;
+    } else if (userRole === "buyer" || userRole === "public") {
+      // Public/Buyer view: only show published products and increment views
+      findFilter.status = "active";
+      updateViews = true;
+    } else if (userRole === "admin") {
+      // Admin can view any product, published or not. No extra filter needed.
+    }
+
+    // 1. Fetch the product using the role-specific filter
+    const product = await Product.findOne(findFilter);
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: "Product not found or unauthorized access",
       });
+    }
+
+    // 2. View Count Logic (Conditional and Debounced)
+    if (updateViews) {
+      // IMPORTANT: Call a separate, debounced service here to increment views
+      // This keeps the primary request fast and prevents inflation.
+      // Example: productViewService.logView(productId, req.ip || req.sessionID);
     }
 
     res.status(200).json({
@@ -153,10 +206,10 @@ export const getProductById = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error(`Fetch Error:`, error);
     res.status(500).json({
       success: false,
-      message: error.message || "Something went wrong while fetching product",
+      message: "An internal server error occurred.",
     });
   }
 };
