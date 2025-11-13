@@ -99,6 +99,7 @@ function App() {
               path="messages/inquirydetail/:id"
               element={<InquiryDetail />}
             />
+            
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
