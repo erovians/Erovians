@@ -202,7 +202,11 @@ import { chatApi } from "@/utils/axios.utils";
 import { CloudUpload } from "lucide-react";
 import { assets } from "@/assets/assets";
 
-export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
+export default function ChatWindow({
+  selectedChat,
+  onlineUsers = [],
+  onMediaUpdate,
+}) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
@@ -214,18 +218,42 @@ export default function ChatWindow({ selectedChat, onlineUsers = [] }) {
   );
 
   // Fetch previous messages
+  // useEffect(() => {
+  //   if (!selectedChat) return;
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const res = await chatApi.get(
+  //         `/chat/${selectedChat.chatId}/messages/?selectedUserId=${selectedChat.user._id}`
+  //       );
+  //       setMessages(res.data.messages);
+  //     } catch (error) {
+  //       console.error("Error fetching messages:", error);
+  //     }
+  //   };
+  //   fetchMessages();
+  // }, [selectedChat]);
   useEffect(() => {
     if (!selectedChat) return;
+
     const fetchMessages = async () => {
       try {
         const res = await chatApi.get(
           `/chat/${selectedChat.chatId}/messages/?selectedUserId=${selectedChat.user._id}`
         );
+
         setMessages(res.data.messages);
+
+        // 🔥 Send images to UserProfile
+        const mediaFiles = res.data.messages
+          .filter((m) => m.fileUrl && m.fileType === "image")
+          .map((m) => m.fileUrl);
+
+        onMediaUpdate(mediaFiles);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
+
     fetchMessages();
   }, [selectedChat]);
 

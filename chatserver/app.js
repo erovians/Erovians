@@ -38,6 +38,10 @@ const io = new Server(server, {
   },
 });
 
+io.on("connection", (socket) => {
+  console.log("a new user has connected", socket.id);
+});
+
 // Setup socket events
 setupSocket(io);
 
