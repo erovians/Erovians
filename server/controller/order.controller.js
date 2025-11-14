@@ -101,7 +101,7 @@ export const getUserOrders = async (req, res) => {
 export const getSellerOrders = async (req, res) => {
   try {
     const sellerId = req.user.userId;
-    const orders = await Order.find( { sellerId:sellerId } )
+    const orders = await Order.find({ sellerId: sellerId })
       .populate("productId")
       .populate("userId")
       .sort({ createdAt: -1 });
@@ -158,5 +158,28 @@ export const updateOrderStatus = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Server error while updating order." });
+  }
+};
+
+export const getCompletedOrders = async (req, res) => {
+  try {
+    const sellerId = req.user.userId;
+
+    const orders = await Order.find({
+      sellerId: sellerId,
+      status: "delivered",
+    })
+      .populate("productId")
+      .populate("userId")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching completed orders:", error);
+    res.status(500).json({ success: false, message: "Server error." });
   }
 };
