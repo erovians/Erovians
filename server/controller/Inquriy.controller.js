@@ -68,8 +68,7 @@ export const createInquiry = async (req, res, next) => {
       });
     }
 
-    const userId =
-      req.user?._id || req.user?.userId || "690ae30913ffba8b7869fd75";
+    const userId = req.user?._id || req.user?.userId;
     if (!userId) {
       return res.status(401).json({
         success: false,
