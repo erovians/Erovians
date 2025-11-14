@@ -1,194 +1,338 @@
-import React, { useState } from "react";
-import { CheckCircle, ArrowRight, Search } from "lucide-react";
+// import React, { useEffect, useState } from "react";
+// import { CheckCircle, ArrowRight, Search } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import api from "@/utils/axios.utils";
+
+// const OrderCompletedList = () => {
+//   const navigate = useNavigate();
+//   const [orders, setOrders] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       try {
+//         const res = await api.get("/orders/status/completed");
+//         setOrders(res.data.orders);
+//       } catch (error) {
+//         console.error("Error fetching completed orders", error);
+//       }
+//     };
+
+//     fetchOrders();
+//   }, []);
+
+//   const handleViewDetails = (productId) => {
+//     navigate(`/product/${productId}`);
+//   };
+
+//   const filteredOrders = orders.filter((order) =>
+//     order.productId?.productName
+//       ?.toLowerCase()
+//       .includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <div className="w-full h-screen sm:h-[85vh] p-3 flex flex-col">
+//       {/* Header Section */}
+//       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+//         <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2 ">
+//           <CheckCircle className="h-7 w-7 text-green-500" />
+//           Completed Orders
+//         </h2>
+
+//         {/* Search Bar */}
+//         <div className="relative w-full sm:w-64">
+//           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+//           <input
+//             type="text"
+//             placeholder="Search product..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm text-gray-700"
+//           />
+//         </div>
+//       </div>
+
+//       {/* Scrollable Order List */}
+//       <div className="overflow-y-auto flex-1 hide-scrollbar flex flex-col gap-4">
+//         {filteredOrders.length > 0 ? (
+//           filteredOrders.map((order) => {
+//             const product = order.productId;
+
+//             return (
+//               <div
+//                 key={order._id}
+//                 className="grid grid-cols-1 sm:grid-cols-5 items-center border-b py-4 hover:bg-gray-50 transition"
+//               >
+//                 {/* ----------------------------------------------------
+//             1️⃣ Product Images (left section - clickable)
+//         ---------------------------------------------------- */}
+//                 <div className="flex items-center gap-3 px-2">
+//                   <div className="flex flex-col gap-2">
+//                     {product.productImages?.slice(0, 2).map((img, idx) => (
+//                       <img
+//                         key={idx}
+//                         src={img}
+//                         className="w-16 h-16 object-cover rounded border cursor-pointer hover:scale-105 transition"
+//                         alt="product-img"
+//                         onClick={() => window.open(img, "_blank")}
+//                       />
+//                     ))}
+//                   </div>
+//                 </div>
+
+//                 {/* ----------------------------------------------------
+//             2️⃣ Product Details
+//         ---------------------------------------------------- */}
+//                 <div className="px-2">
+//                   <h3 className="font-semibold text-gray-900 text-sm">
+//                     {product.productName}
+//                   </h3>
+//                   <p className="text-xs text-gray-500 mt-1">
+//                     Category: {product.category?.join(", ")}
+//                   </p>
+//                   <p className="text-xs text-gray-500">
+//                     Sub Category: {product.subCategory?.join(", ")}
+//                   </p>
+
+//                   <p className="text-xs text-gray-500">
+//                     Grade: {product.grade}
+//                   </p>
+//                   <p className="text-xs text-gray-500">
+//                     Color: {product.color}
+//                   </p>
+//                   <p className="text-xs text-gray-500">
+//                     Origin: {product.origin}
+//                   </p>
+
+//                   <p className="text-xs text-gray-500">
+//                     Size: {product.size.length}
+//                     {product.size.lengthMeasurement} × {product.size.width}
+//                     {product.size.widthMeasurement} × {product.size.thickness}
+//                     {product.size.thicknessMeasurement}
+//                   </p>
+
+//                   <p className="text-xs text-gray-500">
+//                     Weight: {product.weight} {product.weightMeasurement}
+//                   </p>
+
+//                   <p className="text-xs text-gray-500">
+//                     Price: ₹{product.pricePerUnit}/{product.priceUnit}
+//                   </p>
+//                 </div>
+
+//                 {/* ----------------------------------------------------
+//             3️⃣ Metrics / Price / Views
+//         ---------------------------------------------------- */}
+//                 <div className="px-2 text-sm text-gray-700">
+//                   <p>Total Price: ₹{order.totalPrice}</p>
+//                   <p className="text-xs text-gray-500">
+//                     Views: {product.views}
+//                   </p>
+//                   <p className="text-xs text-gray-500">
+//                     Ordered Qty: {order.quantity}
+//                   </p>
+//                 </div>
+
+//                 {/* ----------------------------------------------------
+//             4️⃣ Buyer (User) Details
+//         ---------------------------------------------------- */}
+//                 <div className="px-2 text-sm">
+//                   <p className="font-medium">{order.userId?.name}</p>
+//                   <p className="text-xs text-gray-600">{order.userId?.email}</p>
+//                   <p className="text-xs text-gray-600">
+//                     {order.userId?.mobile}
+//                   </p>
+//                 </div>
+
+//                 {/* ----------------------------------------------------
+//             5️⃣ Completed Status
+//         ---------------------------------------------------- */}
+//                 <div className="flex items-center px-2 gap-2">
+//                   <CheckCircle className="h-6 w-6 text-green-500" />
+//                   <span className="text-green-600 text-sm font-semibold">
+//                     Completed
+//                   </span>
+//                 </div>
+//               </div>
+//             );
+//           })
+//         ) : (
+//           <div className="text-center py-10 text-gray-500">
+//             No completed orders.
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default OrderCompletedList;
+
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CheckCircle, Search } from "lucide-react";
+import api from "@/utils/axios.utils";
 
-const orders = [
-  {
-    id: "ORD2001",
-    customer: "Michael Stone",
-    date: "2025-09-15",
-    total: "$1,200.00",
-    product: {
-      name: "Italian Marble Slab",
-      image:
-        "https://5.imimg.com/data5/AD/ZK/CV/SELLER-2497267/best-quality-italian-marble-in-new-delhi-500x500.jpg",
-      description:
-        "Premium Italian marble slab, perfect for countertops and flooring.",
-      productId: "marble-101",
-    },
-  },
-  {
-    id: "ORD2002",
-    customer: "Sarah Granite",
-    date: "2025-09-20",
-    total: "$950.00",
-    product: {
-      name: "Black Granite Tile",
-      image:
-        "https://server.orientbell.com/media/catalog/product/o/c/ocg_spider_black_granite_f1.jpg",
-      description:
-        "Durable and elegant black granite tiles for indoor and outdoor use.",
-      productId: "granite-102",
-    },
-  },
-  {
-    id: "ORD2003",
-    customer: "Daniel Marble",
-    date: "2025-09-25",
-    total: "$1,500.00",
-    product: {
-      name: "White Marble Countertop",
-      image:
-        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
-      description:
-        "Sleek white marble countertop with polished finish for kitchens.",
-      productId: "marble-103",
-    },
-  },
-  {
-    id: "ORD2004",
-    customer: "Michael Stone",
-    date: "2025-09-15",
-    total: "$1,200.00",
-    product: {
-      name: "Italian Marble Slab",
-      image:
-        "https://5.imimg.com/data5/AD/ZK/CV/SELLER-2497267/best-quality-italian-marble-in-new-delhi-500x500.jpg",
-      description:
-        "Premium Italian marble slab, perfect for countertops and flooring.",
-      productId: "marble-101",
-    },
-  },
-  {
-    id: "ORD2005",
-    customer: "Sarah Granite",
-    date: "2025-09-20",
-    total: "$950.00",
-    product: {
-      name: "Black Granite Tile",
-      image:
-        "https://server.orientbell.com/media/catalog/product/o/c/ocg_spider_black_granite_f1.jpg",
-      description:
-        "Durable and elegant black granite tiles for indoor and outdoor use.",
-      productId: "granite-102",
-    },
-  },
-  {
-    id: "ORD2006",
-    customer: "Daniel Marble",
-    date: "2025-09-25",
-    total: "$1,500.00",
-    product: {
-      name: "White Marble Countertop",
-      image:
-        "https://www.thespruce.com/thmb/-sVl669m0d_t0dna0ETqSmN5mlg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/marble-kitchen-countertops-4175909-hero-89f33ebac5ca49ae9492d7f949e6dafd.jpg",
-      description:
-        "Sleek white marble countertop with polished finish for kitchens.",
-      productId: "marble-103",
-    },
-  },
-];
-
-const OrderCompletedList = () => {
-  const navigate = useNavigate();
+export default function OrderCompletedList() {
+  const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
-  const handleViewDetails = (productId) => {
-    navigate(`/product/${productId}`);
-  };
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await api.get("/orders/status/completed");
+        setOrders(res.data.orders);
+      } catch (error) {
+        console.error("Error fetching completed orders", error);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const filteredOrders = orders.filter((order) =>
-    order.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    order.productId?.productName
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="w-full h-screen sm:h-[85vh] p-3 flex flex-col">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2 ">
-          <CheckCircle className="h-7 w-7 text-green-500" />
-          Completed Orders
+    <div className="w-full p-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Completed Orders ({orders.length})
         </h2>
 
-        {/* Search Bar */}
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-64">
           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
           <input
             type="text"
             placeholder="Search product..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm text-gray-700"
+            className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none text-sm"
           />
         </div>
       </div>
 
-      {/* Scrollable Order List */}
-      <div className="overflow-y-auto flex-1 hide-scrollbar flex flex-col gap-4">
-        {filteredOrders.length > 0 ? (
-          filteredOrders.map((order) => (
-            <div
-              key={order.id}
-              className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-4 sm:px-6 sm:py-5 hover:bg-blue-50 transition gap-4 sm:gap-0 bg-white rounded-lg shadow"
-            >
-              {/* Left: Product Image */}
-              <img
-                src={order.product.image}
-                alt={order.product.name}
-                className="w-full sm:w-20 h-40 sm:h-20 object-cover rounded-md shadow-sm border"
-              />
+      {/* Table */}
+      <div className="overflow-auto border rounded-lg shadow-sm bg-white">
+        <table className="min-w-full text-sm">
+          <thead className="bg-gray-100 border-b">
+            <tr className="text-left text-gray-600">
+              <th className="px-4 py-3 w-10"></th>
 
-              {/* Center: Order + Product Details */}
-              <div className="flex-1 px-0 sm:px-6">
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-sm text-green-600 font-semibold">
-                    Completed
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {order.product.name}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {order.product.description}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  <span className="font-medium text-gray-700">Customer:</span>{" "}
-                  {order.customer}
-                  <span className="ml-0 sm:ml-4 font-medium text-gray-700">
-                    Order ID:
-                  </span>{" "}
-                  {order.id}
-                </p>
-                <p className="text-sm text-gray-500">
-                  <span className="font-medium text-gray-700">Date:</span>{" "}
-                  {order.date}
-                </p>
-              </div>
+              <th className="px-4 py-3 w-72">Product Details</th>
+              <th className="px-4 py-3">Quantity</th>
+              <th className="px-4 py-3">Total Price</th>
+              <th className="px-4 py-3">Buyer</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3"></th>
+            </tr>
+          </thead>
 
-              {/* Right: Total & Button */}
-              <div className="text-left sm:text-right space-y-2 mt-2 sm:mt-0">
-                <div className="text-md font-semibold text-gray-800">
-                  {order.total}
-                </div>
-                <button
-                  onClick={() => handleViewDetails(order.product.productId)}
-                  className="inline-flex items-center gap-1 text-sm text-navyblue hover:underline font-medium"
+          <tbody>
+            {filteredOrders.map((order) => {
+              const p = order.productId;
+              return (
+                <tr
+                  key={order._id}
+                  className="border-b hover:bg-gray-50 transition"
                 >
-                  See Details
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center py-10 text-gray-500">
-            No matching products found.
+                  {/* Checkbox */}
+                  <td className="px-4 py-3"></td>
+
+                  {/* PRODUCT DETAILS */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={p.productImages?.[0]}
+                        className="w-14 h-14 object-cover rounded border"
+                        alt="product"
+                      />
+
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          {p.productName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Category: {p.category?.join(", ")}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Origin: {p.origin}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Price Per Unit: {p.pricePerUnit} {p.priceUnit}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* QUANTITY */}
+                  <td className="px-4 py-3 text-gray-700">{order.quantity}</td>
+
+                  {/* PRICE COLUMN */}
+                  <td className="px-4 py-3 font-semibold text-gray-700">
+                    ₹{order.totalPrice}
+                  </td>
+
+                  {/* USER DETAILS */}
+                  <td className="px-4 py-3 ">
+                    <p className=" text-gray-800 h-7 w-7 rounded-full ">
+                      <img
+                        src={order.userId?.profileImage}
+                        alt=""
+                        className="rounded-full h-6 w-6"
+                      />
+                    </p>
+                    <p className="font-medium text-gray-800">
+                      {order.userId?.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {order.userId?.email}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {order.userId?.mobile}
+                    </p>
+                  </td>
+
+                  {/* STATUS */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-green-600 font-medium text-xs">
+                        Completed
+                      </span>
+                    </div>
+                  </td>
+
+                  <td>
+                    <p
+                      className="text-blue-600 font-medium text-xs ml-1 cursor-pointer hover:underline"
+                      onClick={() =>
+                        navigate(
+                          `/sellerdashboard/product/${order.productId.id}`
+                        )
+                      }
+                    >
+                      View Product
+                    </p>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        {filteredOrders.length === 0 && (
+          <div className="py-8 text-center text-gray-500">
+            No completed orders found.
           </div>
         )}
       </div>
     </div>
   );
-};
-
-export default OrderCompletedList;
+}

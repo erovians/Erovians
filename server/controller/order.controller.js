@@ -172,7 +172,28 @@ export const getCompletedOrders = async (req, res) => {
       .populate("productId")
       .populate("userId")
       .sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching completed orders:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
 
+export const getPendingOrders = async (req, res) => {
+  try {
+    const sellerId = req.user.userId;
+
+    const orders = await Order.find({
+      sellerId: sellerId,
+      status: "pending",
+    })
+      .populate("productId")
+      .populate("userId")
+      .sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       count: orders.length,

@@ -1,169 +1,316 @@
-import React from "react";
-import { Clock, ArrowRight } from "lucide-react";
+// import React, { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { Clock, Search } from "lucide-react"; // 🟡 Using Clock icon for pending
+// import api from "@/utils/axios.utils";
+
+// export default function OrderPendingList() {
+//   const [orders, setOrders] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       try {
+//         const res = await api.get("/orders/status/pending");
+//         setOrders(res.data.orders);
+//       } catch (error) {
+//         console.error("Error fetching pending orders", error);
+//       }
+//     };
+//     fetchOrders();
+//   }, []);
+
+//   const filteredOrders = orders.filter((order) =>
+//     order.productId?.productName
+//       ?.toLowerCase()
+//       .includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <div className="w-full p-4">
+//       {/* Header */}
+//       <div className="flex justify-between items-center mb-6">
+//         <h2 className="text-xl font-semibold text-gray-800">
+//           Pending Orders ({orders.length})
+//         </h2>
+
+//         <div className="relative w-64">
+//           <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+//           <input
+//             type="text"
+//             placeholder="Search product..."
+//             value={searchTerm}
+//             onChange={(e) => setSearchTerm(e.target.value)}
+//             className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none text-sm"
+//           />
+//         </div>
+//       </div>
+
+//       {/* Table */}
+//       <div className="overflow-auto border rounded-lg shadow-sm bg-white">
+//         <table className="min-w-full text-sm">
+//           <thead className="bg-gray-100 border-b">
+//             <tr className="text-left text-gray-600">
+//               <th className="px-4 py-3 w-10"></th>
+//               <th className="px-4 py-3 w-72">Product Details</th>
+//               <th className="px-4 py-3">Quantity</th>
+//               <th className="px-4 py-3">Total Price</th>
+//               <th className="px-4 py-3">Buyer</th>
+//               <th className="px-4 py-3">Status</th>
+//               <th className="px-4 py-3"></th>
+//             </tr>
+//           </thead>
+
+//           <tbody>
+//             {filteredOrders.map((order) => {
+//               const p = order.productId;
+//               return (
+//                 <tr
+//                   key={order._id}
+//                   className="border-b hover:bg-gray-50 transition"
+//                 >
+//                   <td className="px-4 py-3"></td>
+
+//                   {/* PRODUCT DETAILS */}
+//                   <td className="px-4 py-3">
+//                     <div className="flex items-center gap-3">
+//                       <img
+//                         src={p.productImages?.[0]}
+//                         className="w-14 h-14 object-cover rounded border"
+//                         alt="product"
+//                       />
+
+//                       <div>
+//                         <p className="font-medium text-gray-800">
+//                           {p.productName}
+//                         </p>
+//                         <p className="text-xs text-gray-500">
+//                           Category: {p.category?.join(", ")}
+//                         </p>
+//                         <p className="text-xs text-gray-500">
+//                           Origin: {p.origin}
+//                         </p>
+//                         <p className="text-xs text-gray-500">
+//                           Price Per Unit: {p.pricePerUnit} {p.priceUnit}
+//                         </p>
+//                       </div>
+//                     </div>
+//                   </td>
+
+//                   {/* QUANTITY */}
+//                   <td className="px-4 py-3 text-gray-700">{order.quantity}</td>
+
+//                   {/* PRICE */}
+//                   <td className="px-4 py-3 font-semibold text-gray-700">
+//                     ₹{order.totalPrice}
+//                   </td>
+
+//                   {/* BUYER */}
+//                   <td className="px-4 py-3 ">
+//                     <p className="h-7 w-7 rounded-full overflow-hidden">
+//                       <img
+//                         src={order.userId?.profileImage}
+//                         alt=""
+//                         className="rounded-full h-6 w-6"
+//                       />
+//                     </p>
+//                     <p className="font-medium text-gray-800">
+//                       {order.userId?.name}
+//                     </p>
+//                     <p className="text-xs text-gray-500">
+//                       {order.userId?.email}
+//                     </p>
+//                     <p className="text-xs text-gray-500">
+//                       {order.userId?.mobile}
+//                     </p>
+//                   </td>
+
+//                   {/* STATUS */}
+//                   <td className="px-4 py-3">
+//                     <div className="flex items-center gap-1">
+//                       <Clock className="h-4 w-4 text-yellow-500" />
+//                       <span className="text-yellow-600 font-medium text-xs">
+//                         Pending
+//                       </span>
+//                     </div>
+//                   </td>
+
+//                   {/* VIEW PRODUCT */}
+//                   <td>
+//                     <p
+//                       className="text-blue-600 font-medium text-xs ml-1 cursor-pointer hover:underline"
+//                       onClick={() =>
+//                         navigate(
+//                           `/sellerdashboard/product/${order.productId.id}`
+//                         )
+//                       }
+//                     >
+//                       View Product
+//                     </p>
+//                   </td>
+//                 </tr>
+//               );
+//             })}
+//           </tbody>
+//         </table>
+
+//         {filteredOrders.length === 0 && (
+//           <div className="py-8 text-center text-gray-500">
+//             No pending orders found.
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Clock, Search } from "lucide-react";
+import api from "@/utils/axios.utils";
 
-const orders = [
-  {
-    id: "ORD5001",
-    customer: "Ravi Sharma",
-    date: "2025-10-01",
-    total: "$780.00",
-    product: {
-      name: "Desert Sandstone Pavers",
-      image:
-        "https://images.unsplash.com/photo-1558346648-9757f2fa4474?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2340",
-      description: "Warm-toned sandstone pavers ideal for patios and walkways.",
-      productId: "sandstone-501",
-    },
-  },
-  {
-    id: "ORD5002",
-    customer: "Anjali Patel",
-    date: "2025-10-03",
-    total: "$940.00",
-    product: {
-      name: "Black Granite Slab",
-      image:
-        "https://images.unsplash.com/photo-1550053808-52a75a05955d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-      description:
-        "High-polish black granite, great for countertops and flooring.",
-      productId: "granite-502",
-    },
-  },
-  {
-    id: "ORD5003",
-    customer: "Kabir Verma",
-    date: "2025-10-05",
-    total: "$620.00",
-    product: {
-      name: "Rustic Travertine Tiles",
-      image:
-        "https://plus.unsplash.com/premium_photo-1681414728775-7aa0607c41cc?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-      description:
-        "Naturally weathered travertine tiles ideal for interior walls.",
-      productId: "travertine-503",
-    },
-  },
-  {
-    id: "ORD5004",
-    customer: "Divya Mehta",
-    date: "2025-10-07",
-    total: "$1,100.00",
-    product: {
-      name: "Polished White Marble",
-      image:
-        "https://plus.unsplash.com/premium_photo-1701192799337-d93f93714b4e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=987",
-      description:
-        "Classic white marble slab with a smooth finish for luxurious designs.",
-      productId: "marble-504",
-    },
-  },
-  {
-    id: "ORD5005",
-    customer: "Amitabh Desai",
-    date: "2025-10-09",
-    total: "$860.00",
-    product: {
-      name: "Slate Wall Panels",
-      image:
-        "https://images.unsplash.com/photo-1642419105752-88cc5a001a85?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=868",
-      description:
-        "Dark slate wall panels with a rugged texture for modern interiors.",
-      productId: "slate-505",
-    },
-  },
-  {
-    id: "ORD5006",
-    customer: "Nisha Goyal",
-    date: "2025-10-11",
-    total: "$730.00",
-    product: {
-      name: "Textured Limestone Block",
-      image:
-        "https://images.unsplash.com/photo-1599600540907-62e9b06e6597?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2340",
-      description:
-        "Creamy limestone block ideal for sculpting and outdoor facades.",
-      productId: "limestone-506",
-    },
-  },
-];
-
-const OrderPendingList = () => {
+export default function OrderPendingList() {
+  const [orders, setOrders] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const handleViewDetails = (productId) => {
-    navigate(`/product/${productId}`);
-  };
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await api.get("/orders/status/pending");
+        setOrders(res.data.orders);
+      } catch (error) {
+        console.error("Error fetching pending orders", error);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const filteredOrders = orders.filter((order) =>
+    order.productId?.productName
+      ?.toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="w-full h-[85vh] p-5 flex flex-col">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex-shrink-0">
-        <span className="flex gap-3 items-center">
-          <Clock className="h-8 w-8 text-orange-500" />
+    <div className="w-full p-4">
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900">
           Pending Orders
-        </span>
-      </h2>
+          <span className="text-gray-500 text-lg ml-2">({orders.length})</span>
+        </h2>
 
-      {/* Scrollable area */}
-      <div className="overflow-y-auto flex-1 hide-scrollbar flex flex-col gap-4">
-        {orders.map((order) => (
-          <div
-            key={order.id}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-4 sm:px-6 sm:py-5 hover:bg-yellow-50 transition bg-white rounded-lg shadow"
-          >
-            {/* Product Image */}
-            <img
-              src={order.product.image}
-              alt={order.product.name}
-              className="w-full sm:w-20 h-40 sm:h-20 object-cover rounded-md shadow-sm border"
-            />
+        <div className="relative w-64">
+          <Search className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search by product…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-3 py-2.5 border rounded-lg 
+            focus:outline-none focus:ring-[2px] focus:ring-blue-400 
+            text-sm bg-white shadow-sm"
+          />
+        </div>
+      </div>
 
-            {/* Order + Product Details */}
-            <div className="flex-1 px-0 sm:px-6">
-              <div className="flex items-center gap-2 mb-1 mt-3 ">
-                <Clock className="h-5 w-5 text-orange-500" />
-                <span className="text-sm text-orange-600 font-semibold ">
+      {/* Orders List */}
+      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+        {/* Sticky Table Header */}
+        <div
+          className="bg-gray-100 py-3 px-5 grid grid-cols-12 
+        text-xs font-semibold text-gray-600"
+        >
+          <div className="col-span-5">Product Details</div>
+          <div className="col-span-2">Quantity</div>
+          <div className="col-span-2">Total Price</div>
+          <div className="col-span-2">Buyer</div>
+          <div className="col-span-1 text-center">Status</div>
+        </div>
+
+        {/* Rows */}
+        {filteredOrders.map((order) => {
+          const p = order.productId;
+          return (
+            <div
+              key={order.id}
+              className="grid grid-cols-12 items-center px-5 py-4
+              border-b hover:bg-gray-50 transition"
+            >
+              {/* PRODUCT DETAILS */}
+              <div className="col-span-5 flex gap-4 items-center">
+                <img
+                  src={p.productImages?.[0]}
+                  className="w-16 h-16 rounded-lg border object-cover shadow-sm"
+                  alt="product"
+                />
+                <div className="flex flex-col">
+                  <p className="font-medium text-gray-900 text-sm">
+                    {p.productName}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {p.category?.join(", ")}
+                  </p>
+                  <p className="text-xs text-gray-500">Origin: {p.origin}</p>
+
+                  <p
+                    className="text-blue-600 text-xs font-semibold mt-1 cursor-pointer hover:underline"
+                    onClick={() =>
+                      navigate(`/sellerdashboard/product/${order.productId.id}`)
+                    }
+                  >
+                    View Product →
+                  </p>
+                </div>
+              </div>
+
+              {/* QUANTITY */}
+              <div className="col-span-2 text-gray-700 font-medium text-sm">
+                {order.quantity}
+              </div>
+
+              {/* TOTAL PRICE */}
+              <div className="col-span-2 text-gray-900 font-semibold text-sm">
+                ₹{order.totalPrice}
+              </div>
+
+              {/* BUYER DETAILS */}
+              <div className="col-span-2 flex flex-col text-sm">
+                <div className="flex items-center gap-2">
+                  <img
+                    src={order.userId?.profileImage}
+                    className="w-6 h-6 rounded-full border"
+                    alt=""
+                  />
+                  <p className="font-medium text-gray-800">
+                    {order.userId?.name}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500">{order.userId?.email}</p>
+                <p className="text-xs text-gray-500">{order.userId?.mobile}</p>
+              </div>
+
+              {/* STATUS */}
+              <div className="col-span-1 text-center">
+                <span
+                  className="inline-flex items-center gap-1 bg-yellow-100 
+                text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full"
+                >
+                  <Clock className="h-3 w-3" />
                   Pending
                 </span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                {order.product.name}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {order.product.description}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                <span className="font-medium text-gray-700">Customer:</span>{" "}
-                {order.customer}
-                <span className="ml-0 sm:ml-4 font-medium text-gray-700">
-                  Order ID:
-                </span>{" "}
-                {order.id}
-              </p>
-              <p className="text-sm text-gray-500">
-                <span className="font-medium text-gray-700">Date:</span>{" "}
-                {order.date}
-              </p>
             </div>
+          );
+        })}
 
-            {/* Total & Button */}
-            <div className="text-left sm:text-right space-y-2 mt-2 sm:mt-0">
-              <div className="text-md font-semibold text-gray-800">
-                {order.total}
-              </div>
-              <button
-                onClick={() => handleViewDetails(order.product.productId)}
-                className="inline-flex items-center gap-1 text-sm text-navyblue hover:underline font-medium"
-              >
-                See Details
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+        {/* No Results */}
+        {filteredOrders.length === 0 && (
+          <div className="py-10 text-center text-gray-500 text-sm">
+            No pending orders found.
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
-};
-
-export default OrderPendingList;
+}
