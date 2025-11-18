@@ -8,7 +8,7 @@ import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
 import {
   uploadCertificate,
   getCertificates,
-  deleteCertificate
+  deleteCertificate,
 } from "../controller/certificate.controller.js";
 
 const router = express.Router();
