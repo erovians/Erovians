@@ -24,15 +24,18 @@ import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPen
 import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
-import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry"
+import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry";
 // import Inquries from "./pages/SellerDashboard/components/Messages/Inquries";
 import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
 import ChatApp from "./pages/chat/ChatApp";
+import Teams from "./pages/SellerDashboard/components/Teams/Teams";
 
 function NotFound() {
-  return <div  className=" h-full flex" >
-<h1 className="m-auto">404 - Page Not Found</h1>
-  </div> 
+  return (
+    <div className=" h-full flex">
+      <h1 className="m-auto">404 - Page Not Found</h1>
+    </div>
+  );
 }
 
 function App() {
@@ -43,7 +46,6 @@ function App() {
   const hideFooterRoutes = ["/login", "/start-selling"];
 
   const isSellerRoute = location.pathname.startsWith("/seller");
-
 
   return (
     <>
@@ -99,7 +101,6 @@ function App() {
               path="messages/inquirydetail/:id"
               element={<InquiryDetail />}
             />
-            
 
             {/* orders */}
             <Route path="orders/completed" element={<OrderCompletedList />} />
@@ -108,7 +109,10 @@ function App() {
 
             {/* chats */}
             <Route path="chats/:userId" element={<ChatApp />} />
-            <Route path="*" element={<NotFound/>} />
+            <Route path="*" element={<NotFound />} />
+
+            {/* Teams */}
+            <Route path="teams" element={<Teams />} />
           </Route>
         )}
       </Routes>

@@ -7,8 +7,8 @@ import companyRoutes from "./routes/company.routes.js";
 import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
-// import quoteRoute from "./routes/quotation.routes.js";
 import inquiryRoute from "./routes/Inquiry.route.js";
+import teamRoutes from "./routes/team.routes.js";
 
 const app = express();
 
@@ -47,9 +47,10 @@ app.use("/api/product", productRoutes);
 //Order routes
 app.use("/api/orders", orderRoutes);
 
-//Quotation routes
-// app.use("/api/inquiry", quoteRoute);
-
+//inquiry routes
 app.use("/api/inquiry", inquiryRoute);
+
+// teams routes
+app.use("/api/team", teamRoutes);
 
 export { app };
