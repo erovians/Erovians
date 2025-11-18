@@ -219,6 +219,9 @@ const SellerSidebar = () => {
         { to: "/sellerdashboard/messages/settings", label: "Settings" },
       ],
     },
+
+
+    
     {
       key: "teams",
       icon: <UserLock size={20} />,
