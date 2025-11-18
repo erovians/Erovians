@@ -109,7 +109,7 @@ function Header({
       {/* Title */}
       <div>
         <h2 className="text-2xl font-semibold text-gray-900">Team</h2>
-        <p className="text-gray-500 text-sm">Manage your team members</p>
+        {/* <p className="text-gray-500 text-sm">Manage your team members</p> */}
       </div>
 
       {/* Controls */}
@@ -170,13 +170,13 @@ function TeamRow({ member, onEdit, onDelete }) {
 
         <div>
           <p className="text-gray-800 font-medium">{member.name}</p>
-          <p className="text-gray-500 text-xs">
+          {/* <p className="text-gray-500 text-xs">
             {member.email ? <span>{member.email} · </span> : null}
             Joined:{" "}
             {member.createdAt
               ? new Date(member.createdAt).toLocaleDateString()
               : "—"}
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -518,7 +518,7 @@ export default function Teams() {
             <div className="col-span-3">Name</div>
             <div>Role</div>
             <div>Site</div>
-            <div className="text-right">Activity</div>
+            <div className="text-right">LastActivity</div>
           </div>
 
           {/* Rows */}
