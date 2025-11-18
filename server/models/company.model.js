@@ -33,7 +33,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     companyRegistrationYear: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     mainCategory: {
       type: [String],

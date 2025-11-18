@@ -1,20 +1,86 @@
 import TeamMember from "../models/team.model.js";
-
+import mongoose from "mongoose";
+import User from "../models/user.model.js";
+import CompanyDetails from "../models/company.model.js";
+import bcrypt from "bcryptjs";
 /* --------------------- CREATE MEMBER --------------------- */
+// export const addTeamMember = async (req, res) => {
+//   try {
+//     const { name, role, site } = req.body;
+
+//     const member = await TeamMember.create({
+//       name,
+//       role,
+//       site,
+//       sellerId: req.user.userId,
+//     });
+
+//     res.status(201).json({ success: true, member });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
 export const addTeamMember = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
-    const { name, role, site } = req.body;
+    session.startTransaction();
 
-    const member = await TeamMember.create({
-      name,
-      role,
-      site,
-      sellerId: req.user.userId,
+    const { name, email, mobile, role, site } = req.body;
+    const sellerId = req.user.userId;
+
+    // 1️⃣ Fetch company properly
+    const company = await CompanyDetails.findOne({ sellerId }).session(session);
+    if (!company) throw new Error("Company not found");
+
+    // 2️⃣ Create user first
+    const newUser = await User.create(
+      [
+        {
+          email,
+          mobile,
+          password: "123456", // or generate random
+          role: "user",
+          status: "active",
+        },
+      ],
+      { session }
+    );
+
+    // 3️⃣ Create team member
+    const teamMember = await TeamMember.create(
+      [
+        {
+          name,
+          email,
+          mobile,
+          role,
+          site,
+          sellerId,
+          companyId: company._id, // ✔ MUST be ObjectId
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({
+      success: true,
+      message: "Team member + user created successfully",
+      member: teamMember[0],
     });
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
 
-    res.status(201).json({ success: true, member });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Error creating team member + user:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
