@@ -2,8 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SellerNavbar from "../common/SellerNavbar";
 import SellerSidebar from "../common/SellerSidebar";
-import SellerProfile from "../components/Home/SellerProfile";
-import SellerDashboardHome from "./SellerDashboardHome";
+
 
 const SellerDashboardLayout = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.isOpen);

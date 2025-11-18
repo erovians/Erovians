@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCompany } from "@/redux/slice/companySlice";
 import { Package, Dot } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SellerProfile = () => {
-  // Example data (this can later come from props or API)
-  const sellerData = {
-    sellerName: "Sandeep Nautiyal",
-    companyName: "Erovians Pvt Ltd.",
-    companyDetails: "Marble & Granite Supplier - Dehradun, India",
-    yearsActive: "5 Year",
-    totalProducts: 25,
-    activeProducts: 18,
-    inactiveProducts: 7,
+  const dispatch = useDispatch();
+  const { company, loading, error } = useSelector((state) => state.company);
+
+  useEffect(() => {
+    dispatch(getCompany());
+  }, [dispatch]);
+
+  if (loading) return <p>Loading company data...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!company) return null;
+
+  const totalProducts = company?.products?.length || 0;
+  const activeProducts =
+    company?.products?.filter((p) => p.status === "active").length || 0;
+  const inactiveProducts = totalProducts - activeProducts;
+
+  const companyInfo = {
+    companyName: company?.companyBasicInfo?.companyName || "Unnamed Company",
+    companyDetails: company?.companyBasicInfo || "Business Details Unavailable",
+    sellerName: company?.companyIntro?.contactPersonName || "Seller",
+    yearsActive: company?.companyBasicInfo?.companyRegistrationYear
+      ? `${
+          new Date().getFullYear() -
+          company.companyBasicInfo.companyRegistrationYear
+        } Years`
+      : "N/A",
   };
 
   return (
@@ -20,24 +39,33 @@ const SellerProfile = () => {
       {/* Header: Seller + Company */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-3">
+          <div className="w-12 h-12 bg-gray-200 flex items-center justify-center mr-7 ">
             <Link to="#" className="text-gray-600 hover:text-blue-500">
-              <Avatar className="rounded-sm w-12 h-12">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>Ero</AvatarFallback>
+              <Avatar className="rounded-sm w-17 h-17">
+                <AvatarImage src={company?.companyIntro?.logo} />
+                <AvatarFallback>
+                  {companyInfo.companyName?.slice(0, 3)}
+                </AvatarFallback>
               </Avatar>
             </Link>
           </div>
           <div>
-            <div className="flex justify-between">
-              <h3 className="font-bold text-lg text-gray-800">
-                {sellerData.companyName}
-              </h3>
-              <Link className="text-blue-600 text-xs">View details</Link>
+            <div className="flex justify-between flex-col sm:flex-row">
+              <h4 className="font-bold text-base sm:text-xl text-gray-800">
+                {companyInfo.companyName}.
+              </h4>
+              <Link
+                to="/sellerdashboard/company/overview"
+                className="text-blue-600 text-xs m-auto ml-5 hover:underline"
+              >
+                View details
+              </Link>
             </div>
-            <p className="text-sm text-gray-500">{sellerData.companyDetails}</p>
+            <p className="text-sm text-gray-500">
+              {companyInfo.companyDetails.locationOfRegistration}
+            </p>
             <p className="text-xs text-gray-400">
-              Active since {sellerData.yearsActive}
+              Legal Owner - {companyInfo.companyDetails.legalowner}
             </p>
           </div>
         </div>
@@ -49,7 +77,7 @@ const SellerProfile = () => {
           <p className="text-sm text-gray-600 flex items-center gap-2">
             <Package size={18} className="text-green-500" /> Total Products
           </p>
-          <p className=" text-gray-800">{sellerData.totalProducts}</p>
+          <p className="text-gray-800">{totalProducts}</p>
         </div>
 
         <div className="flex items-center justify-between">
@@ -57,7 +85,7 @@ const SellerProfile = () => {
             <Dot size={18} strokeWidth={10} className="text-green-500" />
             Active Products
           </p>
-          <p className=" text-green-600">{sellerData.activeProducts}</p>
+          <p className="text-green-600">{activeProducts}</p>
         </div>
 
         <div className="flex items-center justify-between">
@@ -65,7 +93,7 @@ const SellerProfile = () => {
             <Dot size={18} strokeWidth={10} className="text-red-500" />
             Inactive Products
           </p>
-          <p className=" text-red-500">{sellerData.inactiveProducts}</p>
+          <p className="text-red-500">{inactiveProducts}</p>
         </div>
       </div>
     </div>

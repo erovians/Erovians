@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const registerCompanySchema = z.object({
-  SellerId: z.string().length(24, "Invalid SellerId"), // ObjectId as string
+  sellerId: z.string().length(24, "Invalid SellerId"), // ObjectId as string
   companyBasicInfo: z.object({
     companyName: z
       .string()
@@ -29,11 +29,14 @@ export const registerCompanySchema = z.object({
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "Invalid date format, must be a valid date string",
       }),
-    mainCategory: z.enum(["Marble", "Granite"]),
+    mainCategory: z
+      .array(z.string().min(1, "Category name cannot be empty"))
+      .min(1, "At least one main category is required"),
+
     subCategory: z
-      .string()
-      .min(2, "Subcategory must be at least 2 characters")
-      .max(50, "Subcategory cannot exceed 50 characters"),
+      .array(z.string().min(1, "Product name cannot be empty"))
+      .min(1, "At least one subcategory is required"),
+
     acceptedCurrency: z.preprocess(
       (val) => (Array.isArray(val) ? val : [val]),
       z.array(z.string()).min(1, "At least one currency is required")
