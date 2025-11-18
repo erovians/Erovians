@@ -15,7 +15,7 @@ const api = {
   delete: async (id) => request(`delete/${id}`, "DELETE"),
 };
 
-async function request(path, method, body = null) {
+async function request(path, method = "GET", body = null) {
   const res = await fetch(`${API_BASE}/${path}`, {
     method,
     credentials: "include",
@@ -23,7 +23,10 @@ async function request(path, method, body = null) {
     body: body ? JSON.stringify(body) : null,
   });
 
-  if (!res.ok) throw new Error(`API Error: ${method} ${path}`);
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`API Error: ${method} ${path} ${res.status} ${text}`);
+  }
   return res.json();
 }
 
@@ -43,14 +46,22 @@ function timeAgo(input) {
 }
 
 //
-// --- Reusable Form Inputs (TOP-LEVEL so identity is stable)
+// --- Reusable Form Inputs (top-level so identity is stable)
 //
-function FormInput({ label, name, value, setForm, placeholder }) {
+function FormInput({
+  label,
+  name,
+  value,
+  setForm,
+  placeholder,
+  type = "text",
+}) {
   return (
     <div className="mb-3">
       <label className="text-sm text-gray-700 block mb-1">{label}</label>
       <input
         name={name}
+        type={type}
         className="w-full p-2 border rounded-lg"
         value={value}
         placeholder={placeholder}
@@ -95,15 +106,18 @@ function Header({
 }) {
   return (
     <div className="flex flex-col md:flex-row md:justify-between gap-4 mb-6">
+      {/* Title */}
       <div>
-        <h2 className="text-2xl font-semibold text-gray-800">Team</h2>
+        <h2 className="text-2xl font-semibold text-gray-900">Team</h2>
         <p className="text-gray-500 text-sm">Manage your team members</p>
       </div>
 
+      {/* Controls */}
       <div className="flex items-center gap-3">
+        {/* Search */}
         <input
-          className="px-3 py-2 border rounded-lg"
-          placeholder="Search..."
+          className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+          placeholder="Search members..."
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -111,8 +125,9 @@ function Header({
           }}
         />
 
+        {/* Role Filter */}
         <select
-          className="px-3 py-2 border rounded-lg bg-white"
+          className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
           value={filterRole}
           onChange={(e) => {
             setFilterRole(e.target.value);
@@ -126,11 +141,12 @@ function Header({
           ))}
         </select>
 
+        {/* Add Member Button */}
         <button
           onClick={openAddModal}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium rounded-lg shadow hover:opacity-90 active:scale-[0.97] transition"
         >
-          + Member
+          + Add Member
         </button>
       </div>
     </div>
@@ -155,6 +171,7 @@ function TeamRow({ member, onEdit, onDelete }) {
         <div>
           <p className="text-gray-800 font-medium">{member.name}</p>
           <p className="text-gray-500 text-xs">
+            {member.email ? <span>{member.email} · </span> : null}
             Joined:{" "}
             {member.createdAt
               ? new Date(member.createdAt).toLocaleDateString()
@@ -164,7 +181,7 @@ function TeamRow({ member, onEdit, onDelete }) {
       </div>
 
       <p className="text-gray-700">{member.role}</p>
-      <p className="text-gray-500">{member.site}</p>
+      <p className="text-gray-500">{member.site || "---"}</p>
 
       <div className="flex items-center justify-end gap-3 text-sm text-gray-600">
         <span>{timeAgo(member.lastActive)}</span>
@@ -235,8 +252,14 @@ export default function Teams() {
   const [query, setQuery] = useState("");
   const [filterRole, setFilterRole] = useState("All");
 
-  // Form
-  const [form, setForm] = useState({ name: "", role: "Member", site: "" });
+  // Form (now includes email + mobile)
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    role: "Member",
+    site: "",
+  });
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -284,7 +307,7 @@ export default function Teams() {
   // Modal handlers
   //
   const openAddModal = () => {
-    setForm({ name: "", role: "Member", site: "" });
+    setForm({ name: "", email: "", mobile: "", role: "Member", site: "" });
     setEditingId(null);
     setModalOpen(true);
   };
@@ -292,6 +315,8 @@ export default function Teams() {
   const openEditModal = (m) => {
     setForm({
       name: m.name || "",
+      email: m.email || "",
+      mobile: m.mobile || "",
       role: m.role || "Member",
       site: m.site || "",
     });
@@ -300,16 +325,43 @@ export default function Teams() {
   };
 
   //
-  // Save Member
+  // Validation helpers
+  //
+  const isValidEmail = (email) => {
+    if (!email) return false;
+    // Simple email regex (sufficient for client-side)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const isDigitsOnly = (s) => {
+    if (!s) return false;
+    return /^[0-9]+$/.test(s);
+  };
+
+  //
+  // Save Member (includes email + mobile validation)
   //
   const saveMember = async () => {
+    // validations
     if (!form.name.trim()) return alert("Name is required");
+    if (!form.email.trim()) return alert("Email is required");
+    if (!isValidEmail(form.email.trim()))
+      return alert("Please enter a valid email address");
+    if (form.mobile && !isDigitsOnly(form.mobile.trim()))
+      return alert("Mobile must contain digits only");
 
-    const payload = { ...form, lastActive: new Date().toISOString() };
+    const payload = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      mobile: form.mobile.trim(),
+      role: form.role,
+      site: form.site,
+      lastActive: new Date().toISOString(),
+    };
 
     try {
       if (editingId) {
-        // Update
+        // Update (optimistic UI)
         setMembers((prev) =>
           prev.map((m) => (m._id === editingId ? { ...m, ...payload } : m))
         );
@@ -325,15 +377,15 @@ export default function Teams() {
             prev.map((m) => (m._id === temp._id ? res.member : m))
           );
         } else {
-          // fallback
-          loadMembers();
+          // fallback refresh
+          await loadMembers();
         }
       }
 
       setModalOpen(false);
     } catch (err) {
       console.error("Save failed", err);
-      alert("Failed to save member");
+      alert(err.message || "Failed to save member");
       loadMembers();
     }
   };
@@ -400,12 +452,27 @@ export default function Teams() {
               value={form.name}
               setForm={setForm}
             />
+            <FormInput
+              label="Email"
+              name="email"
+              value={form.email}
+              setForm={setForm}
+              type="email"
+            />
+            <FormInput
+              label="Mobile"
+              name="mobile"
+              value={form.mobile}
+              setForm={setForm}
+              placeholder="Digits only"
+              type="tel"
+            />
             <FormSelect
               label="Role"
               name="role"
               value={form.role}
-              options={roleOptions.filter((r) => r !== "All")}
               setForm={setForm}
+              options={roleOptions.filter((r) => r !== "All")}
             />
             <FormInput
               label="Site"
