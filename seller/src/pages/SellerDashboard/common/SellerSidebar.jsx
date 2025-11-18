@@ -11,6 +11,7 @@ import {
   ChevronUp,
   X,
   Store,
+  UserLock,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -114,6 +115,12 @@ const SellerSidebar = () => {
               { to: "/sellerdashboard/orders/pending", label: "Pending" },
               { to: "/sellerdashboard/orders/reviews", label: "Reviews" },
             ],
+          },
+          {
+            key: "teams",
+            icon: <UserLock size={20} />,
+            label: "Teams",
+            to: "/sellerdashboard/teams",
           },
         ].map((menu) => (
           <div key={menu.key} className="px-4 mt-2 ">
