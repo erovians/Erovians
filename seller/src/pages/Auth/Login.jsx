@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { assets } from "@/assets/assets";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react"; // 👈 using lucide-react icons (or any icon library)
 
 export default function Login() {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
@@ -10,6 +12,7 @@ export default function Login() {
   const [success, setSuccess] = useState("");
   const [loginType, setLoginType] = useState("mobile");
   const [loading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // 👈 new state
 
   const navigate = useNavigate();
 
@@ -27,13 +30,15 @@ export default function Login() {
 
     try {
       setIsLoading(true);
+
       const res = await api.post("/seller/login", formData);
-      setSuccess(res.data.message);
-      console.log("Seller data:", res.data.seller);
+      toast.success(`${res.data.message} Redirecting...`, {
+        duration: 2000,
+      });
 
       setTimeout(() => {
         navigate("/sellerdashboard");
-      }, 1000);
+      }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     } finally {
@@ -125,16 +130,29 @@ export default function Login() {
                 required
               />
 
-              {/* Password */}
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Password"
-                className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
-                required
-              />
+              {/* Password Field with Show/Hide */}
+              <div className="relative mt-4">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className="w-full border border-gray-300 rounded-lg py-3 px-4 pr-10 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
 
               {/* Proceed Button */}
               <button

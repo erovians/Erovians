@@ -4,11 +4,18 @@ import {
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
+import {
+  uploadCertificate,
+  getCertificates,
+  deleteCertificate,
+} from "../controller/certificate.controller.js";
 
 const router = express.Router();
 
 router.post(
   "/register",
+  verifyUser,
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
@@ -16,6 +23,16 @@ router.post(
   ]),
   registerCompany
 );
-router.get("/details", getCompanyDetails);
+router.get("/details", verifyUser, getCompanyDetails);
+
+router.post(
+  "/upload",
+  verifyUser,
+  allowRoles("seller"),
+  upload.single("file"),
+  uploadCertificate
+);
+router.get("/certificates", verifyUser, getCertificates);
+router.delete("/certificates/:id", verifyUser, deleteCertificate);
 
 export default router;

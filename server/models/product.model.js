@@ -28,9 +28,9 @@ const ProductSchema = new Schema(
     sellerId: {
       type: Schema.Types.ObjectId,
       ref: "Seller",
-      required: false,
+      required: true,
       index: true,
-    }, // denormalized: speeds common reads
+    },
     productName: {
       type: String,
       required: true,
@@ -45,15 +45,18 @@ const ProductSchema = new Schema(
         validator: (val) => Array.isArray(val) && val.length >= 3,
         message: "At least 3 product images are required",
       },
-      views: { type: Number, default: 0 },
+    },
+    views: {
+      type: Number,
+      default: 0,
     },
     category: {
-      type: String,
+      type: [String],
       required: true,
-      enum: ["Granite", "Marble"],
+      enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
       index: true,
     },
-    subCategory: { type: String, required: true, index: true },
+    subCategory: { type: [String], required: true, index: true },
     grade: { type: String, required: true, enum: ["A", "B", "C"], index: true },
     color: { type: String, required: true, trim: true },
     origin: { type: String, required: true, trim: true },
@@ -71,7 +74,7 @@ const ProductSchema = new Schema(
       required: true,
       trim: true,
       minlength: 50,
-      maxlength: 1500,
+      maxlength: 3500,
     },
     status: {
       type: String,

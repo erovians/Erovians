@@ -12,12 +12,31 @@ import SellerSignUp from "./pages/Auth/SellerSignUp";
 
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
-import CompanyProfile from "./pages/SellerDashboard/components/Companyprofile/CompanyProfileForm";
+import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";
 import AddProducts from "./pages/SellerDashboard/components/Products/AddProducts";
-import CompanyOverview from "./pages/SellerDashboard/components/Companyprofile/CompanyOverview";
+import CompanyOverview from "./pages/SellerDashboard/components/Company/companyOverview/CompanyOverview";
 import ListProducts from "./pages/SellerDashboard/components/Products/ListProducts";
 import ProductDetails from "./pages/SellerDashboard/components/Products/ProductDetails";
 import Categories from "./pages/SellerDashboard/components/Products/Categories";
+import CompanyCertification from "./pages/SellerDashboard/components/Company/companyCertificate/CompanyCertification";
+import OrderCompletedList from "./pages/SellerDashboard/components/Orders/OrderCompletedList";
+import OrderPendingList from "./pages/SellerDashboard/components/Orders/OrderPendingList";
+import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
+
+import ProtectedRoute from "./utils/ProtectedRoute";
+import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry";
+// import Inquries from "./pages/SellerDashboard/components/Messages/Inquries";
+import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
+import ChatApp from "./pages/chat/ChatApp";
+import Teams from "./pages/SellerDashboard/components/Teams/Teams";
+
+function NotFound() {
+  return (
+    <div className=" h-full flex">
+      <h1 className="m-auto">404 - Page Not Found</h1>
+    </div>
+  );
+}
 
 function App() {
   const location = useLocation();
@@ -50,12 +69,24 @@ function App() {
 
         {/* Seller dashboard routes */}
         {isSellerRoute && (
-          <Route path="/sellerdashboard" element={<SellerDashboardLayout />}>
+          <Route
+            path="/sellerdashboard"
+            element={
+              <ProtectedRoute>
+                {" "}
+                <SellerDashboardLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
             <Route path="company/overview" element={<CompanyOverview />} />
+            <Route
+              path="company/addcertificate"
+              element={<CompanyCertification />}
+            />
 
             {/* products */}
             <Route path="products/add" element={<AddProducts />} />
@@ -63,6 +94,25 @@ function App() {
             <Route path="product/:id" element={<ProductDetails />} />
             {/* /sellerdashboard/products/categories */}
             <Route path="products/categories" element={<Categories />} />
+
+            {/* messages */}
+            <Route path="messages/inquires" element={<Inquiry />} />
+            <Route
+              path="messages/inquirydetail/:id"
+              element={<InquiryDetail />}
+            />
+
+            {/* orders */}
+            <Route path="orders/completed" element={<OrderCompletedList />} />
+            <Route path="orders/pending" element={<OrderPendingList />} />
+            <Route path="orders/reviews" element={<ReviewSection />} />
+
+            {/* chats */}
+            <Route path="chats/:userId" element={<ChatApp />} />
+            <Route path="*" element={<NotFound />} />
+
+            {/* Teams */}
+            <Route path="teams" element={<Teams />} />
           </Route>
         )}
       </Routes>

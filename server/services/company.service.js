@@ -6,60 +6,53 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
 
-export const registerCompanyService = async (data, files) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  export const registerCompanyService = async (data, files, sellerId) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
   const uploadedFiles = [];
 
-  try {
-    const SellerId = "6870e6e558e2ba32d6b1eb47";
-    if (!SellerId) throw new Error("SellerId is required");
-
-    // ✅ Step 1: Check for existing company
-    const existingCompany = await CompanyDetails.findOne({ SellerId })
-      .session(session)
-      .lean();
+    try {
+      if (!sellerId) throw new Error("sellerId is required");
+  
+      // ✅ Step 1: Check for existing company
+      const existingCompany = await CompanyDetails.findOne({ sellerId })
+        .session(session)
+        .lean();
 
     if (existingCompany)
       throw new Error("Company already registered for this seller");
 
-    // ✅ Step 2: Parse and validate input
-    const address =
-      typeof data.address === "string"
-        ? JSON.parse(data.address)
-        : data.address;
+      // ✅ Step 2: Parse and validate input
+      const address = typeof data.address === "string" ? JSON.parse(data.address) : data.address;
 
-    const validated = await registerCompanySchema.parseAsync({
-      SellerId,
-      companyBasicInfo: {
-        companyName: data.companyName,
-        address,
-        legalowner: data.legalowner,
-        locationOfRegistration: data.locationOfRegistration,
-        companyRegistrationYear: data.companyRegistrationYear,
-        mainCategory: data.mainCategory,
-        subCategory: data.subCategory,
-        acceptedCurrency: data.acceptedCurrency,
-        acceptedPaymentType: data.acceptedPaymentType,
-        languageSpoken: data.languageSpoken,
-      },
-      companyIntro: {
-        companyDescription: data.companyDescription,
-        logo: "",
-        companyPhotos: [],
-        companyVideos: [],
-      },
-    });
+      const mainCategory= typeof data.mainCategory === "string" ? JSON.parse(data.mainCategory) : data.mainCategory;
+      const subCategory= typeof data.subCategory === "string" ? JSON.parse(data.subCategory) : data.subCategory;
 
-    const logoUrl = await (async () => {
-      if (!files?.logo?.[0]) return "";
-      const file = files.logo[0];
-      const res = await uploadOnCloudinary(file.path, file.mimetype);
-      if (!res?.secure_url) throw new Error("Logo upload failed");
-      uploadedFiles.push(res.public_id);
-      return res.secure_url;
-    })();
+
+      const validated = await registerCompanySchema.parseAsync({
+        sellerId,
+        companyBasicInfo: {
+          companyName: data.companyName,
+          address,
+          legalowner: data.legalowner,
+          locationOfRegistration: data.locationOfRegistration,
+          companyRegistrationYear: data.companyRegistrationYear,
+          mainCategory,
+          subCategory,
+          acceptedCurrency: data.acceptedCurrency,
+          acceptedPaymentType: data.acceptedPaymentType,
+          languageSpoken: data.languageSpoken,
+        },
+        companyIntro: {
+          companyDescription: data.companyDescription,
+          logo: "",
+          companyPhotos: [],
+          companyVideos: [],
+        },
+      });
+
+    
 
     const photoUrls = await Promise.all(
       (files?.companyPhotos || []).map(async (file) => {
@@ -113,12 +106,15 @@ export const registerCompanyService = async (data, files) => {
   }
 };
 
-export const getCompanyDetailsService = async (sellerId) => {
+export const getCompanyDetailsService = async ({sellerId, companyId }) => {
   try {
-    if (!sellerId) throw new Error("SellerId is required");
+    const matchFilter = {};
+
+    if (sellerId) matchFilter.sellerId = new mongoose.Types.ObjectId(sellerId);
+    if (companyId) matchFilter._id = new mongoose.Types.ObjectId(companyId);
 
     const result = await CompanyDetails.aggregate([
-      { $match: { SellerId: new mongoose.Types.ObjectId(sellerId) } },
+      { $match: matchFilter },
       {
         $lookup: {
           from: "products",
@@ -145,6 +141,7 @@ export const getCompanyDetailsService = async (sellerId) => {
 
     return result[0];
   } catch (err) {
+    // logger.error("getCompanyDetailsService failed", { sellerId,companyId, error: err.message });
     throw err;
   }
 };

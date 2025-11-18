@@ -11,14 +11,21 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Helper: Generate month days
 function generateMonthDays(year, month, dataFromBackend = null) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   return Array.from({ length: daysInMonth }, (_, i) => ({
     name: (i + 1).toString(),
-    Product:
-      dataFromBackend?.[i]?.Product ?? Math.floor(Math.random() * 5000),
+    Product: dataFromBackend?.[i]?.Product ?? Math.floor(Math.random() * 5000),
     Category:
       dataFromBackend?.[i]?.Category ?? Math.floor(Math.random() * 4000),
   }));
@@ -56,7 +63,20 @@ export default function SellerChart() {
     <div className="w-full h-full flex flex-col">
       {/* Dropdown */}
       <div className="flex justify-start mb-3">
-        <select
+        <Select
+          value={view}
+          onValueChange={setView}
+        >
+          <SelectTrigger className="border p-2 rounded">
+            <SelectValue placeholder="Select Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="daily">Daily</SelectItem>
+            <SelectItem value="weekly">Weekly</SelectItem>
+            <SelectItem value="monthly">Monthly</SelectItem>
+          </SelectContent>
+        </Select>
+        {/* <select
           value={view}
           onChange={(e) => setView(e.target.value)}
           className="px-3 py-1 rounded border border-gray-300 bg-white shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -64,7 +84,7 @@ export default function SellerChart() {
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
-        </select>
+        </select> */}
       </div>
 
       {/* Stats cards */}
@@ -73,7 +93,11 @@ export default function SellerChart() {
           <h4 className="text-xs sm:text-sm text-gray-500">Product Searches</h4>
           <p className="text-sm sm:text-lg font-semibold flex gap-1">
             {stats.searches}
-            <MoveDownRight color="#FF0000" size={14} className="relative -bottom-2"/>
+            <MoveDownRight
+              color="#FF0000"
+              size={14}
+              className="relative -bottom-2"
+            />
           </p>
         </div>
         <div className="bg-gray-50 p-3 rounded text-start">
@@ -81,7 +105,9 @@ export default function SellerChart() {
           <p className="text-sm sm:text-lg font-semibold">{stats.clicks}</p>
         </div>
         <div className="bg-gray-50 p-3 rounded text-start">
-          <h4 className="text-xs sm:text-sm text-gray-500">Product Inquiries</h4>
+          <h4 className="text-xs sm:text-sm text-gray-500">
+            Product Inquiries
+          </h4>
           <p className="text-sm sm:text-lg font-semibold">{stats.inquiries}</p>
         </div>
       </div>
