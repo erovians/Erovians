@@ -220,6 +220,16 @@ const SellerSidebar = () => {
       ],
     },
     {
+      key: "orders",
+      icon: <ShoppingCart size={20} />,
+      label: "Orders",
+      subLinks: [
+        { to: "/sellerdashboard/orders/completed", label: "Completed" },
+        { to: "/sellerdashboard/orders/pending", label: "Pending" },
+        { to: "/sellerdashboard/orders/reviews", label: "Reviews" },
+      ],
+    },
+    {
       key: "teams",
       icon: <UserLock size={20} />,
       label: "Teams",
