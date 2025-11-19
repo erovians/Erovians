@@ -19,7 +19,7 @@ export default function TeamHeader({
 
       <div className="flex items-center gap-3">
         <input
-          className="px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
+          className="px-5 py-1 border border-gray-300 rounded-lg shadow-sm"
           placeholder="Search..."
           value={query}
           onChange={(e) => {
@@ -29,7 +29,7 @@ export default function TeamHeader({
         />
 
         <select
-          className="px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
+          className="px-3 py-1 border border-gray-300 rounded-lg shadow-sm"
           value={filterRole}
           onChange={(e) => {
             setFilterRole(e.target.value);
@@ -45,7 +45,7 @@ export default function TeamHeader({
 
         <button
           onClick={openAddModal}
-          className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          className="px-5 py-2 bg-navyblue text-white hover:text-navyblue border border-navyblue cursor-pointer rounded-lg shadow hover:bg-white transition"
         >
           + Add Member
         </button>

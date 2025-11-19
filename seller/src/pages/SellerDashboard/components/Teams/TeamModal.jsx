@@ -195,12 +195,15 @@ export default function TeamModal({
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <button onClick={close} className="px-4 py-2 border rounded-lg">
+          <button
+            onClick={close}
+            className="px-4 py-2  border border-navyblue hover:bg-navyblue hover:text-white cursor-pointer  rounded-lg"
+          >
             Cancel
           </button>
           <button
             onClick={save}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            className="px-4 py-2 bg-navyblue border border-navyblue hover:bg-white hover:text-black cursor-pointer text-white rounded-lg"
           >
             Save
           </button>
