@@ -46,7 +46,7 @@ export default function Sidebar({ onSelectChat, selectedChatId }) {
               placeholder="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-3 pr-9 py-1.5 md:py-2 rounded-lg border border-gray-300 placeholder-gray-400 text-xs md:text-sm text-black focus:outline-none focus:ring-1 focus:ring-gray-500"
+              className="w-full pl-3 pr-9 py-0.5 md:py-1 rounded-lg border border-gray-300 placeholder-gray-400 text-xs md:text-sm text-black focus:outline-none focus:ring-1 focus:ring-gray-500"
             />
             <svg
               className="w-4 h-4 md:w-5 md:h-5 absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
