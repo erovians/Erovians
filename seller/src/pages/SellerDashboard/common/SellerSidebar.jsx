@@ -180,11 +180,17 @@ const SellerSidebar = () => {
 
   // MENU DATA
   const menuItems = [
+    // {
+    //   key: "home",
+    //   icon: <Home size={20} />,
+    //   label: "Home",
+    //   subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
+    // },
     {
       key: "home",
       icon: <Home size={20} />,
       label: "Home",
-      subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
+      to: "/sellerdashboard",
     },
     {
       key: "products",
