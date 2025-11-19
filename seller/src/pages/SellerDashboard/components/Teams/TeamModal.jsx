@@ -9,7 +9,6 @@ export default function TeamModal({
   save,
 }) {
   const [preview, setPreview] = useState(null);
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (form.photo) {
