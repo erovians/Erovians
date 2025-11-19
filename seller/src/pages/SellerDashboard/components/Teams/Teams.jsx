@@ -9,6 +9,7 @@ import {
 import TeamHeader from "./TeamHeader";
 import TeamModal from "./TeamModal";
 import TeamRow from "./TeamRow";
+import { teamSchema } from "../../schema/team.schema";
 
 export default function Teams() {
   const [members, setMembers] = useState([]);
@@ -21,6 +22,9 @@ export default function Teams() {
   // Search + Filter
   const [query, setQuery] = useState("");
   const [filterRole, setFilterRole] = useState("All");
+
+  // error
+  const [errors, setErrors] = useState({});
 
   // Form
   const [form, setForm] = useState({
@@ -93,12 +97,55 @@ export default function Teams() {
     setModalOpen(true);
   };
 
-  const save = async () => {
-    try {
-      // basic validations
-      if (!form.name?.trim()) return alert("Name required");
-      if (!form.email?.trim()) return alert("Email required");
+  // const save = async () => {
+  //   try {
+  //     // basic validations
+  //     if (!form.name?.trim()) return alert("Name required");
+  //     if (!form.email?.trim()) return alert("Email required");
 
+  //     const fd = new FormData();
+  //     fd.append("name", form.name);
+  //     fd.append("email", form.email);
+  //     fd.append("mobile", form.mobile || "");
+  //     fd.append("role", form.role);
+  //     fd.append("site", form.site || "");
+
+  //     // if user selected a file, append it
+  //     if (form.photoFile) fd.append("photo", form.photoFile);
+
+  //     if (editingId) {
+  //       await updateTeamMember(editingId, fd);
+  //     } else {
+  //       await addTeamMember(fd);
+  //     }
+
+  //     setModalOpen(false);
+  //     loadMembers();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(err.response?.data?.message || "Failed to save member");
+  //   }
+  // };
+  const save = async () => {
+    const result = teamSchema.safeParse(form);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+
+      // convert from array → single message
+      const formatted = {};
+      for (const key in fieldErrors) {
+        formatted[key] = fieldErrors[key]?.[0] || null;
+      }
+
+      setErrors(formatted);
+      return;
+    }
+
+    setErrors({});
+
+    // Continue saving...
+    try {
       const fd = new FormData();
       fd.append("name", form.name);
       fd.append("email", form.email);
@@ -106,7 +153,6 @@ export default function Teams() {
       fd.append("role", form.role);
       fd.append("site", form.site || "");
 
-      // if user selected a file, append it
       if (form.photoFile) fd.append("photo", form.photoFile);
 
       if (editingId) {
@@ -157,6 +203,8 @@ export default function Teams() {
           roleOptions={roleOptions.filter((r) => r !== "All")}
           close={() => setModalOpen(false)}
           save={save}
+          errors={errors} // ⬅ ADD THIS
+          setErrors={setErrors} // optional: clear field as user types
         />
       )}
 
