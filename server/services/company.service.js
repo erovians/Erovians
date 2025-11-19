@@ -6,53 +6,59 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
 
-  export const registerCompanyService = async (data, files, sellerId) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+export const registerCompanyService = async (data, files, sellerId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   const uploadedFiles = [];
 
-    try {
-      if (!sellerId) throw new Error("sellerId is required");
-  
-      // ✅ Step 1: Check for existing company
-      const existingCompany = await CompanyDetails.findOne({ sellerId })
-        .session(session)
-        .lean();
+  try {
+    if (!sellerId) throw new Error("sellerId is required");
+
+    // ✅ Step 1: Check for existing company
+    const existingCompany = await CompanyDetails.findOne({ sellerId })
+      .session(session)
+      .lean();
 
     if (existingCompany)
       throw new Error("Company already registered for this seller");
 
-      // ✅ Step 2: Parse and validate input
-      const address = typeof data.address === "string" ? JSON.parse(data.address) : data.address;
+    // ✅ Step 2: Parse and validate input
+    const address =
+      typeof data.address === "string"
+        ? JSON.parse(data.address)
+        : data.address;
 
-      const mainCategory= typeof data.mainCategory === "string" ? JSON.parse(data.mainCategory) : data.mainCategory;
-      const subCategory= typeof data.subCategory === "string" ? JSON.parse(data.subCategory) : data.subCategory;
+    const mainCategory =
+      typeof data.mainCategory === "string"
+        ? JSON.parse(data.mainCategory)
+        : data.mainCategory;
+    const subCategory =
+      typeof data.subCategory === "string"
+        ? JSON.parse(data.subCategory)
+        : data.subCategory;
 
-
-      const validated = await registerCompanySchema.parseAsync({
-        sellerId,
-        companyBasicInfo: {
-          companyName: data.companyName,
-          address,
-          legalowner: data.legalowner,
-          locationOfRegistration: data.locationOfRegistration,
-          companyRegistrationYear: data.companyRegistrationYear,
-          mainCategory,
-          subCategory,
-          acceptedCurrency: data.acceptedCurrency,
-          acceptedPaymentType: data.acceptedPaymentType,
-          languageSpoken: data.languageSpoken,
-        },
-        companyIntro: {
-          companyDescription: data.companyDescription,
-          logo: "",
-          companyPhotos: [],
-          companyVideos: [],
-        },
-      });
-
-    
+    const validated = await registerCompanySchema.parseAsync({
+      sellerId,
+      companyBasicInfo: {
+        companyName: data.companyName,
+        address,
+        legalowner: data.legalowner,
+        locationOfRegistration: data.locationOfRegistration,
+        companyRegistrationYear: data.companyRegistrationYear,
+        mainCategory,
+        subCategory,
+        acceptedCurrency: data.acceptedCurrency,
+        acceptedPaymentType: data.acceptedPaymentType,
+        languageSpoken: data.languageSpoken,
+      },
+      companyIntro: {
+        companyDescription: data.companyDescription,
+        logo: "",
+        companyPhotos: [],
+        companyVideos: [],
+      },
+    });
 
     const photoUrls = await Promise.all(
       (files?.companyPhotos || []).map(async (file) => {
@@ -106,7 +112,7 @@ import {
   }
 };
 
-export const getCompanyDetailsService = async ({sellerId, companyId }) => {
+export const getCompanyDetailsService = async ({ sellerId, companyId }) => {
   try {
     const matchFilter = {};
 

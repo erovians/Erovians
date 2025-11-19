@@ -54,13 +54,13 @@ export default function TeamRow({ member, onEdit, onDelete, timeAgo }) {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow">
+            <div className="absolute z-100 right-0 mt-2 w-36  bg-white border rounded shadow">
               <button
                 onClick={() => {
                   setMenuOpen(false);
                   onEdit();
                 }}
-                className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+                className="block w-full text-left px-3 py-2 hover:cursor-pointer hover:bg-gray-100"
               >
                 Edit
               </button>
@@ -69,7 +69,7 @@ export default function TeamRow({ member, onEdit, onDelete, timeAgo }) {
                   setMenuOpen(false);
                   onDelete();
                 }}
-                className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600"
+                className="block w-full text-left px-3 py-2 hover:cursor-pointer hover:bg-gray-100 text-red-600"
               >
                 Delete
               </button>
