@@ -1,3 +1,4 @@
+// src/pages/sellerdashboard/team/Teams.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import {
   listTeamMembers,
@@ -5,7 +6,6 @@ import {
   updateTeamMember,
   deleteTeamMember,
 } from "./team.api";
-
 import TeamHeader from "./TeamHeader";
 import TeamModal from "./TeamModal";
 import TeamRow from "./TeamRow";
@@ -29,35 +29,37 @@ export default function Teams() {
     mobile: "",
     role: "Member",
     site: "",
+    photo: null, // existing url (string)
+    photoFile: null, // File object when user selects new
   });
 
   const pageSize = 5;
   const [page, setPage] = useState(1);
 
-  // Load members
   const loadMembers = async () => {
     setLoading(true);
     try {
       const res = await listTeamMembers();
-      setMembers(res.data.members);
+      // API returns { success: true, members: [...] }
+      setMembers(res.data.members || []);
     } catch (err) {
       console.error(err);
+      alert("Failed to load members");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     loadMembers();
   }, []);
 
-  // Roles
   const roleOptions = useMemo(() => {
-    const set = new Set(members.map((m) => m.role).filter(Boolean));
-    ["Member", "Director", "CTO", "CEO"].forEach((r) => set.add(r));
-    return ["All", ...set];
+    const s = new Set(members.map((m) => m.role).filter(Boolean));
+    ["Member", "Director", "CTO", "CEO"].forEach((r) => s.add(r));
+    return ["All", ...Array.from(s)];
   }, [members]);
 
-  // timeAgo
   const timeAgo = (input) => {
     if (!input) return "Just now";
     const diff = (Date.now() - new Date(input)) / 1000;
@@ -67,55 +69,79 @@ export default function Teams() {
     return `${Math.floor(diff / 86400)}d`;
   };
 
-  // Add / Edit Modal Handlers
   const openAddModal = () => {
-    setForm({ name: "", email: "", mobile: "", role: "Member", site: "" });
+    setForm({
+      name: "",
+      email: "",
+      mobile: "",
+      role: "Member",
+      site: "",
+      photo: null,
+      photoFile: null,
+    });
     setEditingId(null);
     setModalOpen(true);
   };
 
   const openEditModal = (member) => {
-    setForm(member);
+    setForm({
+      ...member,
+      photo: member.photo || null,
+      photoFile: null,
+    });
     setEditingId(member._id);
     setModalOpen(true);
   };
 
-  // Save (Add or Update)
-  const saveMember = async () => {
+  const save = async () => {
     try {
+      // basic validations
+      if (!form.name?.trim()) return alert("Name required");
+      if (!form.email?.trim()) return alert("Email required");
+
+      const fd = new FormData();
+      fd.append("name", form.name);
+      fd.append("email", form.email);
+      fd.append("mobile", form.mobile || "");
+      fd.append("role", form.role);
+      fd.append("site", form.site || "");
+
+      // if user selected a file, append it
+      if (form.photoFile) fd.append("photo", form.photoFile);
+
       if (editingId) {
-        await updateTeamMember(editingId, form);
+        await updateTeamMember(editingId, fd);
       } else {
-        await addTeamMember(form);
+        await addTeamMember(fd);
       }
+
       setModalOpen(false);
       loadMembers();
     } catch (err) {
       console.error(err);
-      alert("Error saving member");
+      alert(err.response?.data?.message || "Failed to save member");
     }
   };
 
-  // Delete
   const remove = async (id) => {
     if (!confirm("Delete this member?")) return;
-    await deleteTeamMember(id);
-    loadMembers();
+    try {
+      await deleteTeamMember(id);
+      loadMembers();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete member");
+    }
   };
 
   const filtered = useMemo(() => {
     let list = [...members];
-
     if (query.trim()) {
       list = list.filter((m) =>
         (m.name || "").toLowerCase().includes(query.toLowerCase())
       );
     }
-
-    if (filterRole !== "All") {
-      list = list.filter((m) => m.role === filterRole);
-    }
-
+    if (filterRole !== "All") list = list.filter((m) => m.role === filterRole);
     return list;
   }, [members, query, filterRole]);
 
@@ -130,7 +156,7 @@ export default function Teams() {
           editingId={editingId}
           roleOptions={roleOptions.filter((r) => r !== "All")}
           close={() => setModalOpen(false)}
-          save={saveMember}
+          save={save}
         />
       )}
 
@@ -146,15 +172,13 @@ export default function Teams() {
             openAddModal={openAddModal}
           />
 
-          {/* Header */}
           <div className="grid grid-cols-6 border-b pb-2 font-medium text-gray-600">
             <div className="col-span-3">Name</div>
             <div>Role</div>
             <div>Site</div>
-            <div className="text-right">Activity</div>
+            <div className="text-right mr-5">Last Activity</div>
           </div>
 
-          {/* Rows */}
           {loading ? (
             <p className="py-6 text-center">Loading...</p>
           ) : paginated.length ? (
