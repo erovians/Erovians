@@ -7,6 +7,8 @@ export default function TeamModal({
   roleOptions,
   close,
   save,
+  errors = {},
+  setErrors,
 }) {
   const [preview, setPreview] = useState(null);
 
@@ -100,48 +102,68 @@ export default function TeamModal({
         <div className="mb-3">
           <label className="text-sm">Name</label>
           <input
-            className="w-full p-2 border rounded-lg"
+            className={`w-full p-2 border rounded-lg ${
+              errors.name ? "border-red-500" : ""
+            }`}
             value={form.name || ""}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, name: e.target.value }))
-            }
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, name: e.target.value }));
+              setErrors((prev) => ({ ...prev, name: null }));
+            }}
           />
+          {errors.name && (
+            <p className="text-xs text-red-500 mt-1">{errors.name}</p>
+          )}
         </div>
 
         {/* Email */}
         <div className="mb-3">
           <label className="text-sm">Email</label>
           <input
-            className="w-full p-2 border rounded-lg"
+            className={`w-full p-2 border rounded-lg ${
+              errors.email ? "border-red-500" : ""
+            }`}
             value={form.email || ""}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, email: e.target.value }))
-            }
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, email: e.target.value }));
+              setErrors((prev) => ({ ...prev, email: null }));
+            }}
           />
+          {errors.email && (
+            <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Mobile */}
         <div className="mb-3">
           <label className="text-sm">Mobile</label>
           <input
-            className="w-full p-2 border rounded-lg"
+            className={`w-full p-2 border rounded-lg ${
+              errors.mobile ? "border-red-500" : ""
+            }`}
             value={form.mobile || ""}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, mobile: e.target.value }))
-            }
-            placeholder="Digits only"
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, mobile: e.target.value }));
+              setErrors((prev) => ({ ...prev, mobile: null }));
+            }}
           />
+          {errors.mobile && (
+            <p className="text-xs text-red-500 mt-1">{errors.mobile}</p>
+          )}
         </div>
 
         {/* Role */}
         <div className="mb-3">
           <label className="text-sm">Role</label>
           <select
-            className="w-full p-2 border rounded-lg bg-white"
+            className={`w-full p-2 border rounded-lg ${
+              errors.role ? "border-red-500" : ""
+            }`}
             value={form.role}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, role: e.target.value }))
-            }
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, role: e.target.value }));
+              setErrors((prev) => ({ ...prev, role: null }));
+            }}
           >
             {roleOptions.map((r) => (
               <option key={r} value={r}>
@@ -149,18 +171,27 @@ export default function TeamModal({
               </option>
             ))}
           </select>
+          {errors.role && (
+            <p className="text-xs text-red-500 mt-1">{errors.role}</p>
+          )}
         </div>
 
         {/* Site */}
         <div className="mb-3">
           <label className="text-sm">Site</label>
           <input
-            className="w-full p-2 border rounded-lg"
+            className={`w-full p-2 border rounded-lg ${
+              errors.site ? "border-red-500" : ""
+            }`}
             value={form.site || ""}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, site: e.target.value }))
-            }
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, site: e.target.value }));
+              setErrors((prev) => ({ ...prev, site: null }));
+            }}
           />
+          {errors.site && (
+            <p className="text-xs text-red-500 mt-1">{errors.site}</p>
+          )}
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
