@@ -264,7 +264,6 @@
 
 // export default Inquiry;
 
-
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -376,10 +375,10 @@ const Inquiry = () => {
     async (id) => {
       // Optimistically update UI
       dispatch(optimisticallyMarkAsViewed(id));
-      
+
       // Navigate to detail page
       navigate(`/sellerdashboard/messages/inquirydetail/${id}`);
-      
+
       // Mark as viewed in background (non-blocking)
       try {
         await dispatch(markInquiryAsViewed(id));
@@ -422,10 +421,10 @@ const Inquiry = () => {
       toast.error("Please select inquiries to export");
       return;
     }
-    
+
     try {
       toast.loading("Exporting inquiries...");
-      
+
       const response = await api.post(
         "/inquiry/export",
         { ids: selectedInquiries },
@@ -434,13 +433,15 @@ const Inquiry = () => {
 
       saveAs(response.data, `inquiries_${Date.now()}.xlsx`);
       setSelectedInquiries([]);
-      
+
       toast.dismiss();
       toast.success("Inquiries exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
       toast.dismiss();
-      toast.error(error.response?.data?.message || "Failed to export inquiries");
+      toast.error(
+        error.response?.data?.message || "Failed to export inquiries"
+      );
     }
   };
 

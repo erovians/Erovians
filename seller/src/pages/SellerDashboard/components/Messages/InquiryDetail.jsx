@@ -204,6 +204,7 @@ const InquiryDetail = () => {
             onClick={() => {
               // prefer to have the actual buyer._id from API; fallback to readInfo.readBy
               const chatId = buyer._id || inquiry.readInfo?.readBy || buyer.id;
+              alert(chatId);
               if (chatId) navigate(`/sellerdashboard/chats/${chatId}`);
               else alert("Chat user id not available");
             }}
