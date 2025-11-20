@@ -29,6 +29,7 @@ import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry
 import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
 import ChatApp from "./pages/chat/ChatApp";
 import Teams from "./pages/SellerDashboard/components/Teams/Teams";
+import Stocks from "./pages/SellerDashboard/components/Stocks/Stocks";
 
 function NotFound() {
   return (
@@ -113,6 +114,9 @@ function App() {
 
             {/* Teams */}
             <Route path="teams" element={<Teams />} />
+
+            {/* Stocks */}
+            <Route path="stocks" element={<Stocks />} />
           </Route>
         )}
       </Routes>
