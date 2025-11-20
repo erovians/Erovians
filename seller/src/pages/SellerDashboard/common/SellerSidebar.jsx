@@ -166,6 +166,7 @@ import {
   X,
   Store,
   UserLock,
+  ChartCandlestick,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -187,9 +188,9 @@ const SellerSidebar = () => {
     //   subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
     // },
     {
-      key: "home",
+      key: "dashboard",
       icon: <Home size={20} />,
-      label: "Home",
+      label: "Dashboard",
       to: "/sellerdashboard",
     },
     {
@@ -240,6 +241,12 @@ const SellerSidebar = () => {
       icon: <UserLock size={20} />,
       label: "Teams",
       to: "/sellerdashboard/teams",
+    },
+    {
+      key: "stocks",
+      icon: <ChartCandlestick size={20} />,
+      label: "Stocks & Lots",
+      to: "/sellerdashboard/stocks",
     },
   ];
 
