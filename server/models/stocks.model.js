@@ -8,6 +8,16 @@ const stockSchema = new mongoose.Schema(
     dimensions: String,
     location: String,
     quality: String,
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Seller",
+      required: true,
+    },
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
+    },
     qty: String,
   },
   { timestamps: true }

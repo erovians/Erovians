@@ -3,6 +3,13 @@ import React, { useState, useEffect } from "react";
 
 export default function AddLotModal({ open, setOpen, refresh }) {
   const [products, setProducts] = useState([]);
+  const blockedFields = [
+    "lot",
+    "thickness",
+    "dimensions",
+    "location",
+    "quality",
+  ];
 
   const [form, setForm] = useState({
     lot: "",
@@ -98,11 +105,18 @@ export default function AddLotModal({ open, setOpen, refresh }) {
 
                   <input
                     placeholder={`Enter ${key}`}
-                    className="border rounded-xl px-4 py-2.5 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-navyblue transition-all outline-none"
+                    className={`border rounded-xl px-4 py-2.5 transition-all outline-none
+            ${
+              blockedFields.includes(key)
+                ? "bg-gray-200 cursor-not-allowed"
+                : "bg-gray-50 focus:bg-white focus:ring-2 focus:ring-navyblue"
+            }`}
                     value={form[key]}
                     onChange={(e) =>
+                      !blockedFields.includes(key) &&
                       setForm({ ...form, [key]: e.target.value })
                     }
+                    readOnly={blockedFields.includes(key)}
                   />
                 </div>
               )

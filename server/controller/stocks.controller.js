@@ -108,12 +108,24 @@ import ExcelJS from "exceljs";
 import fs from "fs";
 import sanitize from "mongo-sanitize";
 import Stock from "../models/stocks.model.js";
+import { success } from "zod";
+import CompanyDetails from "../models/company.model.js";
 
 // ✅ Get Stocks (Optimized, Lean)
 export const getStocks = async (req, res) => {
+  const sellerId = req.user.userId;
+
   try {
-    const stocks = await Stock.find().sort({ createdAt: -1 }).lean();
+    const stocks = await Stock.find({ sellerId })
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(stocks);
+
+    if (!stocks) {
+      res
+        .status(404)
+        .json({ success: false, message: "stocks not found for this seller" });
+    }
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch stocks" });
   }
@@ -122,13 +134,40 @@ export const getStocks = async (req, res) => {
 // ✅ Create Stock (Sanitized + Validated)
 export const createStock = async (req, res) => {
   try {
+    const sellerId = req.user.userId;
+
+    // Get companyId for seller
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+    if (!company) {
+      return res.status(400).json({ message: "Company not found for seller" });
+    }
+    const companyId = company._id;
+
     const cleanData = sanitize(req.body);
 
     if (!cleanData.lot || !cleanData.material) {
       return res.status(400).json({ message: "Lot & Material are required" });
     }
 
-    const stock = await Stock.create(cleanData);
+    // 🔥 CHECK FOR DUPLICATE LOT (same seller)
+    const existing = await Stock.findOne({
+      lot: cleanData.lot,
+      sellerId: sellerId,
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: `Lot "${cleanData.lot}" already exists`,
+      });
+    }
+
+    // CREATE STOCK
+    const stock = await Stock.create({
+      ...cleanData,
+      sellerId,
+      companyId,
+    });
 
     res.json({ success: true, stock });
   } catch (err) {
@@ -184,6 +223,15 @@ export const exportStocks = async (req, res) => {
 // ✅ Import Stocks (CSV + Excel + Validation + Dedupe + File Cleanup)
 export const importStocks = async (req, res) => {
   try {
+    const sellerId = req.user.userId;
+
+    // get the companyId for this seller
+    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
+    if (!company) {
+      return res.status(400).json({ message: "Company not found for seller" });
+    }
+    const companyId = company._id;
+
     const filePath = req.file.path;
     const workbook = new ExcelJS.Workbook();
 
@@ -197,9 +245,9 @@ export const importStocks = async (req, res) => {
     const sheet = workbook.getWorksheet(1) || workbook.worksheets[0];
     const stocks = [];
 
-    // Extract rows
+    // Parse rows
     sheet.eachRow((row, rowNumber) => {
-      if (rowNumber === 1) return; // Header
+      if (rowNumber === 1) return; // Skip header
 
       const val = (cell) =>
         typeof cell.value === "object" ? cell.value?.text : cell.value;
@@ -214,26 +262,31 @@ export const importStocks = async (req, res) => {
         qty: val(row.getCell(7)),
       };
 
-      // Skip incomplete rows
       if (!item.lot || !item.material) return;
 
       stocks.push(item);
     });
 
-    // Avoid duplicate lots
+    // Avoid duplicates
     const existing = await Stock.find({
       lot: { $in: stocks.map((s) => s.lot) },
     }).select("lot");
 
     const existingSet = new Set(existing.map((x) => x.lot));
-
     const finalList = stocks.filter((s) => !existingSet.has(s.lot));
 
+    // ⭐ ADD sellerId & companyId TO EACH ITEM
+    finalList.forEach((item) => {
+      item.sellerId = sellerId;
+      item.companyId = companyId;
+    });
+
+    // Save items
     if (finalList.length > 0) {
       await Stock.insertMany(finalList);
     }
 
-    // Delete file safely
+    // Delete uploaded file
     fs.unlink(filePath, () => {});
 
     res.json({
