@@ -466,8 +466,8 @@ export default function TeamModal({
               ref={firstInputRef}
               value={form.name || ""}
               onChange={(e) => setField("name", e.target.value)}
-              className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                localErrors.name || errors.name ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-indigo-200"
+              className={`w-full text-sm p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                localErrors.name || errors.name ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-navyblue"
               }`}
               placeholder="Full name"
               disabled={saving}
@@ -481,8 +481,8 @@ export default function TeamModal({
             <input
               value={form.email || ""}
               onChange={(e) => setField("email", e.target.value)}
-              className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                localErrors.email || errors.email ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-indigo-200"
+              className={`w-full text-sm p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                localErrors.email || errors.email ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-navblue"
               }`}
               placeholder="name@example.com"
               disabled={saving}
@@ -497,8 +497,8 @@ export default function TeamModal({
               <input
                 value={form.mobile || ""}
                 onChange={(e) => setField("mobile", e.target.value)}
-                className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  localErrors.mobile || errors.mobile ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-indigo-200"
+                className={`w-full text-sm p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                  localErrors.mobile || errors.mobile ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-navyblue"
                 }`}
                 placeholder="+91 98765 43210"
                 disabled={saving}
@@ -512,7 +512,7 @@ export default function TeamModal({
               <select
                 value={form.role || ""}
                 onChange={(e) => setField("role", e.target.value)}
-                className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                className={`w-full  p-2 border rounded-lg focus:outline-none focus:ring-2 ${
                   localErrors.role || errors.role ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-indigo-200"
                 }`}
                 disabled={saving}
@@ -533,8 +533,8 @@ export default function TeamModal({
             <input
               value={form.site || ""}
               onChange={(e) => setField("site", e.target.value)}
-              className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                localErrors.site || errors.site ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-indigo-200"
+              className={`w-full text-sm p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                localErrors.site || errors.site ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-navyblue  "
               }`}
               placeholder="eg. www.example.com"
               disabled={saving}
@@ -552,7 +552,7 @@ export default function TeamModal({
             type="button"
             onClick={close}
             disabled={saving}
-            className="px-4 py-2 rounded-md border bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            className="px-4 py-2 rounded-md border bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-navyblue"
           >
             Cancel
           </button>
@@ -562,7 +562,7 @@ export default function TeamModal({
             onClick={save}
             disabled={saving}
             className={`px-4 py-2 rounded-md text-white focus:outline-none focus:ring-2 ${
-              saving ? "bg-gray-400 cursor-not-allowed" : "bg-navyblue hover:bg-white hover:text-navyblue border border-navyblue focus:ring-indigo-300"
+              saving ? "bg-gray-400 cursor-not-allowed" : "bg-navyblue hover:bg-white hover:text-navyblue border border-navyblue focus:ring-navyblue"
             }`}
             aria-disabled={saving}
           >
