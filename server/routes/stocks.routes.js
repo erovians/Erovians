@@ -4,14 +4,15 @@ import {
   createStock,
   getStocks,
   importStocks,
-} from "../controller/stocks.contoller.js";
+} from "../controller/stocks.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { verifyUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getStocks);
-router.post("/create", createStock);
-router.post("/import", upload.single("file"), importStocks);
+router.get("/", verifyUser, getStocks);
+router.post("/create", verifyUser, createStock);
+router.post("/import", verifyUser, upload.single("file"), importStocks);
 router.get("/export", exportStocks);
 
 export default router;
