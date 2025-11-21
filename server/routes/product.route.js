@@ -10,11 +10,14 @@ import {
   bulkActivateProducts,
   bulkDeactivateProducts,
   bulkDeleteProducts,
+  getMyProducts,
 } from "../controller/product.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { verifyUser, allowRoles } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
+
+router.get("/mine", verifyUser, listAllProducts);
 
 router.post(
   "/add",
