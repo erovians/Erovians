@@ -30,20 +30,20 @@ export default function AddLotModal({ open, setOpen, refresh }) {
 
   // Auto-fill form when material (product) is selected
   const handleMaterialSelect = (productName) => {
-    setForm((prev) => ({ ...prev, material: productName }));
+    const product = products.find((p) => p.productName === productName);
 
-    const product = products.find((p) => p.name === productName);
-    if (product) {
-      setForm({
-        lot: prev.lot, // do NOT change existing LOT
-        material: product.name,
-        thickness: product.thickness ?? "",
-        dimensions: product.dimensions ?? "",
-        location: product.location ?? "",
-        quality: product.quality ?? "",
-        qty: "",
-      });
-    }
+    if (!product) return;
+
+    setForm((prev) => ({
+      ...prev,
+      lot: product.id.slice(-6),
+      material: product.productName,
+      thickness: product.size?.thickness || "",
+      dimensions: `${product.size?.length} x ${product.size?.width}` || "",
+      location: product.origin || "",
+      quality: product.grade || "",
+      qty: "",
+    }));
   };
 
   const handleSubmit = async () => {
@@ -77,11 +77,11 @@ export default function AddLotModal({ open, setOpen, refresh }) {
 
               {products.map((p) => (
                 <option
-                  key={p._id}
-                  value={p.name}
+                  key={p.id}
+                  value={p.productName}
                   className="bg-black text-white"
                 >
-                  {p.name}
+                  {p.productName}
                 </option>
               ))}
             </select>
