@@ -17,11 +17,9 @@ export default function Dashboard() {
         const data = res.data.orders;
         setOrders(data);
 
-        // Count by status
         setPendingOrders(data.filter((o) => o.status === "pending").length);
         setcompletedOrders(data.filter((o) => o.status === "delivered").length);
 
-        // ⭐ Revenue for the PRESENT MONTH
         const now = new Date();
         const firstDayThisMonth = new Date(
           now.getFullYear(),
