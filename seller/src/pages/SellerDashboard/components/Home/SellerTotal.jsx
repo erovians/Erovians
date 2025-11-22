@@ -54,8 +54,8 @@ export default function Dashboard() {
   }, []);
 
   const statusColors = {
-    Confirmed: "bg-green-100 text-green-700 border border-green-300",
-    Preparing: "bg-yellow-100 text-yellow-700 border border-yellow-300",
+    delivered: "bg-green-100 text-green-700 border border-green-300",
+    pending: "bg-yellow-100 text-yellow-700 border border-yellow-300",
     Quoting: "bg-gray-200 text-gray-700 border border-gray-400",
   };
 
@@ -98,7 +98,7 @@ export default function Dashboard() {
             <table className="w-full text-sm">
               <thead className="text-gray-600 border-b border-gray-300 bg-white sticky top-0 font-semibold">
                 <tr>
-                  <th className="py-2 text-left">#</th>
+                  <th className="py-2 text-left">ID</th>
                   <th className="text-left">Client</th>
                   <th className="text-left">Project</th>
                   <th className="text-left">Status</th>
@@ -121,7 +121,7 @@ export default function Dashboard() {
                         key={o._id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition"
                       >
-                        <td className="py-3">{o.orderId || o._id.slice(-5)}</td>
+                        <td className="py-3">{o.orderId || o._id.slice(-6)}</td>
                         <td>{o?.userId?.name || "sandeep"}</td>
                         <td>{o?.productId?.productName || "—"}</td>
                         <td>
