@@ -10,6 +10,7 @@ import orderRoutes from "./routes/orders.routes.js";
 import inquiryRoute from "./routes/Inquiry.route.js";
 import teamRoutes from "./routes/team.routes.js";
 import stocksRoutes from "./routes/stocks.routes.js";
+import contractRoutes from "./routes/contracts.routes.js";
 
 const app = express();
 
@@ -56,5 +57,8 @@ app.use("/api/team", teamRoutes);
 
 // stocks routes
 app.use("/api/stocks", stocksRoutes);
+
+// contracts routes
+app.use("/api/contracts", contractRoutes);
 
 export { app };
