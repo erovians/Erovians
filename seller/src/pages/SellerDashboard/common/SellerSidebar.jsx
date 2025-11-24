@@ -167,6 +167,7 @@ import {
   Store,
   UserLock,
   ChartCandlestick,
+  FileBadge,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -247,6 +248,12 @@ const SellerSidebar = () => {
       icon: <ChartCandlestick size={20} />,
       label: "Stocks & Lots",
       to: "/sellerdashboard/stocks",
+    },
+    {
+      key: "contracts",
+      icon: <FileBadge size={20} />,
+      label: "Contracts",
+      to: "/sellerdashboard/contracts",
     },
   ];
 
