@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 export default function CreateContract() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [status, setStatus] = useState("Active");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +19,7 @@ export default function CreateContract() {
     const payload = {
       order: selectedOrder._id,
       client: selectedOrder.userId.name,
-      status,
+      status: "Active", // default
     };
 
     await api.post("/contracts/add", payload);
@@ -29,55 +28,48 @@ export default function CreateContract() {
   };
 
   return (
-    <div className="p-6 text-white">
-      <h2 className="text-2xl font-semibold mb-6">Create Contract</h2>
+    <div className="flex justify-center w-full mt-10">
+      <div className="bg-[#111827] w-full max-w-xl p-8 rounded-2xl border border-white/10 shadow-lg text-white">
+        <h2 className="text-xl font-semibold mb-6 text-center">
+          Create Contract
+        </h2>
 
-      {/* Order Selection */}
-      <label className="font-semibold block mb-2">Select Pending Order</label>
-      <select
-        className="w-full p-3 rounded bg-navyblue border border-white/20 mb-5"
-        onChange={(e) =>
-          setSelectedOrder(orders.find((o) => o._id === e.target.value))
-        }
-      >
-        <option>Select a pending order</option>
-        {orders.map((o) => (
-          <option key={o._id} value={o._id}>
-            {o.productId.productName} — {o.userId.name}
-          </option>
-        ))}
-      </select>
+        {/* Order Selection */}
+        <label className="font-semibold block mb-2">Select Pending Order</label>
+        <select
+          className="w-full p-3 rounded bg-[#1e2636] border border-white/20 mb-5 text-sm"
+          onChange={(e) =>
+            setSelectedOrder(orders.find((o) => o._id === e.target.value))
+          }
+        >
+          <option>Select a pending order</option>
+          {orders.map((o) => (
+            <option key={o._id} value={o._id}>
+              {o.productId.productName} — {o.userId.name}
+            </option>
+          ))}
+        </select>
 
-      {selectedOrder && (
-        <div className="bg-gray-800 p-4 rounded mb-5">
-          <p>
-            <b>Order ID:</b> {selectedOrder._id}
-          </p>
-          <p>
-            <b>Client:</b> {selectedOrder.userId.name}
-          </p>
-        </div>
-      )}
+        {selectedOrder && (
+          <div className="bg-[#1f2937] p-4 rounded-lg mb-5 text-sm">
+            <p>
+              <b>Order ID:</b> {selectedOrder._id}
+            </p>
+            <p>
+              <b>Client:</b> {selectedOrder.userId.name}
+            </p>
+          </div>
+        )}
 
-      {/* Status Dropdown */}
-      <label className="font-semibold block mb-2">Status</label>
-      <select
-        className="w-full p-3 rounded bg-navyblue border border-white/20"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      >
-        <option>Active</option>
-        <option>Completed</option>
-        <option>Inactive</option>
-      </select>
-
-      <button
-        disabled={!selectedOrder}
-        onClick={handleCreate}
-        className="mt-6 bg-blue-600 text-white px-8 py-3 rounded font-semibold disabled:bg-gray-500"
-      >
-        Create Contract
-      </button>
+        <button
+          disabled={!selectedOrder}
+          onClick={handleCreate}
+          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white
+          w-full py-3 rounded font-semibold text-sm disabled:bg-gray-500"
+        >
+          Create Contract
+        </button>
+      </div>
     </div>
   );
 }
