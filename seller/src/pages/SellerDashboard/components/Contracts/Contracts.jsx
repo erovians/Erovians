@@ -6,19 +6,29 @@ export default function Contracts() {
   const [contracts, setContracts] = useState([]);
   const navigate = useNavigate();
 
+  const fetchContracts = async () => {
+    const res = await api.get("/contracts");
+    setContracts(res.data);
+  };
+
   useEffect(() => {
-    const fetchContracts = async () => {
-      const res = await api.get("/contracts");
-      setContracts(res.data);
-    };
     fetchContracts();
   }, []);
+
+  const handleStatusChange = async (id, newStatus) => {
+    if (newStatus === "Completed") {
+      await api.put(`/contracts/update/${id}`, { status: "Completed" });
+      fetchContracts();
+    }
+  };
 
   return (
     <div className="w-full text-white rounded-xl p-6 border border-white/10">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Contracts (from Orders)</h2>
+        <h2 className="text-xl font-semibold text-black">
+          Contracts (from Orders)
+        </h2>
 
         <button
           className="px-6 py-2 rounded-lg bg-navyblue text-white font-semibold text-sm hover:opacity-90"
@@ -50,13 +60,42 @@ export default function Contracts() {
                 <td className="px-4 py-4">{c.contractId}</td>
                 <td className="px-4 py-4">{c.order.slice(-8)}</td>
                 <td className="px-4 py-4">{c.client}</td>
+
+                {/* Status Select */}
                 <td className="px-4 py-4">
-                  <span className="bg-green-700 text-white text-xs px-3 py-1 rounded-full">
-                    {c.status}
-                  </span>
+                  <select
+                    value={c.status}
+                    disabled={c.status === "Completed"}
+                    onChange={(e) => handleStatusChange(c._id, e.target.value)}
+                    className={`text-xs px-3 py-1 rounded-full text-white ${
+                      c.status === "Completed"
+                        ? "bg-green-700 no-arrow cursor-not-allowed"
+                        : "bg-yellow-500"
+                    }`}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                  </select>
                 </td>
+
                 <td className="px-4 py-4">
                   {new Date(c.created).toLocaleDateString()}
+                </td>
+
+                {/* Download PDF Button */}
+                <td className="px-4 py-4">
+                  <button
+                    className="px-4 py-2 text-xs rounded bg-navyblue text-white hover:opacity-90"
+                    onClick={() =>
+                      window.open(
+                        `${import.meta.env.VITE_API_URL}/contracts/download/${
+                          c._id
+                        }`
+                      )
+                    }
+                  >
+                    Download PDF
+                  </button>
                 </td>
               </tr>
             ))}

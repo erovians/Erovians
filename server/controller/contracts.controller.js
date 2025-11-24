@@ -1,5 +1,6 @@
 import Contract from "../models/contracts.model.js";
 import Order from "../models/Order.model.js";
+import PDFDocument from "pdfkit";
 
 export const addContract = async (req, res) => {
   try {
@@ -45,5 +46,69 @@ export const getContracts = async (req, res) => {
   } catch (error) {
     console.error("Fetch Contract Error:", error);
     res.status(500).json({ message: "Server error while fetching contracts" });
+  }
+};
+
+// 🔹 Update Contract Status
+export const updateContractStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
+    }
+
+    const updated = await Contract.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Contract not found" });
+    }
+
+    res.status(200).json({
+      message: "Contract status updated successfully",
+      contract: updated,
+    });
+  } catch (error) {
+    console.error("Update Contract Status Error:", error);
+    res.status(500).json({ message: "Server error while updating status" });
+  }
+};
+export const downloadContractPDF = async (req, res) => {
+  try {
+    const contract = await Contract.findById(req.params.id);
+
+    if (!contract) {
+      return res.status(404).json({ message: "Contract not found" });
+    }
+
+    const doc = new PDFDocument();
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=contract_${contract.contractId}.pdf`
+    );
+
+    doc.pipe(res);
+
+    const orderShort = contract.order.toString().slice(-8);
+    const createdFormatted = new Date(contract.created).toLocaleDateString();
+
+    doc.fontSize(18).text("Contract Details", { underline: true });
+    doc.moveDown();
+
+    doc.fontSize(12).text(`Contract ID: ${contract.contractId}`);
+    doc.text(`Order: ${orderShort}`);
+    doc.text(`Client: ${contract.client}`);
+    doc.text(`Status: ${contract.status}`);
+    doc.text(`Created: ${createdFormatted}`);
+
+    doc.end();
+  } catch (error) {
+    console.error("PDF Download Error:", error);
+    res.status(500).json({ message: "Error generating PDF" });
   }
 };
