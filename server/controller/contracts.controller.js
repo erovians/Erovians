@@ -1,32 +1,31 @@
-// controllers/contractController.js
 import Contract from "../models/contracts.model.js";
 import Order from "../models/Order.model.js";
 
 export const addContract = async (req, res) => {
   try {
-    const { contractId, order, client, created } = req.body;
+    const { order, client, status } = req.body;
 
-    if (!contractId || !order || !client || !created) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!order || !client) {
+      return res.status(400).json({ message: "Order & Client are required" });
     }
 
     const existing = await Contract.findOne({ order });
     if (existing) {
       return res
         .status(400)
-        .json({ message: "Contract already created for this order" });
+        .json({ message: "Contract already exists for this order" });
     }
 
-    // 🔹 Create contract
+    const contractId = "CT-" + Date.now().toString().slice(-5);
+
     const newContract = await Contract.create({
       contractId,
       order,
       client,
-      created,
-      status: "Active",
+      status,
     });
 
-    // 🔹 Update order status
+    // Update order status
     await Order.findByIdAndUpdate(order, { status: "contract_created" });
 
     res.status(201).json({
