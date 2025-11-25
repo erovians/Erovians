@@ -52,7 +52,7 @@ export default function CreateContract() {
 
   return (
     <div className="flex justify-center w-full mt-10 px-4">
-      <div className="bg-[#0e1525] w-full max-w-2xl p-8 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.4)] text-white backdrop-blur-lg">
+      <div className="bg-navyblue w-full max-w-2xl p-8 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.4)] text-white backdrop-blur-lg">
         {/* Header */}
         <h2 className="text-2xl font-semibold mb-8 text-center bg-gradient-to-r from-blue-400 to-blue-200 text-transparent bg-clip-text">
           Create Contract
@@ -80,7 +80,7 @@ export default function CreateContract() {
             ))}
           </select>
         ) : (
-          <p className="w-full p-3 rounded-lg bg-[#1b2336] border border-white/20 mb-6 text-gray-300 text-center">
+          <p className="w-full p-3 rounded-lg bg-blue-900 border border-white/20 mb-6 text-gray-300 text-center">
             ❌ No pending orders available for creating a contract
           </p>
         )}
