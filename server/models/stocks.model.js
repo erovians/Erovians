@@ -2,12 +2,29 @@ import mongoose from "mongoose";
 
 const stockSchema = new mongoose.Schema(
   {
-    lot: String,
-    material: String,
-    thickness: String,
-    dimensions: String,
-    location: String,
-    quality: String,
+    lot: {
+      type: String,
+    },
+    material: {
+      type: String,
+      required: true,
+    },
+    thickness: {
+      type: String,
+      required: true,
+    },
+    dimensions: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    quality: {
+      type: String,
+      required: true,
+    },
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seller",

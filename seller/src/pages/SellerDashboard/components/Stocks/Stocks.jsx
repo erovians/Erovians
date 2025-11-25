@@ -12,7 +12,6 @@ export default function Stocks() {
   // Fetch stocks
   const fetchStocks = async () => {
     const res = await api.get("/stocks");
-
     setStocks(res.data);
   };
 
