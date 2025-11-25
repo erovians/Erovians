@@ -663,26 +663,26 @@ export const getInquiryDetialById = async (req, res) => {
       { $unwind: { path: "$buyer", preserveNullAndEmptyArrays: true } },
 
       // compute safe last-6 chars of buyer._id
-      {
-        $addFields: {
-          "buyer._idStr": { $toString: "$buyer._id" },
-        },
-      },
-      {
-        $addFields: {
-          // compute start = max(strLen - 6, 0)
-          "buyer.idShortStart": {
-            $max: [{ $subtract: [{ $strLenBytes: "$buyer._idStr" }, 6] }, 0],
-          },
-        },
-      },
-      {
-        $addFields: {
-          "buyer.idShort": {
-            $substrBytes: ["$buyer._idStr", "$buyer.idShortStart", 6],
-          },
-        },
-      },
+      // {
+      //   $addFields: {
+      //     "buyer._idStr": { $toString: "$buyer._id" },
+      //   },
+      // },
+      // {
+      //   $addFields: {
+      //     // compute start = max(strLen - 6, 0)
+      //     "buyer.idShortStart": {
+      //       $max: [{ $subtract: [{ $strLenBytes: "$buyer._idStr" }, 6] }, 0],
+      //     },
+      //   },
+      // },
+      // {
+      //   $addFields: {
+      //     "buyer.idShort": {
+      //       $substrBytes: ["$buyer._idStr", "$buyer.idShortStart", 6],
+      //     },
+      //   },
+      // },
 
       // final projection to a compact UI-friendly shape
       {
@@ -699,7 +699,7 @@ export const getInquiryDetialById = async (req, res) => {
           data: {
             buyer: {
               name: { $ifNull: ["$buyer.name", "Unknown"] },
-              id: { $ifNull: ["$buyer.idShort", "Unknown"] },
+              id: { $toString: "$buyer._id" },
               email: { $ifNull: ["$buyer.email", "N/A"] },
               profileImage: { $ifNull: ["$buyer.profileImage", "N/A"] },
             },

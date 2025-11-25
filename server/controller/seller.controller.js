@@ -223,7 +223,6 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-
     const seller = await Seller.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
     }).select("+password");

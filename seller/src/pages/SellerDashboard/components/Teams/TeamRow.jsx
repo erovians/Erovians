@@ -5,7 +5,6 @@ export default function TeamRow({ member, onEdit, onDelete, timeAgo }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef();
 
-  // Close popup if clicked outside
   useEffect(() => {
     const close = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -24,10 +23,18 @@ export default function TeamRow({ member, onEdit, onDelete, timeAgo }) {
     .toUpperCase();
 
   return (
-    <div className="grid grid-cols-6 py-4 border-b border-gray-200 items-center hover:bg-gray-50 relative">
+    <div className="grid grid-cols-6 py-4 border-b border-gray-200 items-center relative">
       <div className="col-span-3 flex items-center gap-3">
-        <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold">
-          {initials}
+        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+          {member.photo ? (
+            <img
+              src={member.photo}
+              alt={member.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="text-blue-600 font-semibold">{initials}</div>
+          )}
         </div>
 
         <div>
@@ -42,19 +49,20 @@ export default function TeamRow({ member, onEdit, onDelete, timeAgo }) {
       <p className="text-gray-500">{member.site || "---"}</p>
 
       <div className="flex items-center justify-end pr-3 text-gray-600">
-        <span className="text-sm">{timeAgo(member.lastActive)}</span>
+        <span className="text-sm mr-2">
+          {timeAgo(member.lastActive || member.updatedAt || member.createdAt)}
+        </span>
 
-        {/* 3 Dot Menu */}
-        <div ref={menuRef} className="relative ml-3">
+        <div ref={menuRef} className="relative">
           <button
             onClick={() => setMenuOpen((p) => !p)}
-            className="p-1 rounded hover:bg-gray-200"
+            className="p-1 rounded hover:bg-gray-100"
           >
             ⋮
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-28 bg-white border rounded shadow">
+            <div className="absolute right-0 mt-2 w-36 bg-white border rounded shadow z-50">
               <button
                 onClick={() => {
                   setMenuOpen(false);

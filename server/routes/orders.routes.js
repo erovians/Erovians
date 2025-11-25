@@ -16,7 +16,7 @@ const router = express.Router();
 router.post("/create", verifyUser, createOrder);
 router.get("/:id", verifyUser, getOrderById);
 router.get("/userorders", verifyUser, getUserOrders);
-router.get("/sellerorders", verifyUser, getSellerOrders);
+router.get("/sellerorders/all/orders", verifyUser, getSellerOrders);
 router.patch("/:id/status", verifyUser, updateOrderStatus);
 router.get("/status/completed", verifyUser, getCompletedOrders);
 router.get("/status/pending", verifyUser, getPendingOrders);

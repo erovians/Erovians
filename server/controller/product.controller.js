@@ -167,7 +167,7 @@ export const getProductById = async (req, res) => {
     const productId = req.params.productId;
     const userRole = req.user.role; // Access the role set by your middleware
     const userId = req.user.userId;
-    console.log(userId)
+    console.log(userId);
 
     let findFilter = { _id: productId };
     let updateViews = false;
@@ -308,5 +308,23 @@ export const bulkDeleteProducts = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: error.message || "Deletion failed" });
+  }
+};
+
+export const getMyProducts = async (req, res) => {
+  try {
+    const sellerId = req.user.userId;
+
+    const products = await Product.find({ sellerId }).lean();
+
+    res.json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log("Error fetching seller products:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch products" });
   }
 };
