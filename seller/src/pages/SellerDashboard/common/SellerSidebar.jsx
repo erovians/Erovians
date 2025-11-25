@@ -166,6 +166,8 @@ import {
   X,
   Store,
   UserLock,
+  ChartCandlestick,
+  FileBadge,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -180,11 +182,17 @@ const SellerSidebar = () => {
 
   // MENU DATA
   const menuItems = [
+    // {
+    //   key: "home",
+    //   icon: <Home size={20} />,
+    //   label: "Home",
+    //   subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
+    // },
     {
-      key: "home",
+      key: "dashboard",
       icon: <Home size={20} />,
-      label: "Home",
-      subLinks: [{ to: "/sellerdashboard", label: "Overview" }],
+      label: "Dashboard",
+      to: "/sellerdashboard",
     },
     {
       key: "products",
@@ -237,6 +245,18 @@ const SellerSidebar = () => {
       icon: <UserLock size={20} />,
       label: "Teams",
       to: "/sellerdashboard/teams",
+    },
+    {
+      key: "stocks",
+      icon: <ChartCandlestick size={20} />,
+      label: "Stocks & Lots",
+      to: "/sellerdashboard/stocks",
+    },
+    {
+      key: "contracts",
+      icon: <FileBadge size={20} />,
+      label: "Contracts",
+      to: "/sellerdashboard/contracts",
     },
   ];
 

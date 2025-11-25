@@ -1,121 +1,118 @@
-
 import mongoose from "mongoose";
 import CompanyDetails from "../models/company.model.js";
 import { registerCompanySchema } from "../zodSchemas/company/registerCompany.schema.js";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinaryUpload.utils.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinaryUpload.utils.js";
 
-  export const registerCompanyService = async (data, files, sellerId) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+export const registerCompanyService = async (data, files, sellerId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    const uploadedFiles = [];
+  const uploadedFiles = [];
 
-    try {
-      if (!sellerId) throw new Error("sellerId is required");
-  
-      // ✅ Step 1: Check for existing company
-      const existingCompany = await CompanyDetails.findOne({ sellerId })
-        .session(session)
-        .lean();
+  try {
+    if (!sellerId) throw new Error("sellerId is required");
 
-      if (existingCompany)
-        throw new Error("Company already registered for this seller");
+    // ✅ Step 1: Check for existing company
+    const existingCompany = await CompanyDetails.findOne({ sellerId })
+      .session(session)
+      .lean();
 
-      // ✅ Step 2: Parse and validate input
-      const address = typeof data.address === "string" ? JSON.parse(data.address) : data.address;
+    if (existingCompany)
+      throw new Error("Company already registered for this seller");
 
-      const mainCategory= typeof data.mainCategory === "string" ? JSON.parse(data.mainCategory) : data.mainCategory;
-      const subCategory= typeof data.subCategory === "string" ? JSON.parse(data.subCategory) : data.subCategory;
+    // ✅ Step 2: Parse and validate input
+    const address =
+      typeof data.address === "string"
+        ? JSON.parse(data.address)
+        : data.address;
 
+    const mainCategory =
+      typeof data.mainCategory === "string"
+        ? JSON.parse(data.mainCategory)
+        : data.mainCategory;
+    const subCategory =
+      typeof data.subCategory === "string"
+        ? JSON.parse(data.subCategory)
+        : data.subCategory;
 
-      const validated = await registerCompanySchema.parseAsync({
-        sellerId,
-        companyBasicInfo: {
-          companyName: data.companyName,
-          address,
-          legalowner: data.legalowner,
-          locationOfRegistration: data.locationOfRegistration,
-          companyRegistrationYear: data.companyRegistrationYear,
-          mainCategory,
-          subCategory,
-          acceptedCurrency: data.acceptedCurrency,
-          acceptedPaymentType: data.acceptedPaymentType,
-          languageSpoken: data.languageSpoken,
-        },
-        companyIntro: {
-          companyDescription: data.companyDescription,
-          logo: "",
-          companyPhotos: [],
-          companyVideos: [],
-        },
-      });
+    const validated = await registerCompanySchema.parseAsync({
+      sellerId,
+      companyBasicInfo: {
+        companyName: data.companyName,
+        address,
+        legalowner: data.legalowner,
+        locationOfRegistration: data.locationOfRegistration,
+        companyRegistrationYear: data.companyRegistrationYear,
+        mainCategory,
+        subCategory,
+        acceptedCurrency: data.acceptedCurrency,
+        acceptedPaymentType: data.acceptedPaymentType,
+        languageSpoken: data.languageSpoken,
+      },
+      companyIntro: {
+        companyDescription: data.companyDescription,
+        logo: "",
+        companyPhotos: [],
+        companyVideos: [],
+      },
+    });
 
-    
-
-      // ✅ Step 3: Upload to Cloudinary
-      const logoUrl = await (async () => {
-        if (!files?.logo?.[0]) return "";
-        const file = files.logo[0];
+    const photoUrls = await Promise.all(
+      (files?.companyPhotos || []).map(async (file) => {
         const res = await uploadOnCloudinary(file.path, file.mimetype);
-        if (!res?.secure_url) throw new Error("Logo upload failed");
+        if (!res?.secure_url) throw new Error("Photo upload failed");
         uploadedFiles.push(res.public_id);
         return res.secure_url;
-      })();
+      })
+    );
 
-      const photoUrls = await Promise.all(
-        (files?.companyPhotos || []).map(async (file) => {
-          const res = await uploadOnCloudinary(file.path, file.mimetype);
-          if (!res?.secure_url) throw new Error("Photo upload failed");
-          uploadedFiles.push(res.public_id);
-          return res.secure_url;
-        })
-      );
+    const videoUrls = await Promise.all(
+      (files?.companyVideos || []).map(async (file) => {
+        const res = await uploadOnCloudinary(file.path, file.mimetype);
+        if (!res?.secure_url) throw new Error("Video upload failed");
+        uploadedFiles.push(res.public_id);
+        return res.secure_url;
+      })
+    );
 
-      const videoUrls = await Promise.all(
-        (files?.companyVideos || []).map(async (file) => {
-          const res = await uploadOnCloudinary(file.path, file.mimetype);
-          if (!res?.secure_url) throw new Error("Video upload failed");
-          uploadedFiles.push(res.public_id);
-          return res.secure_url;
-        })
-      );
+    // ✅ Step 4: Build final object
+    validated.companyBasicInfo.companyRegistrationYear = new Date(
+      validated.companyBasicInfo.companyRegistrationYear
+    );
+    validated.companyIntro = {
+      ...validated.companyIntro,
+      logo: logoUrl,
+      companyPhotos: photoUrls,
+      companyVideos: videoUrls,
+    };
 
-      // ✅ Step 4: Build final object
-      validated.companyBasicInfo.companyRegistrationYear = new Date(
-        validated.companyBasicInfo.companyRegistrationYear
-      );
-      validated.companyIntro = {
-        ...validated.companyIntro,
-        logo: logoUrl,
-        companyPhotos: photoUrls,
-        companyVideos: videoUrls,
-      };
+    // ✅ Step 5: Save inside a transaction
+    const [savedCompany] = await CompanyDetails.create([validated], {
+      session,
+    });
 
-      // ✅ Step 5: Save inside a transaction
-      const [savedCompany] = await CompanyDetails.create([validated], {
-        session,
-      });
+    await session.commitTransaction();
+    session.endSession();
 
-      await session.commitTransaction();
-      session.endSession();
+    return savedCompany;
+  } catch (error) {
+    // 🔁 Rollback DB
+    await session.abortTransaction();
+    session.endSession();
 
-      return savedCompany;
-    } catch (error) {
-      // 🔁 Rollback DB
-      await session.abortTransaction();
-      session.endSession();
+    // 🔁 Rollback Cloudinary uploads
+    await Promise.all(
+      uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
+    );
 
-      // 🔁 Rollback Cloudinary uploads
-      await Promise.all(
-        uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
-      );
+    throw error;
+  }
+};
 
-      throw error;
-    }
-  };
-
-
-export const getCompanyDetailsService = async ({sellerId, companyId }) => {
+export const getCompanyDetailsService = async ({ sellerId, companyId }) => {
   try {
     const matchFilter = {};
 
@@ -131,7 +128,15 @@ export const getCompanyDetailsService = async ({sellerId, companyId }) => {
           foreignField: "companyId",
           as: "products",
           pipeline: [
-            { $project: { productName: 1, productImages: 1, grade: 1, description: 1, status: 1 } },
+            {
+              $project: {
+                productName: 1,
+                productImages: 1,
+                grade: 1,
+                description: 1,
+                status: 1,
+              },
+            },
             { $limit: 20 },
           ],
         },
@@ -146,4 +151,3 @@ export const getCompanyDetailsService = async ({sellerId, companyId }) => {
     throw err;
   }
 };
-

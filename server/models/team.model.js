@@ -18,6 +18,8 @@ const teamMemberSchema = new mongoose.Schema(
       ref: "Seller",
       required: true,
     },
+    photo: { type: String, default: null },
+    photoPublicId: { type: String, default: null },
   },
   { timestamps: true }
 );
