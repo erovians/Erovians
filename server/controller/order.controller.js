@@ -1,5 +1,6 @@
 import Order from "../models/Order.model.js";
 import Product from "../models/product.model.js";
+import xl from "exceljs";
 
 export const createOrder = async (req, res) => {
   try {
@@ -202,5 +203,48 @@ export const getPendingOrders = async (req, res) => {
   } catch (error) {
     console.error("Error fetching completed orders:", error);
     res.status(500).json({ success: false, message: "Server error." });
+  }
+};
+
+export const exportOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("userId", "name email")
+      .populate("productId", "productName");
+
+    const wb = new xl.Workbook();
+    const ws = wb.addWorksheet("Orders");
+
+    ws.columns = [
+      { header: "Order ID", key: "orderId", width: 22 },
+      { header: "Client", key: "client", width: 25 },
+      { header: "Product", key: "product", width: 25 },
+      { header: "Status", key: "status", width: 15 },
+      { header: "Amount", key: "amount", width: 15 },
+      { header: "Date", key: "date", width: 20 },
+    ];
+
+    orders.forEach((o) => {
+      ws.addRow({
+        orderId: o.orderId || o._id,
+        client: o?.userId?.name || "",
+        product: o?.productId?.productName || "",
+        status: o.status,
+        amount: o.totalPrice,
+        date: new Date(o.createdAt).toLocaleDateString(),
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+
+    await wb.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Export failed" });
   }
 };

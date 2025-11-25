@@ -8,6 +8,7 @@ import {
   updateOrderStatus,
   getCompletedOrders,
   getPendingOrders,
+  exportOrders,
 } from "../controller/order.controller.js";
 import { verifyUser } from "../middleware/auth.middleware.js";
 
@@ -20,4 +21,5 @@ router.get("/sellerorders/all/orders", verifyUser, getSellerOrders);
 router.patch("/:id/status", verifyUser, updateOrderStatus);
 router.get("/status/completed", verifyUser, getCompletedOrders);
 router.get("/status/pending", verifyUser, getPendingOrders);
+router.get("/ordersheet/download", verifyUser, exportOrders);
 export default router;
