@@ -181,41 +181,26 @@ export const exportStocks = async (req, res) => {
   try {
     const userId = req.user?.userId;
 
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet("Stocks");
-
-    sheet.columns = [
-      { header: "Lot", key: "lot", width: 20 },
-      { header: "Material", key: "material", width: 25 },
-      { header: "Thickness", key: "thickness", width: 15 },
-      { header: "Dimensions", key: "dimensions", width: 20 },
-      { header: "Location", key: "location", width: 20 },
-      { header: "Quality", key: "quality", width: 10 },
-      { header: "Qty", key: "qty", width: 10 },
-    ];
-
+    // Fetch only current user's stocks
     const stocks = await Stock.find({ sellerId: userId }).lean();
 
+    // CSV headers
+    let csv = "Lot,Material,Thickness,Dimensions,Location,Quality,Qty\n";
+
+    // Add rows
     stocks.forEach((item) => {
-      sheet.addRow({
-        lot: item.lot,
-        material: item.material,
-        thickness: item.thickness,
-        dimensions: item.dimensions,
-        location: item.location,
-        quality: item.quality,
-        qty: item.qty,
-      });
+      csv += `${item.lot || ""},${item.material || ""},${
+        item.thickness || ""
+      },${item.dimensions || ""},${item.location || ""},${item.quality || ""},${
+        item.qty || ""
+      }\n`;
     });
 
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
-    res.setHeader("Content-Disposition", "attachment; filename=stocks.xlsx");
+    // CSV file name
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=stocks.csv");
 
-    await workbook.xlsx.write(res);
-    res.end();
+    return res.send(csv);
   } catch (error) {
     console.error("EXPORT ERROR:", error);
     res.status(500).json({ message: "Failed to export" });

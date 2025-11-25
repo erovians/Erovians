@@ -25,7 +25,7 @@ export default function Stocks() {
     const response = await api.get("/stocks/export", {
       responseType: "blob",
     });
-    saveAs(response.data, "stocks.xlsx");
+    saveAs(response.data, "stocks.csv");
   };
 
   // Import excel with loader
