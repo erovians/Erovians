@@ -35,7 +35,10 @@ const stockSchema = new mongoose.Schema(
       ref: "Company",
       required: true,
     },
-    qty: String,
+    qty: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
