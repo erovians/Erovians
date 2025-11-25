@@ -59,9 +59,13 @@ export default function CreateContract() {
         </h2>
 
         {/* Order Selection */}
-        <label className="font-semibold block mb-3 text-gray-200">
-          Select Pending Order
-        </label>
+        {orders.length > 0 ? (
+          <label className="font-semibold block mb-3 text-gray-200">
+            Select Pending Order
+          </label>
+        ) : (
+          ""
+        )}
 
         {orders.length > 0 ? (
           <select
@@ -80,7 +84,7 @@ export default function CreateContract() {
             ))}
           </select>
         ) : (
-          <p className="w-full p-3 rounded-lg bg-blue-900 border border-white/20 mb-6 text-gray-300 text-center">
+          <p className="w-full p-3 rounded-lg  border border-white/20 mb-6 text-gray-300 text-center">
             ❌ No pending orders available for creating a contract
           </p>
         )}
