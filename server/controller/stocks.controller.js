@@ -145,6 +145,10 @@ export const createStock = async (req, res) => {
 
     const cleanData = sanitize(req.body);
 
+    if (!cleanData.qty) {
+      throw new Error("Quantity (qty) is required");
+    }
+
     if (!cleanData.lot || !cleanData.material) {
       return res.status(400).json({ message: "Lot & Material are required" });
     }
