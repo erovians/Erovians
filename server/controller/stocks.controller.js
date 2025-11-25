@@ -179,6 +179,8 @@ export const createStock = async (req, res) => {
 // ✅ Export Stocks to Excel (Dynamic + Fast)
 export const exportStocks = async (req, res) => {
   try {
+    const userId = req.user.userId;
+
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Stocks");
 
@@ -192,7 +194,7 @@ export const exportStocks = async (req, res) => {
       { header: "Qty", key: "qty", width: 10 },
     ];
 
-    const stocks = await Stock.find().lean();
+    const stocks = await Stock.find({ sellerId: userId }).lean();
 
     stocks.forEach((item) => {
       sheet.addRow({
