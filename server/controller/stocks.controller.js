@@ -105,7 +105,6 @@
 //   }
 // };
 
-
 import ExcelJS from "exceljs";
 import fs from "fs";
 import sanitize from "mongo-sanitize";
@@ -191,22 +190,38 @@ export const exportStocks = async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Stocks");
 
+    sheet.columns = [
+      { header: "Lot", key: "lot", width: 20 },
+      { header: "Material", key: "material", width: 25 },
+      { header: "Thickness", key: "thickness", width: 15 },
+      { header: "Dimensions", key: "dimensions", width: 20 },
+      { header: "Location", key: "location", width: 20 },
+      { header: "Quality", key: "quality", width: 10 },
+      { header: "Qty", key: "qty", width: 10 },
+    ];
+
     const stocks = await Stock.find({ sellerId }).lean();
 
-    // Add rows
     stocks.forEach((item) => {
-      csv += `${item.lot || ""},${item.material || ""},${
-        item.thickness || ""
-      },${item.dimensions || ""},${item.location || ""},${item.quality || ""},${
-        item.qty || ""
-      }\n`;
+      sheet.addRow({
+        lot: item.lot,
+        material: item.material,
+        thickness: item.thickness,
+        dimensions: item.dimensions,
+        location: item.location,
+        quality: item.quality,
+        qty: item.qty,
+      });
     });
 
-    // CSV file name
-    res.setHeader("Content-Type", "text/csv");
-    res.setHeader("Content-Disposition", "attachment; filename=stocks.csv");
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=stocks.xlsx");
 
-    return res.send(csv);
+    await workbook.xlsx.write(res);
+    res.end();
   } catch (error) {
     console.error("EXPORT ERROR:", error);
     res.status(500).json({ message: "Failed to export" });
