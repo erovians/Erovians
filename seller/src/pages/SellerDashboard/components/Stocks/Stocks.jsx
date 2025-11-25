@@ -40,20 +40,20 @@ export default function Stocks() {
 
     try {
       const { data } = await api.post("/stocks/import", formData);
-      toast.success(data.message)
+      toast.success(data.message);
       fetchStocks();
-    } catch(err){
+    } catch (err) {
       console.error("Import error:", err);
 
-    // Safely extract backend error message
-    const backendData = err.response?.data;
+      // Safely extract backend error message
+      const backendData = err.response?.data;
 
-    const message =
-      backendData?.message ||           // e.g. "No valid stock rows found..."
-      backendData?.error ||             // e.g. detailed error from catch
-      err.message ||                    // Axios / JS error message
-      "Something went wrong while importing stocks.";
-      alert(message)
+      const message =
+        backendData?.message || // e.g. "No valid stock rows found..."
+        backendData?.error || // e.g. detailed error from catch
+        err.message || // Axios / JS error message
+        "Something went wrong while importing stocks.";
+      alert(message);
     } finally {
       setImportLoading(false);
     }
