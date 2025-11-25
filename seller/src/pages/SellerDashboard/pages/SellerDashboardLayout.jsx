@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import SellerNavbar from "../common/SellerNavbar";
 import SellerSidebar from "../common/SellerSidebar";
 
-
 const SellerDashboardLayout = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.isOpen);
 
@@ -15,9 +14,9 @@ const SellerDashboardLayout = () => {
         <div className="sticky top-0 z-40">
           <SellerNavbar />
         </div>
-        <main
-          className={`flex-1 overflow-auto p-4 transition-all duration-300`}
-        >
+        <main className={`flex-1   p-4 transition-all duration-300`}>
+          {" "}
+          {/* overflow-auto removed from the outlet , creating issues in the company profile component specifically*/}
           <Outlet />
         </main>
       </div>

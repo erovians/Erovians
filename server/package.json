@@ -22,8 +22,10 @@
     "express": "^5.1.0",
     "express-fileupload": "^1.5.2",
     "jsonwebtoken": "^9.0.2",
+    "mongo-sanitize": "^1.1.0",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
+    "pdfkit": "^0.17.2",
     "qs": "^6.14.0",
     "twilio": "^5.9.0",
     "zod": "^4.1.11"
