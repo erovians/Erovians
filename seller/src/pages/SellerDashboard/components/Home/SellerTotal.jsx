@@ -113,10 +113,8 @@ export default function Dashboard() {
                     </td>
                   </tr>
                 ) : (
-                  orders.slice(0, 10).map(
-                    (
-                      o // show recent 10 only
-                    ) => (
+                  orders.slice(0, 10).map((o) =>
+                    o.status === "contract_created" ? null : ( // ⬅️ skip this row
                       <tr
                         key={o._id}
                         className="border-b border-gray-200 hover:bg-gray-100 transition"
