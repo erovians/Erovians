@@ -368,11 +368,9 @@ export const importStocks = async (req, res) => {
     // If no valid rows
     if (stocks.length === 0) {
       fs.unlink(filePath, () => {});
-      return res
-        .status(400)
-        .json({
-          message: "No valid stock rows found (lot & material required)",
-        });
+      return res.status(400).json({
+        message: "No valid stock rows found (lot & material required)",
+      });
     }
 
     // --------------- Product matching ----------------
