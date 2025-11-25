@@ -1,8 +1,10 @@
 import api from "@/utils/axios.utils";
 import React, { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function AddLotModal({ open, setOpen, refresh }) {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const blockedFields = [
     "lot",
     "thickness",
@@ -54,9 +56,16 @@ export default function AddLotModal({ open, setOpen, refresh }) {
   };
 
   const handleSubmit = async () => {
-    await api.post("/stocks/create", form);
-    refresh();
-    setOpen(false);
+    setLoading(true);
+    try {
+      await api.post("/stocks/create", form);
+      refresh();
+      setOpen(false);
+    } catch (err) {
+      console.error("Error creating stock:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -132,10 +141,17 @@ export default function AddLotModal({ open, setOpen, refresh }) {
           </button>
 
           <button
+            disabled={loading}
             onClick={handleSubmit}
-            className="px-6 py-2.5 rounded-xl bg-navyblue text-white font-medium hover:bg-navyblue/90 transition-all shadow-sm"
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm flex items-center gap-2 justify-center
+    ${
+      loading
+        ? "bg-gray-500 cursor-not-allowed"
+        : "bg-navyblue text-white hover:bg-navyblue/90"
+    }`}
           >
-            Save
+            <span>{loading ? "Saving " : "Save"}</span>
+            {loading && <Spinner size={18} />}
           </button>
         </div>
       </div>
