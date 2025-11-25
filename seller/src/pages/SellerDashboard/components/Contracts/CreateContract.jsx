@@ -41,7 +41,6 @@ export default function CreateContract() {
       };
 
       await api.post("/contracts/add", payload);
-      alert("Contract created successfully");
       navigate("/sellerdashboard/contracts");
     } catch (err) {
       alert("Failed to create contract");

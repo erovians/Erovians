@@ -94,7 +94,7 @@ export default function Contracts() {
                       )
                     }
                   >
-                    Download PDF
+                    Generate PDF
                   </button>
                 </td>
               </tr>
