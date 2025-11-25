@@ -3,6 +3,7 @@ import { Plus, Loader2 } from "lucide-react";
 import { saveAs } from "file-saver";
 import api from "@/utils/axios.utils";
 import AddLotModal from "./AddLotModal";
+import { toast } from "sonner";
 
 export default function Stocks() {
   const [stocks, setStocks] = useState([]);
@@ -38,8 +39,21 @@ export default function Stocks() {
     formData.append("file", file);
 
     try {
-      await api.post("/stocks/import", formData);
+      const { data } = await api.post("/stocks/import", formData);
+      toast.success(data.message)
       fetchStocks();
+    } catch(err){
+      console.error("Import error:", err);
+
+    // Safely extract backend error message
+    const backendData = err.response?.data;
+
+    const message =
+      backendData?.message ||           // e.g. "No valid stock rows found..."
+      backendData?.error ||             // e.g. detailed error from catch
+      err.message ||                    // Axios / JS error message
+      "Something went wrong while importing stocks.";
+      alert(message)
     } finally {
       setImportLoading(false);
     }
