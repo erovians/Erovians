@@ -69,7 +69,7 @@ export default function TasksAndProjects() {
           {columns.map((col) => (
             <div
               key={col.title}
-              className="bg-gray-500 border border-gray-800 rounded-xl p-4 h-[450px]"
+              className="bg-[#111113] border border-gray-800 rounded-xl p-4 h-[450px]"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-medium text-gray-300">{col.title}</h3>
