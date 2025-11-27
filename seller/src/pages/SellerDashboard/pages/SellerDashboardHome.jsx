@@ -43,21 +43,45 @@ import SellerPieChart from "../components/Home/SellerPieChart";
 
 const SellerDashboardHome = () => {
   return (
-    <div className="p-4 lg:p-6 bg-gray-50 min-h-screen flex flex-col gap-6">
+    <div className="p-4 sm:p-5 md:p-6 bg-gray-50 min-h-screen flex flex-col gap-6">
       {/* 🔹 TOP DASHBOARD SECTION — full width */}
-      <div className="bg-white rounded shadow p-4">
+      <div className="bg-white rounded shadow p-4 sm:p-5 md:p-6">
         <Dashboard />
       </div>
 
-      {/* 🔻 ROW OF 3 CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* 🔻 RESPONSIVE ROW OF CARDS */}
+      <div
+        className="
+      grid gap-6
+      grid-cols-1          /* Extra-small (default) */
+      sm:grid-cols-1       /* Small phones */
+      md:grid-cols-2       /* Tablets */
+      lg:grid-cols-2       /* Laptops */
+      xl:grid-cols-2       /* HD screens */
+      2xl:grid-cols-3      /* Ultra-wide screens */
+    "
+      >
         {/* Card 1 — Seller Chart */}
-        <div className="bg-white p-4 rounded shadow h-[360px] flex flex-col">
+        <div
+          className="
+        bg-white rounded shadow
+        p-4 sm:p-5 md:p-6
+        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px]
+        flex flex-col transition-transform duration-300 hover:-translate-y-1
+      "
+        >
           <SellerChart />
         </div>
 
-        {/* Card 3 — Pie Chart */}
-        <div className="bg-white p-4 rounded shadow h-[360px] flex flex-col">
+        {/* Card 2 — Pie Chart */}
+        <div
+          className="
+        bg-white rounded shadow
+        p-4 sm:p-5 md:p-6
+        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px]
+        flex flex-col transition-transform duration-300 hover:-translate-y-1
+      "
+        >
           <h4 className="text-center font-semibold text-gray-800 mb-2">
             Top Selling Products
           </h4>

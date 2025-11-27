@@ -53,6 +53,13 @@ export default function Dashboard() {
     fetchOrders();
   }, []);
 
+  const downloadOrdersExcel = async () => {
+    const response = await api.get("/orders/ordersheet/download", {
+      responseType: "blob",
+    });
+    saveAs(response.data, "orders.xlsx");
+  };
+
   const statusColors = {
     delivered: "bg-green-100 text-green-700 border border-green-300",
     pending: "bg-yellow-100 text-yellow-700 border border-yellow-300",
@@ -85,12 +92,21 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold tracking-wide text-gray-800">
               Recent Orders
             </h2>
-            <button
-              onClick={() => navigate("/sellerdashboard/orders/pending")}
-              className="px-4 py-1 rounded-lg bg-navyblue border border-navyblue text-white hover:bg-white hover:text-navyblue duration-200 text-sm shadow cursor-pointer"
-            >
-              All Orders
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate("/sellerdashboard/orders/pending")}
+                className="px-4 py-1 rounded-lg bg-navyblue border border-navyblue text-white hover:bg-white hover:text-navyblue duration-200 text-sm shadow cursor-pointer"
+              >
+                All Orders
+              </button>
+
+              <button
+                onClick={downloadOrdersExcel}
+                className="px-4 py-1 rounded-lg border border-gray-400 text-gray-700 hover:bg-gray-200 duration-200 text-sm shadow cursor-pointer"
+              >
+                Export All Orders
+              </button>
+            </div>
           </div>
 
           {/* TABLE */}
@@ -120,7 +136,7 @@ export default function Dashboard() {
                         className="border-b border-gray-200 hover:bg-gray-100 transition"
                       >
                         <td className="py-3">{o.orderId || o._id.slice(-6)}</td>
-                        <td>{o?.userId?.name || "sandeep"}</td>
+                        <td>{o?.userId?.name || "-"}</td>
                         <td>{o?.productId?.productName || "—"}</td>
                         <td>
                           <span

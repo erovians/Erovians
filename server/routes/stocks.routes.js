@@ -13,6 +13,6 @@ const router = express.Router();
 router.get("/", verifyUser, getStocks);
 router.post("/create", verifyUser, createStock);
 router.post("/import", verifyUser, upload.single("file"), importStocks);
-router.get("/export", exportStocks);
+router.get("/export", verifyUser, exportStocks);
 
 export default router;

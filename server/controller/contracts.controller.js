@@ -5,6 +5,7 @@ import PDFDocument from "pdfkit";
 export const addContract = async (req, res) => {
   try {
     const { order, client, status } = req.body;
+    const user = req.user?.userId;
 
     if (!order || !client) {
       return res.status(400).json({ message: "Order & Client are required" });
@@ -24,10 +25,8 @@ export const addContract = async (req, res) => {
       order,
       client,
       status,
+      sellerId: user,
     });
-
-    // Update order status
-    await Order.findByIdAndUpdate(order, { status: "contract_created" });
 
     res.status(201).json({
       message: "Contract created successfully",
@@ -41,7 +40,8 @@ export const addContract = async (req, res) => {
 
 export const getContracts = async (req, res) => {
   try {
-    const contracts = await Contract.find().sort({ createdAt: -1 });
+    const sellerId = req.user?.userId;
+    const contracts = await Contract.find({ sellerId }).sort({ createdAt: -1 });
     res.status(200).json(contracts);
   } catch (error) {
     console.error("Fetch Contract Error:", error);
@@ -49,7 +49,6 @@ export const getContracts = async (req, res) => {
   }
 };
 
-// 🔹 Update Contract Status
 export const updateContractStatus = async (req, res) => {
   try {
     const { status } = req.body;
