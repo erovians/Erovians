@@ -1,8 +1,13 @@
 import api from "@/utils/axios.utils";
 import React, { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import { stockSchema } from "../../schema/stocks.schema";
 
 export default function AddLotModal({ open, setOpen, refresh }) {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
   const blockedFields = [
     "lot",
     "thickness",
@@ -45,8 +50,20 @@ export default function AddLotModal({ open, setOpen, refresh }) {
       ...prev,
       lot: product.id.slice(-6),
       material: product.productName,
-      thickness: product.size?.thickness || "",
-      dimensions: `${product.size?.length} x ${product.size?.width}` || "",
+
+      thickness: product.size?.thickness
+        ? `${product.size?.thickness} ${
+            product.size?.thicknessMeasurement || ""
+          }`
+        : "",
+
+      dimensions:
+        product.size?.length && product.size?.width
+          ? `${product.size?.length} ${
+              product.size?.lengthMeasurement || ""
+            } x ${product.size?.width} ${product.size?.widthMeasurement || ""}`
+          : "",
+
       location: product.origin || "",
       quality: product.grade || "",
       qty: "",
@@ -54,9 +71,29 @@ export default function AddLotModal({ open, setOpen, refresh }) {
   };
 
   const handleSubmit = async () => {
-    await api.post("/stocks/create", form);
-    refresh();
-    setOpen(false);
+    try {
+      setLoading(true);
+      setErrors({});
+
+      const validatedData = stockSchema.parse(form);
+
+      await api.post("/stocks/create", validatedData);
+      refresh();
+      setOpen(false);
+    } catch (err) {
+      if (err.name === "ZodError") {
+        const formattedErrors = {};
+        err.issues.forEach((e) => {
+          formattedErrors[e.path[0]] = e.message;
+        });
+        setErrors(formattedErrors);
+        return;
+      }
+
+      console.error("Error creating stock:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -106,11 +143,11 @@ export default function AddLotModal({ open, setOpen, refresh }) {
                   <input
                     placeholder={`Enter ${key}`}
                     className={`border rounded-xl px-4 py-2.5 transition-all outline-none
-            ${
-              blockedFields.includes(key)
-                ? "bg-gray-200 cursor-not-allowed"
-                : "bg-gray-50 focus:bg-white focus:ring-2 focus:ring-navyblue"
-            }`}
+      ${
+        blockedFields.includes(key)
+          ? "bg-gray-200 cursor-not-allowed"
+          : "bg-gray-50 focus:bg-white focus:ring-2 focus:ring-navyblue"
+      }`}
                     value={form[key]}
                     onChange={(e) =>
                       !blockedFields.includes(key) &&
@@ -118,6 +155,10 @@ export default function AddLotModal({ open, setOpen, refresh }) {
                     }
                     readOnly={blockedFields.includes(key)}
                   />
+
+                  {errors[key] && (
+                    <p className="text-red-500 text-xs mt-1">{errors[key]}</p>
+                  )}
                 </div>
               )
           )}
@@ -132,10 +173,17 @@ export default function AddLotModal({ open, setOpen, refresh }) {
           </button>
 
           <button
+            disabled={loading}
             onClick={handleSubmit}
-            className="px-6 py-2.5 rounded-xl bg-navyblue text-white font-medium hover:bg-navyblue/90 transition-all shadow-sm"
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all shadow-sm flex items-center gap-2 justify-center
+    ${
+      loading
+        ? "bg-gray-500 cursor-not-allowed"
+        : "bg-navyblue text-white hover:bg-navyblue/90"
+    }`}
           >
-            Save
+            <span>{loading ? "Saving " : "Save"}</span>
+            {loading && <Spinner size={18} />}
           </button>
         </div>
       </div>

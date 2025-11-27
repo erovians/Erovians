@@ -8,10 +8,15 @@ const contractSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
+    sellerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "seller",
+      required: true,
+    },
     client: { type: String, required: true },
     status: {
       type: String,
-      enum: ["Active", "Completed", "Inactive"],
+      enum: ["Active", "Completed"],
       default: "Active",
     },
     created: { type: Date, default: Date.now },
