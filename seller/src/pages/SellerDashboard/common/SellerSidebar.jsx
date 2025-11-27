@@ -168,6 +168,7 @@ import {
   UserLock,
   ChartCandlestick,
   FileBadge,
+  FileBoxIcon
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -223,8 +224,8 @@ const SellerSidebar = () => {
       label: "Messages",
       subLinks: [
         { to: "/sellerdashboard/messages/inquires", label: "Inquires" },
-        { to: "/sellerdashboard/messages/contacts", label: "Contacts" },
-        { to: "/sellerdashboard/messages/settings", label: "Settings" },
+        // { to: "/sellerdashboard/messages/contacts", label: "Contacts" },
+        // { to: "/sellerdashboard/messages/settings", label: "Settings" },
       ],
     },
 
@@ -257,6 +258,12 @@ const SellerSidebar = () => {
       icon: <FileBadge size={20} />,
       label: "Contracts",
       to: "/sellerdashboard/contracts",
+    },
+    {
+      key: "taskandprojects",
+      icon: <FileBoxIcon size={20} />,
+      label: "Tasks & Projects",
+      to: "/sellerdashboard/taskandprojects",
     },
   ];
 

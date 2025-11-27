@@ -66,8 +66,8 @@ const SellerDashboardHome = () => {
           className="
         bg-white rounded shadow
         p-4 sm:p-5 md:p-6
-        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px]
-        flex flex-col transition-transform duration-300 hover:-translate-y-1
+        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px] w-full
+        flex flex-col transition-transform duration-300 hover:-translate-y-1 flex-1
       "
         >
           <SellerChart />
