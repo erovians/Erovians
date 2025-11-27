@@ -32,6 +32,7 @@ import Teams from "./pages/SellerDashboard/components/Teams/Teams";
 import Stocks from "./pages/SellerDashboard/components/Stocks/Stocks";
 import Contracts from "./pages/SellerDashboard/components/Contracts/Contracts";
 import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateContract";
+import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 
 function NotFound() {
   return (
@@ -123,6 +124,9 @@ function App() {
             {/* Contracts */}
             <Route path="contracts" element={<Contracts />} />
             <Route path="contracts/create" element={<CreateContract />} />
+
+             {/* Task and Projects */}
+            <Route path="taskandprojects" element={<TasksAndProjects />} />
           </Route>
         )}
       </Routes>
