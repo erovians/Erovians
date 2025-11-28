@@ -8,3 +8,5 @@ const TaskAndProjectSchema = new Schema({
     status: { type: String, enum: ['To Do', 'In Progress', 'Completed'], default: 'To Do' },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 
 })
+
+export default mongoose.model('TaskAndProject', TaskAndProjectSchema);
