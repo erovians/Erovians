@@ -31,8 +31,8 @@ export default function TasksAndProjects() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
 
           {/* Search */}
-          <div className="flex items-center shadow-[5px] shadow-white bg-transparent px-3 py-2 rounded-lg w-full lg:w-[350px]">
-            <Search className="w-4 h-4 mr-2 text-gray-400" />
+          <div className="flex items-center shadow-[5px] shadow-white bg-transparent px-3 py-2 border border-gray-400 rounded-lg w-full lg:w-[350px]">
+            <Search className="w-4 h-4 mr-2 text-gray-400 " />
             <input
               type="text"
               placeholder="Search (clients, orders, lots, invoices)…"
@@ -40,24 +40,7 @@ export default function TasksAndProjects() {
             />
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-3 lg:gap-4">
-            <button className="bg-white text-black px-4 py-2 rounded-md border border-gray-700 text-sm hover:shadow-md">
-              Theme
-            </button>
-
-            <button className="bg-white text-black px-4 py-2 rounded-md border border-gray-700 text-sm hover:shadow-md">
-              Notifications 13
-            </button>
-
-            <button className="bg-white text-black px-4 py-2 rounded-md border border-gray-700 text-sm hover:shadow-md">
-              Profile
-            </button>
-
-            <button className="bg-navyblue border border-white px-4 py-2 rounded-md text-sm hover:shadow-md">
-              + New
-            </button>
-          </div>
+         
         </div>
 
         {/* Page Title */}
