@@ -181,8 +181,8 @@ export default function Teams() {
           setErrors={setErrors}
         />
       )}
+<div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm">
 
-      <div className="bg-white border rounded-xl p-6 shadow-sm">
         <TeamHeader
           query={query}
           setQuery={setQuery}

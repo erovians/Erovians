@@ -61,100 +61,92 @@ function TeamHeader({
 
   const roleOptionsMemo = useMemo(() => roleOptions || [], [roleOptions]);
 
-  return (
-    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+ return (
+    <div className="flex flex-col gap-4 mb-6">
+
       {/* Title */}
       <div>
         <h2 className="text-2xl font-semibold text-gray-900">Team</h2>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-3 w-full md:w-auto">
-        {/* Search */}
-        <label htmlFor="team-search" className="sr-only">
-          Search team members
-        </label>
-        <div className="relative flex-1 md:flex-none">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            {/* simple search icon */}
-            <svg
-              className="w-4 h-4 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <circle cx="11" cy="11" r="7"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </span>
+      {/* CONTROLS — Mobile stacked, Desktop inline */}
+    {/* CONTROLS */}
+<div className="
+    w-full 
+    flex flex-col gap-3
+    sm:flex-row 
+    sm:items-center 
+    sm:justify-between
+">
 
-          <input
-            id="team-search"
-            type="search"
-            value={localQuery}
-            onChange={(e) => setLocalQuery(e.target.value)}
-            placeholder="Search..."
-            className="w-full md:w-72 pl-9 pr-10 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:border-navyblue text-sm"
-            aria-label="Search team members"
-          />
+  {/* LEFT SIDE → SEARCH */}
+  <div className="relative w-full sm:w-64 md:w-72">
+    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg
+        className="w-4 h-4 text-gray-400"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </span>
 
-          {localQuery ? (
-            <button
-              type="button"
-              aria-label="Clear search"
-              onClick={onClearSearch}
-              className="absolute right-1 top-1/2 -translate-y-1/2 px-2 py-1 rounded text-gray-600 text-xs"
-            >
-              Clear
-            </button>
-          ) : null}
-        </div>
+    <input
+      id="team-search"
+      type="search"
+      value={localQuery}
+      onChange={(e) => setLocalQuery(e.target.value)}
+      placeholder="Search..."
+      className="w-full pl-9 pr-10 py-2 border border-gray-200 rounded-lg shadow-sm text-sm focus:border-navyblue"
+    />
 
-        {/* Role filter */}
-        <label htmlFor="role-filter" className="sr-only">
-          Filter by role
-        </label>
-        <select
-          id="role-filter"
-          value={filterRole}
-          onChange={onChangeRole}
-          className="px-3 py-2 border border-gray-200 rounded-lg shadow-sm text-sm focus:outline-none  focus:border-navyblue"
-          aria-label="Filter by role"
-        >
-          {roleOptionsMemo.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+    {localQuery && (
+      <button
+        type="button"
+        onClick={onClearSearch}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-600"
+      >
+        Clear
+      </button>
+    )}
+  </div>
 
-        {/* Add member */}
-        <button
-          type="button"
-          onClick={openAddModal}
-          className="ml-1 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-navyblue text-white hover:bg-white hover:text-navyblue border border-navyblue transition focus:outline-none focus:ring-2 focus:ring-indigo-300"
-          aria-label="Add member"
-        >
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          <span className="hidden md:inline">Member</span>
-          <span className="md:hidden">+ Member</span>
-        </button>
-      </div>
+  {/* RIGHT SIDE → ROLE + ADD MEMBER */}
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:ml-auto">
+    <select
+      id="role-filter"
+      value={filterRole}
+      onChange={onChangeRole}
+      className="px-3 py-2 border border-gray-200 rounded-lg shadow-sm text-sm focus:border-navyblue"
+    >
+      {roleOptionsMemo.map((r) => (
+        <option key={r} value={r}>
+          {r}
+        </option>
+      ))}
+    </select>
+
+    <button
+      onClick={openAddModal}
+      className="px-4 py-2 rounded-full bg-navyblue text-white border border-navyblue hover:bg-white hover:text-navyblue transition flex items-center justify-center gap-2"
+    >
+      <svg
+        className="w-4 h-4"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        fill="none"
+        strokeWidth="2"
+      >
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      Add Member
+    </button>
+  </div>
+</div>
+
     </div>
   );
 }

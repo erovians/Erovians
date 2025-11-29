@@ -357,7 +357,10 @@ export default function TeamModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="team-modal-title"
-        className="relative w-full max-w-lg bg-white rounded-xl shadow-lg border p-6 z-10"
+       className="relative w-full max-w-lg bg-white rounded-xl shadow-lg border p-6 z-10 
+            sm:max-h-[90vh] overflow-y-auto 
+            max-sm:h-full max-sm:rounded-none max-sm:p-4"
+
         onDrop={onDrop}
         onDragOver={(e) => {
           e.preventDefault();
