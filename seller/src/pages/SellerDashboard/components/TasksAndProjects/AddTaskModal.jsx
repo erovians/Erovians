@@ -5,6 +5,7 @@ import { taskSchema } from "../../schema/task.schema.js";
 
 export default function AddTaskModal({ open, onClose, onSave }) {
   if (!open) return null;
+  
 
   const [form, setForm] = useState({
     title: "",
@@ -16,24 +17,39 @@ export default function AddTaskModal({ open, onClose, onSave }) {
   const [errors, setErrors] = useState({});
  
  
- const handleSubmit = async () => {
-    setErrors({}); 
-    const validation = taskSchema.safeParse(form);
+const handleSubmit = async () => {
+  setErrors({});
 
-    if (!validation.success) {
-      const fieldErrors = {};
-      validation.error.errors.forEach((err) => {
-        fieldErrors[err.path[0]] = err.message;
-      });
+  const validation = taskSchema.safeParse(form);
+  console.log("Validation Result:", validation);
 
-      setErrors(fieldErrors);
-      return;
-    }
+  if (!validation.success) {
+    const fieldErrors = {};
 
-    setLoading(true);
-    await onSave(form);
-    setLoading(false);
-  };
+    validation.error.issues.forEach((err) => {
+      fieldErrors[err.path[0]] = err.message;
+    });
+
+    setErrors(fieldErrors);
+    return;
+  }
+
+  setLoading(true);
+
+  const result = await onSave(form);
+  setLoading(false);
+
+  if (result.success) {
+    onClose();
+  } else {
+    alert(result.message);
+  }
+};
+
+
+
+  console.log("Errors:", errors);
+
  return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-xl border">

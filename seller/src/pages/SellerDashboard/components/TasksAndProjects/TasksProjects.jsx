@@ -142,7 +142,6 @@
 //   );
 // }
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import AddTaskModal from "./AddTaskModal";
 import api from "@/utils/axios.utils";
 
@@ -173,10 +172,17 @@ export default function TasksAndProjects() {
   }, []);
 
   const addTask = async (form) => {
-    await api.post("/taskandprojects/create", form);
-    setOpenModal(false);
+  try {
+    await api.post("/taskandprojects/create", form); 
     fetchTasks();
-  };
+    return { success: true };   
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || "Something went wrong",
+    };
+  }
+};
 
   const updateStatus = async (id, status) => {
     await api.put(`/taskandprojects/${id}`, { status });
