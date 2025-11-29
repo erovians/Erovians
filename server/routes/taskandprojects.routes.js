@@ -4,12 +4,10 @@ import { verifyUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// add task and project routes
-router.get("/",getAllTasksAndProjects);
-router.post("/create",createTaskandProject);
-router.put("/:id",updateTaskAndProject);
-router.delete("/:id",deleteTaskAndProject);
-
+router.get("/",verifyUser,getAllTasksAndProjects);
+router.post("/create",verifyUser,createTaskandProject);
+router.put("/:id",verifyUser,updateTaskAndProject);
+router.delete("/:id",verifyUser,deleteTaskAndProject);
 
 
 export default router;

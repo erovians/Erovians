@@ -2,7 +2,7 @@ import taskandprojectModel from "../models/taskandproject.model.js";
 
 export const createTaskandProject = async (req, res) => {
   try {
-     const userId =  req.user.userId || "68e75d397041d2bbc45e40cd";
+     const userId =  req.user?.userId ;
 
     if (!userId) {
       return res.status(401).json({
@@ -40,12 +40,12 @@ export const createTaskandProject = async (req, res) => {
       });
     }
 
-    // --- CREATE DOCUMENT IN DB ---
+   
     const newTask = await taskandprojectModel.create({
       createdBy:userId,
       title: title.trim(),
       description: description || "",
-      status: status || "TODO",
+      status: status || "To Do",
     });
 
     return res.status(201).json({
@@ -64,10 +64,9 @@ export const createTaskandProject = async (req, res) => {
   }
 };
 
-
 export const getAllTasksAndProjects = async (req, res) => {
   try {
-    const userId = req.user?.userId || "68e75d397041d2bbc45e40cd";
+    const userId = req.user?.userId ;
 
     if (!userId) {
       return res.status(401).json({
@@ -99,7 +98,7 @@ export const getAllTasksAndProjects = async (req, res) => {
 
 export const updateTaskAndProject = async (req, res) => {
   try {
-    const userId = req.user?.userId || "68e75d397041d2bbc45e40cd";
+    const userId = req.user?.userId ;
     const { id } = req.params;
 
     if (!userId) {
@@ -159,7 +158,7 @@ export const updateTaskAndProject = async (req, res) => {
 
 export const deleteTaskAndProject = async (req, res) => {
   try {
-    const userId = req.user?.userId || "68e75d397041d2bbc45e40cd";
+    const userId = req.user?.userId ;
     const { id } = req.params;
 
     if (!userId) {
