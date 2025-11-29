@@ -50,46 +50,44 @@ const SellerDashboardHome = () => {
       </div>
 
       {/* 🔻 RESPONSIVE ROW OF CARDS */}
-      <div
-        className="
-      grid gap-6
-      grid-cols-1          /* Extra-small (default) */
-      sm:grid-cols-1       /* Small phones */
-      md:grid-cols-2       /* Tablets */
-      lg:grid-cols-2       /* Laptops */
-      xl:grid-cols-2       /* HD screens */
-      2xl:grid-cols-3      /* Ultra-wide screens */
+<div
+  className="
+    grid gap-6
+    grid-cols-1
+    md:grid-cols-3  /* 2 cards: chart = 2 parts, pie chart = 1 part */
+  "
+>
+  {/* Seller Chart — take 2 columns */}
+  <div
+    className="
+      bg-white rounded shadow
+      p-4 sm:p-5 md:p-6
+      h-[380px] sm:h-[430px] md:h-[480px]
+      flex flex-col hover:-translate-y-1 transition
+      md:col-span-2  /* ⭐ gives chart more width */
     "
-      >
-        {/* Card 1 — Seller Chart */}
-        <div
-          className="
-        bg-white rounded shadow
-        p-4 sm:p-5 md:p-6
-        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px] w-full
-        flex flex-col transition-transform duration-300 hover:-translate-y-1 flex-1
-      "
-        >
-          <SellerChart />
-        </div>
+  >
+    <SellerChart />
+  </div>
 
-        {/* Card 2 — Pie Chart */}
-        <div
-          className="
-        bg-white rounded shadow
-        p-4 sm:p-5 md:p-6
-        h-[380px] xs:h-[400px] sm:h-[430px] md:h-[480px]
-        flex flex-col transition-transform duration-300 hover:-translate-y-1
-      "
-        >
-          <h4 className="text-center font-semibold text-gray-800 mb-2">
-            Top Selling Products
-          </h4>
-          <div className="flex-1">
-            <SellerPieChart />
-          </div>
-        </div>
-      </div>
+  {/* Pie Chart — take 1 column */}
+  <div
+    className="
+      bg-white rounded shadow
+      p-4 sm:p-5 md:p-6
+      h-[380px] sm:h-[430px] md:h-[480px]
+      flex flex-col hover:-translate-y-1 transition
+    "
+  >
+    <h4 className="text-center font-semibold text-gray-800 mb-2">
+      Top Selling Products
+    </h4>
+    <div className="flex-1">
+      <SellerPieChart />
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };

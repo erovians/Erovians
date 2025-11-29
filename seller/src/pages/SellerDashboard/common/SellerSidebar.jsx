@@ -279,10 +279,16 @@ const SellerSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-[93px] border left-0 h-[calc(100%-80px)] bg-white shadow-lg z-50 w-64 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+  className={`fixed top-[93px] border left-0 
+    h-[calc(100%-93px)] 
+    bg-white shadow-lg z-50 w-64 
+    transform transition-transform duration-300 
+    overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100
+    ${
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    }`}
+>
+
         {/* Close button */}
         <div className="flex items-center justify-end px-4 pt-4 pb-2 border-b border-gray-200">
           <button
