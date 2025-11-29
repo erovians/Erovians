@@ -164,7 +164,7 @@ export default function OrderPendingList() {
               {/* Action Button */}
               <div className="sm:col-span-1 flex items-center justify-center">
                 {alreadyCreated ? (
-                  <span className="bg-green-100 text-green-700 text-xs sm:text-[10px]  font-semibold px-3 py-1.5 rounded-full">
+                  <span className="bg-green-100 text-green-700 text-xs sm:text-[10px]  font-bold  px-2 py-2 rounded-full">
                     ✓ Contract Created
                   </span>
                 ) : (
