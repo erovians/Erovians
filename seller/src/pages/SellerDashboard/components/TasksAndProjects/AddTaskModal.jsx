@@ -72,7 +72,7 @@ export default function AddTaskModal({ open, onClose, onSave }) {
                   ? "border-red-500 focus:ring-red-300"
                   : "border-gray-300 focus:ring-navyblue"
               }`}
-              placeholder="Optional description"
+              placeholder="description"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
