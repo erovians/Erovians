@@ -296,13 +296,13 @@ export default function Teams() {
         <div className="flex items-center justify-end gap-3 mt-2">
           <button
             onClick={() => openEditModal(m)}
-            className="px-3 py-1 text-sm rounded bg-blue-600 text-white"
+            className="px-3 py-1 text-sm rounded bg-navyblue text-white"
           >
             Edit
           </button>
           <button
             onClick={() => remove(m._id)}
-            className="px-3 py-1 text-sm rounded bg-red-600 text-white"
+            className="px-3 py-1 text-sm rounded border border-navyblue text-navyblue "
           >
             Delete
           </button>
