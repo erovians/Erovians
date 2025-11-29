@@ -194,38 +194,128 @@ export default function Teams() {
         />
 
         <div className="mt-4 overflow-x-auto">
-          <table className="min-w-full table-fixed text-sm">
-            <thead>
-              <tr className="text-left text-gray-600 border-b">
-                <th className="w-3/6 px-4 py-3">Name</th>
-                <th className="w-1/6 px-4 py-3">Role</th>
-                <th className="w-1/6 px-4 py-3">Site</th>
-                <th className="w-1/6 px-4 py-3">Last activity</th>
-                <th className="w-1/12 px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="py-6 text-center text-gray-500">Loading...</td>
-                </tr>
-              ) : paginated.length ? (
-                paginated.map((m) => (
-                  <TeamRow
-                    key={m._id}
-                    member={m}
-                    timeAgo={timeAgo}
-                    onEdit={() => openEditModal(m)}
-                    onDelete={() => remove(m._id)}
-                  />
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="py-6 text-center text-gray-400">No members found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          {/* DESKTOP & TABLET TABLE */}
+<div className="hidden sm:block overflow-x-auto">
+  <table className="min-w-full table-auto text-sm">
+    <thead>
+      <tr className="text-left text-gray-600 border-b bg-gray-50">
+        <th className="w-3/6 px-4 py-3">Name</th>
+        <th className="w-1/6 px-4 py-3">Role</th>
+        <th className="w-1/6 px-4 py-3">Site</th>
+        <th className="w-1/6 px-4 py-3">Last Activity</th>
+        <th className="w-1/12 px-4 py-3">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {loading ? (
+        <tr>
+          <td colSpan={5} className="py-6 text-center text-gray-500">
+            Loading...
+          </td>
+        </tr>
+      ) : paginated.length ? (
+        paginated.map((m) => (
+          <TeamRow
+            key={m._id}
+            member={m}
+            timeAgo={timeAgo}
+            onEdit={() => openEditModal(m)}
+            onDelete={() => remove(m._id)}
+          />
+        ))
+      ) : (
+        <tr>
+          <td
+            colSpan={5}
+            className="py-6 text-center text-gray-400"
+          >
+            No members found
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+{/* MOBILE CARD VIEW */}
+<div className="sm:hidden flex flex-col gap-4 mt-4">
+  {loading ? (
+    <p className="text-center py-4 text-gray-500">Loading...</p>
+  ) : paginated.length ? (
+    paginated.map((m) => (
+      <div
+        key={m._id}
+        className="bg-white p-4 rounded-lg shadow border flex flex-col gap-3"
+      >
+        {/* Top section */}
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+            {m.photo ? (
+              <img
+                src={m.photo}
+                className="w-full h-full object-cover"
+                alt={m.name}
+              />
+            ) : (
+              <span className="text-blue-600 font-bold text-lg">
+                {m.name
+                  ?.split(" ")
+                  ?.map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+            )}
+          </div>
+
+          <div>
+            <p className="text-gray-900 font-semibold">{m.name}</p>
+            <p className="text-gray-500 text-xs">{m.email || "No email"}</p>
+          </div>
+        </div>
+
+        {/* Info section */}
+        <div className="text-sm text-gray-700">
+          <p>
+            <span className="font-semibold">Role:</span> {m.role}
+          </p>
+          <p>
+            <span className="font-semibold">Site:</span>{" "}
+            {m.site || "N/A"}
+          </p>
+          <p>
+            <span className="font-semibold">Last Active:</span>{" "}
+            {timeAgo(
+              m.lastActive || m.updatedAt || m.createdAt
+            )}{" "}
+            ago
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-3 mt-2">
+          <button
+            onClick={() => openEditModal(m)}
+            className="px-3 py-1 text-sm rounded bg-blue-600 text-white"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => remove(m._id)}
+            className="px-3 py-1 text-sm rounded bg-red-600 text-white"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-500 py-3">
+      No members found
+    </p>
+  )}
+</div>
+
 
           {/* Pagination */}
           <div className="flex items-center justify-between mt-4 text-sm text-gray-600">
