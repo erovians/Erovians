@@ -258,17 +258,17 @@ export default function TasksAndProjects() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 h-[550px]">
           {statuses.map((col) => (
             <div
               key={col}
-              className="bg-gray-50 border border-gray-300 rounded-xl p-4 shadow-sm h-[450px] flex flex-col"
+              className="bg-gray-50 border border-gray-300 rounded-xl p-4 shadow-sm h-[550px] flex flex-col"
             >
               {/* Column Title */}
               <div className="font-extrabold text-navyblue mb-4">{col}</div>
 
               {/* Task List */}
-              <div className="space-y-3 overflow-y-auto h-[350px] pr-1">
+              <div className="space-y-3 overflow-y-auto h-[550px] pr-1 ">
                 {tasks
                   .filter((t) => t.status === col)
                   .map((task) => (

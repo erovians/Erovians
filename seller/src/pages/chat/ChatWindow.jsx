@@ -197,6 +197,8 @@
 //     </div>
 //   );
 // }
+
+import { socket } from "@/utils/socket";
 import { useEffect, useRef, useState } from "react";
 import { chatApi } from "@/utils/axios.utils";
 import { CloudUpload } from "lucide-react";
@@ -216,6 +218,18 @@ export default function ChatWindow({
   const isOnline = onlineUsers.some(
     (u) => u.userId === selectedChat?.user?._id
   );
+
+  useEffect(() => {
+    if (!selectedChat) return;
+
+    socket.on("getMessage", (msg) => {
+      if (msg.chatId === selectedChat.chatId) {
+        setMessages((prev) => [...prev, msg]);
+      }
+    });
+
+    return () => socket.off("getMessage");
+  }, [selectedChat]);
 
   // Fetch previous messages
   // useEffect(() => {

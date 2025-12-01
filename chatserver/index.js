@@ -19,6 +19,7 @@
 //   .catch((err) => {
 //     console.log("Databse connection failed !!", err);
 //   });
+
 import connectDB from "./config/DB.js";
 import { app, server } from "./app.js"; // ✅ Import server instead of app.listen
 import dotenv from "dotenv";
