@@ -7,7 +7,6 @@
 //   const [tasks, setTasks] = useState([]);
 //   const [openModal, setOpenModal] = useState(false);
 //   const [loading, setLoading] = useState(false);
-  
 
 //   const statuses = ["To Do", "Doing", "Review", "Done"];
 
@@ -172,17 +171,17 @@ export default function TasksAndProjects() {
   }, []);
 
   const addTask = async (form) => {
-  try {
-    await api.post("/taskandprojects/create", form); 
-    fetchTasks();
-    return { success: true };   
-  } catch (err) {
-    return {
-      success: false,
-      message: err.response?.data?.message || "Something went wrong",
-    };
-  }
-};
+    try {
+      await api.post("/taskandprojects/create", form);
+      fetchTasks();
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.response?.data?.message || "Something went wrong",
+      };
+    }
+  };
 
   const updateStatus = async (id, status) => {
     await api.put(`/taskandprojects/${id}`, { status });
@@ -196,7 +195,6 @@ export default function TasksAndProjects() {
 
   return (
     <div className="flex h-[85vh] bg-white text-gray-800 overflow-y-auto">
-
       {/* Add Task Modal */}
       <AddTaskModal
         open={openModal}
@@ -214,7 +212,8 @@ export default function TasksAndProjects() {
 
             <p className="text-sm text-gray-600 mb-6">
               Are you sure you want to move this task to{" "}
-              <span className="font-bold text-gray-900">"{pendingStatus}"</span>?
+              <span className="font-bold text-gray-900">"{pendingStatus}"</span>
+              ?
             </p>
 
             <div className="flex justify-end gap-3">
@@ -241,15 +240,13 @@ export default function TasksAndProjects() {
 
       {/* Main Content */}
       <div className="flex-1 px-4 sm:px-6 py-4 w-full">
-
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
-
           {/* Search */}
           <div className="flex items-center  w-full lg:w-[350px]">
-             <h2 className="text-2xl font-semibold mb-6 text-gray-900">
-          Projects & Tasks
-        </h2>
+            <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+              Projects & Tasks
+            </h2>
           </div>
 
           {/* Add Task Button */}
@@ -261,9 +258,6 @@ export default function TasksAndProjects() {
           </button>
         </div>
 
-       
-
-       
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {statuses.map((col) => (
             <div
@@ -282,7 +276,6 @@ export default function TasksAndProjects() {
                       key={task._id}
                       className="bg-white border border-gray-200 p-3 rounded-lg text-sm shadow-sm hover:shadow-md transition"
                     >
-
                       {/* Title + Delete */}
                       <div className="flex justify-between items-start mb-1">
                         <span className="font-medium text-gray-900">
@@ -313,17 +306,20 @@ export default function TasksAndProjects() {
                         }}
                       >
                         {statuses.map((s) => (
-                          <option key={s}   className="bg-white text-gray-800 hover:bg-navyblue hover:text-white">{s}</option>
+                          <option
+                            key={s}
+                            className="bg-white text-gray-800 hover:bg-navyblue hover:text-white"
+                          >
+                            {s}
+                          </option>
                         ))}
                       </select>
-
                     </div>
                   ))}
               </div>
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
