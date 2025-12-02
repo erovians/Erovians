@@ -1,13 +1,20 @@
 import { z } from "zod";
 
 export const createWorkOrderSchema = z.object({
-  title: z.string().min(3, "Title is required"),
-  description: z.string().min(5, "Description is required"),
-  orderIds: z.array(z.string()).nonempty("Order IDs are required"),
+  wo_number: z.string().min(1, "WO number is required"),
+  so_number: z.string().min(1, "SO number is required"),
+  machine: z.string().min(1, "Machine name is required"),
+  due_date: z
+    .string()
+    .or(z.date())
+    .refine((val) => {
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    }, "Invalid date"),
 });
 
 export const updateStatusSchema = z.object({
-  status: z.enum(["Pending", "In Progress", "Completed", "Cancelled"], {
+  status: z.enum(["Planned", "Running", "Completed"], {
     required_error: "Status is required",
   }),
 });
