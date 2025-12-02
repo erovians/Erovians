@@ -179,65 +179,94 @@ export default function WorkOrders() {
       )}
 
       {open && (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-xl w-[400px] border border-gray-300 shadow-lg">
-            <h3 className="text-gray-900 text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center animate-fadeIn">
+          <div className="bg-white p-6 rounded-xl w-[430px] border border-gray-300 shadow-2xl">
+            {/* Title */}
+            <h3 className="text-gray-900 text-xl font-semibold mb-5 text-center">
               Create Work Order
             </h3>
 
-            <div className="space-y-3">
-              {/* Select Pending Order */}
-              <select
-                className="w-full bg-white text-gray-900 px-3 py-2 rounded-md border border-gray-300"
-                onChange={(e) => {
-                  const selected = pendingOrders.find(
-                    (o) => o._id === e.target.value
-                  );
-                  setForm({
-                    ...form,
-                    so_number: selected?._id || "",
-                  });
-                }}
-              >
-                <option value="">-- Select Pending Order --</option>
-                {pendingOrders.map((order) => (
-                  <option key={order._id} value={order._id}>
-                    {order.productId.productName}
-                  </option>
-                ))}
-              </select>
+            <div className="space-y-4">
+              {/* Pending Order Select */}
+              <div className="flex flex-col">
+                <label className="text-gray-700 text-sm mb-1 font-medium">
+                  Select Order
+                </label>
+                <select
+                  className={`w-full bg-white text-gray-900 px-3 py-2 rounded-lg border ${
+                    error && !form.so_number
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } focus:ring-2 focus:ring-navyblue outline-none`}
+                  onChange={(e) => {
+                    const selected = pendingOrders.find(
+                      (o) => o._id === e.target.value
+                    );
+                    setForm({
+                      ...form,
+                      so_number: selected?._id || "",
+                    });
+                  }}
+                >
+                  <option value="">-- Select Pending Order --</option>
+                  {pendingOrders.map((order) => (
+                    <option key={order._id} value={order._id}>
+                      {order.productId.productName}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              {/* Machine */}
-              <input
-                type="text"
-                placeholder="Machine"
-                className="w-full bg-white text-gray-900 px-3 py-2 rounded-md border border-gray-300"
-                onChange={(e) => setForm({ ...form, machine: e.target.value })}
-              />
+              {/* Machine Field */}
+              <div className="flex flex-col">
+                <label className="text-gray-700 text-sm mb-1 font-medium">
+                  Machine
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter machine name"
+                  className={`w-full bg-white text-gray-900 px-3 py-2 rounded-lg border ${
+                    error && !form.machine
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } focus:ring-2 focus:ring-navyblue outline-none`}
+                  onChange={(e) =>
+                    setForm({ ...form, machine: e.target.value })
+                  }
+                />
+              </div>
 
-              {/* Due date */}
-              <input
-                type="date"
-                className="w-full bg-white text-gray-900 px-3 py-2 rounded-md border border-gray-300"
-                onChange={(e) => setForm({ ...form, due_date: e.target.value })}
-              />
-
-              {/* Validation Error */}
-              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+              {/* Due Date */}
+              <div className="flex flex-col">
+                <label className="text-gray-700 text-sm mb-1 font-medium">
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  className={`w-full bg-white text-gray-900 px-3 py-2 rounded-lg border ${
+                    error && !form.due_date
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } focus:ring-2 focus:ring-navyblue outline-none`}
+                  onChange={(e) =>
+                    setForm({ ...form, due_date: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
-            {/* Modal Footer */}
-            <div className="flex justify-between mt-5">
+            {/* Buttons */}
+            <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 cursor-pointer bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleCreate}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="px-4 py-2 bg-navyblue border cursor-pointer border-navyblue text-white rounded-lg hover:bg-white hover:text-navyblue transition shadow-sm"
               >
                 Create
               </button>
