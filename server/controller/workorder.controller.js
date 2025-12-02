@@ -4,6 +4,41 @@ import {
   updateStatusSchema,
 } from "../zodSchemas/seller/workOrder.schema.js";
 
+// export const createWorkOrder = async (req, res) => {
+//   try {
+//     const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
+//     const role = req.user?.role || "seller";
+
+//     if (!sellerId || role !== "seller") {
+//       return res
+//         .status(403)
+//         .json({ error: "Unauthorized: Seller access only" });
+//     }
+
+//     const parsed = createWorkOrderSchema.safeParse(req.body);
+//     if (!parsed.success) {
+//       return res.status(400).json({
+//         error: "Validation failed",
+//         details: parsed.error.flatten().fieldErrors,
+//       });
+//     }
+
+//     const payload = {
+//       ...parsed.data,
+//       sellerId,
+//     };
+
+//     const newWO = await WorkOrder.create(payload);
+
+//     res.status(201).json({
+//       message: "Work order created successfully",
+//       workOrder: newWO,
+//     });
+//   } catch (err) {
+//     console.error("CREATE_WORK_ORDER_ERROR:", err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 export const createWorkOrder = async (req, res) => {
   try {
     const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
@@ -23,9 +58,24 @@ export const createWorkOrder = async (req, res) => {
       });
     }
 
+    const lastWO = await WorkOrder.findOne()
+      .collation({ locale: "en_US", numericOrdering: true })
+      .sort({ wo_number: -1 })
+      .lean();
+
+    let nextNumber = 1;
+
+    if (lastWO?.wo_number) {
+      const lastNum = parseInt(lastWO.wo_number.replace("WO-", ""));
+      nextNumber = lastNum + 1;
+    }
+
+    const formattedNumber = String(nextNumber).padStart(4, "0");
+
     const payload = {
       ...parsed.data,
       sellerId,
+      wo_number: `WO-${formattedNumber}`,
     };
 
     const newWO = await WorkOrder.create(payload);
