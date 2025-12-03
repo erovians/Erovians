@@ -13,6 +13,7 @@ import stocksRoutes from "./routes/stocks.routes.js";
 import contractRoutes from "./routes/contracts.routes.js";
 import taskAndProjectRoutes from "./routes/taskandprojects.routes.js";
 import workOrders from "./routes/workorder.routes.js";
+import estimateRoutes from "./routes/estimate.routes.js";
 
 const app = express();
 
@@ -62,11 +63,14 @@ app.use("/api/stocks", stocksRoutes);
 
 // contracts routes
 app.use("/api/contracts", contractRoutes);
- 
+
 // task and project routes
 app.use("/api/taskandprojects", taskAndProjectRoutes);
 
 // workorder routes
 app.use("/api/workorder", workOrders);
+
+// workorder routes
+app.use("/api/transport", estimateRoutes);
 
 export { app };

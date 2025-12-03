@@ -34,6 +34,7 @@ import Contracts from "./pages/SellerDashboard/components/Contracts/Contracts";
 import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateContract";
 import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
+import TransportEstimate from "./pages/SellerDashboard/components/EstimateCost/TransportEstimate";
 
 function NotFound() {
   return (
@@ -131,6 +132,9 @@ function App() {
 
             {/* Production */}
             <Route path="production" element={<WorkOrdersTable />} />
+
+            {/* Transport */}
+            <Route path="transport" element={<TransportEstimate />} />
           </Route>
         )}
       </Routes>
