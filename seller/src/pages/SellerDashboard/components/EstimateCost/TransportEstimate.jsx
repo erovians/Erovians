@@ -84,6 +84,10 @@ export default function TransportEstimate() {
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-md text-gray-700 max-w-6xl mx-auto border border-gray-200">
+      <h1 className="mb-20 disable bg-gray-50 w-fit p-2 font-bold">
+        This will not gonna work until the Google Map API will not integrated
+        with it .
+      </h1>
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-2xl font-semibold text-gray-900">
           Transport — Distance Estimate
