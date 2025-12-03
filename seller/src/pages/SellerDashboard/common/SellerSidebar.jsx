@@ -170,6 +170,7 @@ import {
   FileBadge,
   FileBoxIcon,
   Target,
+  Ambulance,
 } from "lucide-react";
 
 const SellerSidebar = () => {
@@ -269,6 +270,12 @@ const SellerSidebar = () => {
       icon: <Target size={20} />,
       label: "Production",
       to: "/sellerdashboard/production",
+    },
+    {
+      key: "transport",
+      icon: <Ambulance size={20} />,
+      label: "Transport",
+      to: "/sellerdashboard/transport",
     },
   ];
 
