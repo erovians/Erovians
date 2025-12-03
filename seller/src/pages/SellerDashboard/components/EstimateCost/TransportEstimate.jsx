@@ -6,8 +6,8 @@ export default function TransportEstimate() {
   const [form, setForm] = useState({
     from: "",
     to: "",
-    weight: 0,
-    volume: 0,
+    weight: "",
+    volume: "",
     handling: "Standard",
     partner: "",
   });
@@ -100,7 +100,7 @@ export default function TransportEstimate() {
           value={form.from}
           onChange={onChange}
           placeholder="From address"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
         />
 
         <input
@@ -108,7 +108,7 @@ export default function TransportEstimate() {
           value={form.to}
           onChange={onChange}
           placeholder="To address"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
         />
       </div>
 
@@ -120,7 +120,7 @@ export default function TransportEstimate() {
           onChange={onChange}
           type="number"
           placeholder="Weight (kg)"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
         />
 
         <input
@@ -130,14 +130,14 @@ export default function TransportEstimate() {
           type="number"
           step="0.01"
           placeholder="Volume (m³)"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
         />
 
         <select
           name="handling"
           value={form.handling}
           onChange={onChange}
-          className="bg-white p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="bg-white p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
         >
           <option>Standard</option>
           <option>Fragile</option>
@@ -151,7 +151,7 @@ export default function TransportEstimate() {
           name="partner"
           value={form.partner}
           onChange={onChange}
-          className="w-full bg-white p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+          className="w-full bg-white p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none  focus:ring-2 focus:ring-blue-200 outline-none"
         >
           {partners.map((p) => (
             <option key={p._id} value={p.name}>
@@ -163,14 +163,23 @@ export default function TransportEstimate() {
 
       {/* BUTTONS */}
       <div className="flex items-center gap-4 mt-6">
-        <button className="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm">
+        <button
+          onClick={() => {
+            if (!estimate) {
+              setError("Please estimate first.");
+              return;
+            }
+            setShowPreview(true);
+          }}
+          className="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm"
+        >
           Preview
         </button>
 
         <button
           onClick={handleEstimate}
           disabled={loading}
-          className="px-6 py-3 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 transition shadow-sm"
+          className="px-6 py-3 rounded-xl font-semibold text-white bg-navyblue hover:bg-white cursor-pointer border border-navyblue hover:text-navyblue transition shadow-sm"
         >
           {loading ? "Estimating…" : "Estimate"}
         </button>
