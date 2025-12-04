@@ -92,9 +92,9 @@ export default function TransportEstimate() {
         <h2 className="text-2xl font-semibold text-gray-900">
           Transport — Distance Estimate
         </h2>
-        <button className="px-4 py-2 border rounded-xl text-sm text-gray-600 border-gray-300 hover:bg-gray-100">
+        {/* <button className="px-4 py-2 border rounded-xl text-sm text-gray-600 border-gray-300 hover:bg-gray-100">
           Import partners
-        </button>
+        </button> */}
       </div>
 
       {/* TOP INPUTS */}
