@@ -34,7 +34,7 @@ export default function TransportEstimate() {
       } else if (Array.isArray(data.partners)) {
         setPartners(data.partners);
       } else {
-        setPartners([]); // fallback to avoid crash
+        setPartners([]);
         console.error("Unexpected partners format:", data);
       }
     } catch (err) {
