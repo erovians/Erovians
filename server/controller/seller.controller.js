@@ -1,4 +1,5 @@
 import Seller from "../models/sellerSingnup.model.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -74,6 +75,150 @@ export const checkUniqueSeller = async (req, res) => {
   }
 };
 
+// export const registerSeller = async (req, res) => {
+//   try {
+//     const {
+//       email,
+//       mobile,
+//       businessId,
+//       password,
+//       sellername,
+//       companyregstartionlocation,
+//       businessName,
+//       seller_status,
+//       seller_address,
+//     } = req.body;
+
+//     console.log("details", req.body);
+
+//     // Validations
+//     if (!email || !isValidEmail(email)) {
+//       return res.status(400).json({ message: "Valid email is required" });
+//     }
+//     if (!mobile || !isValidMobile(mobile)) {
+//       return res
+//         .status(400)
+//         .json({ message: "Valid mobile number is required" });
+//     }
+//     if (!businessId || !isValidGSTIN(businessId)) {
+//       return res.status(400).json({ message: "Valid businessId is required" });
+//     }
+//     if (!password || !isStrongPassword(password)) {
+//       return res.status(400).json({
+//         message:
+//           "Password must be at least 8 characters with letters and numbers",
+//       });
+//     }
+//     if (!businessName || businessName.trim().length < 2) {
+//       return res.status(400).json({ message: "Business name is required" });
+//     }
+//     if (!sellername || sellername.trim().length < 2) {
+//       return res.status(400).json({ message: "Seller name is required" });
+//     }
+//     if (
+//       !companyregstartionlocation ||
+//       companyregstartionlocation.trim().length < 2
+//     ) {
+//       return res
+//         .status(400)
+//         .json({ message: "Company registration location is required" });
+//     }
+
+//     global.verifiedMobiles = global.verifiedMobiles || {};
+//     if (!global.verifiedMobiles[mobile]) {
+//       return res.status(400).json({
+//         message: "Mobile number must be verified before registration.",
+//       });
+//     }
+
+//     // File validation
+
+//     const file = req.file;
+//     console.log(file);
+
+//     if (!file) {
+//       return res.status(400).json({ message: "GSTIN document is required." });
+//     }
+//     const acceptedTypes = ["image/jpeg", "image/png", "application/pdf"];
+//     if (!acceptedTypes.includes(file.mimetype)) {
+//       return res.status(400).json({
+//         message: "Invalid file type. Only JPG, PNG, and PDF are allowed.",
+//       });
+//     }
+//     const maxSize = 5 * 1024 * 1024;
+//     if (file.size > maxSize) {
+//       return res.status(400).json({ message: "File size exceeds 5MB." });
+//     }
+
+//     // Check existing seller
+//     const existingSeller = await Seller.findOne({
+//       $or: [{ email }, { mobile }, { businessId }],
+//     });
+//     if (existingSeller) {
+//       return res.status(400).json({ message: "Seller already registered" });
+//     }
+
+//     // Hash password
+//     const hashedPassword = await bcrypt.hash(password, 12);
+
+//     // Upload GSTIN document
+//     const uploadResult = await uploadOnCloudinary(file.path);
+//     const documentUrl = uploadResult?.secure_url;
+//     if (!documentUrl) {
+//       return res
+//         .status(500)
+//         .json({ message: "Failed to upload document to Cloudinary." });
+//     }
+
+//     // Create seller
+//     const seller = new Seller({
+//       email,
+//       mobile,
+//       businessId,
+//       password: hashedPassword,
+//       sellername,
+//       companyregstartionlocation,
+//       businessName,
+//       documentUrl,
+//       isMobileVerified: true,
+//       seller_status,
+//       seller_address,
+//     });
+
+//     const savedSeller = await seller.save();
+//     delete global.verifiedMobiles[mobile];
+
+//     // JWT token
+//     const token = jwt.sign(
+//       { id: savedSeller._id, email: savedSeller.email, role: "seller" },
+//       process.env.JWT_ACCESS_SECRET,
+//       { expiresIn: "7d" }
+//     );
+
+//     // Response
+//     res.status(201).json({
+//       message: "Seller registered successfully",
+//       seller: {
+//         id: savedSeller._id,
+//         email: savedSeller.email,
+//         mobile: savedSeller.mobile,
+//         sellername: savedSeller.sellername,
+//         companyregstartionlocation: savedSeller.companyregstartionlocation,
+//         businessName: savedSeller.businessName,
+//         businessId: savedSeller.businessId,
+//         isMobileVerified: savedSeller.isMobileVerified,
+//         documentUrl: savedSeller.documentUrl,
+//         seller_status: savedSeller.seller_status,
+//         seller_address: savedSeller.seller_address,
+//       },
+//       token,
+//     });
+//   } catch (error) {
+//     console.error("Error registering seller:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 export const registerSeller = async (req, res) => {
   try {
     const {
@@ -84,6 +229,8 @@ export const registerSeller = async (req, res) => {
       sellername,
       companyregstartionlocation,
       businessName,
+      seller_status,
+      seller_address,
     } = req.body;
 
     console.log("details", req.body);
@@ -167,17 +314,26 @@ export const registerSeller = async (req, res) => {
         .json({ message: "Failed to upload document to Cloudinary." });
     }
 
-    // Create seller
-    const seller = new Seller({
+    //  Create Seller as User also and then store the whole data in the seller documents
+    const user = await User.create({
       email,
       mobile,
-      businessId,
       password: hashedPassword,
-      sellername,
-      companyregstartionlocation,
-      businessName,
-      documentUrl,
+      name: sellername,
+      role: "seller",
       isMobileVerified: true,
+    });
+
+    // Create seller
+    const seller = new Seller({
+      user: user._id,
+      businessId,
+      businessName,
+      sellername,
+      companyRegistrationLocation: companyregstartionlocation,
+      documentUrl,
+      sellerStatus: seller_status,
+      sellerAddress: seller_address,
     });
 
     const savedSeller = await seller.save();
@@ -203,6 +359,8 @@ export const registerSeller = async (req, res) => {
         businessId: savedSeller.businessId,
         isMobileVerified: savedSeller.isMobileVerified,
         documentUrl: savedSeller.documentUrl,
+        seller_status: savedSeller.seller_status,
+        seller_address: savedSeller.seller_address,
       },
       token,
     });
@@ -212,6 +370,86 @@ export const registerSeller = async (req, res) => {
   }
 };
 
+// export const loginSeller = async (req, res) => {
+//   try {
+//     const { identifier, password } = req.body;
+
+//     if (!identifier) {
+//       return res.status(400).json({ message: "Email or Mobile is required" });
+//     }
+//     if (!password) {
+//       return res.status(400).json({ message: "Password is required" });
+//     }
+
+//     const seller = await Seller.findOne({
+//       $or: [{ email: identifier }, { mobile: identifier }],
+//     }).select("+password");
+
+//     if (!seller) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, seller.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     if (!process.env.JWT_ACCESS_SECRET) {
+//       console.error("JWT_SECRET is not defined in .env file");
+//       return res.status(500).json({ message: "Server configuration error" });
+//     }
+
+//     const accessToken = generateAccessToken(seller);
+
+//     const refreshToken = generateRefreshToken(seller);
+
+//     res
+//       .cookie("accessToken", accessToken, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "strict",
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//       })
+//       .cookie("refreshToken", refreshToken, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "strict",
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//       })
+//       .json({
+//         message: "Login successfully",
+//         user: { id: seller._id, name: seller.name },
+//       });
+
+//     // const token = jwt.sign(
+//     //   { userId: seller._id, role: "seller" },
+//     //   process.env.JWT_SECRET,
+//     //   {
+//     //     expiresIn: "7d",
+//     //     issuer: "erovians-ecommerce-app",
+//     //     audience: "seller-dashboard",
+//     //   }
+//     // );
+
+//     // res.cookie("token", token, {
+//     //   httpOnly: true,
+//     //   secure: true,
+//     //   sameSite: "lax",
+//     //   maxAge: 7 * 24 * 60 * 60 * 1000,
+//     // });
+
+//     // res.status(200).json({
+//     //   message: "Login successful",
+//     //   seller: {
+//     //     id: seller._id,
+//     //     name: seller.sellername
+//     //   },
+//     // });
+//   } catch (error) {
+//     console.error("Error logging in seller:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 export const loginSeller = async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -223,15 +461,15 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    const seller = await Seller.findOne({
+    const user = await User.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
     }).select("+password");
 
-    if (!seller) {
+    if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, seller.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -241,9 +479,9 @@ export const loginSeller = async (req, res) => {
       return res.status(500).json({ message: "Server configuration error" });
     }
 
-    const accessToken = generateAccessToken(seller);
+    const accessToken = generateAccessToken(user);
 
-    const refreshToken = generateRefreshToken(seller);
+    const refreshToken = generateRefreshToken(user);
 
     res
       .cookie("accessToken", accessToken, {
@@ -260,7 +498,7 @@ export const loginSeller = async (req, res) => {
       })
       .json({
         message: "Login successfully",
-        user: { id: seller._id, name: seller.name },
+        user: { id: user._id, name: user.name },
       });
 
     // const token = jwt.sign(
@@ -292,7 +530,6 @@ export const loginSeller = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 export const refreshTokenController = async (req, res) => {
   const { refreshToken } = req.cookies;
   if (!refreshToken)

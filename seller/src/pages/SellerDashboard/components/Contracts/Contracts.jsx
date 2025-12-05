@@ -195,7 +195,9 @@ export default function Contracts() {
                     className="px-4 py-2 text-xs rounded bg-navyblue text-white hover:opacity-90"
                     onClick={() =>
                       window.open(
-                        `${import.meta.env.VITE_API_URL}/contracts/download/${c._id}`
+                        `${import.meta.env.VITE_API_URL}/contracts/download/${
+                          c._id
+                        }`
                       )
                     }
                   >
