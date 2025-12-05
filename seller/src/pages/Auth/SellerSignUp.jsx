@@ -35,6 +35,8 @@ const SellerSignUp = () => {
     businessName: "",
     companyregstartionlocation: "",
     documentFile: null,
+    seller_status: "",
+    seller_address: "",
   });
 
   const [otp, setOtp] = useState("");
@@ -265,6 +267,8 @@ const SellerSignUp = () => {
       formData.companyregstartionlocation
     );
     finalSellerData.append("file", formData.documentFile);
+    finalSellerData.append("seller_status", formData.seller_status);
+    finalSellerData.append("seller_address", formData.seller_address);
 
     dispatch(registerSeller(finalSellerData));
   };
@@ -278,7 +282,6 @@ const SellerSignUp = () => {
         navigate("/login");
         dispatch(clearSellerState());
       }, 1000); // 2 seconds delay
-
 
       return () => clearTimeout(timer);
     }
@@ -514,7 +517,7 @@ const SellerSignUp = () => {
           )}
 
           {/* Step 3: Business Details + Document */}
-          {step === 3 && (
+          {/* {step === 3 && (
             <form className="space-y-5" onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -563,6 +566,103 @@ const SellerSignUp = () => {
                   </p>
                 )}
               </div>
+              <div className="flex flex-col sm:flex-row justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="text-gray-500 font-semibold w-full sm:w-auto"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`bg-[#0c2c43] text-white px-6 py-2 rounded-md font-bold w-full sm:w-auto hover:bg-[#1a4361]`}
+                >
+                  {loading ? "Submitting..." : "Submit"}
+                </button>
+              </div>
+            </form>
+          )} */}
+          {step === 3 && (
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="businessName"
+                placeholder="Business Name *"
+                value={formData.businessName}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
+              {errors.businessName && (
+                <p className="text-red-500 text-sm">{errors.businessName}</p>
+              )}
+
+              <input
+                type="text"
+                name="companyregstartionlocation"
+                placeholder="Business Registration Location *"
+                value={formData.companyregstartionlocation}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              />
+              {errors.companyregstartionlocation && (
+                <p className="text-red-500 text-sm">
+                  {errors.companyregstartionlocation}
+                </p>
+              )}
+
+              {/* ===== Seller Status ===== */}
+              <select
+                name="seller_status"
+                value={formData.seller_status}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+              >
+                <option value="">Select Seller Status *</option>
+                <option value="professional">Professional</option>
+                <option value="Individual">Individual</option>
+              </select>
+              {errors.seller_status && (
+                <p className="text-red-500 text-sm">{errors.seller_status}</p>
+              )}
+
+              {/* ===== Seller Address ===== */}
+              <textarea
+                name="seller_address"
+                placeholder="Business / Seller Address *"
+                value={formData.seller_address}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+                rows={3}
+              ></textarea>
+              {errors.seller_address && (
+                <p className="text-red-500 text-sm">{errors.seller_address}</p>
+              )}
+
+              {/* ===== File Upload ===== */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload GSTIN / Business ID Document (JPG, PNG, PDF)
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,application/pdf"
+                  onChange={handleFileUpload}
+                  className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+                />
+                {errors.documentFile && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.documentFile}
+                  </p>
+                )}
+                {formData.documentFile && !errors.documentFile && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Document selected: {formData.documentFile.name}
+                  </p>
+                )}
+              </div>
+
               <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <button
                   type="button"

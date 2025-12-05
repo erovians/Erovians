@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user", "seller"],
+      // enum: ["admin", "user", "seller"], //real one
+      enum: ["admin", "seller", "member", "user"], // new one buyer is the user itself
       default: "user",
     },
     status: {
@@ -36,6 +37,17 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "suspended"],
       default: "active",
     },
+
+    // -------------------------------------------------------------__________________________________________-------------------
+    name: {
+      type: String,
+    },
+
+    profileURL: {
+      type: String,
+    },
+
+    // -------------------------------------------------------------__________________________________________-------------------
   },
   {
     timestamps: true,
