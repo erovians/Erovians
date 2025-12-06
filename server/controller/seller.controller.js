@@ -1,5 +1,6 @@
 import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
+import Member from "../models/members.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -339,6 +340,13 @@ export const registerSeller = async (req, res) => {
 
 //     const savedSeller = await seller.save();
 //     delete global.verifiedMobiles[mobile];
+
+// await Member.create({
+//   user: savedSeller._id,
+//   sellerId: savedSeller._id,
+//   role: "owner",
+//   permissions: ["all"],
+// });
 
 //     // JWT token
 //     const token = jwt.sign(
