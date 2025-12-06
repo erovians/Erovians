@@ -10,7 +10,7 @@ const MemberSchema = new mongoose.Schema(
 
     sellerId: {
       type: mongoose.Types.ObjectId,
-      ref: "SellerProfile",
+      ref: "Seller",
       required: true,
     },
 
