@@ -155,7 +155,9 @@ export default function StepTwo({ formData, setFormData, errors }) {
 
       {/* Company Photos */}
       <div className={formRowClass}>
-        <label className={`${labelClass} pt-1`}><span className="text-red-500">*</span> Company Photo:</label>
+        <label className={`${labelClass} pt-1`}>
+          <span className="text-red-500">*</span> Company Photo:
+        </label>
         <div className={controlClass}>
           <div className="flex flex-wrap gap-2 items-center">
             <button

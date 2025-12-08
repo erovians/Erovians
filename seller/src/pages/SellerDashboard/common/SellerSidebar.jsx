@@ -211,14 +211,20 @@ const SellerSidebar = () => {
       key: "store",
       icon: <Store size={20} />,
       label: "Store",
+      to: "/sellerdashboard/company/overview",
       subLinks: [
         { to: "/sellerdashboard/company/overview", label: "Company Overview" },
-        { to: "/sellerdashboard/company/profile", label: "Company Profile" },
         {
           to: "/sellerdashboard/company/addcertificate",
           label: "Certification",
         },
       ],
+    },
+    {
+      key: "company Profile",
+      icon: <Store size={20} />,
+      label: "Company Profile",
+      to: "/sellerdashboard/company/profile",
     },
     {
       key: "messages",
@@ -253,6 +259,7 @@ const SellerSidebar = () => {
       label: "Stocks & Lots",
       to: "/sellerdashboard/stocks",
     },
+
     {
       key: "contracts",
       icon: <FileBadge size={20} />,
