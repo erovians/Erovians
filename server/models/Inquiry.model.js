@@ -29,23 +29,23 @@ const readInfoSchema = new Schema(
 
 const inquirySchema = new Schema(
   {
-    userId: { 
-      type: Schema.Types.ObjectId, 
-      ref: "User", 
-      required: true, 
-      index: true 
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
-    sellerId: { 
-      type: Schema.Types.ObjectId, 
-      ref: "Seller", 
-      required: true, 
-      index: true 
+    sellerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Seller",
+      required: true,
+      index: true,
     },
-    productId: { 
-      type: Schema.Types.ObjectId, 
-      ref: "Product", 
-      required: true, 
-      index: true 
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+      index: true,
     },
 
     // Core inquiry data
@@ -80,18 +80,18 @@ const inquirySchema = new Schema(
     country: { type: String, maxlength: 100 },
     countryCode: { type: String, maxlength: 8 },
     platform: { type: String, maxlength: 50 },
-    
+
     // Extensibility
     meta: { type: Schema.Types.Mixed, default: {} },
 
     // Audit trail (capped at 200 entries)
-    audit: { 
-      type: [auditEntrySchema], 
+    audit: {
+      type: [auditEntrySchema],
       default: [],
       validate: {
         validator: (v) => v.length <= 200,
-        message: "Audit trail cannot exceed 200 entries"
-      }
+        message: "Audit trail cannot exceed 200 entries",
+      },
     },
 
     // Attachments metadata (optional)
@@ -104,11 +104,11 @@ const inquirySchema = new Schema(
       },
     ],
   },
-  { 
-    timestamps: true, 
+  {
+    timestamps: true,
     minimize: false,
     // Add version key for optimistic locking
-    versionKey: '__v'
+    versionKey: "__v",
   }
 );
 
@@ -118,23 +118,23 @@ inquirySchema.index({ sellerId: 1, status: 1, updatedAt: -1 });
 inquirySchema.index({ sellerId: 1, isDeleted: 1, isSpam: 1, updatedAt: -1 });
 inquirySchema.index({ sellerId: 1, isNew: 1, updatedAt: -1 });
 inquirySchema.index({ sellerId: 1, isFlagged: 1, updatedAt: -1 });
-inquirySchema.index({ sellerId: 1, 'readInfo.isRead': 1, updatedAt: -1 });
+inquirySchema.index({ sellerId: 1, "readInfo.isRead": 1, updatedAt: -1 });
 
 /* ========== MIDDLEWARE ========== */
 // Auto-sanitize message before save
 inquirySchema.pre("save", function (next) {
-  if (this.isModified('message') && this.message) {
+  if (this.isModified("message") && this.message) {
     this.message = this.message
       .replace(/\r\n|\r/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();
   }
-  
+
   // Cap audit length to prevent unbounded growth
   if (this.audit && this.audit.length > 200) {
     this.audit = this.audit.slice(-200);
   }
-  
+
   next();
 });
 
@@ -147,18 +147,18 @@ inquirySchema.pre("save", function (next) {
 inquirySchema.methods.markAsViewed = async function (actorId = null) {
   // Only update if actually new (avoid unnecessary writes)
   if (!this.isNew) return this;
-  
+
   this.isNew = false;
   this.readInfo.isRead = true;
   this.readInfo.readAt = new Date();
   this.readInfo.readBy = actorId;
-  
-  this.audit.push({ 
-    actor: actorId, 
+
+  this.audit.push({
+    actor: actorId,
     action: "mark_viewed",
-    meta: { timestamp: new Date() }
+    meta: { timestamp: new Date() },
   });
-  
+
   return this.save();
 };
 
@@ -190,9 +190,9 @@ inquirySchema.methods.markUnread = async function (actorId = null) {
  */
 inquirySchema.methods.toggleFlag = async function (actorId = null) {
   this.isFlagged = !this.isFlagged;
-  this.audit.push({ 
-    actor: actorId, 
-    action: this.isFlagged ? "flag" : "unflag" 
+  this.audit.push({
+    actor: actorId,
+    action: this.isFlagged ? "flag" : "unflag",
   });
   return this.save();
 };
@@ -243,10 +243,10 @@ inquirySchema.methods.restore = async function (actorId = null, meta = {}) {
 inquirySchema.methods.assignOrder = async function (orderId, actorId = null) {
   this.orderId = orderId;
   this.status = "Ongoing"; // Auto-update status
-  this.audit.push({ 
-    actor: actorId, 
-    action: "assign_order", 
-    meta: { orderId } 
+  this.audit.push({
+    actor: actorId,
+    action: "assign_order",
+    meta: { orderId },
   });
   return this.save();
 };
@@ -257,7 +257,11 @@ inquirySchema.methods.assignOrder = async function (orderId, actorId = null) {
  * Bulk action handler - SINGLE SOURCE OF TRUTH
  * All bulk operations go through this method
  */
-inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts = {}) {
+inquirySchema.statics.bulkAction = async function (
+  ids = [],
+  action = {},
+  opts = {}
+) {
   if (!Array.isArray(ids) || ids.length === 0) {
     return { modifiedCount: 0, matchedCount: 0 };
   }
@@ -265,12 +269,12 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
   const { type, actorId = null, meta = {}, orderId = null } = action;
   const session = opts.session || null;
   const now = new Date();
-  
-  const auditEntry = { 
-    actor: actorId, 
-    action: type, 
-    meta, 
-    createdAt: now 
+
+  const auditEntry = {
+    actor: actorId,
+    action: type,
+    meta,
+    createdAt: now,
   };
 
   let updateQuery;
@@ -279,11 +283,11 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
     case "mark_viewed":
       // Mark as viewed - clears isNew and marks as read
       updateQuery = {
-        $set: { 
+        $set: {
           isNew: false,
           "readInfo.isRead": true,
           "readInfo.readAt": now,
-          "readInfo.readBy": actorId
+          "readInfo.readBy": actorId,
         },
         $push: { audit: auditEntry },
       };
@@ -291,11 +295,11 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
 
     case "mark_read":
       updateQuery = {
-        $set: { 
-          "readInfo.isRead": true, 
+        $set: {
+          "readInfo.isRead": true,
           "readInfo.readAt": now,
           "readInfo.readBy": actorId,
-          isNew: false 
+          isNew: false,
         },
         $push: { audit: auditEntry },
       };
@@ -339,10 +343,10 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
 
     case "delete":
       updateQuery = {
-        $set: { 
-          isDeleted: true, 
-          deletedAt: now, 
-          deletedBy: actorId 
+        $set: {
+          isDeleted: true,
+          deletedAt: now,
+          deletedBy: actorId,
         },
         $push: { audit: auditEntry },
       };
@@ -359,15 +363,15 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
     case "assign_order":
       if (!orderId) throw new Error("orderId required for assign_order");
       updateQuery = {
-        $set: { 
+        $set: {
           orderId,
-          status: "Ongoing"
+          status: "Ongoing",
         },
-        $push: { 
-          audit: { 
-            ...auditEntry, 
-            meta: { ...meta, orderId } 
-          } 
+        $push: {
+          audit: {
+            ...auditEntry,
+            meta: { ...meta, orderId },
+          },
         },
       };
       break;
@@ -376,11 +380,9 @@ inquirySchema.statics.bulkAction = async function (ids = [], action = {}, opts =
       throw new Error(`Unknown bulk action type: ${type}`);
   }
 
-  const result = await this.updateMany(
-    { _id: { $in: ids } },
-    updateQuery,
-    { session }
-  );
+  const result = await this.updateMany({ _id: { $in: ids } }, updateQuery, {
+    session,
+  });
 
   return {
     action: type,
@@ -440,13 +442,10 @@ inquirySchema.statics.buildFilterQuery = function (filters = {}) {
   // Search query
   if (searchQuery) {
     const regex = new RegExp(
-      searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), 
+      searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
       "i"
     );
-    const or = [
-      { message: regex },
-      { country: regex },
-    ];
+    const or = [{ message: regex }, { country: regex }];
     if (mongoose.isValidObjectId(searchQuery)) {
       or.push({ _id: new mongoose.Types.ObjectId(searchQuery) });
     }
@@ -471,5 +470,6 @@ inquirySchema.statics.getSortConfig = function (sortBy = "Latest") {
 };
 
 /* ========== EXPORT ========== */
-const Inquiry = mongoose.models.Inquiry || mongoose.model("Inquiry", inquirySchema);
+const Inquiry =
+  mongoose.models.Inquiry || mongoose.model("Inquiry", inquirySchema);
 export default Inquiry;
