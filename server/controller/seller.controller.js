@@ -572,8 +572,9 @@ export const logoutSeller = (req, res) => {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: true, // must match what was set
-      sameSite: "lax", // must match what was set
+      secure: process.env.NODE_ENV === "production", // must match what was set
+      sameSite: "strict", // must match what was set
+      path: "/"
     });
 
     res.status(200).json({ message: "Logout successful" });
