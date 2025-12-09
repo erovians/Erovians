@@ -5,9 +5,11 @@ import { Link } from "react-router-dom";
 
 const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
   const dispatch = useDispatch();
-  const { products = [], loading, error } = useSelector(
-    (state) => state.products
-  );
+  const {
+    products = [],
+    loading,
+    error,
+  } = useSelector((state) => state.products);
 
   const [groupedProducts, setGroupedProducts] = useState({});
 
