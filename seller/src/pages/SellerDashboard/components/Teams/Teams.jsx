@@ -13,6 +13,7 @@ import { teamSchema } from "../../schema/team.schema";
 export default function Teams() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false);
@@ -106,6 +107,7 @@ export default function Teams() {
   }, []);
 
   const save = useCallback(async () => {
+    setSaving(true); // <-- add this
     const result = teamSchema.safeParse(form);
 
     if (!result.success) {
@@ -118,6 +120,7 @@ export default function Teams() {
       }
 
       setErrors(formatted);
+      setSaving(false);
       return;
     }
 
@@ -140,6 +143,8 @@ export default function Teams() {
     } catch (err) {
       console.error(err);
       alert(err?.response?.data?.message || "Failed to save member");
+    } finally {
+      setSaving(false);
     }
   }, [form, editingId, loadMembers]);
 
@@ -189,6 +194,8 @@ export default function Teams() {
           save={save}
           errors={errors}
           setErrors={setErrors}
+          saving={saving}
+          setSaving={setSaving}
         />
       )}
 

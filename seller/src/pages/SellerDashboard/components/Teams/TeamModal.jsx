@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 export default function TeamModal({
   form,
   setForm,
@@ -6,11 +7,13 @@ export default function TeamModal({
   roleOptions = [],
   close,
   save,
+  saving,
+  setSaving,
   errors = {},
   setErrors = () => {},
 }) {
   const [preview, setPreview] = useState(null);
-  const [saving, setSaving] = useState(false);
+
   const [localErrors, setLocalErrors] = useState({});
   const [dragOver, setDragOver] = useState(false);
 
@@ -417,7 +420,7 @@ export default function TeamModal({
             type="button"
             onClick={save}
             disabled={saving}
-            className={`px-4 py-2 rounded-md text-white focus:outline-none focus:ring-2 ${
+            className={`px-4 py-2 flex items-center gap-2 rounded-md text-white focus:outline-none focus:ring-2 ${
               saving
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-navyblue hover:bg-white hover:text-navyblue border border-navyblue focus:ring-navyblue"
@@ -425,6 +428,7 @@ export default function TeamModal({
             aria-disabled={saving}
           >
             {saving ? "Saving..." : "Save"}
+            {saving && <Spinner className="w-4 h-4" />}
           </button>
         </div>
       </div>
