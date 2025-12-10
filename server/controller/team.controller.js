@@ -149,6 +149,19 @@ export const addTeamMember = async (req, res) => {
     if (!name || !email || !mobile) {
       throw new Error("name email mobile Required");
     }
+
+    // Check email exists
+    const emailExists = await User.findOne({ email }).session(session);
+    if (emailExists) {
+      throw new Error("Email already exists");
+    }
+
+    // Check mobile exists
+    const mobileExists = await User.findOne({ mobile }).session(session);
+    if (mobileExists) {
+      throw new Error("Mobile number already exists");
+    }
+
     const sellerId = req.user.userId;
 
     const company = await Company.findOne({ sellerId }).session(session);
