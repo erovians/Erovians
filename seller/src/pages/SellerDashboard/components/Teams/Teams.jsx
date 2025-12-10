@@ -1,4 +1,3 @@
-// File: src/pages/sellerdashboard/team/Teams.jsx (JSX only)
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   listTeamMembers,
@@ -11,12 +10,6 @@ import TeamModal from "./TeamModal";
 import { TeamRow } from "./TeamRow";
 import { teamSchema } from "../../schema/team.schema";
 
-/**
- * Senior-ready Teams (JSX)
- * - Uses a semantic table for perfect alignment
- * - Accessible action menu
- * - Optimistic delete and proper error handling hooks
- */
 export default function Teams() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -93,8 +86,21 @@ export default function Teams() {
     setModalOpen(true);
   }, []);
 
+  // const openEditModal = useCallback((member) => {
+  //   setForm({ ...member, photo: member.photo || null, photoFile: null });
+  //   setEditingId(member._id);
+  //   setModalOpen(true);
+  // }, []);
   const openEditModal = useCallback((member) => {
-    setForm({ ...member, photo: member.photo || null, photoFile: null });
+    setForm({
+      name: member.name || "",
+      email: member.email || "",
+      mobile: member.mobile || "",
+      role: member.role || "Member",
+      site: member.site || "",
+      photo: member.photo || null,
+      photoFile: null,
+    });
     setEditingId(member._id);
     setModalOpen(true);
   }, []);
@@ -172,7 +178,7 @@ export default function Teams() {
   const totalPages = Math.max(Math.ceil(filtered.length / pageSize), 1);
 
   return (
-    <div className="p-6">
+    <div className="p-6 border sm:h-[85vh]">
       {modalOpen && (
         <TeamModal
           form={form}
@@ -185,7 +191,8 @@ export default function Teams() {
           setErrors={setErrors}
         />
       )}
-      <div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm">
+
+      <div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm flex flex-col h-full">
         <TeamHeader
           query={query}
           setQuery={setQuery}
@@ -196,9 +203,10 @@ export default function Teams() {
           openAddModal={openAddModal}
         />
 
-        <div className="mt-4 overflow-x-auto">
+        {/* MAIN CONTENT SCROLL AREA */}
+        <div className="mt-4 flex flex-col flex-1 overflow-x-auto ">
           {/* DESKTOP & TABLET TABLE */}
-          <div className="hidden sm:block overflow-x-auto">
+          <div className="hidden sm:block overflow-x-auto overflow-y-auto h-full ">
             <table className="min-w-full table-auto text-sm">
               <thead>
                 <tr className="text-left text-gray-600 border-b bg-gray-50">
@@ -246,7 +254,7 @@ export default function Teams() {
               paginated.map((m) => (
                 <div
                   key={m._id}
-                  className="bg-white p-4 rounded-lg shadow border flex flex-col gap-3"
+                  className="bg-white  p-4 rounded-lg shadow border flex flex-col gap-3"
                 >
                   {/* Top section */}
                   <div className="flex items-center gap-3">
@@ -267,7 +275,6 @@ export default function Teams() {
                         </span>
                       )}
                     </div>
-
                     <div>
                       <p className="text-gray-900 font-semibold">{m.name}</p>
                       <p className="text-gray-500 text-xs">
@@ -301,7 +308,7 @@ export default function Teams() {
                     </button>
                     <button
                       onClick={() => remove(m._id)}
-                      className="px-3 py-1 text-sm rounded border border-navyblue text-navyblue "
+                      className="px-3 py-1 text-sm rounded border border-navyblue text-navyblue"
                     >
                       Delete
                     </button>
@@ -314,12 +321,13 @@ export default function Teams() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between mt-4 text-sm text-gray-600">
+          <div className="flex items-center justify-between mt-auto w-full text-sm text-gray-600">
             <div>
               Showing{" "}
               {Math.min((page - 1) * pageSize + 1, filtered.length || 0)} -{" "}
               {Math.min(page * pageSize, filtered.length)} of {filtered.length}
             </div>
+
             <div className="flex items-center gap-2">
               <button
                 className="px-3 py-1 border rounded"

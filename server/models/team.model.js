@@ -5,6 +5,7 @@ const teamMemberSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String },
     role: { type: String, required: true },
+    mobile: { type: Number, required: true },
     site: { type: String, default: "---" },
     activity: { type: String, default: "Just now" },
 
