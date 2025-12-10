@@ -1,8 +1,8 @@
 import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
 import Member from "../models/members.model.js";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import {
