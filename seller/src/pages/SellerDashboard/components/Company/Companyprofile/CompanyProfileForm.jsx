@@ -74,6 +74,7 @@ export default function CompanyProfileForm() {
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
 
+  // fetch all the data of the company associated with the current loggedin seller
   useEffect(() => {
     async function loadProfile() {
       try {
