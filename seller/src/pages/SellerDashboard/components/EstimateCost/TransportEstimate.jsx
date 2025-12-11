@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
 import api from "@/utils/axios.utils";
+import {
+  Truck,
+  MapPin,
+  Package,
+  Clock,
+  DollarSign,
+  Send,
+  Eye,
+  Loader2,
+} from "lucide-react";
 
 export default function TransportEstimate() {
   const [partners, setPartners] = useState([]);
@@ -12,9 +22,11 @@ export default function TransportEstimate() {
     partner: "",
   });
   const [loading, setLoading] = useState(false);
+  const [fetchingPartners, setFetchingPartners] = useState(true);
   const [estimate, setEstimate] = useState(null);
   const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     fetchPartners();
@@ -23,30 +35,38 @@ export default function TransportEstimate() {
   function onChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+    setError("");
+    setSuccess("");
   }
 
   async function fetchPartners() {
+    setFetchingPartners(true);
     try {
       const { data } = await api.get("/transport/partners");
-
       if (Array.isArray(data)) {
         setPartners(data);
       } else if (Array.isArray(data.partners)) {
         setPartners(data.partners);
       } else {
         setPartners([]);
-        console.error("Unexpected partners format:", data);
       }
     } catch (err) {
       console.error("Partners fetch error:", err);
       setPartners([]);
+    } finally {
+      setFetchingPartners(false);
     }
   }
 
   async function handleEstimate() {
     setError("");
-    if (!form.from || !form.to)
-      return setError("From and To addresses are required");
+    setSuccess("");
+
+    if (!form.from || !form.to) {
+      setError("From and To addresses are required");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await api.post("/transport/estimate-distance", {
@@ -69,167 +89,341 @@ export default function TransportEstimate() {
 
   async function handleSendQuote() {
     if (!estimate) return;
+
     setLoading(true);
+    setSuccess("");
+    setError("");
+
     try {
       const payload = { partner: form.partner, quote: { form, estimate } };
       await api.post("/transport/send-quote", payload);
-      alert("Quote sent to partner");
+      setSuccess("Quote sent successfully to partner!");
     } catch (err) {
       console.error(err);
-      alert("Failed to send quote");
+      setError("Failed to send quote");
     } finally {
       setLoading(false);
     }
   }
 
+  const canEstimate = !!form.from && !!form.to && !loading;
+  const canSend = !!estimate && !loading;
+  const hasPartners = partners.length > 0;
+
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-md text-gray-700 max-w-6xl mx-auto border border-gray-200">
-      <h1 className="mb-20 disable bg-gray-50 w-fit p-2 font-bold">
-        This will not gonna work until the Google Map API will not integrated
-        with it .
-      </h1>
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-2xl font-semibold text-gray-900">
-          Transport — Distance Estimate
-        </h2>
-        {/* <button className="px-4 py-2 border rounded-xl text-sm text-gray-600 border-gray-300 hover:bg-gray-100">
-          Import partners
-        </button> */}
-      </div>
-
-      {/* TOP INPUTS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          name="from"
-          value={form.from}
-          onChange={onChange}
-          placeholder="From address"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
-        />
-
-        <input
-          name="to"
-          value={form.to}
-          onChange={onChange}
-          placeholder="To address"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
-        />
-      </div>
-
-      {/* SECOND ROW */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <input
-          name="weight"
-          value={form.weight}
-          onChange={onChange}
-          type="number"
-          placeholder="Weight (kg)"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
-        />
-
-        <input
-          name="volume"
-          value={form.volume}
-          onChange={onChange}
-          type="number"
-          step="0.01"
-          placeholder="Volume (m³)"
-          className="bg-white placeholder-gray-400 p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
-        />
-
-        <select
-          name="handling"
-          value={form.handling}
-          onChange={onChange}
-          className="bg-white p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none focus:ring-2 focus:ring-blue-200 outline-none"
-        >
-          <option>Standard</option>
-          <option>Fragile</option>
-          <option>Oversized</option>
-        </select>
-      </div>
-
-      {/* PARTNER SELECT */}
-      <div className="mt-4">
-        <select
-          name="partner"
-          value={form.partner}
-          onChange={onChange}
-          className="w-full bg-white p-4 rounded-xl border border-gray-300 focus:border-navyblue focus:border-none  focus:ring-2 focus:ring-blue-200 outline-none"
-        >
-          {partners.map((p) => (
-            <option key={p._id} value={p.name}>
-              {p.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* BUTTONS */}
-      <div className="flex items-center gap-4 mt-6">
-        <button
-          onClick={() => {
-            if (!estimate) {
-              setError("Please estimate first.");
-              return;
-            }
-            setShowPreview(true);
-          }}
-          className="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm"
-        >
-          Preview
-        </button>
-
-        <button
-          onClick={handleEstimate}
-          disabled={loading}
-          className="px-6 py-3 rounded-xl font-semibold text-white bg-navyblue hover:bg-white cursor-pointer border border-navyblue hover:text-navyblue transition shadow-sm"
-        >
-          {loading ? "Estimating…" : "Estimate"}
-        </button>
-
-        <button
-          onClick={handleSendQuote}
-          className="px-6 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 text-sm"
-        >
-          Send quote to partner
-        </button>
-      </div>
-
-      {error && <p className="text-red-500 mt-3">{error}</p>}
-
-      {/* PREVIEW CARD */}
-      {showPreview && estimate && (
-        <div className="mt-6 bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Estimate Preview
-          </h3>
-
-          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p>
-                <strong>Distance: </strong> {estimate.distance_km} km
-              </p>
-              <p>
-                <strong>ETA: </strong> {estimate.eta_hours} hours
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-gray-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-3 bg-navyblue rounded-xl">
+              <Truck className="w-6 h-6 text-white" />
             </div>
-
             <div>
-              <p>
-                <strong>Total: </strong> {estimate.breakdown.total}
+              <h1 className="text-3xl font-bold text-gray-900">
+                Transport Distance Estimator
+              </h1>
+              <p className="text-gray-600 text-sm mt-1">
+                Quickly calculate road distance, ETA and cost before sending a
+                shipping quote.
               </p>
-              <p className="font-medium mt-1">Breakdown:</p>
-              <ul className="ml-4">
-                <li>Distance: {estimate.breakdown.distanceCost}</li>
-                <li>Weight: {estimate.breakdown.weightCost}</li>
-                <li>Volume: {estimate.breakdown.volumeCost}</li>
-                <li>Handling: {estimate.breakdown.handlingCost}</li>
-              </ul>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Main Form */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          {/* Location Inputs */}
+          <div className="space-y-4 mb-6">
+            <div className="relative">
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <MapPin className="w-4 h-4 inline mr-2 text-green-600" />
+                From Location
+              </label>
+              <input
+                name="from"
+                value={form.from}
+                onChange={onChange}
+                placeholder="Enter pickup address (street, city, country)"
+                className="w-full bg-gray-50 placeholder-gray-400 p-3 pl-5 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all text-sm"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Use a detailed address for a more accurate route (e.g. street +
+                city).
+              </p>
+            </div>
+
+            <div className="relative">
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <MapPin className="w-4 h-4 inline mr-2 text-red-600" />
+                To Location
+              </label>
+              <input
+                name="to"
+                value={form.to}
+                onChange={onChange}
+                placeholder="Enter delivery address (street, city, country)"
+                className="w-full bg-gray-50 placeholder-gray-400 p-3 pl-5 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all text-sm"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Destination where the goods will be delivered.
+              </p>
+            </div>
+          </div>
+
+          {/* Package Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <Package className="w-4 h-4 inline mr-2 text-gray-600" />
+                Weight (kg)
+              </label>
+              <input
+                name="weight"
+                value={form.weight}
+                onChange={onChange}
+                type="number"
+                min="0"
+                placeholder="0"
+                className="w-full bg-gray-50 placeholder-gray-400 p-3 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all text-sm"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Total weight of the shipment in kilograms.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <Package className="w-4 h-4 inline mr-2 text-gray-600" />
+                Volume (m³)
+              </label>
+              <input
+                name="volume"
+                value={form.volume}
+                onChange={onChange}
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                className="w-full bg-gray-50 placeholder-gray-400 p-3 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all text-sm"
+              />
+              <p className="mt-1 text-xs text-gray-400">
+                Approximate space the shipment occupies in cubic meters.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                Handling Type
+              </label>
+              <select
+                name="handling"
+                value={form.handling}
+                onChange={onChange}
+                className="w-full bg-gray-50 p-3 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all cursor-pointer text-sm"
+              >
+                <option>Standard</option>
+                <option>Fragile</option>
+                <option>Oversized</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                Choose special handling if the cargo needs extra care or space.
+              </p>
+            </div>
+          </div>
+
+          {/* Partner Selection */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <Truck className="w-4 h-4 inline mr-2 text-gray-600" />
+              Select Transport Partner
+            </label>
+            <select
+              name="partner"
+              value={form.partner}
+              onChange={onChange}
+              disabled={fetchingPartners || !hasPartners}
+              className="w-full bg-gray-50 p-3 rounded-xl border-2 border-gray-200 focus:border-navyblue focus:bg-white outline-none transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              {fetchingPartners && <option>Loading partners...</option>}
+              {!fetchingPartners && !hasPartners && (
+                <option>No partners available</option>
+              )}
+              {!fetchingPartners && hasPartners && (
+                <>
+                  <option value="">Select a partner</option>
+                  {partners.map((p) => (
+                    <option key={p._id} value={p.name}>
+                      {p.name}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
+            <p className="mt-1 text-xs text-gray-400">
+              Optional: choose which logistics partner this quote will be sent
+              to.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleEstimate}
+              disabled={!canEstimate}
+              className="flex items-center gap-2 px-6 py-3 cursor-pointer rounded-md font-semibold text-white border border-navyblue bg-navyblue hover:bg-white hover:text-navyblue disabled:bg-gray-400 transition-all shadow-md hover:shadow-lg disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Calculating...
+                </>
+              ) : (
+                <>
+                   Estimate
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => {
+                if (!estimate) {
+                  setError("Please get an estimate first");
+                  return;
+                }
+                setShowPreview(true);
+              }}
+              disabled={loading || !estimate}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              <Eye className="w-5 h-5" />
+              Preview
+            </button>
+
+            <button
+              onClick={handleSendQuote}
+              disabled={!canSend}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+              <Send className="w-5 h-5" />
+              {loading ? "Sending..." : "Send Quote"}
+            </button>
+          </div>
+
+          {/* Error & Success Messages */}
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+              <p className="text-red-700 font-medium text-sm">{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+              <p className="text-green-700 font-medium text-sm">{success}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Estimate Preview */}
+        {showPreview && estimate && (
+          <div className="mt-6 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <DollarSign className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Estimate Preview
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Draft summary — share internally or send to the selected
+                  partner.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column - Trip Details */}
+              <div className="space-y-4">
+                <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <MapPin className="w-5 h-5 text-blue-600" />
+                    <span className="font-semibold text-gray-700">
+                      Route & Distance
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-1">
+                    {form.from || "—"} → {form.to || "—"}
+                  </p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {estimate.distance_km} km
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Road distance based on live routing.
+                  </p>
+                </div>
+
+                <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Clock className="w-5 h-5 text-purple-600" />
+                    <span className="font-semibold text-gray-700">
+                      Estimated Time
+                    </span>
+                  </div>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {estimate.eta_hours} hrs
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Approximate driving time under normal conditions.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Column - Cost Breakdown */}
+              <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                <h4 className="font-bold text-gray-900 mb-4 text-lg">
+                  Cost Breakdown
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-600">Distance Cost</span>
+                    <span className="font-semibold text-gray-900">
+                      {estimate.breakdown.distanceCost}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-600">Weight Cost</span>
+                    <span className="font-semibold text-gray-900">
+                      {estimate.breakdown.weightCost}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-600">Volume Cost</span>
+                    <span className="font-semibold text-gray-900">
+                      {estimate.breakdown.volumeCost}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-gray-300">
+                    <span className="text-gray-600">Handling Cost</span>
+                    <span className="font-semibold text-gray-900">
+                      {estimate.breakdown.handlingCost}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-4 mt-2">
+                    <span className="text-lg font-bold text-gray-900">
+                      Total Cost
+                    </span>
+                    <span className="text-2xl font-bold text-green-600">
+                      {estimate.breakdown.total}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
