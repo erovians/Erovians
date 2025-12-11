@@ -62,7 +62,7 @@ export default function ReviewStep({ formData = {} }) {
                     ) : (
                       "IC"
                     )}
-                  </div>  
+                  </div>
                   <div>
                     <h3 className="sm:text-xl md:text-2xl font-bold text-gray-900">
                       {companyName || "Company Name"}
@@ -256,9 +256,7 @@ export default function ReviewStep({ formData = {} }) {
                     Company Description
                   </h3>
 
-                  <div
-                    className="max-h-60 overflow-y-auto"
-                  >
+                  <div className="max-h-60 overflow-y-auto">
                     <p className="text-sm text-gray-700 leading-relaxed">
                       {companyDescription}
                     </p>
@@ -284,18 +282,20 @@ export default function ReviewStep({ formData = {} }) {
                   </p>
                   <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-80 border rounded-xl">
                     {companyPhotos && companyPhotos.length > 0 ? (
-                      companyPhotos.slice(0, companyPhotos.length).map((photo, idx) => (
-                        <div
-                          key={idx}
-                          className="aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-navyblue"
-                        >
-                          <img
-                            src={URL.createObjectURL(photo)}
-                            alt={`Company photo ${idx + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ))
+                      companyPhotos
+                        .slice(0, companyPhotos.length)
+                        .map((photo, idx) => (
+                          <div
+                            key={idx}
+                            className="aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-navyblue"
+                          >
+                            <img
+                              src={URL.createObjectURL(photo)}
+                              alt={`Company photo ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))
                     ) : (
                       <>
                         <div className="aspect-video rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
@@ -314,10 +314,10 @@ export default function ReviewStep({ formData = {} }) {
                     )}
                   </div>
 
-                  {companyPhotos?.length  && (
+                  {companyPhotos?.length && (
                     <div className="mt-3 text-center">
                       <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                       total {companyPhotos.length} photos
+                        total {companyPhotos.length} photos
                       </span>
                     </div>
                   )}
