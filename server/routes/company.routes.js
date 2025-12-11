@@ -24,6 +24,7 @@ router.post(
   registerCompany
 );
 router.get("/details", verifyUser, getCompanyDetails);
+
 router.post(
   "/upload",
   verifyUser,

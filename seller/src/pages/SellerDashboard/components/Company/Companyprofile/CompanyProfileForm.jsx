@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { registerCompany, clearCompanyState } from "@/redux/slice/companySlice";
 import { toast } from "sonner";
+import api from "@/utils/axios.utils";
 
 const steps = [
   {
@@ -72,6 +73,56 @@ export default function CompanyProfileForm() {
 
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const res = await api.get("/company/details");
+
+        if (!res.data.company) {
+          setLoadingProfile(false);
+          return;
+        }
+
+        const c = res.data.company;
+
+        setFormData((prev) => ({
+          ...prev,
+
+          companyName: c.companyBasicInfo?.companyName || "",
+          legalowner: c.companyBasicInfo?.legalowner || "",
+          locationOfRegistration:
+            c.companyBasicInfo?.locationOfRegistration || "",
+          companyRegistrationYear:
+            c.companyBasicInfo?.companyRegistrationYear || "",
+
+          address: {
+            ...prev.address,
+            ...c.companyBasicInfo?.address,
+          },
+
+          mainCategory: c.companyBasicInfo?.mainCategory || [],
+          mainProduct: c.companyBasicInfo?.subCategory || [],
+          acceptedCurrency: c.companyBasicInfo?.acceptedCurrency || [],
+          acceptedPaymentType: c.companyBasicInfo?.acceptedPaymentType || [],
+          languageSpoken: c.companyBasicInfo?.languageSpoken || [],
+
+          companyDescription: c.companyIntro?.companyDescription || "",
+
+          logoUrl: c.companyIntro?.logo || "",
+          companyPhotosUrl: c.companyIntro?.companyPhotos || [],
+          companyVideosUrl: c.companyIntro?.companyVideos || [],
+        }));
+
+        setLoadingProfile(false);
+      } catch (err) {
+        console.error("Error loading profile", err);
+        setLoadingProfile(false);
+      }
+    }
+
+    loadProfile();
+  }, []);
 
   useEffect(() => {
     const { logo, companyPhotos, companyVideos, ...safeData } = formData;
