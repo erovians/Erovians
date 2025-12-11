@@ -1,8 +1,8 @@
 import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
 import Member from "../models/members.model.js";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 import {
@@ -572,8 +572,9 @@ export const logoutSeller = (req, res) => {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: true, // must match what was set
-      sameSite: "lax", // must match what was set
+      secure: process.env.NODE_ENV === "production", // must match what was set
+      sameSite: "strict", // must match what was set
+      path: "/"
     });
 
     res.status(200).json({ message: "Logout successful" });
