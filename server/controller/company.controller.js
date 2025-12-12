@@ -3,7 +3,7 @@ import {
   getCompanyDetailsService,
 } from "../services/company.service.js";
 import CompanyDetails from "../models/company.model.js";
-import client from "../../server/utils/redis.js";
+import { cache } from "../services/cache.service.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -99,8 +99,9 @@ export const getCompanyDetails = async (req, res) => {
           message: "Company not found for this seller",
         });
       }
+
       companyId = company._id;
-    } else if (req.user.role === "buyer" || req.user.role === "admin") {
+    } else {
       sellerId = req.query.sellerId;
       companyId = req.query.companyId;
 
@@ -114,18 +115,13 @@ export const getCompanyDetails = async (req, res) => {
 
     const cacheKey = `company:${companyId}`;
 
-    const cachedData = await client.get(cacheKey);
-    if (cachedData) {
-      console.log("🔥 Redis HIT for:", cacheKey);
-    } else {
-      console.log("❌ Redis MISS for:", cacheKey);
-    }
+    const cached = await cache.get(cacheKey);
 
-    if (cachedData) {
+    if (cached) {
       return res.status(200).json({
         success: true,
         fromCache: true,
-        company: JSON.parse(cachedData),
+        company: cached,
       });
     }
 
@@ -138,17 +134,18 @@ export const getCompanyDetails = async (req, res) => {
       });
     }
 
-    await client.setEx(cacheKey, 3600, JSON.stringify(companyData));
+    await cache.set(cacheKey, companyData, 3600);
 
     return res.status(200).json({
       success: true,
       fromCache: false,
       company: companyData,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       success: false,
-      message: error.message || "Something went wrong",
+      message: "Internal server error",
     });
   }
 };
