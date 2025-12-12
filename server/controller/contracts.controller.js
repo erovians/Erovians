@@ -29,6 +29,8 @@ export const addContract = async (req, res) => {
       sellerId: user,
     });
 
+    await cache.del(`contracts:${user}`);
+
     res.status(201).json({
       message: "Contract created successfully",
       contract: newContract,
@@ -79,6 +81,8 @@ export const updateContractStatus = async (req, res) => {
     if (!updated) {
       return res.status(404).json({ message: "Contract not found" });
     }
+
+    await cache.del(`contracts:${updated.sellerId}`);
 
     res.status(200).json({
       message: "Contract status updated successfully",

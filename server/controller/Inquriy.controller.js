@@ -5,6 +5,7 @@ import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
 import exceljs from "exceljs";
+import { cache } from "../services/cache.service.js";
 
 /* ========== HELPER FUNCTIONS ========== */
 
@@ -96,6 +97,8 @@ export const createInquiry = async (req, res, next) => {
       audit: [{ actor: userId, action: "create", meta: {} }],
     });
 
+    await cache.clearPattern(`inquiries:${product.sellerId}:*`);
+
     return res.status(201).json({ success: true, inquiry });
   } catch (err) {
     console.error("createInquiry error:", err);
@@ -124,6 +127,8 @@ export const markInquiryAsViewed = async (req, res, next) => {
 
     // Use the model method
     await inquiry.markAsViewed(req.user?.userId || req.user?._id);
+
+    await cache.clearPattern(`inquiries:${inquiry.sellerId}:*`);
 
     return res.json({
       success: true,
@@ -198,6 +203,8 @@ export const patchAction = async (req, res, next) => {
         return res.status(400).json({ message: `Unknown action: ${action}` });
     }
 
+    await cache.clearPattern(`inquiries:${inquiry.sellerId}:*`);
+
     return res.json({
       success: true,
       inquiry: await InquiryModel.findById(id).lean(),
@@ -252,6 +259,8 @@ export const bulkAction = async (req, res, next) => {
 
     await session.commitTransaction();
 
+    await cache.clearPattern(`inquiries:${sellerObjectId}:*`);
+
     return res.json({
       success: true,
       result: {
@@ -292,6 +301,16 @@ export const listInquiries = async (req, res, next) => {
     const pageSize = Math.min(Math.max(parseInt(limit) || 25, 1), 100);
 
     const sellerObjectId = await resolveSellerObjectId(req);
+
+    const cacheKey = `inquiries:${req.user?.userId}:page=${pageNum}&limit=${pageSize}&q=${q}&tab=${tab}&status=${statusTab}&sort=${sortBy}&unread=${showOnlyUnread}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Inquiry Redis HIT:", cacheKey);
+      return res.json(cached);
+    }
+
+    console.log("❌ Inquiry Redis MISS:", cacheKey);
 
     // Use model static method to build filter
     const match = InquiryModel.buildFilterQuery({
@@ -498,6 +517,8 @@ export const listInquiries = async (req, res, next) => {
     ]);
 
     const payload = result || { items: [], total: 0, counts: {} };
+
+    await cache.set(cacheKey, payload, 600);
 
     return res.json({
       items: payload.items,
