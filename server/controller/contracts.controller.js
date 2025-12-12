@@ -1,6 +1,7 @@
 import Contract from "../models/contracts.model.js";
 import Order from "../models/Order.model.js";
 import PDFDocument from "pdfkit";
+import { cache } from "../services/cache.service.js";
 
 export const addContract = async (req, res) => {
   try {
@@ -41,8 +42,20 @@ export const addContract = async (req, res) => {
 export const getContracts = async (req, res) => {
   try {
     const sellerId = req.user?.userId;
+    const cacheKey = `contracts:${sellerId}`;
+
+    const cachedContracts = await cache.get(cacheKey);
+
+    if (cachedContracts) {
+      console.log("🔥Contract Redis HIT:", cacheKey);
+      return res.status(200).json(cachedContracts);
+    }
+
     const contracts = await Contract.find({ sellerId }).sort({ createdAt: -1 });
-    res.status(200).json(contracts);
+
+    await cache.set(cacheKey, contracts);
+
+    return res.status(200).json(contracts);
   } catch (error) {
     console.error("Fetch Contract Error:", error);
     res.status(500).json({ message: "Server error while fetching contracts" });

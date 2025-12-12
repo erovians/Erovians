@@ -116,7 +116,9 @@ export const getCompanyDetails = async (req, res) => {
     const cacheKey = `company:${companyId}`;
 
     const cached = await cache.get(cacheKey);
-
+    if (cached) {
+      console.log("🔥 Company Redis HIT:", cacheKey);
+    }
     if (cached) {
       return res.status(200).json({
         success: true,
