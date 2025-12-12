@@ -252,7 +252,7 @@ export default function TasksAndProjects() {
           {/* Add Task Button */}
           <button
             onClick={() => setOpenModal(true)}
-            className="bg-navyblue hover:bg-white hover:text-black text-white border border-navyblue cursor-pointer px-4 py-2 rounded-lg shadow-sm transition"
+            className="flex items-center justify-center gap-2 px-4 py-2 border border-navyblue bg-navyblue text-white text-sm font-light rounded-sm shadow-sm hover:bg-white hover:text-navyblue transition cursor-pointer w-full sm:w-auto"
           >
             + Add Task
           </button>

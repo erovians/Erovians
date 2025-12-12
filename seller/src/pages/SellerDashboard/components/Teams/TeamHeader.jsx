@@ -131,7 +131,7 @@ function TeamHeader({
 
     <button
       onClick={openAddModal}
-      className="px-4 py-2 rounded-full bg-navyblue text-white border border-navyblue hover:bg-white hover:text-navyblue transition flex items-center justify-center gap-2"
+      className="flex items-center justify-center gap-2 px-4 py-2 border border-navyblue bg-navyblue text-white text-sm font-light rounded-sm shadow-sm hover:bg-white hover:text-navyblue transition cursor-pointer w-full sm:w-auto"
     >
       <svg
         className="w-4 h-4"

@@ -138,7 +138,7 @@ export default function Contracts() {
         </h2>
 
         <button
-          className="px-4 py-2 sm:px-6 sm:py-2 rounded-lg bg-navyblue text-white font-semibold text-sm hover:opacity-90 w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 px-4 py-2 border border-navyblue bg-navyblue text-white text-sm font-light rounded-sm shadow-sm hover:bg-white hover:text-navyblue transition cursor-pointer w-full sm:w-auto"
           onClick={() => navigate("/sellerdashboard/contracts/create")}
         >
           + Contract

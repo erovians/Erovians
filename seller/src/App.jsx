@@ -34,7 +34,7 @@ import Contracts from "./pages/SellerDashboard/components/Contracts/Contracts";
 import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateContract";
 import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
-import TransportEstimate from "./pages/SellerDashboard/components/EstimateCost/TransportEstimate";
+import TransportEstimate from "./pages/SellerDashboard/components/Transport/TransportEstimate";
 
 function NotFound() {
   return (
