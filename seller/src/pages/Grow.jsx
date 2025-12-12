@@ -35,7 +35,7 @@ const Grow = () => {
             </h1>
             <p className="mb-6 leading-relaxed">
               Become a trusted seller on{" "}
-              <span className="font-semibold">Erovians</span>
+              <span className="font-semibold">Erovians </span>
               by earning your Verified Badge. This badge shows customers that
               you are an <strong>authentic and authorized seller</strong>,
               giving buyers confidence in your products. A verified profile not

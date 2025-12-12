@@ -172,7 +172,7 @@ export default function Teams() {
   const totalPages = Math.max(Math.ceil(filtered.length / pageSize), 1);
 
   return (
-    <div className="p-6">
+    <div className="max-w-full max-h-screen sm:p-6">
       {modalOpen && (
         <TeamModal
           form={form}
@@ -185,7 +185,7 @@ export default function Teams() {
           setErrors={setErrors}
         />
       )}
-      <div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm">
+      <div className="bg-white border sm:rounded-xl p-4 sm:p-6 shadow-sm">
         <TeamHeader
           query={query}
           setQuery={setQuery}
@@ -196,7 +196,7 @@ export default function Teams() {
           openAddModal={openAddModal}
         />
 
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 max-h-screen">
           {/* DESKTOP & TABLET TABLE */}
           <div className="hidden sm:block overflow-x-auto">
             <table className="min-w-full table-auto text-sm">
@@ -239,7 +239,7 @@ export default function Teams() {
           </div>
 
           {/* MOBILE CARD VIEW */}
-          <div className="sm:hidden flex flex-col gap-4 mt-4">
+          <div className="sm:hidden flex flex-col gap-4 mt-4 max-h-screen">
             {loading ? (
               <p className="text-center py-4 text-gray-500">Loading...</p>
             ) : paginated.length ? (
