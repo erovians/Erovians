@@ -10,6 +10,12 @@ import Grow from "./pages/Grow";
 import Login from "./pages/Auth/Login";
 import SellerSignUp from "./pages/Auth/SellerSignUp";
 
+//legal pages
+import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
+import CookiePolicy from "./pages/Legal/CookiePolicy";
+import TermsOfUse from "./pages/Legal/TermsOfUse";
+import CommunityGuidelines from "./pages/Legal/CommunityGuidelines";
+
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
 import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";
@@ -35,6 +41,7 @@ import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateC
 import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
 import TransportEstimate from "./pages/SellerDashboard/components/Transport/TransportEstimate";
+
 
 function NotFound() {
   return (
@@ -68,6 +75,10 @@ function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/sell-online" element={<SellOnline />} />
             <Route path="/grow" element={<Grow />} />
+            <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/legal/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/legal/community-guidelines" element={<CommunityGuidelines />}/>
             <Route path="/login" element={<Login />} />
             <Route path="/start-selling" element={<SellerSignUp />} />
           </>
