@@ -137,6 +137,7 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
 import bcrypt from "bcryptjs";
+import { cache } from "../services/cache.service.js";
 
 export const addTeamMember = async (req, res) => {
   const session = await mongoose.startSession();
@@ -213,7 +214,7 @@ export const addTeamMember = async (req, res) => {
     session.endSession();
 
     // TODO: optionally send invite email with credentials (rawPassword)
-
+    await cache.del(`team:seller:${sellerId}`);
     res.status(201).json({ success: true, member: teamMember });
   } catch (err) {
     await session.abortTransaction();
@@ -233,12 +234,43 @@ export const addTeamMember = async (req, res) => {
   }
 };
 
+// export const getTeamMembers = async (req, res) => {
+//   try {
+//     const members = await TeamMember.find({ sellerId: req.user.userId }).sort({
+//       createdAt: -1,
+//     });
+//     res.json({ success: true, members });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
 export const getTeamMembers = async (req, res) => {
   try {
-    const members = await TeamMember.find({ sellerId: req.user.userId }).sort({
-      createdAt: -1,
+    const sellerId = req.user.userId;
+    const cacheKey = `team:seller:${sellerId}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getTeamMembers:", cacheKey);
+      return res.json({
+        success: true,
+        members: cached,
+        fromCache: true,
+      });
+    }
+
+    const members = await TeamMember.find({ sellerId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    await cache.set(cacheKey, members, 300);
+
+    res.json({
+      success: true,
+      members,
+      fromCache: false,
     });
-    res.json({ success: true, members });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -299,6 +331,8 @@ export const updateTeamMember = async (req, res) => {
       }
     }
 
+    await cache.del(`team:seller:${sellerId}`);
+
     res.json({ success: true, member: updated });
   } catch (err) {
     await session.abortTransaction();
@@ -348,7 +382,7 @@ export const deleteTeamMember = async (req, res) => {
         console.error("Failed to delete photo from cloudinary", e);
       }
     }
-
+    await cache.del(`team:seller:${sellerId}`);
     res.json({ success: true });
   } catch (err) {
     await session.abortTransaction();

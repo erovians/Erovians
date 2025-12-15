@@ -112,6 +112,7 @@ import Stock from "../models/stocks.model.js";
 import { success } from "zod";
 import CompanyDetails from "../models/company.model.js";
 import Product from "../models/product.model.js";
+import { cache } from "../services/cache.service.js";
 
 // ✅ Get Stocks (Optimized, Lean)
 export const getStocks = async (req, res) => {
@@ -310,7 +311,6 @@ export const exportStocks = async (req, res) => {
 // };
 // assumes you have: import fs from "fs"; import ExcelJS from "exceljs";
 // and Product model imported: import Product from "@/models/Product";
-
 export const importStocks = async (req, res) => {
   try {
     const sellerId = req.user?.userId;
