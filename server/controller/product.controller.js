@@ -80,6 +80,10 @@ export const addProduct = async (req, res) => {
       sellerId,
       companyId
     );
+
+    await cache.del(`products:seller:${sellerId}`);
+    await cache.clearPattern("products:list:*");
+
     res.status(201).json({
       success: true,
       message: "Product added successfully",
@@ -303,6 +307,12 @@ export const updateProductStatus = async (req, res) => {
       req.params.productId,
       req.body.status
     );
+
+    // 🔥 Redis cache invalidation
+    await cache.del(`product:view:${updatedProduct._id}`);
+    await cache.del(`products:seller:${updatedProduct.sellerId}`);
+    await cache.clearPattern("products:list:*");
+
     res.status(200).json({
       success: true,
       message: "Status updated successfully",
@@ -320,7 +330,19 @@ export const updateProductStatus = async (req, res) => {
 // ✅ Delete Product
 export const deleteProduct = async (req, res) => {
   try {
+    const product = await Product.findById(req.params.productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
     await deleteProductService(req.params.productId);
+    await cache.del(`product:view:${product._id}`);
+    await cache.del(`products:seller:${product.sellerId}`);
+    await cache.clearPattern("products:list:*");
     res.status(200).json({
       success: true,
       message: "Product deleted successfully",
@@ -359,6 +381,13 @@ export const updateProductData = async (req, res) => {
 export const bulkActivateProducts = async (req, res) => {
   try {
     await bulkActivateProductsService(req.body.productIds);
+
+    for (const id of req.body.productIds) {
+      await cache.del(`product:view:${id}`);
+    }
+    await cache.clearPattern("products:seller:*");
+    await cache.clearPattern("products:list:*");
+
     res.json({ success: true, message: "Products activated successfully" });
   } catch (error) {
     console.error("Error activating products:", error);
@@ -371,6 +400,13 @@ export const bulkActivateProducts = async (req, res) => {
 export const bulkDeactivateProducts = async (req, res) => {
   try {
     await bulkDeactivateProductsService(req.body.productIds);
+
+    for (const id of req.body.productIds) {
+      await cache.del(`product:view:${id}`);
+    }
+    await cache.clearPattern("products:seller:*");
+    await cache.clearPattern("products:list:*");
+
     res.json({ success: true, message: "Products deactivated successfully" });
   } catch (error) {
     console.error("Error deactivating products:", error);
@@ -384,6 +420,13 @@ export const bulkDeactivateProducts = async (req, res) => {
 export const bulkDeleteProducts = async (req, res) => {
   try {
     await bulkDeleteProductsService(req.body.productIds);
+
+    for (const id of req.body.productIds) {
+      await cache.del(`product:view:${id}`);
+    }
+    await cache.delPattern("products:seller:*");
+    await cache.delPattern("products:list:*");
+
     res.json({ success: true, message: "Products deleted successfully" });
   } catch (error) {
     console.error("Error deleting products:", error);
