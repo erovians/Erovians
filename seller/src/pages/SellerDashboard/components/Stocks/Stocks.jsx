@@ -12,7 +12,7 @@ export default function Stocks() {
 
   const fetchStocks = async () => {
     const res = await api.get("/stocks");
-    setStocks(res.data);
+    setStocks(res.data.stocks);
   };
 
   useEffect(() => {
@@ -54,7 +54,11 @@ export default function Stocks() {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-10 py-6">
-      <AddLotModal open={openModal} setOpen={setOpenModal} refresh={fetchStocks} />
+      <AddLotModal
+        open={openModal}
+        setOpen={setOpenModal}
+        refresh={fetchStocks}
+      />
 
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
@@ -143,7 +147,10 @@ export default function Stocks() {
         {/* Mobile Card View */}
         <div className="sm:hidden">
           {stocks.map((item, i) => (
-            <div key={i} className="border-b-2 border-r-3 border-r-blue-600 shadow-sm mb-5 border-blue-500 p-4">
+            <div
+              key={i}
+              className="border-b-2 border-r-3 border-r-blue-600 shadow-sm mb-5 border-blue-500 p-4"
+            >
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Lot</span>
                 <span>{item.lot}</span>
@@ -181,7 +188,6 @@ export default function Stocks() {
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
