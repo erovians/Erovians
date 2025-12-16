@@ -3,6 +3,7 @@ import {
   createWorkOrderSchema,
   updateStatusSchema,
 } from "../zodSchemas/seller/workOrder.schema.js";
+import { cache } from "../services/cache.service.js";
 
 // export const createWorkOrder = async (req, res) => {
 //   try {
@@ -39,6 +40,7 @@ import {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // };
+
 export const createWorkOrder = async (req, res) => {
   try {
     const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
@@ -58,27 +60,21 @@ export const createWorkOrder = async (req, res) => {
       });
     }
 
-    const lastWO = await WorkOrder.findOne()
-      .collation({ locale: "en_US", numericOrdering: true })
-      .sort({ wo_number: -1 })
-      .lean();
+    const year = new Date().getFullYear();
+    const counterKey = `workorder:counter:${year}`;
 
-    let nextNumber = 1;
-
-    if (lastWO?.wo_number) {
-      const lastNum = parseInt(lastWO.wo_number.replace("WO-", ""));
-      nextNumber = lastNum + 1;
-    }
-
+    const nextNumber = await cache.incr(counterKey);
     const formattedNumber = String(nextNumber).padStart(4, "0");
 
     const payload = {
       ...parsed.data,
       sellerId,
-      wo_number: `WO-${formattedNumber}`,
+      wo_number: `WO-${year}-${formattedNumber}`,
     };
 
     const newWO = await WorkOrder.create(payload);
+
+    await cache.del(`workorders:seller:${sellerId}`);
 
     res.status(201).json({
       message: "Work order created successfully",
@@ -101,13 +97,27 @@ export const getWorkOrders = async (req, res) => {
         .json({ error: "Unauthorized: Seller access only" });
     }
 
+    const cacheKey = `workorders:seller:${sellerId}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getWorkOrders:", cacheKey);
+      return res.json({
+        count: cached.length,
+        workOrders: cached,
+        fromCache: true,
+      });
+    }
+
     const list = await WorkOrder.find({ sellerId })
       .sort({ createdAt: 1 })
       .lean();
 
+    await cache.set(cacheKey, list, 100);
     res.json({
       count: list.length,
       workOrders: list,
+      fromCache: false,
     });
   } catch (err) {
     console.error("GET_WORK_ORDERS_ERROR:", err);
@@ -148,6 +158,8 @@ export const updateWorkOrderStatus = async (req, res) => {
       { status: parsed.data.status },
       { new: true }
     );
+
+    await cache.del(`workorders:seller:${sellerId}`);
 
     res.json({
       message: "Status updated successfully",
