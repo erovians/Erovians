@@ -7,7 +7,6 @@ export const sendMessage = async (req, res) => {
   try {
     const { chatId, text, receiverId } = req.body;
     const senderId = req.user.userId;
-    // const receiverId = "690ae30913ffba8b7869fd75";
 
     let fileUrl = null;
     let fileType = null;
