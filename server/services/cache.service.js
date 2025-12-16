@@ -40,4 +40,8 @@ export const cache = {
       console.error("Redis Clear Pattern Error:", err);
     }
   },
+
+  async incr(key) {
+    return await client.incr(key);
+  },
 };

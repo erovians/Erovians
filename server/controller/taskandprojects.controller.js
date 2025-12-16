@@ -1,8 +1,9 @@
 import taskandprojectModel from "../models/taskandproject.model.js";
+import { cache } from "../services/cache.service.js";
 
 export const createTaskandProject = async (req, res) => {
   try {
-     const userId =  req.user?.userId ;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({
@@ -20,7 +21,7 @@ export const createTaskandProject = async (req, res) => {
       });
     }
 
-    const validStatuses = ['To Do', 'Doing', 'Review', 'Done'];
+    const validStatuses = ["To Do", "Doing", "Review", "Done"];
     if (status && !validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -29,7 +30,6 @@ export const createTaskandProject = async (req, res) => {
     }
 
     const existing = await taskandprojectModel.findOne({
-
       title: title.trim(),
     });
 
@@ -40,13 +40,14 @@ export const createTaskandProject = async (req, res) => {
       });
     }
 
-   
     const newTask = await taskandprojectModel.create({
-      createdBy:userId,
+      createdBy: userId,
       title: title.trim(),
       description: description || "",
       status: status || "To Do",
     });
+
+    await cache.del(`tasks:user:${userId}`);
 
     return res.status(201).json({
       success: true,
@@ -66,7 +67,7 @@ export const createTaskandProject = async (req, res) => {
 
 export const getAllTasksAndProjects = async (req, res) => {
   try {
-    const userId = req.user?.userId ;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({
@@ -75,16 +76,30 @@ export const getAllTasksAndProjects = async (req, res) => {
       });
     }
 
+    const cacheKey = `tasks:user:${userId}`;
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getAllTasksAndProjects:", cacheKey);
+      return res.status(200).json({
+        success: true,
+        message: "Tasks and Projects fetched successfully",
+        data: cached,
+        fromCache: true,
+      });
+    }
+
     const tasks = await taskandprojectModel
       .find({ createdBy: userId })
-      .sort({ createdAt: -1 }); 
+      .sort({ createdAt: -1 });
+
+    await cache.set(cacheKey, tasks, 300); // 5 min
 
     return res.status(200).json({
       success: true,
       message: "Tasks and Projects fetched successfully",
       data: tasks,
+      fromCache: false,
     });
-
   } catch (error) {
     console.error("Error fetching tasks:", error);
 
@@ -98,7 +113,7 @@ export const getAllTasksAndProjects = async (req, res) => {
 
 export const updateTaskAndProject = async (req, res) => {
   try {
-    const userId = req.user?.userId ;
+    const userId = req.user?.userId;
     const { id } = req.params;
 
     if (!userId) {
@@ -109,7 +124,7 @@ export const updateTaskAndProject = async (req, res) => {
     }
 
     const { title, description, status } = req.body;
-  
+
     if (title && title.trim() === "") {
       return res.status(400).json({
         success: false,
@@ -117,15 +132,18 @@ export const updateTaskAndProject = async (req, res) => {
       });
     }
 
-   const validStatuses = ['To Do', 'Doing', 'Review', 'Done'];
+    const validStatuses = ["To Do", "Doing", "Review", "Done"];
     if (status && !validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
         message: `Invalid status. Allowed: ${validStatuses.join(", ")}`,
       });
     }
-  
-    const task = await taskandprojectModel.findOne({ _id: id, createdBy: userId });
+
+    const task = await taskandprojectModel.findOne({
+      _id: id,
+      createdBy: userId,
+    });
 
     if (!task) {
       return res.status(404).json({
@@ -133,19 +151,20 @@ export const updateTaskAndProject = async (req, res) => {
         message: "Task not found or unauthorized.",
       });
     }
-  
+
     if (title) task.title = title.trim();
     if (description !== undefined) task.description = description;
     if (status) task.status = status;
 
     await task.save();
 
+    await cache.del(`tasks:user:${userId}`);
+
     return res.status(200).json({
       success: true,
       message: "Task updated successfully",
       data: task,
     });
-
   } catch (err) {
     console.error("Update Error:", err);
     return res.status(500).json({
@@ -158,7 +177,7 @@ export const updateTaskAndProject = async (req, res) => {
 
 export const deleteTaskAndProject = async (req, res) => {
   try {
-    const userId = req.user?.userId ;
+    const userId = req.user?.userId;
     const { id } = req.params;
 
     if (!userId) {
@@ -180,11 +199,12 @@ export const deleteTaskAndProject = async (req, res) => {
       });
     }
 
+    await cache.del(`tasks:user:${userId}`);
+
     return res.status(200).json({
       success: true,
       message: "Task deleted successfully.",
     });
-
   } catch (err) {
     console.error("Delete Error:", err);
     return res.status(500).json({
