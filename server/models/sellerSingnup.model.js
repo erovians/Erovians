@@ -85,6 +85,9 @@ const sellerSchema = new mongoose.Schema(
     seller_address: {
       type: String,
     },
+    seller_profile: {
+      type: String,
+    },
 
     // -----------------______________________________NEW FIELD TO ADD__________________________________________-------------------
   },
