@@ -135,30 +135,39 @@ const SellerNavbar = () => {
 
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg z-50 p-2">
-                {/* Links */}
                 <Link
-                  to="#"
+                  to="/sellerdashboard/company/overview"
                   className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+                  onClick={() => setDropdownOpen(false)}
                 >
-                  My Profile
+                  Company Profile
                 </Link>
+
                 <Link
                   to="#"
                   className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+                  onClick={() => setDropdownOpen(false)}
                 >
-                  Messages
+                  My Cart
                 </Link>
+
                 <Link
                   to="#"
                   className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+                  onClick={() => setDropdownOpen(false)}
                 >
-                  Cart
+                  Notifications
                 </Link>
+
                 <Link
                   to="#"
                   className="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100"
+                  onClick={() => {
+                    handleLogout();
+                    setDropdownOpen(false);
+                  }}
                 >
-                  Help
+                  Log out
                 </Link>
 
                 {/* Mobile search bar */}
