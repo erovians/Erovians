@@ -268,7 +268,7 @@ export const getProductById = async (req, res) => {
       findFilter.sellerId = userId;
     } else if (role === "buyer" || role === "public") {
       findFilter.status = "active";
-      cacheKey = `product:view:${productId}`;
+      cacheKey = `product:view:${productId}:active`;
     }
 
     // 🔥 Redis check (only public/buyer)
@@ -307,11 +307,6 @@ export const updateProductStatus = async (req, res) => {
       req.params.productId,
       req.body.status
     );
-
-    // 🔥 Redis cache invalidation
-    await cache.del(`product:view:${updatedProduct._id}`);
-    await cache.del(`products:seller:${updatedProduct.sellerId}`);
-    await cache.clearPattern("products:list:*");
 
     res.status(200).json({
       success: true,
@@ -383,7 +378,7 @@ export const bulkActivateProducts = async (req, res) => {
     await bulkActivateProductsService(req.body.productIds);
 
     for (const id of req.body.productIds) {
-      await cache.del(`product:view:${id}`);
+      await cache.del(`product:view:${id}:active`);
     }
     await cache.clearPattern("products:seller:*");
     await cache.clearPattern("products:list:*");

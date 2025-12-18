@@ -283,6 +283,33 @@ export default function CompanyProfileForm() {
       form.append("languageSpoken", formData.languageSpoken.join(","));
       form.append("companyDescription", formData.companyDescription);
 
+      // ================= NEW FIELDS =================
+      form.append("totalEmployees", formData.totalEmployees || "");
+      form.append("businessType", formData.businessType || "");
+      form.append("factorySize", formData.factorySize || "");
+      form.append(
+        "factoryCountryOrRegion",
+        formData.factoryCountryOrRegion || ""
+      );
+
+      form.append(
+        "contractManufacturing",
+        String(formData.contractManufacturing)
+      );
+
+      form.append(
+        "numberOfProductionLines",
+        formData.numberOfProductionLines || ""
+      );
+
+      form.append("annualOutputValue", formData.annualOutputValue || "");
+      form.append("rdTeamSize", formData.rdTeamSize || "");
+
+      form.append(
+        "tradeCapabilities",
+        JSON.stringify(formData.tradeCapabilities || [])
+      );
+
       // Append optional files safely
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
