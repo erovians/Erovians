@@ -9,6 +9,8 @@ export const registerCompany = async (req, res) => {
   try {
     const sellerId = req.user.userId;
 
+    console.log(req.body);
+
     const company = await registerCompanyService(req.body, req.files, sellerId);
     await cache.clearPattern(`company:*`);
     return res.status(201).json({
@@ -96,7 +98,7 @@ export const getCompanyDetails = async (req, res) => {
       if (!company) {
         return res.status(404).json({
           success: false,
-          message: "Company not found for this seller",
+          message: "Company not found for this seller ",
         });
       }
 
@@ -136,7 +138,7 @@ export const getCompanyDetails = async (req, res) => {
       });
     }
 
-    await cache.set(cacheKey, companyData, 3600);
+    await cache.set(cacheKey, companyData, 200);
 
     return res.status(200).json({
       success: true,

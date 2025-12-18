@@ -74,7 +74,7 @@ export default function Dashboard() {
           title="REVENUE (CURRENT MONTH)"
           value={`₹ ${totalamount.toLocaleString("en-IN")}`}
         />
-        <Card title="MARGIN (MONTH)" value="28.4%" />
+        <Card title="MARGIN (MONTH)" value="0" />
         <Card title="PENDING ORDERS" value={pendingOrders} button="Follow-up" />
         <Card
           title="Completed ORDERS"

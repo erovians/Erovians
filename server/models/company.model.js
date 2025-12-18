@@ -62,6 +62,54 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       default: ["English"],
       required: true,
     },
+
+    //*********************** new fields ***********************//
+    totalEmployees: {
+      type: Number,
+      // required: true,
+      min: 1,
+    },
+    businessType: {
+      type: String,
+      // required: true,
+      enum: [
+        "manufacturer",
+        "trading company",
+        "distributor",
+        "exporter",
+        "importer",
+        "service provider",
+      ],
+    },
+    factorySize: {
+      type: String, // e.g. "10,000 sq ft"
+      trim: true,
+    },
+    factoryCountryOrRegion: {
+      type: String,
+      trim: true,
+    },
+    contractManufacturing: {
+      type: Boolean,
+      default: false,
+    },
+    numberOfProductionLines: {
+      type: Number,
+      min: 0,
+    },
+    annualOutputValue: {
+      type: String,
+      trim: true,
+    },
+    rdTeamSize: {
+      type: Number,
+      min: 0,
+    },
+    tradeCapabilities: {
+      type: [String],
+      default: [],
+      set: (arr) => [...new Set(arr.map((v) => v.trim()))],
+    },
   },
   { _id: false }
 );
@@ -129,3 +177,26 @@ CompanyDataSchema.set("toJSON", {
 const CompanyDetails = mongoose.model("Company", CompanyDataSchema);
 
 export default CompanyDetails;
+
+/*
+
+*************COMPANY OVERVIEW*************
+Total Employees
+Business Type
+
+*************PRODUCTION CAPACITY*************
+Factory Size
+Factory Country/Region
+Contract Manufacturing
+No. of Production Lines
+Annual Output Value
+
+
+*************RESEARCH & DEVELOPMENT*************
+R&D Team Size
+
+*************TRADE CAPABILITIES*************
+TRADE CAPABILITIES
+
+
+*/

@@ -5,10 +5,12 @@ import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
+import { cache } from "../services/cache.service.js";
 
 export const registerCompanyService = async (data, files, sellerId) => {
   const session = await mongoose.startSession();
   session.startTransaction();
+  await cache.clearPattern(`company:*`);
 
   const uploadedFiles = [];
 
@@ -38,6 +40,14 @@ export const registerCompanyService = async (data, files, sellerId) => {
         ? JSON.parse(data.subCategory)
         : data.subCategory;
 
+    const toNumber = (v) =>
+      v === undefined || v === null || v === "" ? undefined : Number(v);
+
+    const tradeCapabilities =
+      typeof data.tradeCapabilities === "string"
+        ? JSON.parse(data.tradeCapabilities)
+        : data.tradeCapabilities;
+
     const validated = await registerCompanySchema.parseAsync({
       sellerId,
       companyBasicInfo: {
@@ -51,6 +61,22 @@ export const registerCompanyService = async (data, files, sellerId) => {
         acceptedCurrency: data.acceptedCurrency,
         acceptedPaymentType: data.acceptedPaymentType,
         languageSpoken: data.languageSpoken,
+
+        // NEW FIELDS
+        totalEmployees: toNumber(data.totalEmployees),
+        businessType: data.businessType,
+
+        factorySize: data.factorySize,
+        factoryCountryOrRegion: data.factoryCountryOrRegion,
+        contractManufacturing:
+          data.contractManufacturing === "true" ||
+          data.contractManufacturing === true,
+
+        numberOfProductionLines: toNumber(data.numberOfProductionLines),
+        annualOutputValue: data.annualOutputValue,
+
+        rdTeamSize: toNumber(data.rdTeamSize),
+        tradeCapabilities,
       },
       companyIntro: {
         companyDescription: data.companyDescription,
@@ -59,6 +85,22 @@ export const registerCompanyService = async (data, files, sellerId) => {
         companyVideos: [],
       },
     });
+
+    let logoUrl = "";
+
+    if (files?.companyLogo?.[0]) {
+      const logoUpload = await uploadOnCloudinary(
+        files.companyLogo[0].path,
+        files.companyLogo[0].mimetype
+      );
+
+      if (!logoUpload?.secure_url) {
+        throw new Error("Company logo upload failed");
+      }
+
+      logoUrl = logoUpload.secure_url;
+      uploadedFiles.push(logoUpload.public_id);
+    }
 
     const photoUrls = await Promise.all(
       (files?.companyPhotos || []).map(async (file) => {
