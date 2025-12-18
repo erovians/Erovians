@@ -22,6 +22,16 @@ const isValidGSTIN = (businessId) =>
 const isStrongPassword = (password) =>
   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(password);
 
+// delete file locally after cloud upload
+const safeUnlink = (filePath) => {
+  if (!filePath) return;
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {
+      if (err) console.error("File cleanup error:", err.message);
+    });
+  }
+};
+
 export const checkUniqueSeller = async (req, res) => {
   try {
     const { email, businessId } = req.body;
@@ -135,7 +145,8 @@ export const registerSeller = async (req, res) => {
 
     // File validation
 
-    const file = req.file;
+    // const file = req.file;
+    const file = req.files?.file?.[0];
     console.log(file);
 
     if (!file) {
@@ -175,8 +186,8 @@ export const registerSeller = async (req, res) => {
     const profileUpload = await uploadOnCloudinary(profileFile.path);
 
     // Cleanup local files
-    fs.unlinkSync(file.path);
-    fs.unlinkSync(profileFile.path);
+    safeUnlink(file.path);
+    safeUnlink(profileFile.path);
 
     if (!uploadResult?.secure_url || !profileUpload?.secure_url) {
       return res
