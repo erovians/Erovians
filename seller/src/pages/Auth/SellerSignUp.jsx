@@ -37,6 +37,7 @@ const SellerSignUp = () => {
     documentFile: null,
     seller_status: "",
     seller_address: "",
+    seller_profile: null,
   });
 
   const [otp, setOtp] = useState("");
@@ -235,18 +236,70 @@ const SellerSignUp = () => {
     setShowModal(true);
   };
 
+  const handleProfileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      setFormData((prev) => ({ ...prev, seller_profile: null }));
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    const maxSize = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      setModalMessage("Only JPG or PNG images are allowed for profile photo.");
+      setShowModal(true);
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setModalMessage("Profile photo must be under 5MB.");
+      setShowModal(true);
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, seller_profile: file }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // const newErrors = {};
+    // if (!formData.documentFile)
+    //   newErrors.documentFile = "Please upload the required document.";
+    // if (!formData.businessName)
+    //   newErrors.businessName = "Business name is required.";
+    // if (!formData.sellername) newErrors.sellername = "Seller name is required.";
+    // if (!formData.companyregstartionlocation)
+    //   newErrors.companyregstartionlocation =
+    //     "Business Registration Location is required.";
+
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors);
+    //   setShowModal(true);
+    //   setModalMessage(Object.values(newErrors).join(". "));
+    //   return;
+    // }
     const newErrors = {};
-    if (!formData.documentFile)
-      newErrors.documentFile = "Please upload the required document.";
+
     if (!formData.businessName)
       newErrors.businessName = "Business name is required.";
-    if (!formData.sellername) newErrors.sellername = "Seller name is required.";
+
     if (!formData.companyregstartionlocation)
       newErrors.companyregstartionlocation =
         "Business Registration Location is required.";
+
+    if (!formData.seller_status)
+      newErrors.seller_status = "Seller status is required.";
+
+    if (!formData.seller_address)
+      newErrors.seller_address = "Seller address is required.";
+
+    if (!formData.documentFile)
+      newErrors.documentFile = "Business document is required.";
+
+    if (!formData.seller_profile)
+      newErrors.seller_profile = "Seller profile photo is required.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -269,6 +322,7 @@ const SellerSignUp = () => {
     finalSellerData.append("file", formData.documentFile);
     finalSellerData.append("seller_status", formData.seller_status);
     finalSellerData.append("seller_address", formData.seller_address);
+    finalSellerData.append("seller_profile", formData.seller_profile);
 
     dispatch(registerSeller(finalSellerData));
   };
@@ -639,6 +693,29 @@ const SellerSignUp = () => {
               {errors.seller_address && (
                 <p className="text-red-500 text-sm">{errors.seller_address}</p>
               )}
+
+              {/* ===== Seller Profile Photo ===== */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Seller Profile Photo *
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg"
+                  onChange={handleProfileUpload}
+                  className="w-full px-4 py-3 border rounded-md text-sm outline-none"
+                />
+                {errors.seller_profile && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.seller_profile}
+                  </p>
+                )}
+                {formData.seller_profile && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Selected: {formData.seller_profile.name}
+                  </p>
+                )}
+              </div>
 
               {/* ===== File Upload ===== */}
               <div>

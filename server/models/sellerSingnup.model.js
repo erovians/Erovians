@@ -76,20 +76,23 @@ const sellerSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // -----------------______________________________NEW FIELD TO ADD __________________________________________-------------------
+    //  NEW FIELDS (REQUIRED)
     seller_status: {
       type: String,
       enum: ["professional", "Individual"],
+      required: true,
     },
 
     seller_address: {
       type: String,
-    },
-    seller_profile: {
-      type: String,
+      required: true,
+      trim: true,
     },
 
-    // -----------------______________________________NEW FIELD TO ADD__________________________________________-------------------
+    seller_profile: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

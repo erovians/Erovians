@@ -2,6 +2,7 @@ import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
 import Member from "../models/members.model.js";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
@@ -151,12 +152,19 @@ export const registerSeller = async (req, res) => {
       return res.status(400).json({ message: "File size exceeds 5MB." });
     }
 
+    // profile photo
+    const profileFile = req.files?.seller_profile?.[0];
+    if (!profileFile)
+      return res
+        .status(400)
+        .json({ message: "Seller profile photo is required" });
+
     // Check existing seller
     const existingSeller = await Seller.findOne({
       $or: [{ email }, { mobile }, { businessId }],
     });
     if (existingSeller) {
-      return res.status(400).json({ message: "Seller already registered" });
+      return res.status(409).json({ message: "Seller already registered" });
     }
 
     // Hash password
@@ -164,12 +172,24 @@ export const registerSeller = async (req, res) => {
 
     // Upload GSTIN document
     const uploadResult = await uploadOnCloudinary(file.path);
-    const documentUrl = uploadResult?.secure_url;
-    if (!documentUrl) {
+    const profileUpload = await uploadOnCloudinary(profileFile.path);
+
+    // Cleanup local files
+    fs.unlinkSync(file.path);
+    fs.unlinkSync(profileFile.path);
+
+    if (!uploadResult?.secure_url || !profileUpload?.secure_url) {
       return res
         .status(500)
         .json({ message: "Failed to upload document to Cloudinary." });
     }
+
+    // const documentUrl = uploadResult?.secure_url;
+    // if (!documentUrl) {
+    //   return res
+    //     .status(500)
+    //     .json({ message: "Failed to upload document to Cloudinary." });
+    // }
 
     // Create seller
     const seller = new Seller({
@@ -180,9 +200,11 @@ export const registerSeller = async (req, res) => {
       sellername,
       companyregstartionlocation,
       businessName,
-      documentUrl,
+      documentUrl: uploadResult.secure_url,
+      seller_profile: profileUpload.secure_url,
       isMobileVerified: true,
       seller_status,
+      role: "seller",
       seller_address,
     });
 
@@ -574,7 +596,7 @@ export const logoutSeller = (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must match what was set
       sameSite: "strict", // must match what was set
-      path: "/"
+      path: "/",
     });
 
     res.status(200).json({ message: "Logout successful" });
