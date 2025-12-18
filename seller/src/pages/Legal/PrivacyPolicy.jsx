@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+
 /* Highlight + Bold inline formatter */
 function formatInline(text) {
   if (!text) return text;
