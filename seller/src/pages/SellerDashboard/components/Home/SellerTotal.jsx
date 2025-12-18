@@ -179,7 +179,7 @@ export default function Dashboard() {
           className="bg-white rounded-xl border border-gray-300 
                   p-4 sm:p-5 md:p-6 
                   flex flex-col shadow-sm hover:shadow-md transition-all 
-                  h-auto lg:h-full"
+                  h-auto lg:h-full "
         >
           <SellerProfile />
         </div>

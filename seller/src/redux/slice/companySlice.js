@@ -34,7 +34,7 @@ export const getCompany = createAsyncThunk(
   "company/getCompany",
   async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/company/details`,{ params });
+      const res = await api.get(`/company/details`, { params });
       console.log(res.data);
       return res.data; // { company: {...} }
     } catch (err) {
