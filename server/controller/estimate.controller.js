@@ -13,10 +13,10 @@ function calculatePrice({
   volumeM3 = 0,
   handling = "Standard",
 }) {
-  const BASE_FEE = 20;      // flat €
+  const BASE_FEE = 20; // flat €
   const PRICE_PER_KM = 0.85; // €/km
-  const WEIGHT_RATE = 0.1;   // €/kg
-  const VOLUME_RATE = 5;     // €/m³
+  const WEIGHT_RATE = 0.1; // €/kg
+  const VOLUME_RATE = 5; // €/m³
 
   let handlingSurcharge = 0;
   if (handling === "Fragile") handlingSurcharge = 15;
@@ -163,7 +163,6 @@ async function getRoute({ from, to }) {
     etaHours,
   };
 }
-
 
 // ---------- Controllers ----------
 

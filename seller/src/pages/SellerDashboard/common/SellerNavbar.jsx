@@ -60,7 +60,7 @@ const SellerNavbar = () => {
         <div className="flex items-center space-x-4 relative ">
           {/* Center: Search bar (Desktop only) */}
           <div className="hidden md:flex flex-grow max-w-fit mx-6 h-9 justify-end">
-            <div className="flex w-full border border-gray-300 rounded-md overflow-hidden ">
+            {/* <div className="flex w-full border border-gray-300 rounded-md overflow-hidden ">
               <button className=" text-black px-2 py-2 cursor-pointer">
                 <Search size={20} />
               </button>
@@ -69,7 +69,7 @@ const SellerNavbar = () => {
                 placeholder="Search ..."
                 className="w-full px-4 py-2 text-gray-700 focus:outline-none"
               />
-            </div>
+            </div> */}
           </div>
           {/* Desktop icons */}
           <div className="hidden md:flex items-center space-x-7">
