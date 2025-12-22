@@ -31,4 +31,7 @@ router.post(
 router.post("/login", loginSeller);
 router.post("/logout", logoutSeller);
 
+// seller profile
+// router.get("/profile", getSellerProfile);
+
 export default router;
