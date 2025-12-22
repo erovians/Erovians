@@ -170,3 +170,35 @@ export const updateWorkOrderStatus = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const deleteWorkOrder = async (req, res) => {
+  try {
+    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
+    const role = req.user?.role || "seller";
+    const { id } = req.params;
+
+    if (!sellerId || role !== "seller") {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: Seller access only" });
+    }
+
+    const existing = await WorkOrder.findOne({ _id: id, sellerId });
+    if (!existing) {
+      return res.status(404).json({
+        error: "Work order not found or access denied",
+      });
+    }
+    await WorkOrder.findByIdAndDelete(id);
+
+    await cache.del(`workorders:seller:${sellerId}`);
+
+    res.json({
+      message: "Work order deleted successfully",
+      deletedWorkOrderId: id,
+    });
+  } catch (err) {
+    console.error("DELETE_WORK_ORDER_ERROR:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
