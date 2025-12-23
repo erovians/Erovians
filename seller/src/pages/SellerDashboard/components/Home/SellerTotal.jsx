@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SellerProfile from "./SellerProfile";
+import SellerProfile from "./SellerCompanyProfile";
 import { useNavigate } from "react-router-dom";
 import api from "@/utils/axios.utils";
 
