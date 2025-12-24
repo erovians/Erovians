@@ -6,9 +6,12 @@ import {
   checkUniqueSeller,
   refreshTokenController,
   logoutSeller,
+  getSellerProfile,
+  updateSellerProfile,
 } from "../controller/seller.controller.js";
 import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
+import { verifyUser, allowRoles } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -32,6 +35,14 @@ router.post("/login", loginSeller);
 router.post("/logout", logoutSeller);
 
 // seller profile
-// router.get("/profile", getSellerProfile);
+router.get("/profile", verifyUser, allowRoles("seller"), getSellerProfile);
+
+router.put(
+  "/profileupdate",
+  verifyUser,
+  allowRoles("seller"),
+  upload.fields([{ name: "seller_profile", maxCount: 1 }]),
+  updateSellerProfile
+);
 
 export default router;
