@@ -35,6 +35,7 @@ import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateC
 import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
 import TransportEstimate from "./pages/SellerDashboard/components/EstimateCost/TransportEstimate";
+import SellerProfile from "./pages/SellerDashboard/components/SellerProfile/SellerProfile";
 
 function NotFound() {
   return (
@@ -85,6 +86,9 @@ function App() {
             }
           >
             <Route path="" element={<SellerDashboardHome />} />
+
+            {/* seller Profile */}
+            <Route path="sellerprofile" element={<SellerProfile />} />
 
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
