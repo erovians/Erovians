@@ -4,6 +4,7 @@ import {
   fetchSellerProfile,
   updateSellerProfile,
 } from "@/redux/slice/sellerSlice";
+import api from "@/utils/axios.utils";
 
 const SellerProfile = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,13 @@ const SellerProfile = () => {
   const [formData, setFormData] = useState({});
   const [photoFile, setPhotoFile] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  // 🔐 Mobile OTP states
+  const [isEditingMobile, setIsEditingMobile] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [mobileError, setMobileError] = useState("");
 
   // ================= FETCH PROFILE =================
   useEffect(() => {
@@ -40,31 +48,69 @@ const SellerProfile = () => {
     setPreview(URL.createObjectURL(file));
   };
 
-  // ================= UPDATE PROFILE =================
-  const handleSubmit = () => {
-    const data = new FormData();
+  // ================= SEND OTP =================
+  const sendOtp = async () => {
+    try {
+      const res = await api.post("/seller/send-otp", {
+        mobile: formData.mobile,
+      });
 
-    Object.entries({
-      sellername: formData.sellername,
-      mobile: formData.mobile,
-      businessName: formData.businessName,
-      category: formData.category,
-      seller_status: formData.seller_status,
-      seller_address: formData.seller_address,
-      companyregstartionlocation: formData.companyregstartionlocation,
-    }).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        data.append(key, value);
+      if (res.data.success) {
+        setOtpSent(true);
+        setMobileError("");
       }
-    });
+    } catch (err) {
+      setMobileError(err.response?.data?.message || "Failed to send OTP");
+    }
+  };
 
-    if (photoFile) {
-      data.append("seller_profile", photoFile);
+  // ================= VERIFY OTP =================
+  const verifyOtp = async () => {
+    try {
+      const res = await api.post("/seller/verify-otp", {
+        mobile: formData.mobile,
+        otp,
+      });
+
+      if (res.data.success) {
+        setOtpVerified(true);
+        setOtpSent(false);
+        setMobileError("");
+      }
+    } catch {
+      setMobileError("Invalid or expired OTP");
+    }
+  };
+
+  // ================= UPDATE PROFILE =================
+  // ================= SUBMIT =================
+  const handleSubmit = () => {
+    if (isEditingMobile && !otpVerified) {
+      alert("Please verify OTP before saving mobile number");
+      return;
     }
 
+    const data = new FormData();
+
+    [
+      "sellername",
+      "mobile",
+      "businessName",
+      "category",
+      "seller_status",
+      "seller_address",
+      "companyregstartionlocation",
+    ].forEach((key) => {
+      if (formData[key]) data.append(key, formData[key]);
+    });
+
+    if (photoFile) data.append("seller_profile", photoFile);
+
     dispatch(updateSellerProfile(data));
-    setPhotoFile(null);
-    setPreview(null);
+
+    setOtp("");
+    setOtpVerified(false);
+    setIsEditingMobile(false);
   };
 
   // ================= UI STATES =================
@@ -136,7 +182,51 @@ const SellerProfile = () => {
               name="mobile"
               value={formData.mobile || ""}
               onChange={handleChange}
+              disabled={!isEditingMobile}
             />
+
+            {!isEditingMobile && (
+              <button
+                type="button"
+                onClick={() => setIsEditingMobile(true)}
+                className="text-xs text-blue-600 mt-1"
+              >
+                Change Mobile Number
+              </button>
+            )}
+            {isEditingMobile && !otpSent && !otpVerified && (
+              <button
+                type="button"
+                onClick={sendOtp}
+                className="mt-2 text-xs bg-navyblue text-white px-3 py-1 rounded"
+              >
+                Send OTP
+              </button>
+            )}
+
+            {otpSent && (
+              <div className="mt-2">
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter OTP"
+                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                />
+
+                <button
+                  type="button"
+                  onClick={verifyOtp}
+                  className="mt-2 text-xs bg-green-600 text-white px-3 py-1 rounded"
+                >
+                  Verify OTP
+                </button>
+              </div>
+            )}
+
+            {mobileError && (
+              <p className="text-xs text-red-500 mt-1">{mobileError}</p>
+            )}
 
             <Input
               label="Business Name"

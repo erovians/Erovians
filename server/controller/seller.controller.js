@@ -742,6 +742,15 @@ export const updateSellerProfile = async (req, res) => {
       companyregstartionlocation,
     } = req.body;
 
+    // if (req.body.mobile) {
+    //   if (!req.user.isMobileVerified) {
+    //     return res.status(403).json({
+    //       success: false,
+    //       message: "Mobile number change requires OTP verification",
+    //     });
+    //   }
+    // }
+
     const updateData = {
       sellername,
       mobile,
