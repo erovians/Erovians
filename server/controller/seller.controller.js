@@ -1,6 +1,6 @@
 import Seller from "../models/sellerSingnup.model.js";
-import User from "../models/user.model.js";
-import Member from "../models/members.model.js";
+// import User from "../models/user.model.js";
+// import Member from "../models/members.model.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import bcrypt from "bcryptjs";
@@ -11,6 +11,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth.utils.js";
+import User from "../models/user.model.js";
 dotenv.config();
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -493,6 +494,87 @@ export const loginSeller = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// export const loginSeller = async (req, res) => {
+//   try {
+//     const { identifier, password } = req.body;
+
+//     if (!identifier) {
+//       return res.status(400).json({ message: "Email or Mobile is required" });
+//     }
+//     if (!password) {
+//       return res.status(400).json({ message: "Password is required" });
+//     }
+
+//     const seller = await User.findOne({
+//       $or: [{ email: identifier }, { mobile: identifier }],
+//     }).select("+password");
+
+//     if (!seller) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, seller.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     if (!process.env.JWT_ACCESS_SECRET) {
+//       console.error("JWT_SECRET is not defined in .env file");
+//       return res.status(500).json({ message: "Server configuration error" });
+//     }
+
+//     const accessToken = generateAccessToken(seller);
+
+//     const refreshToken = generateRefreshToken(seller);
+
+//     res
+//       .cookie("accessToken", accessToken, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "strict",
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//       })
+//       .cookie("refreshToken", refreshToken, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "strict",
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//       })
+//       .json({
+//         message: "Login successfully",
+//         user: { id: seller._id, name: seller.name },
+//       });
+
+//     // const token = jwt.sign(
+//     //   { userId: seller._id, role: "seller" },
+//     //   process.env.JWT_SECRET,
+//     //   {
+//     //     expiresIn: "7d",
+//     //     issuer: "erovians-ecommerce-app",
+//     //     audience: "seller-dashboard",
+//     //   }
+//     // );
+
+//     // res.cookie("token", token, {
+//     //   httpOnly: true,
+//     //   secure: true,
+//     //   sameSite: "lax",
+//     //   maxAge: 7 * 24 * 60 * 60 * 1000,
+//     // });
+
+//     // res.status(200).json({
+//     //   message: "Login successful",
+//     //   seller: {
+//     //     id: seller._id,
+//     //     name: seller.sellername
+//     //   },
+//     // });
+//   } catch (error) {
+//     console.error("Error logging in seller:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 //  Controller after the user and seller creation together
 // export const loginSeller = async (req, res) => {
