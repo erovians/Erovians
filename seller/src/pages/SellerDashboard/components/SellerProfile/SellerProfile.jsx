@@ -177,56 +177,74 @@ const SellerProfile = () => {
 
             <Input label="Email" value={formData.email || ""} disabled />
 
-            <Input
-              label="Mobile"
-              name="mobile"
-              value={formData.mobile || ""}
-              onChange={handleChange}
-              disabled={!isEditingMobile}
-            />
+            {/* ================= MOBILE FIELD ================= */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Mobile
+              </label>
 
-            {!isEditingMobile && (
-              <button
-                type="button"
-                onClick={() => setIsEditingMobile(true)}
-                className="text-xs text-blue-600 mt-1"
-              >
-                Change Mobile Number
-              </button>
-            )}
-            {isEditingMobile && !otpSent && !otpVerified && (
-              <button
-                type="button"
-                onClick={sendOtp}
-                className="mt-2 text-xs bg-navyblue text-white px-3 py-1 rounded"
-              >
-                Send OTP
-              </button>
-            )}
-
-            {otpSent && (
-              <div className="mt-2">
+              <div className="flex gap-3 items-center">
                 <input
                   type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter OTP"
-                  className="w-full px-3 py-2 border rounded-lg text-sm"
+                  name="mobile"
+                  value={formData.mobile || ""}
+                  onChange={handleChange}
+                  disabled={!isEditingMobile}
+                  className={`${
+                    isEditingMobile
+                      ? "flex-1 px-3 py-2 border rounded-lg border-navyblue focus:ring-2  outline-none"
+                      : "px-3 py-2 border rounded-lg focus:ring-2 focus:border-navyblue outline-none"
+                  } `}
                 />
 
+                {/* SEND OTP BUTTON (RIGHT SIDE) */}
+                {isEditingMobile && !otpSent && !otpVerified && (
+                  <button
+                    type="button"
+                    onClick={sendOtp}
+                    className="text-xs bg-navyblue text-white px-4 py-2 rounded"
+                  >
+                    Send OTP
+                  </button>
+                )}
+              </div>
+
+              {/* CHANGE MOBILE LINK (BELOW INPUT) */}
+              {!isEditingMobile && (
                 <button
                   type="button"
-                  onClick={verifyOtp}
-                  className="mt-2 text-xs bg-green-600 text-white px-3 py-1 rounded"
+                  onClick={() => setIsEditingMobile(true)}
+                  className="mt-1 text-xs text-blue-600"
                 >
-                  Verify OTP
+                  Change Mobile Number
                 </button>
-              </div>
-            )}
+              )}
 
-            {mobileError && (
-              <p className="text-xs text-red-500 mt-1">{mobileError}</p>
-            )}
+              {/* OTP INPUT */}
+              {otpSent && (
+                <div className="mt-3 flex gap-3">
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="Enter OTP"
+                    className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={verifyOtp}
+                    className="text-xs bg-green-600 text-white px-4 py-2 rounded"
+                  >
+                    Verify OTP
+                  </button>
+                </div>
+              )}
+
+              {mobileError && (
+                <p className="text-xs text-red-500 mt-1">{mobileError}</p>
+              )}
+            </div>
 
             <Input
               label="Business Name"
