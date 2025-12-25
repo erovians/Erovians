@@ -1,6 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import Seller from "../models/sellerSingnup.model.js";
+import User from "../models/user.model.js";
 import twilio from "twilio";
 import { cache } from "../services/cache.service.js";
 
@@ -23,7 +24,7 @@ export const sendOtp = async (req, res) => {
     return res.status(400).json({ message: "Mobile number is required" });
 
   try {
-    const seller = await Seller.findOne({ mobile });
+    const seller = await User.findOne({ mobile });
     if (seller) {
       return res.status(409).json({ message: "Mobile already exists" });
     } else {

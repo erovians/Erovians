@@ -1,6 +1,6 @@
 import Seller from "../models/sellerSingnup.model.js";
-// import User from "../models/user.model.js";
-// import Member from "../models/members.model.js";
+import User from "../models/user.model.js";
+import TeamMember from "../models/team.model.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import bcrypt from "bcryptjs";
@@ -11,7 +11,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/auth.utils.js";
-import User from "../models/user.model.js";
+
 dotenv.config();
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -34,58 +34,121 @@ const safeUnlink = (filePath) => {
   }
 };
 
+// export const checkUniqueSeller = async (req, res) => {
+//   try {
+//     const { email, businessId } = req.body;
+//     const query = [];
+
+//     if (email && !isValidEmail(email)) {
+//       return res.status(400).json({
+//         success: false,
+//         field: "email",
+//         message: "Invalid email format.",
+//       });
+//     }
+//     if (businessId && !isValidGSTIN(businessId)) {
+//       return res.status(400).json({
+//         success: false,
+//         field: "businessId",
+//         message: "Invalid businessId format.",
+//       });
+//     }
+
+//     if (email) query.push({ email });
+//     if (businessId) query.push({ businessId });
+
+//     if (query.length === 0) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "No data provided" });
+//     }
+
+//     const existing = await Seller.findOne({ $or: query });
+
+//     if (existing) {
+//       if (email && existing.email === email) {
+//         return res.status(409).json({
+//           success: false,
+//           field: "email",
+//           message: "Email already exists",
+//         });
+//       }
+//       if (businessId && existing.businessId === businessId) {
+//         return res.status(409).json({
+//           success: false,
+//           field: "businessId",
+//           message: "businessId already exists",
+//         });
+//       }
+//     }
+
+//     return res.status(200).json({ success: true, message: "Available" });
+//   } catch (err) {
+//     console.error("Error checking unique:", err);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
 export const checkUniqueSeller = async (req, res) => {
   try {
     const { email, businessId } = req.body;
-    const query = [];
 
-    if (email && !isValidEmail(email)) {
+    if (!email && !businessId) {
       return res.status(400).json({
         success: false,
-        field: "email",
-        message: "Invalid email format.",
-      });
-    }
-    if (businessId && !isValidGSTIN(businessId)) {
-      return res.status(400).json({
-        success: false,
-        field: "businessId",
-        message: "Invalid businessId format.",
+        message: "Email or BusinessId is required",
       });
     }
 
-    if (email) query.push({ email });
-    if (businessId) query.push({ businessId });
+    // ---------------- EMAIL CHECK (User) ----------------
+    if (email) {
+      if (!isValidEmail(email)) {
+        return res.status(400).json({
+          success: false,
+          field: "email",
+          message: "Invalid email format",
+        });
+      }
 
-    if (query.length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "No data provided" });
-    }
-
-    const existing = await Seller.findOne({ $or: query });
-
-    if (existing) {
-      if (email && existing.email === email) {
+      const emailExists = await User.exists({ email });
+      if (emailExists) {
         return res.status(409).json({
           success: false,
           field: "email",
           message: "Email already exists",
         });
       }
-      if (businessId && existing.businessId === businessId) {
+    }
+
+    // ---------------- BUSINESS ID CHECK (Seller) ----------------
+    if (businessId) {
+      if (!isValidGSTIN(businessId)) {
+        return res.status(400).json({
+          success: false,
+          field: "businessId",
+          message: "Invalid businessId format",
+        });
+      }
+
+      const businessExists = await Seller.exists({ businessId });
+      if (businessExists) {
         return res.status(409).json({
           success: false,
           field: "businessId",
-          message: "businessId already exists",
+          message: "BusinessId already exists",
         });
       }
     }
 
-    return res.status(200).json({ success: true, message: "Available" });
-  } catch (err) {
-    console.error("Error checking unique:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    return res.status(200).json({
+      success: true,
+      message: "Available",
+    });
+  } catch (error) {
+    console.error("Error checking uniqueness:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
@@ -173,10 +236,15 @@ export const registerSeller = async (req, res) => {
         .json({ message: "Seller profile photo is required" });
 
     // Check existing seller
-    const existingSeller = await Seller.findOne({
-      $or: [{ email }, { mobile }, { businessId }],
+    const existingSeller = await User.findOne({
+      $or: [{ email }, { mobile }],
     });
     if (existingSeller) {
+      return res.status(409).json({ message: "Seller already registered" });
+    }
+
+    const existingBusinessId = await Seller.findOne({ businessId });
+    if (existingBusinessId) {
       return res.status(409).json({ message: "Seller already registered" });
     }
 
@@ -196,30 +264,38 @@ export const registerSeller = async (req, res) => {
         .status(500)
         .json({ message: "Failed to upload document to Cloudinary." });
     }
+    const user = await User.create({
+      email,
+      mobile,
+      password: hashedPassword,
+      name: sellername,
+      role: "user",
+      isMobileVerified: true,
+      status: "active",
+      profileURL: profileUpload.secure_url,
+    });
 
-    // const documentUrl = uploadResult?.secure_url;
-    // if (!documentUrl) {
-    //   return res
-    //     .status(500)
-    //     .json({ message: "Failed to upload document to Cloudinary." });
-    // }
+    console.log("seller registerd as user", user);
 
     // Create seller
     const seller = new Seller({
-      email,
-      mobile,
+      userId: user._id,
       businessId,
-      password: hashedPassword,
-      sellername,
-      companyregstartionlocation,
       businessName,
-      documentUrl: uploadResult.secure_url,
-      seller_profile: profileUpload.secure_url,
-      isMobileVerified: true,
       seller_status,
-      role: "seller",
       seller_address,
+      documentUrl: uploadResult.secure_url,
+      companyregstartionlocation,
+      role: "seller",
     });
+    console.log("seller registerd as seller", seller);
+
+    // await TeamMember.create({
+    //   userId: user._id,
+    //   sellerId: seller._id,
+    //   role: "owner",
+
+    // });
 
     const savedSeller = await seller.save();
     delete global.verifiedMobiles[mobile];
