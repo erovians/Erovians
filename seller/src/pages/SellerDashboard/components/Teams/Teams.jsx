@@ -60,7 +60,7 @@ export default function Teams() {
 
   const roleOptions = useMemo(() => {
     const s = new Set(members.map((m) => m.role).filter(Boolean));
-    ["Member", "Director", "CTO", "CEO"].forEach((r) => s.add(r));
+    ["Manager", "Staff", "Owner"].forEach((r) => s.add(r));
     return ["All", ...Array.from(s)];
   }, [members]);
 

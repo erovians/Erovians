@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ROLE_PERMISSIONS } from "../constants/permissions.js";
 
 const teamMemberSchema = new mongoose.Schema(
   {
@@ -13,6 +14,21 @@ const teamMemberSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
       required: true,
+    },
+    permission: {
+      type: [String],
+      enum: [
+        "dashboard_view",
+        "product_create",
+        "product_update",
+        "order_view",
+        "order_update",
+        "team_manage",
+        "profile_update",
+      ],
+      default: function () {
+        return ROLE_PERMISSIONS[this.role] || [];
+      },
     },
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
