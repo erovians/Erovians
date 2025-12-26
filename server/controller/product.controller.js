@@ -18,6 +18,7 @@ import { cache } from "../services/cache.service.js";
 export const addProduct = async (req, res) => {
   try {
     const sellerId = req.user.userId;
+
     if (!sellerId) {
       return res
         .status(400)
@@ -121,7 +122,7 @@ export const listAllProducts = async (req, res) => {
     const user = req.user;
     const queryKey = JSON.stringify(req.query);
     const cacheKey = `products:list:${user.role}:${
-      user.userId || "public"
+      user.userId || "user"
     }:${queryKey}`;
 
     const cached = await cache.get(cacheKey);

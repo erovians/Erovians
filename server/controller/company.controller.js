@@ -91,7 +91,7 @@ export const getCompanyDetails = async (req, res) => {
     let sellerId;
     let companyId;
 
-    if (req.user.role === "seller") {
+    if (req.user.role.includes("seller") === true) {
       sellerId = req.user.userId;
 
       const company = await CompanyDetails.findOne({ sellerId }).select("_id");
