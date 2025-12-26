@@ -34,7 +34,6 @@ const uploadOnCloudinary = async (localFilePath, mimetype) => {
     return null;
   }
 };
-
 /**
  * Deletes a file from Cloudinary by its public_id
  * @param {string} publicId - The Cloudinary public_id of the file
