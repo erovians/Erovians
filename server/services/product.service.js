@@ -116,6 +116,9 @@ export const addProductService = async (data, files, sellerId, companyId) => {
 // ✅ List All Products
 export const listAllProductsService = async (query, user) => {
   const { category, subCategory, search, status } = query;
+  console.log(query);
+  console.log("********************");
+  console.log(user);
   const filter = {};
 
   if (user.role === "seller") {

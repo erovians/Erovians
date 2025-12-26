@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
     role: {
-      type: String,
+      type: [String],
       // enum: ["admin", "user", "seller"], //real one
-      enum: ["superadmin", "user"], // new one buyer is the user itself
+      enum: ["superadmin", "user", "seller"], // new one buyer is the user itself
       default: "user",
     },
     status: {

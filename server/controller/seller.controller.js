@@ -269,7 +269,7 @@ export const registerSeller = async (req, res) => {
       mobile,
       password: hashedPassword,
       name: sellername,
-      role: "user",
+      role: ["user", "seller"],
       isMobileVerified: true,
       status: "active",
       profileURL: profileUpload.secure_url,
@@ -286,7 +286,6 @@ export const registerSeller = async (req, res) => {
       seller_address,
       documentUrl: uploadResult.secure_url,
       companyregstartionlocation,
-      role: "seller",
     });
     console.log("seller registerd as seller", seller);
 
@@ -491,6 +490,7 @@ export const registerSeller = async (req, res) => {
 // };
 
 export const loginSeller = async (req, res) => {
+  // after sometime i have to check either the User contain the role seller or not
   try {
     const { identifier, password } = req.body;
 
@@ -501,7 +501,7 @@ export const loginSeller = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    const seller = await Seller.findOne({
+    const seller = await User.findOne({
       $or: [{ email: identifier }, { mobile: identifier }],
     }).select("+password");
 
