@@ -9,6 +9,16 @@ export const createOrder = async (req, res) => {
     const userId = req.user.userId;
     // const userId = "690ae30913ffba8sb7869fd75";
 
+    //  this will only accessed by the role = "user"
+    const roles = req.user.role || [];
+
+    if (!roles.includes("user")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only users can place orders",
+      });
+    }
+
     if (!productId || !userId) {
       return res.status(400).json({
         success: false,
@@ -91,6 +101,15 @@ export const getOrderById = async (req, res) => {
 export const getUserOrders = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const roles = req.user.role || [];
+
+    if (!roles.includes("user")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only users can view their orders",
+      });
+    }
+
     const cacheKey = `orders:user:${userId}`;
 
     const cached = await cache.get(cacheKey);
@@ -124,6 +143,16 @@ export const getUserOrders = async (req, res) => {
 export const getSellerOrders = async (req, res) => {
   try {
     const sellerId = req.user.userId;
+    console.log("userID from getUserOrder", sellerId);
+    const roles = req.user.role || [];
+
+    if (!roles.includes("seller")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only sellers can view seller orders",
+      });
+    }
+
     const cacheKey = `orders:seller:${sellerId}`;
 
     const cached = await cache.get(cacheKey);
@@ -161,6 +190,15 @@ export const updateOrderStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     const sellerId = req.user.userId;
+
+    const roles = req.user.role || [];
+
+    if (!roles.includes("seller") && !roles.includes("admin")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only sellers or admins can update order status",
+      });
+    }
 
     const validStatuses = [
       "pending",
@@ -254,6 +292,15 @@ export const updateOrderStatus = async (req, res) => {
 export const getCompletedOrders = async (req, res) => {
   try {
     const sellerId = req.user.userId;
+    const roles = req.user.role || [];
+
+    if (!roles.includes("seller") && !roles.includes("admin")) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
     const cacheKey = `orders:seller:${sellerId}:completed`;
 
     const cached = await cache.get(cacheKey);
@@ -291,6 +338,15 @@ export const getCompletedOrders = async (req, res) => {
 export const getPendingOrders = async (req, res) => {
   try {
     const sellerId = req.user.userId;
+    const roles = req.user.role || [];
+
+    if (!roles.includes("seller") && !roles.includes("admin")) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
     const cacheKey = `orders:seller:${sellerId}:pending`;
 
     const cached = await cache.get(cacheKey);
@@ -327,6 +383,15 @@ export const getPendingOrders = async (req, res) => {
 
 export const exportOrders = async (req, res) => {
   try {
+    const roles = req.user.role || [];
+
+    if (!roles.includes("seller") && !roles.includes("admin")) {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can export orders",
+      });
+    }
+
     const orders = await Order.find()
       .populate("userId", "name email")
       .populate("productId", "productName");

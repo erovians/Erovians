@@ -20,7 +20,7 @@ export const verifyUser = (req, res, next) => {
       // If no token is found, assign a default 'public' role
       req.user = {
         _id: null, // No user ID
-        role: "public",
+        role: "user",
       };
       return next(); // Proceed to the next middleware (e.g., allowRoles)
     }
@@ -47,11 +47,28 @@ export const verifyUser = (req, res, next) => {
   }
 };
 
-export function allowRoles(...roles) {
+// export function allowRoles(...roles) {
+//   return (req, res, next) => {
+//     if (!req.user?.roles?.some((role) => roles.includes(role))) {
+//       return res.status(403).json({ message: "Access denied" });
+//     }
+//     next();
+//   };
+// }
+export function allowRoles(...allowedRoles) {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    const userRoles = req.user?.role;
+
+    if (!Array.isArray(userRoles)) {
+      return res.status(403).json({ message: "Invalid role format" });
+    }
+
+    const hasPermission = userRoles.some((role) => allowedRoles.includes(role));
+
+    if (!hasPermission) {
       return res.status(403).json({ message: "Access denied" });
     }
+
     next();
   };
 }
