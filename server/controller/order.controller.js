@@ -7,9 +7,7 @@ export const createOrder = async (req, res) => {
   try {
     const { productId, quantity = 1 } = req.body;
     const userId = req.user.userId;
-    // const userId = "690ae30913ffba8sb7869fd75";
 
-    //  this will only accessed by the role = "user"
     const roles = req.user.role || [];
 
     if (!roles.includes("user")) {
@@ -153,25 +151,25 @@ export const getSellerOrders = async (req, res) => {
       });
     }
 
-    const cacheKey = `orders:seller:${sellerId}`;
+    // const cacheKey = `orders:seller:${sellerId}`;
 
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT getSellerOrders:", cacheKey);
-      return res.status(200).json({
-        success: true,
-        count: cached.length,
-        orders: cached,
-        fromCache: true,
-      });
-    }
+    // const cached = await cache.get(cacheKey);
+    // if (cached) {
+    //   console.log("🔥 Redis HIT getSellerOrders:", cacheKey);
+    //   return res.status(200).json({
+    //     success: true,
+    //     count: cached.length,
+    //     orders: cached,
+    //     fromCache: true,
+    //   });
+    // }
     const orders = await Order.find({ sellerId: sellerId })
       .populate("productId")
       .populate("userId")
       .sort({ createdAt: -1 });
 
     // res.status(200).json({ success: true, count: orders.length, orders });
-    await cache.set(cacheKey, orders, 600);
+    // await cache.set(cacheKey, orders, 600);
 
     res.status(200).json({
       success: true,
@@ -301,18 +299,18 @@ export const getCompletedOrders = async (req, res) => {
       });
     }
 
-    const cacheKey = `orders:seller:${sellerId}:completed`;
+    // const cacheKey = `orders:seller:${sellerId}:completed`;
 
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT getCompletedOrders:", cacheKey);
-      return res.status(200).json({
-        success: true,
-        count: cached.length,
-        orders: cached,
-        fromCache: true,
-      });
-    }
+    // const cached = await cache.get(cacheKey);
+    // if (cached) {
+    //   console.log("🔥 Redis HIT getCompletedOrders:", cacheKey);
+    //   return res.status(200).json({
+    //     success: true,
+    //     count: cached.length,
+    //     orders: cached,
+    //     fromCache: true,
+    //   });
+    // }
 
     const orders = await Order.find({
       sellerId,
@@ -322,7 +320,7 @@ export const getCompletedOrders = async (req, res) => {
       .populate("userId")
       .sort({ createdAt: -1 });
 
-    await cache.set(cacheKey, orders, 600);
+    // await cache.set(cacheKey, orders, 600);
 
     res.status(200).json({
       success: true,
@@ -337,7 +335,7 @@ export const getCompletedOrders = async (req, res) => {
 
 export const getPendingOrders = async (req, res) => {
   try {
-    const sellerId = req.user.userId;
+    const sellerId = req?.user?.userId;
     const roles = req.user.role || [];
 
     if (!roles.includes("seller") && !roles.includes("admin")) {
@@ -347,18 +345,18 @@ export const getPendingOrders = async (req, res) => {
       });
     }
 
-    const cacheKey = `orders:seller:${sellerId}:pending`;
+    // const cacheKey = `orders:seller:${sellerId}:pending`;
 
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT getPendingOrders:", cacheKey);
-      return res.status(200).json({
-        success: true,
-        count: cached.length,
-        orders: cached,
-        fromCache: true,
-      });
-    }
+    // const cached = await cache.get(cacheKey);
+    // if (cached) {
+    //   console.log("🔥 Redis HIT getPendingOrders:", cacheKey);
+    //   return res.status(200).json({
+    //     success: true,
+    //     count: cached.length,
+    //     orders: cached,
+    //     fromCache: true,
+    //   });
+    // }
 
     const orders = await Order.find({
       sellerId,
@@ -366,9 +364,10 @@ export const getPendingOrders = async (req, res) => {
     })
       .populate("productId")
       .populate("userId")
+      .populate("sellerId")
       .sort({ createdAt: -1 });
 
-    await cache.set(cacheKey, orders, 600);
+    // await cache.set(cacheKey, orders, 600);
 
     res.status(200).json({
       success: true,

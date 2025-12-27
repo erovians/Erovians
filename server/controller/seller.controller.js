@@ -760,8 +760,16 @@ export const refreshTokenController = async (req, res) => {
   }
 };
 
-export const logoutSeller = (req, res) => {
+export const logoutSeller = async (req, res) => {
   try {
+    const userId = req.user?.userId;
+
+    // 🔥 Clear seller-specific cache
+    if (userId) {
+      await cache.del(`seller:profile:${userId}`);
+      console.log(`🧹 Cache cleared for seller ${userId}`);
+    }
+
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must match what was set
@@ -818,6 +826,7 @@ export const logoutSeller = (req, res) => {
 export const getSellerProfile = async (req, res) => {
   try {
     const sellerId = req.user?.userId;
+    console.log("sellerId", sellerId);
 
     if (!sellerId) {
       return res.status(401).json({
@@ -826,25 +835,28 @@ export const getSellerProfile = async (req, res) => {
       });
     }
 
-    if (req.user.role !== "seller") {
+    if (!req.user.role.includes("seller")) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const cacheKey = `seller:profile:${sellerId}`;
+    // const cacheKey = `seller:profile:${sellerId}`;
 
-    // ================= REDIS CACHE CHECK =================
-    const cachedSeller = await cache.get(cacheKey);
-    if (cachedSeller) {
-      console.log("🔥 Seller profile from Redis");
-      return res.status(200).json({
-        success: true,
-        fromCache: true,
-        seller: cachedSeller,
-      });
-    }
+    // // ================= REDIS CACHE CHECK =================
+    // const cachedSeller = await cache.get(cacheKey);
+    // if (cachedSeller) {
+    //   console.log("🔥 Seller profile from Redis");
+    //   return res.status(200).json({
+    //     success: true,
+    //     fromCache: true,
+    //     seller: cachedSeller,
+    //   });
+    // }
 
     // ================= DB QUERY =================
-    const seller = await Seller.findById(sellerId)
+    const seller = await Seller.findOne({ userId: sellerId })
+      .populate({
+        path: "userId",
+      })
       .select("-password -__v")
       .lean();
 
@@ -856,7 +868,7 @@ export const getSellerProfile = async (req, res) => {
     }
 
     // ================= SAVE TO REDIS =================
-    await cache.set(cacheKey, seller, 200); // 10 minutes TTL
+    // await cache.set(cacheKey, seller, 200); // 10 minutes TTL
 
     return res.status(200).json({
       success: true,
@@ -872,118 +884,115 @@ export const getSellerProfile = async (req, res) => {
   }
 };
 
-export const updateSellerProfile = async (req, res) => {
-  try {
-    const sellerId = req.user?.userId;
+// export const updateSellerProfile = async (req, res) => {
+//   try {
+//     const sellerId = req.user?.userId;
 
-    if (!sellerId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
+//     if (!sellerId) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized",
+//       });
+//     }
 
-    if (req.user.role !== "seller") {
-      return res.status(403).json({
-        success: false,
-        message: "Access denied",
-      });
-    }
+//     if (!req.user.role?.includes("seller")) {
+//       return res.status(403).json({ success: false, message: "Access denied" });
+//     }
 
-    const {
-      sellername,
-      mobile,
-      businessName,
-      category,
-      seller_status,
-      seller_address,
-      companyregstartionlocation,
-    } = req.body;
+//     const {
+//       sellername,
+//       mobile,
+//       businessName,
+//       category,
+//       seller_status,
+//       seller_address,
+//       companyregstartionlocation,
+//     } = req.body;
 
-    // if (req.body.mobile) {
-    //   if (!req.user.isMobileVerified) {
-    //     return res.status(403).json({
-    //       success: false,
-    //       message: "Mobile number change requires OTP verification",
-    //     });
-    //   }
-    // }
+//     // if (req.body.mobile) {
+//     //   if (!req.user.isMobileVerified) {
+//     //     return res.status(403).json({
+//     //       success: false,
+//     //       message: "Mobile number change requires OTP verification",
+//     //     });
+//     //   }
+//     // }
 
-    const updateData = {
-      sellername,
-      mobile,
-      businessName,
-      category,
-      seller_status,
-      seller_address,
-      companyregstartionlocation,
-    };
+//     const updateData = {
+//       sellername,
+//       mobile,
+//       businessName,
+//       category,
+//       seller_status,
+//       seller_address,
+//       companyregstartionlocation,
+//     };
 
-    // ================= PROFILE PHOTO (SAME AS REGISTER) =================
-    const profileFile = req.files?.seller_profile?.[0];
+//     // ================= PROFILE PHOTO (SAME AS REGISTER) =================
+//     const profileFile = req.files?.seller_profile?.[0];
 
-    if (profileFile) {
-      const acceptedTypes = ["image/jpeg", "image/png"];
-      if (!acceptedTypes.includes(profileFile.mimetype)) {
-        safeUnlink(profileFile.path);
-        return res.status(400).json({
-          message: "Invalid image type. Only JPG and PNG allowed.",
-        });
-      }
+//     if (profileFile) {
+//       const acceptedTypes = ["image/jpeg", "image/png"];
+//       if (!acceptedTypes.includes(profileFile.mimetype)) {
+//         safeUnlink(profileFile.path);
+//         return res.status(400).json({
+//           message: "Invalid image type. Only JPG and PNG allowed.",
+//         });
+//       }
 
-      const maxSize = 2 * 1024 * 1024; // 2MB
-      if (profileFile.size > maxSize) {
-        safeUnlink(profileFile.path);
-        return res.status(400).json({
-          message: "Profile photo size must be under 2MB.",
-        });
-      }
+//       const maxSize = 2 * 1024 * 1024; // 2MB
+//       if (profileFile.size > maxSize) {
+//         safeUnlink(profileFile.path);
+//         return res.status(400).json({
+//           message: "Profile photo size must be under 2MB.",
+//         });
+//       }
 
-      const profileUpload = await uploadOnCloudinary(profileFile.path);
-      safeUnlink(profileFile.path);
+//       const profileUpload = await uploadOnCloudinary(profileFile.path);
+//       safeUnlink(profileFile.path);
 
-      if (!profileUpload?.secure_url) {
-        return res.status(500).json({
-          message: "Failed to upload profile photo",
-        });
-      }
+//       if (!profileUpload?.secure_url) {
+//         return res.status(500).json({
+//           message: "Failed to upload profile photo",
+//         });
+//       }
 
-      updateData.seller_profile = profileUpload.secure_url;
-    }
+//       updateData.seller_profile = profileUpload.secure_url;
+//     }
 
-    // Remove undefined fields
-    Object.keys(updateData).forEach(
-      (key) => updateData[key] === undefined && delete updateData[key]
-    );
+//     // Remove undefined fields
+//     Object.keys(updateData).forEach(
+//       (key) => updateData[key] === undefined && delete updateData[key]
+//     );
 
-    const updatedSeller = await Seller.findByIdAndUpdate(sellerId, updateData, {
-      new: true,
-      runValidators: true,
-    }).select("-password -__v");
+//     const updatedSeller = await Seller.findByIdAndUpdate(sellerId, updateData, {
+//       new: true,
+//       runValidators: true,
+//     }).select("-password -__v");
 
-    if (!updatedSeller) {
-      return res.status(404).json({
-        success: false,
-        message: "Seller profile not found",
-      });
-    }
+//     if (!updatedSeller) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Seller profile not found",
+//       });
+//     }
 
-    const cacheKey = `seller:profile:${sellerId}`;
-    await cache.del(cacheKey);
-    console.log("🧹 Seller profile cache cleared");
+//     const cacheKey = `seller:profile:${sellerId}`;
+//     await cache.del(cacheKey);
+//     console.log("🧹 Seller profile cache cleared");
 
-    return res.status(200).json({
-      success: true,
-      seller: updatedSeller,
-    });
-  } catch (error) {
-    console.error("❌ Error updating seller profile:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
+//     return res.status(200).json({
+//       success: true,
+//       seller: updatedSeller,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error updating seller profile:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
 // export const updateSellerProfile = async (req, res) => {
 //   try {
@@ -1053,3 +1062,94 @@ export const updateSellerProfile = async (req, res) => {
 //     });
 //   }
 // };
+export const updateSellerProfile = async (req, res) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    // role is ARRAY in your DB
+    if (!req.user.role?.includes("seller")) {
+      return res.status(403).json({ success: false, message: "Access denied" });
+    }
+
+    const {
+      name,
+      mobile,
+      businessName,
+      category,
+      seller_status,
+      seller_address,
+      companyregstartionlocation,
+    } = req.body;
+
+    /* ================= USER UPDATE ================= */
+    const userUpdate = {};
+    if (name) userUpdate.name = name;
+    if (mobile) userUpdate.mobile = mobile;
+
+    // profile photo
+    const profileFile = req.files?.seller_profile?.[0];
+    if (profileFile) {
+      const acceptedTypes = ["image/jpeg", "image/png"];
+      if (!acceptedTypes.includes(profileFile.mimetype)) {
+        safeUnlink(profileFile.path);
+        return res.status(400).json({ message: "Invalid image type" });
+      }
+
+      const upload = await uploadOnCloudinary(profileFile.path);
+      safeUnlink(profileFile.path);
+
+      if (!upload?.secure_url) {
+        return res.status(500).json({ message: "Upload failed" });
+      }
+
+      userUpdate.profileURL = upload.secure_url;
+    }
+
+    if (Object.keys(userUpdate).length) {
+      await User.findByIdAndUpdate(userId, userUpdate, {
+        new: true,
+        runValidators: true,
+      });
+    }
+
+    /* ================= SELLER UPDATE ================= */
+    const sellerUpdate = {
+      businessName,
+      category,
+      seller_status,
+      seller_address,
+      companyregstartionlocation,
+    };
+
+    Object.keys(sellerUpdate).forEach(
+      (k) => sellerUpdate[k] === undefined && delete sellerUpdate[k]
+    );
+
+    const updatedSeller = await Seller.findOneAndUpdate(
+      { userId },
+      sellerUpdate,
+      { new: true, runValidators: true }
+    ).populate("userId", "name email mobile profileURL role");
+
+    if (!updatedSeller) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Seller not found" });
+    }
+
+    /* ================= CACHE INVALIDATION ================= */
+    await cache.del(`seller:profile:${userId}`);
+
+    return res.status(200).json({
+      success: true,
+      seller: updatedSeller,
+    });
+  } catch (error) {
+    console.error("❌ Error updating seller profile:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
