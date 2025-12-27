@@ -27,9 +27,7 @@ export default function OrderPendingList() {
     fetchData();
   }, []);
 
-  const contractOrderIds = new Set(
-    contracts.map((c) => c.order?.toString())
-  );
+  const contractOrderIds = new Set(contracts.map((c) => c.order?.toString()));
 
   const filteredOrders = orders.filter((order) =>
     order.productId?.productName
@@ -56,6 +54,9 @@ export default function OrderPendingList() {
       setCreating(null);
     }
   };
+
+  console.log("contracts", contracts);
+  console.log("orders", orders);
 
   return (
     <div className="w-full p-4">
@@ -90,93 +91,90 @@ export default function OrderPendingList() {
           return (
             <div
               key={order._id}
-              className="bg-white rounded-xl border shadow-sm p-4 flex flex-col sm:grid sm:grid-cols-12 gap-4"
+              className="bg-white rounded-xl border shadow-sm p-4 
+             grid grid-cols-1 sm:grid-cols-12 gap-4 items-center"
             >
               {/* Product Info */}
-              <div className="sm:col-span-5 flex gap-4 items-center">
+              <div className="sm:col-span-5 flex items-center gap-4">
                 <img
                   src={p.productImages?.[0]}
-                  className="w-20 h-20 sm:w-16 sm:h-16 rounded-lg border object-cover shadow-sm"
+                  className="w-20 h-20 sm:w-16 sm:h-16 rounded-lg border object-cover"
                   alt="product"
                 />
 
-                <div>
+                <div className="space-y-0.5">
                   <p className="font-semibold text-gray-900 text-sm sm:text-base">
                     {p.productName}
                   </p>
-                  <p className="text-xs text-gray-500">{p.category?.join(", ")}</p>
+                  <p className="text-xs text-gray-500">
+                    {p.category?.join(", ")}
+                  </p>
                   <p className="text-xs text-gray-500">Origin: {p.origin}</p>
 
-                  <p
-                    className="text-blue-600 text-xs font-semibold mt-1 cursor-pointer hover:underline"
+                  <button
                     onClick={() =>
                       navigate(`/sellerdashboard/product/${order.productId.id}`)
                     }
+                    className="text-blue-600 text-xs font-semibold hover:underline"
                   >
                     View Product →
-                  </p>
+                  </button>
                 </div>
               </div>
 
               {/* Quantity */}
-              <div className="sm:col-span-2 flex justify-between sm:block">
-                <span className="sm:hidden font-semibold text-gray-700">
-                  Quantity:
-                </span>
-                <p className="text-gray-700 font-medium text-sm">
-                  {order.quantity}
-                </p>
+              <div className="sm:col-span-2 text-sm text-gray-700 flex sm:block justify-between">
+                <span className="sm:hidden font-semibold">Quantity</span>
+                <span className="font-medium">{order.quantity}</span>
               </div>
 
               {/* Total Price */}
-              <div className="sm:col-span-2 flex justify-between sm:block">
+              <div className="sm:col-span-2 text-sm flex sm:block justify-between">
                 <span className="sm:hidden font-semibold text-gray-700">
-                  Total Price:
+                  Total Price
                 </span>
-                <p className="text-gray-900 font-semibold text-sm">
+                <span className="font-semibold text-gray-900">
                   ₹{order.totalPrice}
-                </p>
+                </span>
               </div>
 
               {/* Buyer Info */}
-         <div className="sm:col-span-2 flex flex-col sm:block gap-2">
-  {/* Name + Avatar Row */}
-  <div className="flex items-center gap-2">
-    <img
-      src={order.userId?.profileImage}
-      className="w-8 h-8 sm:w-7 sm:h-7 rounded-full border object-cover"
-      alt="buyer"
-    />
+              <div className="sm:col-span-2 flex items-center gap-3">
+                <img
+                  src={order.userId?.profileURL}
+                  className="w-8 h-8 rounded-full border object-cover"
+                  alt="buyer"
+                />
 
-    <p className="font-medium text-gray-800 text-sm sm:text-sm">
-      {order.userId?.name}
-    </p>
-  </div>
-
-  {/* Email + Mobile */}
-  <div className="ml-0 sm:ml-0 mt-1 sm:mt-1">
-    <p className="text-xs text-gray-500 break-all">{order.userId?.email}</p>
-    <p className="text-xs text-gray-500">{order.userId?.mobile}</p>
-  </div>
-</div>
-
+                <div className="leading-tight">
+                  <p className="text-sm font-medium text-gray-800">
+                    {order.userId?.name}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate max-w-[140px]">
+                    {order.userId?.email}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {order.userId?.mobile}
+                  </p>
+                </div>
+              </div>
 
               {/* Action Button */}
-              <div className="sm:col-span-1 flex items-center justify-center">
+              <div className="sm:col-span-1 flex justify-end sm:justify-center">
                 {alreadyCreated ? (
-                  <span className="bg-green-100 text-green-700 text-xs sm:text-[10px]  font-bold  px-2 py-2 rounded-full">
+                  <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
                     ✓ Contract Created
                   </span>
                 ) : (
                   <button
                     onClick={() => handleCreateContract(order)}
                     disabled={creating === order._id}
-                    className={`text-xs px-4 py-2 rounded-lg font-semibold transition-all w-full sm:w-auto
-                      ${
-                        creating === order._id
-                          ? "bg-gray-400 text-white cursor-not-allowed"
-                          : "bg-blue-600 text-white hover:bg-blue-700"
-                      }`}
+                    className={`text-xs px-4 py-2 rounded-lg font-semibold w-full sm:w-auto
+        ${
+          creating === order._id
+            ? "bg-gray-400 text-white cursor-not-allowed"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`}
                   >
                     {creating === order._id ? "Creating…" : "Create"}
                   </button>

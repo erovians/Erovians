@@ -43,13 +43,12 @@ import { cache } from "../services/cache.service.js";
 
 export const createWorkOrder = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req?.user?.userId;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     const parsed = createWorkOrderSchema.safeParse(req.body);
@@ -74,8 +73,6 @@ export const createWorkOrder = async (req, res) => {
 
     const newWO = await WorkOrder.create(payload);
 
-    await cache.del(`workorders:seller:${sellerId}`);
-
     res.status(201).json({
       message: "Work order created successfully",
       workOrder: newWO,
@@ -88,24 +85,11 @@ export const createWorkOrder = async (req, res) => {
 
 export const getWorkOrders = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req.user?.userId;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
-    }
-
-    const cacheKey = `workorders:seller:${sellerId}`;
-
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT getWorkOrders:", cacheKey);
-      return res.json({
-        count: cached.length,
-        workOrders: cached,
-        fromCache: true,
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
       });
     }
 
@@ -113,11 +97,9 @@ export const getWorkOrders = async (req, res) => {
       .sort({ createdAt: 1 })
       .lean();
 
-    await cache.set(cacheKey, list, 100);
     res.json({
       count: list.length,
       workOrders: list,
-      fromCache: false,
     });
   } catch (err) {
     console.error("GET_WORK_ORDERS_ERROR:", err);
@@ -127,14 +109,14 @@ export const getWorkOrders = async (req, res) => {
 
 export const updateWorkOrderStatus = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req.user?.userId;
+
     const { id } = req.params;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     // Validate
@@ -159,8 +141,6 @@ export const updateWorkOrderStatus = async (req, res) => {
       { new: true }
     );
 
-    await cache.del(`workorders:seller:${sellerId}`);
-
     res.json({
       message: "Status updated successfully",
       workOrder: updated,
@@ -173,14 +153,13 @@ export const updateWorkOrderStatus = async (req, res) => {
 
 export const deleteWorkOrder = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req.user?.userId;
     const { id } = req.params;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     const existing = await WorkOrder.findOne({ _id: id, sellerId });
@@ -190,8 +169,6 @@ export const deleteWorkOrder = async (req, res) => {
       });
     }
     await WorkOrder.findByIdAndDelete(id);
-
-    await cache.del(`workorders:seller:${sellerId}`);
 
     res.json({
       message: "Work order deleted successfully",

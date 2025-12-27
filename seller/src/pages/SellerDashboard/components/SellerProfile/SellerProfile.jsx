@@ -93,7 +93,7 @@ const SellerProfile = () => {
     const data = new FormData();
 
     [
-      "sellername",
+      "name",
       "mobile",
       "businessName",
       "category",
@@ -128,7 +128,7 @@ const SellerProfile = () => {
           <div className="flex flex-col items-center text-center">
             <div className="relative">
               <img
-                src={preview || seller.seller_profile || "/avatar.png"}
+                src={preview || seller.userId.profileURL || "/avatar.png"}
                 alt="Seller"
                 className="w-28 h-28 rounded-full object-cover border-4 border-navyblue"
               />
@@ -144,7 +144,9 @@ const SellerProfile = () => {
               </label>
             </div>
 
-            <h2 className="mt-4 text-xl font-semibold">{seller.sellername}</h2>
+            <h2 className="mt-4 text-xl font-semibold">
+              {seller.userId?.name}
+            </h2>
 
             <p className="text-sm text-gray-500">{seller.businessName}</p>
 
@@ -154,11 +156,11 @@ const SellerProfile = () => {
           </div>
 
           <div className="mt-6 border-t pt-4 space-y-3 text-sm">
-            <Info label="Email" value={seller.email} />
-            <Info label="Mobile" value={seller.mobile} />
+            <Info label="Email" value={seller.userId.email} />
+            <Info label="Mobile" value={seller.userId.mobile} />
             <Info label="Category" value={seller.category} />
             <Info label="Seller Type" value={seller.seller_status} />
-            <Info label="Status" value={seller.status} />
+            <Info label="Status" value={seller?.userId?.status} />
             <Info label="Verification" value={seller.varificationStatus} />
           </div>
         </div>
@@ -170,12 +172,16 @@ const SellerProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Input
               label="Full Name"
-              name="sellername"
-              value={formData.sellername || ""}
+              name="name"
+              value={formData?.userId?.name || ""}
               onChange={handleChange}
             />
 
-            <Input label="Email" value={formData.email || ""} disabled />
+            <Input
+              label="Email"
+              value={formData?.userId?.email || ""}
+              disabled
+            />
 
             {/* ================= MOBILE FIELD ================= */}
             <div className="md:col-span-2">
@@ -187,7 +193,7 @@ const SellerProfile = () => {
                 <input
                   type="text"
                   name="mobile"
-                  value={formData.mobile || ""}
+                  value={formData?.userId?.mobile || ""}
                   onChange={handleChange}
                   disabled={!isEditingMobile}
                   className={`${
@@ -283,7 +289,7 @@ const SellerProfile = () => {
               disabled={updating}
               className="px-6 py-2 border border-navyblue cursor-pointer bg-navyblue text-white rounded-lg hover:bg-white hover:text-black disabled:opacity-50"
             >
-              {updating ? "Saving..." : "Save Changes"}
+              {updating ? "Updating..." : "Update Profile"}
             </button>
           </div>
         </div>
