@@ -116,23 +116,18 @@ export const addProductService = async (data, files, sellerId, companyId) => {
 // ✅ List All Products
 export const listAllProductsService = async (query, user) => {
   const { category, subCategory, search, status } = query;
-  console.log(query);
-  console.log("********************");
-  console.log(user);
-  const filter = {};
 
-  if (user.role === "seller") {
+  const filter = {};
+  const roles = user.role || [];
+
+  if (roles.includes("seller")) {
     // Seller dashboard → ignore any sellerId/companyId from frontend
     const company = await Company.findOne({ sellerId: user.userId });
     if (!company) throw new Error("Seller company not found");
 
     filter.sellerId = user.userId;
     filter.companyId = company._id;
-  } else if (
-    user.role === "buyer" ||
-    user.role === "admin" ||
-    user.role === "public"
-  ) {
+  } else if (user.role === "user" || user.role === "superadmin") {
     // Buyer/Admin → frontend must pass sellerId or companyId
     const { sellerId, companyId } = query;
     if (sellerId) filter.sellerId = sellerId;
