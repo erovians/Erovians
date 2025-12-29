@@ -3,6 +3,7 @@ import Navbar from "./common/Navbar";
 import Footer from "@/common/Footer";
 import { Route, Routes, useLocation } from "react-router-dom";
 
+//common static pages
 import Home from "./pages/Home";
 import Learn from "./pages/Learn";
 import SellOnline from "./pages/SellOnline";
