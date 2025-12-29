@@ -29,7 +29,7 @@ const Grow = () => {
       <section className="bg-white md:py-10 px-6 md:px-16" id="VerifiedBadge">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Left Content */}
-          <div className="rich-text" >
+          <div className="rich-text">
             <h1 className="mb-4">
               <span className="text-navyblue">Verified Badge</span>
             </h1>
