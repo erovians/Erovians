@@ -53,7 +53,7 @@ const components = [
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
-   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -63,7 +63,6 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center ">
           <Link to={"/"}>
-            {" "}
             <img
               src={assets.logo}
               alt="Logo"
@@ -342,7 +341,10 @@ export default function Navbar() {
               variant="outline"
               className="bg-yellow hover:bg-white hover:border-yellow"
             >
-              <Link to={"/start-selling"} className="flex gap-1  items-center m-auto">
+              <Link
+                to={"/start-selling"}
+                className="flex gap-1  items-center m-auto"
+              >
                 Start Selling <Store />
               </Link>
             </Button>
