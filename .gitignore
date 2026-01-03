@@ -2,3 +2,5 @@
 /.env
 
 /seller/node_modules
+/chatserver/node_modules
+/buyer/node_modules

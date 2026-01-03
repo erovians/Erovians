@@ -1,5 +1,5 @@
-
 import mongoose from "mongoose";
+import logger from "./winston.js";
 
 const connectDB = async () => {
   try {
@@ -7,17 +7,16 @@ const connectDB = async () => {
       throw new Error("❌ MONGODB_URI is missing in environment variables");
     }
 
-    mongoose.set("strictQuery", true);  // (ignore the field from the query which is not in schema)
+    mongoose.set("strictQuery", true);
 
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
     });
-    console.log(`\n✅ MongoDB Connected`);
 
+    logger.info("MongoDB Connected"); // ✅ Winston use karo
   } catch (error) {
-    console.error(`\n❌ MongoDB Connection Failed`);
-    console.error(`Error: ${error.message}\n`);
+    logger.error(`MongoDB Connection Failed: ${error.message}`); // ✅ Winston use karo
     process.exit(1);
   }
 };
@@ -25,7 +24,7 @@ const connectDB = async () => {
 // Gracefully handle app termination
 process.on("SIGINT", async () => {
   await mongoose.connection.close();
-  console.log("\n🔌 MongoDB connection closed due to app termination");
+  logger.info("MongoDB connection closed due to app termination"); // ✅ Winston use karo
   process.exit(0);
 });
 
