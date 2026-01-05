@@ -3,6 +3,7 @@ import Partner from "./models/partner.model.js";
 console.log("Current Working Dir:", process.cwd());
 import dotenv from "dotenv";
 dotenv.config();
+
 console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
 
 mongoose.connect(process.env.MONGODB_URI, {

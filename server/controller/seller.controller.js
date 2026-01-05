@@ -574,7 +574,7 @@ export const logoutSeller = (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // must match what was set
       sameSite: "strict", // must match what was set
-      path: "/"
+      path: "/",
     });
 
     res.status(200).json({ message: "Logout successful" });

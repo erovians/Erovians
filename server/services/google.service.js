@@ -3,6 +3,7 @@ import axios from "axios";
 const GOOGLE_KEY = process.env.GOOGLE_API_KEY;
 
 export async function geocodeAddress(address) {
+
   const url = `https://maps.googleapis.com/maps/api/geocode/json`;
   const res = await axios.get(url, {
     params: {
@@ -11,7 +12,7 @@ export async function geocodeAddress(address) {
     },
   });
 
-  if (!res.data.results.length) throw new Error("Unable to geocode address");
+  if (!res.data.results.length) throw new Error("Unable to get geocode address");
 
   const location = res.data.results[0].geometry.location;
   return { lat: location.lat, lon: location.lng };

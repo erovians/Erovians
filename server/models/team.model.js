@@ -8,7 +8,6 @@ const teamMemberSchema = new mongoose.Schema(
     mobile: { type: Number, required: true },
     site: { type: String, default: "---" },
     activity: { type: String, default: "Just now" },
-
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
