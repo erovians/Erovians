@@ -85,7 +85,7 @@ export default function Header() {
         isMobileVerified: true,
         profileURL: "",
         role: "user",
-        isSeller: false,
+        isSeller: true,
         sellerId: null,
       }
     : null;
@@ -141,31 +141,16 @@ export default function Header() {
                 <HelpCircle size={14} />
                 Help Center
               </Link>
-              <Link
-                to="/track-order"
-                className="hover:text-gray-300 transition-colors"
-              >
-                Track Order
-              </Link>
             </div>
 
             <div className="flex items-center gap-6">
-              <button
-                onClick={() => setIsLanguageModalOpen(true)}
-                className="hover:text-gray-300 transition-colors flex items-center gap-1"
-              >
-                <Globe size={14} />
-                <span>English - USD</span>
-                <ChevronDown size={14} />
-              </button>
-
               {isAuthenticated && !isSeller && (
                 <Link
                   to="/become-seller"
                   className="bg-yellow-500 text-navyblue px-4 py-1 rounded-sm font-semibold hover:bg-yellow-400 transition-colors flex items-center gap-1"
                 >
                   <Store size={14} />
-                  Sell on Erovians
+                  Become A Seller
                 </Link>
               )}
 
@@ -181,7 +166,7 @@ export default function Header() {
                 </Link>
               )}
 
-              {!isAuthenticated && (
+              {!isAuthenticated && !isSeller && (
                 <Link
                   to="/seller-registration"
                   className="text-yellow-300 hover:text-yellow-100 font-medium transition-colors"
@@ -214,11 +199,11 @@ export default function Header() {
               </Link>
             </div>
 
-            <div className="hidden lg:block">
+            <div className="hidden lg:block  rounded-2xl border border-navyblue">
               <CategoriesMenu />
             </div>
 
-            <div className="hidden md:flex flex-1 max-w-2xl mx-4">
+            <div className="hidden md:flex flex-1 max-w-xl mx-4">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -236,13 +221,6 @@ export default function Header() {
             <div className="hidden md:flex items-center gap-2">
               {isAuthenticated && (
                 <>
-                  <Link to="/post-rfq">
-                    <Button className="bg-blue hover:bg-navyblue text-white px-4 py-2 h-auto font-medium text-sm rounded-sm flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      <span>Post RFQ</span>
-                    </Button>
-                  </Link>
-
                   <Link to="/messages">
                     <Button
                       variant="ghost"
@@ -269,12 +247,21 @@ export default function Header() {
               )}
 
               {!isAuthenticated ? (
-                <Button
-                  onClick={handleLoginClick}
-                  className="bg-navyblue hover:bg-blue text-white px-6 py-2 h-auto font-medium text-sm rounded-sm"
-                >
-                  Join Free
-                </Button>
+                <>
+                  <Link
+                    to="/seller-registration"
+                    className="border border-navyblue px-4 mr-4 py-2  text-navyblue  hover:text-white hover:bg-navyblue rounded-2xl  font-medium transition-colors"
+                  >
+                    Become A Seller →
+                  </Link>
+
+                  <Button
+                    onClick={handleLoginClick}
+                    className="bg-navyblue hover:bg-blue text-white px-6 py-2 h-auto font-medium text-sm rounded-sm"
+                  >
+                    Log In
+                  </Button>
+                </>
               ) : (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
