@@ -9,6 +9,7 @@ import {
   Send,
   Eye,
   Loader2,
+  Upload,
 } from "lucide-react";
 
 export default function TransportEstimate() {
@@ -111,28 +112,38 @@ export default function TransportEstimate() {
   const hasPartners = partners.length > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 md:p-8">
+      <div className="max-w-full md:max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-gray-100">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-navyblue rounded-xl">
-              <Truck className="w-6 h-6 text-white" />
+        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6 border border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-2">
+            {/* Left: Existing Title Section */}
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-navyblue rounded-xl">
+                <Truck className="w-6 h-6 text-white" />
+              </div>
+
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                  Transport Distance Estimator
+                </h1>
+                <p className="text-gray-600 text-sm sm:text-base mt-1">
+                  Quickly calculate road distance, ETA and cost before sending a
+                  shipping quote.
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Transport Distance Estimator
-              </h1>
-              <p className="text-gray-600 text-sm mt-1">
-                Quickly calculate road distance, ETA and cost before sending a
-                shipping quote.
-              </p>
-            </div>
+
+            {/* Right: Import Partners Button */}
+            <button className="flex items-center justify-center gap-2 px-4 py-2 border border-navyblue bg-navyblue text-white text-sm font-light rounded-sm shadow-sm hover:bg-white hover:text-navyblue transition cursor-pointer w-full sm:w-auto">
+              <Upload className="w-4 h-4" />
+              Import Partners
+            </button>
           </div>
         </div>
 
         {/* Main Form */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 border border-gray-100">
           {/* Location Inputs */}
           <div className="space-y-4 mb-6">
             <div className="relative">
@@ -279,9 +290,7 @@ export default function TransportEstimate() {
                   Calculating...
                 </>
               ) : (
-                <>
-                   Estimate
-                </>
+                <>Estimate</>
               )}
             </button>
 

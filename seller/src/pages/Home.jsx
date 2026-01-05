@@ -28,6 +28,7 @@ const Home = () => {
   ];
   return (
     <div>
+      
       <Hero />
 
       <section className="w-full px-6 py-16 mt-0 sm:mt-30  ">
