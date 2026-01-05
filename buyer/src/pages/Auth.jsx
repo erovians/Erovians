@@ -76,7 +76,7 @@ export default function Auth() {
   };
 
   return (
-    <Layout>
+    <Layout hideFooter={true}>
       <div className="bg-[#f8f9fa] flex items-center justify-center px-4 py-8 md:py-12">
         <div className="w-full max-w-5xl bg-white shadow-2xl rounded-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -313,7 +313,7 @@ export default function Auth() {
 
                     <div className="mt-6 text-center">
                       <p className="text-sm text-gray-600">
-                        Need help?{" "}
+                        Need help?
                         <a
                           href="#"
                           className="text-gray-900 hover:underline font-medium"

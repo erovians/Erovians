@@ -53,7 +53,7 @@ export default function CategoriesMenu() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-sm transition-colors font-medium text-sm">
+        <button className="flex items-center   gap-2 px-4 py-2 rounded-sm transition-colors font-medium text-sm">
           <span>Categories</span>
           <ChevronDown className="h-4 w-4" />
         </button>
