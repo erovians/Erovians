@@ -26,15 +26,17 @@ const uploadOnCloudinary = async (localFilePath, mimetype) => {
       fs.unlinkSync(localFilePath);
     }
     return uploadResult;
+    
   } catch (error) {
     if (fs.existsSync(localFilePath)) {
+
       fs.unlinkSync(localFilePath);
+      
     }
     console.log("Cloudinary upload failed:", error);
     return null;
   }
 };
-
 /**
  * Deletes a file from Cloudinary by its public_id
  * @param {string} publicId - The Cloudinary public_id of the file

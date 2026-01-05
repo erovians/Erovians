@@ -7,7 +7,6 @@ const teamMemberSchema = new mongoose.Schema(
     role: { type: String, required: true },
     site: { type: String, default: "---" },
     activity: { type: String, default: "Just now" },
-
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
