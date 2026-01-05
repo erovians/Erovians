@@ -3,6 +3,7 @@ import Navbar from "./common/Navbar";
 import Footer from "@/common/Footer";
 import { Route, Routes, useLocation } from "react-router-dom";
 
+//common static pages
 import Home from "./pages/Home";
 import Learn from "./pages/Learn";
 import SellOnline from "./pages/SellOnline";
@@ -16,6 +17,7 @@ import CookiePolicy from "./pages/Legal/CookiePolicy";
 import TermsOfUse from "./pages/Legal/TermsOfUse";
 import CommunityGuidelines from "./pages/Legal/CommunityGuidelines";
 
+//dashboard layouts
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
 import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";

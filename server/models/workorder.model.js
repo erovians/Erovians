@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const WorkOrderSchema = new mongoose.Schema({
+
   sellerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Seller",
@@ -10,7 +11,7 @@ const WorkOrderSchema = new mongoose.Schema({
   wo_number: { type: String, required: true },
   so_number: { type: String, required: true },
   machine: { type: String, required: true },
-
+  
   status: {
     type: String,
     enum: ["Planned", "Running", "Completed"],
