@@ -3,6 +3,7 @@ import Navbar from "./common/Navbar";
 import Footer from "@/common/Footer";
 import { Route, Routes, useLocation } from "react-router-dom";
 
+//common static pages
 import Home from "./pages/Home";
 import Learn from "./pages/Learn";
 import SellOnline from "./pages/SellOnline";
@@ -10,6 +11,13 @@ import Grow from "./pages/Grow";
 import Login from "./pages/Auth/Login";
 import SellerSignUp from "./pages/Auth/SellerSignUp";
 
+//legal pages
+import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
+import CookiePolicy from "./pages/Legal/CookiePolicy";
+import TermsOfUse from "./pages/Legal/TermsOfUse";
+import CommunityGuidelines from "./pages/Legal/CommunityGuidelines";
+
+//dashboard layouts
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";
 import SellerDashboardHome from "./pages/SellerDashboard/pages/SellerDashboardHome";
 import CompanyProfile from "./pages/SellerDashboard/components/Company/Companyprofile/CompanyProfileForm";
@@ -34,8 +42,8 @@ import Contracts from "./pages/SellerDashboard/components/Contracts/Contracts";
 import CreateContract from "./pages/SellerDashboard/components/Contracts/CreateContract";
 import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProjects/TasksProjects";
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
-import TransportEstimate from "./pages/SellerDashboard/components/EstimateCost/TransportEstimate";
-import SellerProfile from "./pages/SellerDashboard/components/SellerProfile/SellerProfile";
+import TransportEstimate from "./pages/SellerDashboard/components/Transport/TransportEstimate";
+
 
 function NotFound() {
   return (
@@ -69,6 +77,10 @@ function App() {
             <Route path="/learn" element={<Learn />} />
             <Route path="/sell-online" element={<SellOnline />} />
             <Route path="/grow" element={<Grow />} />
+            <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/legal/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/legal/community-guidelines" element={<CommunityGuidelines />}/>
             <Route path="/login" element={<Login />} />
             <Route path="/start-selling" element={<SellerSignUp />} />
           </>

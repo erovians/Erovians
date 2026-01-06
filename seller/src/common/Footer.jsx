@@ -64,9 +64,66 @@ export default function Footer() {
       </div>
 
       {/* Bottom Note */}
-      <div className="border-t border-gray-700 mt-16 pt-6 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()}{" "}
-        <span className="text-white">Erovians.</span> All rights reserved.
+      <div className="border-t border-gray-700 mt-16 pt-6 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Left: Legal Links */}
+          <ul className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+            <li>
+              <a
+                href="/legal/privacy-policy"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal/terms-of-use"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Terms of Use
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal/cookie-policy"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Cookie Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal/community-guidelines"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Community Guidelines
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal/shipping-policy"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Shipping Policy
+              </a>
+            </li>
+            <li>
+              <a
+                href="/legal/seller-agreement"
+                className="hover:text-blue-400 hover:underline"
+              >
+                Seller Agreement
+              </a>
+            </li>
+          </ul>
+
+          {/* Right: Copyright */}
+          <div className="text-center text-xs text-gray-500">
+            © {new Date().getFullYear()}{" "}
+            <span className="text-white">Erovians.</span> All rights reserved.
+          </div>
+        </div>
       </div>
     </footer>
   );

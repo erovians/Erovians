@@ -20,7 +20,7 @@ const SellerDashboardLayout = () => {
         <div className="sticky top-0 z-40">
           <SellerNavbar />
         </div>
-        <main className={`flex-1   p-4 transition-all duration-300`}>
+        <main className={`flex-1 sm:p-4 transition-all duration-300`}>
           {" "}
           {/* overflow-auto removed from the outlet , creating issues in the company profile component specifically*/}
           <Outlet />

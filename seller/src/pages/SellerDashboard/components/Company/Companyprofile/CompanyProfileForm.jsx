@@ -414,7 +414,7 @@ export default function CompanyProfileForm() {
         </div>
       </div>
 
-      <div className="pt-6 md:p-6 ">
+      <div className="p-6 ">
         <CurrentComponent
           formData={formData}
           setFormData={setFormData}

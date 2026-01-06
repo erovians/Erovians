@@ -201,9 +201,6 @@ export default function Teams() {
 
       <div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm flex flex-col h-full">
         <TeamHeader
-          query={query}
-          setQuery={setQuery}
-          filterRole={filterRole}
           setFilterRole={setFilterRole}
           roleOptions={roleOptions}
           setPage={setPage}
@@ -254,7 +251,7 @@ export default function Teams() {
           </div>
 
           {/* MOBILE CARD VIEW */}
-          <div className="sm:hidden flex flex-col gap-4 mt-4">
+          <div className="sm:hidden flex flex-col gap-4 mt-4 max-h-screen">
             {loading ? (
               <p className="text-center py-4 text-gray-500">Loading...</p>
             ) : paginated.length ? (
