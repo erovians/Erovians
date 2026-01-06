@@ -586,7 +586,7 @@ const CompanyHeader = ({ company, yearsInBusiness }) => (
  */
 const Sidebar = ({ activeSection, onSectionChange }) => (
   <aside className="lg:col-span-1">
-    <div className="bg-white rounded-lg shadow-md overflow-hidden lg:sticky lg:top-24">
+    <div className="bg-white sm:rounded-lg shadow-md overflow-hidden lg:sticky lg:top-24">
       <nav
         className="p-2 lg:p-4 overflow-x-auto"
         aria-label="Company section navigation"
@@ -638,7 +638,7 @@ const DetailItem = ({ label, value, highlight = false, className = "" }) => (
  * Company overview section with photos and basic information
  */
 const OverviewSection = ({ companyData, company }) => (
-  <section className="bg-white rounded-lg shadow-md overflow-hidden">
+  <section className="bg-white sm:rounded-lg shadow-md overflow-hidden">
     <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4">
       <h2 className="text-2xl font-bold">COMPANY OVERVIEW</h2>
     </div>
@@ -763,7 +763,7 @@ const ProductCard = ({ product }) => {
 const ProductsSection = ({ products }) => {
   if (!products || products.length === 0) {
     return (
-      <section className="bg-white rounded-lg shadow-md overflow-hidden p-12 text-center">
+      <section className="bg-white sm:rounded-lg shadow-md overflow-hidden p-12 text-center">
         <Award className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <p className="text-gray-500 text-lg">No products available</p>
       </section>
@@ -771,7 +771,7 @@ const ProductsSection = ({ products }) => {
   }
 
   return (
-    <section className="bg-white rounded-lg shadow-md overflow-hidden">
+    <section className="bg-white sm:rounded-lg shadow-md overflow-hidden">
       <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <h2 className="text-xl md:text-2xl font-bold">PRODUCTS</h2>
         <p className="text-xs md:text-sm opacity-90">
@@ -795,7 +795,7 @@ const ProductsSection = ({ products }) => {
  * Production capacity section
  */
 const CapacitySection = ({ factory }) => (
-  <section className="bg-white rounded-lg shadow-md overflow-hidden">
+  <section className="bg-white sm:rounded-lg shadow-md overflow-hidden">
     <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4">
       <h2 className="text-2xl font-bold">PRODUCTION CAPACITY</h2>
     </div>
@@ -824,7 +824,7 @@ const CapacitySection = ({ factory }) => (
  * R&D section
  */
 const RDSection = ({ rndTeam }) => (
-  <section className="bg-white rounded-lg shadow-md overflow-hidden">
+  <section className="bg-white sm:rounded-lg shadow-md overflow-hidden">
     <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4">
       <h2 className="text-2xl font-bold">RESEARCH & DEVELOPMENT</h2>
     </div>
@@ -840,7 +840,7 @@ const RDSection = ({ rndTeam }) => (
  * Trade capabilities section with markets table
  */
 const TradeSection = ({ mainMarkets }) => (
-  <section className="bg-white rounded-lg shadow-md overflow-hidden">
+  <section className="bg-white sm:rounded-lg shadow-md overflow-hidden">
     <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4">
       <h2 className="text-2xl font-bold">TRADE CAPABILITIES</h2>
     </div>
@@ -1037,7 +1037,7 @@ const CompanyOverview = () => {
     <div className="min-h-screen bg-gray-50">
       <CompanyHeader company={company} yearsInBusiness={yearsInBusiness} />
 
-      <main className="max-w-7xl mx-auto py-6 px-4 md:py-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <main className="max-w-7xl mx-auto py-6 md:px-4 md:py-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
         <Sidebar
           activeSection={activeSection}
           onSectionChange={handleSectionChange}
