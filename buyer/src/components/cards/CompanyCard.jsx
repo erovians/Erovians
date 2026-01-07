@@ -30,7 +30,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
   return (
     <div
       onClick={() => onClick(company._id)}
-      className="bg-white w-105 h-125 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer"
+      className="bg-white w-98 h-125 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer "
     >
       {/* Image Section */}
       <div className=" relative  h-56 overflow-hidden bg-gray-200">
