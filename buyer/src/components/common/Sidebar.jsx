@@ -79,7 +79,7 @@ const FilterSection = ({
   children,
   defaultOpen = false,
   isCollapsed,
-  setIsCollapsed, // Add this prop
+  setIsCollapsed,
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -87,7 +87,7 @@ const FilterSection = ({
     return (
       <div
         className="border-b border-gray-200 py-3 px-3 hover:bg-gray-50 transition-colors group relative cursor-pointer"
-        onClick={() => setIsCollapsed(false)} // Add click handler to expand
+        onClick={() => setIsCollapsed(false)}
       >
         <div className="flex items-center justify-center">
           <Icon className="w-5 h-5 text-blue-600" />
