@@ -59,6 +59,50 @@ export const stepOneSchema = z.object({
     .array(z.string())
     .min(1, "Select at least one payment type"),
   languageSpoken: z.array(z.string()).min(1, "Select at least one language"),
+
+  // ================= NEW FIELDS =================
+
+  totalEmployees: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) =>
+      val === "" || val === undefined ? undefined : Number(val)
+    ),
+
+  businessType: z
+    .enum([
+      "manufacturer",
+      "trading company",
+      "distributor",
+      "exporter",
+      "importer",
+      "service provider",
+    ])
+    .optional(),
+
+  factorySize: z.string().optional(),
+
+  factoryCountryOrRegion: z.string().optional(),
+
+  contractManufacturing: z.boolean().optional(),
+
+  numberOfProductionLines: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) =>
+      val === "" || val === undefined ? undefined : Number(val)
+    ),
+
+  annualOutputValue: z.string().optional(),
+
+  rdTeamSize: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) =>
+      val === "" || val === undefined ? undefined : Number(val)
+    ),
+
+  tradeCapabilities: z.array(z.string()).optional(),
 });
 
 // Step 2: Company Introduction

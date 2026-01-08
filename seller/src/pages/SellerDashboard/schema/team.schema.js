@@ -6,5 +6,5 @@ export const teamSchema = z.object({
   mobile: z.string().regex(/^[0-9]{10}$/, "mobile is required"),
   role: z.string().min(1, "Role is required"),
   photoFile: z.any().optional(),
-  photo: z.string().nullable().optional(), 
+  photo: z.string().nullable().optional(),
 });

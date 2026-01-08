@@ -3,40 +3,13 @@ import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      lowercase: true,
-      trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
-    },
-    mobile: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
       unique: true,
-      match: [/^[6-9]\d{9}$/, "Please provide a valid 10-digit mobile number"],
     },
-    isMobileVerified: {
-      type: Boolean,
-      default: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlength: 6,
-      select: false,
-    },
-    role: {
-      type: String,
-      enum: ["admin", "user", "seller"],
-      default: "user",
-    },
-    status: {
-      type: String,
-      enum: ["active", "suspended"],
-      default: "active",
-    },
+
     // Business details
     businessId: {
       type: String,
@@ -54,11 +27,7 @@ const sellerSchema = new mongoose.Schema(
       default: "All",
     },
     // New fields from controller
-    sellername: {
-      type: String,
-      required: [true, "Seller name is required"],
-      trim: true,
-    },
+
     companyregstartionlocation: {
       type: String,
       required: [true, "Company registration location is required"],
@@ -76,17 +45,18 @@ const sellerSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // -----------------______________________________NEW FIELD TO ADD __________________________________________-------------------
+    //  NEW FIELDS (REQUIRED)
     seller_status: {
       type: String,
       enum: ["professional", "Individual"],
+      required: true,
     },
 
     seller_address: {
       type: String,
+      required: true,
+      trim: true,
     },
-
-    // -----------------______________________________NEW FIELD TO ADD__________________________________________-------------------
   },
   { timestamps: true }
 );

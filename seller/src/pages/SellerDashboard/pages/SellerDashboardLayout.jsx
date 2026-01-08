@@ -1,10 +1,16 @@
 import { Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import SellerNavbar from "../common/SellerNavbar";
 import SellerSidebar from "../common/SellerSidebar";
+import { fetchSellerProfile } from "@/redux/slice/sellerSlice";
 
 const SellerDashboardLayout = () => {
   const sidebarOpen = useSelector((state) => state.sidebar.isOpen);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchSellerProfile());
+  }, [dispatch]);
 
   return (
     <div className="flex h-screen bg-gray-50">

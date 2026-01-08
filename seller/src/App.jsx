@@ -99,6 +99,9 @@ function App() {
           >
             <Route path="" element={<SellerDashboardHome />} />
 
+            {/* seller Profile */}
+            <Route path="sellerprofile" element={<SellerProfile />} />
+
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
             <Route path="company/overview" element={<CompanyOverview />} />

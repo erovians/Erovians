@@ -26,6 +26,22 @@ export default function WorkOrders() {
     setLoading(false);
   };
 
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this work order?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/workorder/${id}`);
+      fetchWorkOrders();
+    } catch (err) {
+      console.error("DELETE_ERROR:", err);
+      alert("Failed to delete work order");
+    }
+  };
+
   useEffect(() => {
     fetchWorkOrders();
   }, []);
@@ -101,12 +117,13 @@ export default function WorkOrders() {
       {/* Table Wrapper */}
       <div className="w-full">
         {/* Table Header */}
-        <div className="grid grid-cols-5 xs:grid-cols-[1fr_1fr_1fr_auto_1fr] sm:grid-cols-5 gap-1 text-gray-500 text-[10px] xs:text-xs sm:text-sm px-1 pb-2 sm:pb-3 border-b border-gray-200">
+        <div className="grid grid-cols-6 gap-2 text-gray-500 text-xs sm:text-sm px-2 pb-3 border-b border-gray-200">
           <div>WO</div>
           <div>Order</div>
           <div>Machine</div>
           <div>Status</div>
-          <div>Due</div>
+          <div className="hidden sm:block">Due</div>
+          <div className="text-right">Action</div>
         </div>
 
         {/* Work Orders List */}
@@ -122,21 +139,24 @@ export default function WorkOrders() {
           workOrders.map((item) => (
             <div
               key={item._id}
-              className="grid grid-cols-5 xs:grid-cols-[1fr_1fr_1fr_auto_1fr] sm:grid-cols-5 gap-1 w-full items-center px-1 py-2 sm:px-2 sm:py-3 text-gray-800 border-b border-gray-200 last:border-none"
+              className="grid grid-cols-6 gap-2 items-center px-2 py-3 text-gray-800 border-b border-gray-200"
             >
-              <div className="text-[10px] xs:text-xs sm:text-sm break-words whitespace-normal leading-tight">
+              {/* WO */}
+              <div className="text-xs sm:text-sm break-words">
                 {item.wo_number}
               </div>
 
-              <div className="text-[10px] xs:text-xs sm:text-sm break-words whitespace-normal leading-tight">
+              {/* Order */}
+              <div className="text-xs sm:text-sm break-words">
                 {item.so_number.slice(-10)}
               </div>
 
-              <div className="text-[10px] xs:text-xs sm:text-sm break-words whitespace-normal leading-tight">
+              {/* Machine */}
+              <div className="text-xs sm:text-sm break-words">
                 {item.machine}
               </div>
 
-              {/* Status Badge + Dropdown */}
+              {/* Status */}
               <div className="relative">
                 <span
                   onClick={() =>
@@ -148,34 +168,25 @@ export default function WorkOrders() {
                       )
                     )
                   }
-                  className={`px-1.5 xs:px-2 sm:px-3 py-[1px] xs:py-[2px] text-[8px] xs:text-[9px] sm:text-xs whitespace-normal font-medium rounded-full cursor-pointer
-              ${
-                item.status === "Completed"
-                  ? "bg-green-100 text-green-700 border border-green-300"
-                  : item.status === "Running"
-                  ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
-                  : "bg-gray-100 text-gray-700 border border-gray-300"
-              }`}
+                  className={`inline-block px-3 py-1 text-xs rounded-full cursor-pointer
+          ${
+            item.status === "Completed"
+              ? "bg-green-100 text-green-700"
+              : item.status === "Running"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-gray-100 text-gray-700"
+          }`}
                 >
                   {item.status}
                 </span>
 
                 {item.showStatusMenu && (
-                  <div className="absolute mt-1 bg-white shadow-md border rounded-md z-10 w-20 xs:w-24 sm:w-32">
+                  <div className="absolute z-20 mt-1 bg-white border rounded shadow w-32">
                     {["Planned", "Running", "Completed"].map((s) => (
                       <div
                         key={s}
-                        onClick={() => {
-                          handleStatusUpdate(item._id, s);
-                          setWorkOrders((prev) =>
-                            prev.map((wo) =>
-                              wo._id === item._id
-                                ? { ...wo, showStatusMenu: false }
-                                : wo
-                            )
-                          );
-                        }}
-                        className="px-2 sm:px-3 py-1 text-[9px] xs:text-xs sm:text-sm hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleStatusUpdate(item._id, s)}
+                        className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                       >
                         {s}
                       </div>
@@ -184,8 +195,19 @@ export default function WorkOrders() {
                 )}
               </div>
 
-              <div className="text-[10px] xs:text-xs sm:text-sm text-gray-600 break-words whitespace-normal leading-tight">
-                {item.due_date ? item.due_date.slice(0, 10) : ""}
+              {/* Due (hidden on mobile) */}
+              <div className="hidden sm:block text-sm text-gray-600">
+                {item.due_date?.slice(0, 10)}
+              </div>
+
+              {/* Action */}
+              <div className="flex justify-end">
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))

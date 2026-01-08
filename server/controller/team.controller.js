@@ -1,133 +1,3 @@
-// import TeamMember from "../models/team.model.js";
-// import mongoose from "mongoose";
-// import User from "../models/user.model.js";
-// import CompanyDetails from "../models/company.model.js";
-// import bcrypt from "bcryptjs";
-// /* --------------------- CREATE MEMBER --------------------- */
-// export const addTeamMember = async (req, res) => {
-//   const session = await mongoose.startSession();
-
-//   try {
-//     session.startTransaction();
-
-//     const { name, email, mobile, role, site } = req.body;
-//     const sellerId = req.user.userId;
-
-//     // 1️⃣ Fetch company properly
-//     const company = await CompanyDetails.findOne({ sellerId }).session(session);
-//     if (!company) throw new Error("Company not found");
-
-//     // 2️⃣ Create user first
-//     const newUser = await User.create(
-//       [
-//         {
-//           email,
-//           mobile,
-//           password: "123456", // or generate random
-//           role: "user",
-//           status: "active",
-//         },
-//       ],
-//       { session }
-//     );
-
-//     // 3️⃣ Create team member
-//     const teamMember = await TeamMember.create(
-//       [
-//         {
-//           name,
-//           email,
-//           mobile,
-//           role,
-//           site,
-//           sellerId,
-//           companyId: company._id, // ✔ MUST be ObjectId
-//         },
-//       ],
-//       { session }
-//     );
-
-//     await session.commitTransaction();
-//     session.endSession();
-
-//     res.status(201).json({
-//       success: true,
-//       message: "Team member + user created successfully",
-//       member: teamMember[0],
-//     });
-//   } catch (err) {
-//     await session.abortTransaction();
-//     session.endSession();
-
-//     console.error("Error creating team member + user:", err);
-//     res.status(500).json({
-//       success: false,
-//       message: err.message,
-//     });
-//   }
-// };
-
-// /* --------------------- GET MEMBERS --------------------- */
-// export const getTeamMembers = async (req, res) => {
-//   try {
-//     const members = await TeamMember.find({
-//       sellerId: req.user.userId,
-//     }).sort({ createdAt: -1 });
-
-//     res.status(200).json({ success: true, members });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
-
-// /* --------------------- UPDATE MEMBER --------------------- */
-// export const updateTeamMember = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { name, role, site, lastActive } = req.body;
-
-//     const updated = await TeamMember.findOneAndUpdate(
-//       { _id: id, sellerId: req.user.userId },
-//       { name, role, site, lastActive },
-//       { new: true }
-//     );
-
-//     if (!updated) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Team member not found" });
-//     }
-
-//     res.status(200).json({ success: true, member: updated });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
-
-// /* --------------------- DELETE MEMBER --------------------- */
-// export const deleteTeamMember = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     const deleted = await TeamMember.findOneAndDelete({
-//       _id: id,
-//       sellerId: req.user.userId,
-//     });
-
-//     if (!deleted) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Team member not found" });
-//     }
-
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Member deleted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
-// server/controllers/team.controller.js
 import mongoose from "mongoose";
 import TeamMember from "../models/team.model.js";
 import User from "../models/user.model.js";
@@ -137,6 +7,8 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
 import bcrypt from "bcryptjs";
+import { cache } from "../services/cache.service.js";
+import { resolvePermissions } from "../utils/permission.utils.js";
 
 export const addTeamMember = async (req, res) => {
   const session = await mongoose.startSession();
@@ -144,7 +16,8 @@ export const addTeamMember = async (req, res) => {
   try {
     session.startTransaction();
 
-    const { name, email, mobile, role, site } = req.body;
+    // const { name, email, mobile, role, site } = req.body;
+    const { name, email, mobile, role, site, permission } = req.body;
 
     if (!name || !email || !mobile) {
       throw new Error("name email mobile Required");
@@ -161,6 +34,8 @@ export const addTeamMember = async (req, res) => {
     if (mobileExists) {
       throw new Error("Mobile number already exists");
     }
+
+    const finalPermissions = resolvePermissions(role, permission);
 
     const sellerId = req.user.userId;
 
@@ -198,6 +73,7 @@ export const addTeamMember = async (req, res) => {
           name,
           email,
           mobile,
+          permission: finalPermissions,
           role,
           site,
           sellerId,
@@ -213,7 +89,7 @@ export const addTeamMember = async (req, res) => {
     session.endSession();
 
     // TODO: optionally send invite email with credentials (rawPassword)
-
+    await cache.del(`team:seller:${sellerId}`);
     res.status(201).json({ success: true, member: teamMember });
   } catch (err) {
     await session.abortTransaction();
@@ -233,12 +109,43 @@ export const addTeamMember = async (req, res) => {
   }
 };
 
+// export const getTeamMembers = async (req, res) => {
+//   try {
+//     const members = await TeamMember.find({ sellerId: req.user.userId }).sort({
+//       createdAt: -1,
+//     });
+//     res.json({ success: true, members });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
 export const getTeamMembers = async (req, res) => {
   try {
-    const members = await TeamMember.find({ sellerId: req.user.userId }).sort({
-      createdAt: -1,
+    const sellerId = req.user.userId;
+    const cacheKey = `team:seller:${sellerId}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getTeamMembers:", cacheKey);
+      return res.json({
+        success: true,
+        members: cached,
+        fromCache: true,
+      });
+    }
+
+    const members = await TeamMember.find({ sellerId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    await cache.set(cacheKey, members, 300);
+
+    res.json({
+      success: true,
+      members,
+      fromCache: false,
     });
-    res.json({ success: true, members });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -253,7 +160,8 @@ export const updateTeamMember = async (req, res) => {
     session.startTransaction();
 
     const { id } = req.params;
-    const { name, email, mobile, role, site } = req.body;
+    const { name, email, mobile, role, site, permission } = req.body;
+
     const sellerId = req.user.userId;
 
     const existing = await TeamMember.findOne({ _id: id, sellerId }).session(
@@ -266,6 +174,8 @@ export const updateTeamMember = async (req, res) => {
       if (!uploaded?.secure_url) throw new Error("Photo upload failed");
     }
 
+    const finalPermissions = resolvePermissions(role, permission);
+
     const updated = await TeamMember.findOneAndUpdate(
       { _id: id, sellerId },
       {
@@ -274,6 +184,7 @@ export const updateTeamMember = async (req, res) => {
         mobile,
         role,
         site,
+        permission: finalPermissions,
         photo: uploaded?.secure_url || existing.photo,
         photoPublicId: uploaded?.public_id || existing.photoPublicId,
       },
@@ -298,6 +209,8 @@ export const updateTeamMember = async (req, res) => {
         console.error("Failed to delete old image from cloudinary", e);
       }
     }
+
+    await cache.del(`team:seller:${sellerId}`);
 
     res.json({ success: true, member: updated });
   } catch (err) {
@@ -348,7 +261,7 @@ export const deleteTeamMember = async (req, res) => {
         console.error("Failed to delete photo from cloudinary", e);
       }
     }
-
+    await cache.del(`team:seller:${sellerId}`);
     res.json({ success: true });
   } catch (err) {
     await session.abortTransaction();

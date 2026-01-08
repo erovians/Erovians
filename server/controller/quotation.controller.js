@@ -1,6 +1,7 @@
 import { Quotation } from "../models/quotation.model.js";
 import Product from "../models/product.model.js";
 import Inquiry from "../models/Inquiry.model.js";
+import { cache } from "../services/cache.service.js";
 
 // user will create quotation
 export const createQuotation = async (req, res) => {
@@ -32,6 +33,8 @@ export const createQuotation = async (req, res) => {
       message,
     });
 
+    await cache.del(`quotations:seller:${product.sellerId}`);
+
     res.status(201).json({
       success: true,
       message: "Quotation request sent successfully to the seller.",
@@ -48,6 +51,7 @@ export const createQuotation = async (req, res) => {
 };
 
 //seller will see the quotation
+
 export const getQuotationsBySeller = async (req, res) => {
   try {
     const sellerId = req.user?.userId;
@@ -59,21 +63,35 @@ export const getQuotationsBySeller = async (req, res) => {
       });
     }
 
+    const cacheKey = `quotations:seller:${sellerId}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getQuotationsBySeller:", cacheKey);
+      return res.status(200).json({
+        success: true,
+        quotations: cached,
+        fromCache: true,
+      });
+    }
+
     const quotations = await Quotation.find({ sellerId })
-      // .populate("userId").  BuyerId
       .populate("productId")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
+
+    await cache.set(cacheKey, quotations, 300);
 
     res.status(200).json({
       success: true,
       quotations,
+      fromCache: false,
     });
   } catch (error) {
     console.error("Error fetching quotations:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch quotations.",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

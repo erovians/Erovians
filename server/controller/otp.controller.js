@@ -1,11 +1,14 @@
 import axios from "axios";
 import qs from "qs";
 import Seller from "../models/sellerSingnup.model.js";
+import User from "../models/user.model.js";
 import twilio from "twilio";
+import { cache } from "../services/cache.service.js";
 
-const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
-const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
-const TWILIO_FROM_NUMBER = "+18723169588";
+// const TWILIO_ACCOUNT_SID = "AC793e6f9bc8293350935d4b935abea51b";
+const TWILIO_ACCOUNT_SID = "AC793e6f9bc8293350935d4b935abea51b";
+const TWILIO_AUTH_TOKEN = "3855865237d79e521089f200c6780866";
+const TWILIO_FROM_NUMBER = "+17756444776";
 
 const TWILIO_API_URL = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
 
@@ -21,14 +24,14 @@ export const sendOtp = async (req, res) => {
     return res.status(400).json({ message: "Mobile number is required" });
 
   try {
-    const seller = await Seller.findOne({ mobile });
+    const seller = await User.findOne({ mobile });
     if (seller) {
       return res.status(409).json({ message: "Mobile already exists" });
     } else {
       const otp = generateOTP();
 
       const data = {
-        To: `+91${mobile}`, // assuming Indian numbers
+        To: `+91${mobile}`,
         From: TWILIO_FROM_NUMBER,
         Body: `Your OTP is ${otp}`,
       };
