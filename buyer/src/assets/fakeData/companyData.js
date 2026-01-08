@@ -30,8 +30,8 @@ const companiesData = [
         "Raj Mahal Marbles & Granites is a premier supplier of high-quality natural stones with over 8 years of experience in the industry. We specialize in Indian marble, granite, and sandstone, sourced directly from the finest quarries in Rajasthan. Our commitment to quality and customer satisfaction has made us a trusted name in the marble industry across India and internationally.",
       companyPhotos: [
         "https://tileswale.com/uploads/blog/163939592016_8799_33748.jpg",
-        "https://example.com/photos/rajmahal-showroom.jpg",
-        "https://example.com/photos/rajmahal-products.jpg",
+        "https://tileswale.com/uploads/blog/163939529157_4852_512855.png",
+        "https://tileswale.com/uploads/blog/163939624962_7930_690524.jpg",
       ],
       companyVideos: ["https://example.com/videos/rajmahal-tour.mp4"],
     },
@@ -65,7 +65,7 @@ const companiesData = [
         "Imperial Stones International is a leading exporter of premium Indian granites with more than a decade of experience. We operate our own quarries and processing facilities, ensuring complete control over quality from extraction to final polish. Our extensive range includes Black Galaxy, Tan Brown, Kashmir White, and many other exotic granite varieties that are shipped to over 30 countries worldwide.",
       companyPhotos: [
         "https://tileswale.com/uploads/blog/163939529157_4852_512855.png",
-        "https://example.com/photos/imperial-quarry.jpg",
+        "https://tileswale.com/uploads/blog/163939592016_8799_33748.jpg",
         "https://example.com/photos/imperial-warehouse.jpg",
         "https://example.com/photos/imperial-products.jpg",
       ],
@@ -109,7 +109,7 @@ const companiesData = [
         "South India Granites & Exports has been a pioneer in the natural stone industry since 2010, specializing in both natural and engineered stones. With state-of-the-art processing facilities in Bangalore and strong relationships with quarry owners across South India, we offer an unmatched variety of granite, marble, and quartz surfaces. Our commitment to sustainability and ethical sourcing sets us apart in the industry.",
       companyPhotos: [
         "https://tileswale.com/uploads/blog/163939624962_7930_690524.jpg",
-        "https://example.com/photos/southindia-showroom.jpg",
+        "https://tileswale.com/uploads/blog/163939592016_8799_33748.jpg",
         "https://example.com/photos/southindia-products1.jpg",
       ],
       companyVideos: [],

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Search,
@@ -74,6 +74,14 @@ export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isSidebarOpen]);
   const navigate = useNavigate();
 
   const isAuthenticated = true;
@@ -85,7 +93,7 @@ export default function Header() {
         isMobileVerified: true,
         profileURL: "",
         role: "user",
-        isSeller: false,
+        isSeller: true,
         sellerId: null,
       }
     : null;

@@ -40,7 +40,7 @@ const FilterPillsBar = ({ activeFilters, onPillClick }) => {
   };
 
   return (
-    <div className="fixed mt-14 top-[80px] left-0 right-0 bg-white border-b border-gray-200 z-30 lg:hidden shadow-sm">
+    <div className="fixed mt-14 top-20 left-0 right-0 bg-white border-b border-gray-200 z-30 lg:hidden shadow-sm">
       <div className="overflow-x-auto hide-scrollbar">
         <div className="flex gap-2 px-4 py-3 min-w-max">
           {filterPills.map((pill) => {
@@ -50,7 +50,7 @@ const FilterPillsBar = ({ activeFilters, onPillClick }) => {
               <button
                 key={pill.id}
                 onClick={() => onPillClick(pill.id)}
-                className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-full hover:border-navyblue hover:bg-blue-50 transition-all"
+                className="shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-full hover:border-navyblue hover:bg-blue-50 transition-all"
               >
                 <Icon className="w-4 h-4 text-gray-600" />
                 <span className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">

@@ -1,34 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { MapPin, Calendar, Package, BadgeCheck } from "lucide-react";
 import {
-  MapPin,
-  Calendar,
-  Package,
-  BadgeCheck,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 const CompanyCard = ({ company, seller }) => {
+  console.log(company);
   const { companyBasicInfo, companyIntro, _id } = company;
   const { companyName, address, mainCategory, subCategory } = companyBasicInfo;
   const { logo, companyPhotos } = companyIntro;
 
-  // Carousel state
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageLoadingStates, setImageLoadingStates] = useState({});
+
   const images =
     companyPhotos?.length > 0
       ? companyPhotos
       : ["https://via.placeholder.com/800x400"];
-
-  // Auto-play carousel for desktop (every 3 seconds)
-  useEffect(() => {
-    if (images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [images.length]);
 
   // Get verification badge
   const getVerificationBadge = () => {
@@ -50,23 +42,8 @@ const CompanyCard = ({ company, seller }) => {
     return null;
   };
 
-  // Carousel navigation
-  const goToNext = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const goToPrevious = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  const goToSlide = (index, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex(index);
+  const handleImageLoad = (index) => {
+    setImageLoadingStates((prev) => ({ ...prev, [index]: true }));
   };
 
   return (
@@ -75,32 +52,49 @@ const CompanyCard = ({ company, seller }) => {
           DESKTOP VIEW - Image Carousel
           ======================================== */}
       <div className="hidden lg:block relative h-48 overflow-hidden bg-gray-200">
-        {/* Carousel Images */}
-        <div className="relative w-full h-full">
-          <img
-            src={images[currentImageIndex]}
-            alt={`${companyName} - Image ${currentImageIndex + 1}`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          plugins={[
+            Autoplay({
+              delay: 3000,
+            }),
+          ]}
+          className="w-full h-full"
+        >
+          <CarouselContent className="h-48">
+            {images.map((image, index) => (
+              <CarouselItem key={index} className="h-48">
+                <div className="relative w-full h-full">
+                  {/* Loading Skeleton */}
+                  {!imageLoadingStates[index] && (
+                    <div className="absolute inset-0 bg-gray-300 animate-pulse" />
+                  )}
 
-        {/* Carousel Navigation Buttons */}
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={goToPrevious}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
-            >
-              <ChevronLeft className="w-4 h-4 text-gray-800" />
-            </button>
-            <button
-              onClick={goToNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
-            >
-              <ChevronRight className="w-4 h-4 text-gray-800" />
-            </button>
-          </>
-        )}
+                  <img
+                    src={image}
+                    alt={`${companyName} - Image ${index + 1}`}
+                    className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+                      imageLoadingStates[index] ? "opacity-100" : "opacity-0"
+                    }`}
+                    onLoad={() => handleImageLoad(index)}
+                    loading="lazy"
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <CarouselPrevious className="left-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CarouselNext className="right-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </>
+          )}
+        </Carousel>
 
         {/* Verification Badge */}
         <div className="absolute top-3 right-3 z-10">
@@ -114,22 +108,18 @@ const CompanyCard = ({ company, seller }) => {
               src={logo}
               alt={`${companyName} logo`}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
         )}
 
-        {/* Carousel Dots */}
+        {/* Carousel Dots Indicator */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full z-10">
             {images.map((_, index) => (
-              <button
+              <div
                 key={index}
-                onClick={(e) => goToSlide(index, e)}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  index === currentImageIndex
-                    ? "bg-white w-4"
-                    : "bg-white/60 hover:bg-white/80"
-                }`}
+                className="w-1.5 h-1.5 rounded-full bg-white/60"
               />
             ))}
           </div>
@@ -155,12 +145,13 @@ const CompanyCard = ({ company, seller }) => {
         {/* Main Categories */}
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Package className="w-4 h-4 text-gray-500" />
-            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+            {/*  */}
+            {/* <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
               Main Categories
-            </span>
+            </span> */}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 items-center">
+            <Package className="w-4 h-4 text-gray-500" />
             {mainCategory.map((cat, idx) => (
               <span
                 key={idx}
@@ -175,16 +166,16 @@ const CompanyCard = ({ company, seller }) => {
         {/* Sub Categories */}
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Package className="w-4 h-4 text-gray-500" />
-            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+            {/* <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
               Sub Categories
-            </span>
+            </span> */}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 items-center line-clamp-2">
+            <Package className="w-4 h-4 text-gray-500" />
             {subCategory.map((subCat, idx) => (
               <span
                 key={idx}
-                className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs capitalize"
+                className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs capitalize line-clamp-1"
               >
                 {subCat}
               </span>
@@ -230,6 +221,7 @@ const CompanyCard = ({ company, seller }) => {
                 src={logo}
                 alt={`${companyName} logo`}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             ) : (
               <div className="w-full h-full bg-navyblue/10 flex items-center justify-center">
