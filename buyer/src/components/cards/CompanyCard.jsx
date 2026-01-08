@@ -1,48 +1,115 @@
-import React from "react";
-import { MapPin, Calendar, Package, BadgeCheck } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  MapPin,
+  Calendar,
+  Package,
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-const CompanyCard = ({ company, seller, onClick }) => {
-  const { companyBasicInfo, companyIntro, createdAt } = company;
-
+const CompanyCard = ({ company, seller }) => {
+  const { companyBasicInfo, companyIntro, _id } = company;
   const { companyName, address, mainCategory, subCategory } = companyBasicInfo;
-  const { logo, companyDescription, companyPhotos } = companyIntro;
+  const { logo, companyPhotos } = companyIntro;
 
-  // Get verification badge color
+  // Carousel state
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images =
+    companyPhotos?.length > 0
+      ? companyPhotos
+      : ["https://via.placeholder.com/800x400"];
+
+  // Auto-play carousel for desktop (every 3 seconds)
+  useEffect(() => {
+    if (images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [images.length]);
+
+  // Get verification badge
   const getVerificationBadge = () => {
     if (seller.varificationStatus === "Approved") {
       return (
-        <div className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+        <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
           <BadgeCheck className="w-3 h-3" />
-          Verified
+          <span className="hidden sm:inline">Verified</span>
         </div>
       );
     } else if (seller.varificationStatus === "Pending") {
       return (
-        <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">
+        <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">
           <BadgeCheck className="w-3 h-3" />
-          Pending
+          <span className="hidden sm:inline">Pending</span>
         </div>
       );
     }
     return null;
   };
 
+  // Carousel navigation
+  const goToNext = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const goToPrevious = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToSlide = (index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex(index);
+  };
+
   return (
-    <div
-      onClick={() => onClick(company._id)}
-      className="bg-white w-105 h-125 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer"
-    >
-      {/* Image Section */}
-      <div className=" relative  h-56 overflow-hidden bg-gray-200">
-        <img
-          src={companyPhotos[0] || "https://via.placeholder.com/800x400"}
-          alt={companyName}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-4 right-4">{getVerificationBadge()}</div>
+    <div className="block bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer">
+      {/* ========================================
+          DESKTOP VIEW - Image Carousel
+          ======================================== */}
+      <div className="hidden lg:block relative h-48 overflow-hidden bg-gray-200">
+        {/* Carousel Images */}
+        <div className="relative w-full h-full">
+          <img
+            src={images[currentImageIndex]}
+            alt={`${companyName} - Image ${currentImageIndex + 1}`}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+
+        {/* Carousel Navigation Buttons */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={goToPrevious}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+            >
+              <ChevronLeft className="w-4 h-4 text-gray-800" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+            >
+              <ChevronRight className="w-4 h-4 text-gray-800" />
+            </button>
+          </>
+        )}
+
+        {/* Verification Badge */}
+        <div className="absolute top-3 right-3 z-10">
+          {getVerificationBadge()}
+        </div>
+
         {/* Logo Overlay */}
         {logo && (
-          <div className="absolute bottom-4 left-4 w-16 h-16 bg-white rounded-lg shadow-lg border-2 border-white overflow-hidden">
+          <div className="absolute bottom-3 left-3 w-16 h-16 bg-white rounded-lg shadow-lg border-2 border-white overflow-hidden">
             <img
               src={logo}
               alt={`${companyName} logo`}
@@ -50,36 +117,43 @@ const CompanyCard = ({ company, seller, onClick }) => {
             />
           </div>
         )}
+
+        {/* Carousel Dots */}
+        {images.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={(e) => goToSlide(index, e)}
+                className={`w-1.5 h-1.5 rounded-full transition-all ${
+                  index === currentImageIndex
+                    ? "bg-white w-4"
+                    : "bg-white/60 hover:bg-white/80"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Content Section */}
-      <div className="p-6">
+      {/* Desktop Content */}
+      <div className="hidden lg:flex flex-col p-4 space-y-3">
         {/* Company Name & Location */}
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-navyblue transition-colors">
             {companyName}
           </h3>
           <div className="flex items-start gap-2 text-gray-600 text-sm">
             <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-            <span className="line-clamp-1">
-              {address.city}, {address.stateOrProvince},{" "}
-              {address.countryOrRegion}
+            <span className="line-clamp-2">
+              {address.street}, {address.city}, {address.stateOrProvince},{" "}
+              {address.countryOrRegion} - {address.postalCode}
             </span>
           </div>
         </div>
 
-        {/* Description */}
-        {/* <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-          {companyDescription}
-          {companyDescription && companyDescription.length > 100 && (
-            <span className="text-blue-600 hover:text-blue-700 font-medium ml-1 cursor-pointer">
-              Read more
-            </span>
-          )}
-        </p> */}
-
         {/* Main Categories */}
-        <div className="mb-4">
+        <div>
           <div className="flex items-center gap-2 mb-2">
             <Package className="w-4 h-4 text-gray-500" />
             <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
@@ -90,7 +164,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
             {mainCategory.map((cat, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize"
+                className="px-3 py-1 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
               >
                 {cat}
               </span>
@@ -99,9 +173,15 @@ const CompanyCard = ({ company, seller, onClick }) => {
         </div>
 
         {/* Sub Categories */}
-        <div className="mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Package className="w-4 h-4 text-gray-500" />
+            <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+              Sub Categories
+            </span>
+          </div>
           <div className="flex flex-wrap gap-2">
-            {subCategory.slice(0, 4).map((subCat, idx) => (
+            {subCategory.map((subCat, idx) => (
               <span
                 key={idx}
                 className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs capitalize"
@@ -109,33 +189,124 @@ const CompanyCard = ({ company, seller, onClick }) => {
                 {subCat}
               </span>
             ))}
-            {subCategory.length > 4 && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-500 rounded text-xs">
-                +{subCategory.length - 4} more
-              </span>
-            )}
           </div>
         </div>
 
         {/* Footer - Seller Info & Meta */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+            <div className="w-8 h-8 bg-gradient-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
               {seller.sellername.charAt(0)}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-gray-900 line-clamp-1">
                 {seller.sellername}
               </p>
-              <p className="text-xs text-gray-500">
-                {seller.companyregstartionlocation}
+              <p className="text-xs text-gray-500 line-clamp-1">
+                {seller.companyregstartionlocation} {seller.seller_status}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-1 text-gray-500 text-xs">
             <Calendar className="w-3 h-3" />
-            <span>Est. {companyBasicInfo.companyRegistrationYear}</span>
+            <span className="whitespace-nowrap">
+              Est. {companyBasicInfo.companyRegistrationYear}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================
+          MOBILE VIEW - Split Layout
+          ======================================== */}
+      <div className="lg:hidden">
+        {/* Top Section: Logo + Company Info */}
+        <div className="flex border-b border-gray-200">
+          {/* LEFT: Company Logo - FULL COVER */}
+          <div className="w-32 h-32 shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 border-r border-gray-200 overflow-hidden">
+            {logo ? (
+              <img
+                src={logo}
+                alt={`${companyName} logo`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-navyblue/10 flex items-center justify-center">
+                <Package className="w-8 h-8 text-navyblue" />
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: Company Information */}
+          <div className="flex-1 p-3 flex flex-col gap-2">
+            {/* Company Name + Badge */}
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-navyblue transition-colors flex-1">
+                {companyName}
+              </h3>
+              {getVerificationBadge()}
+            </div>
+
+            {/* Location - State + Country ONLY */}
+            <div className="flex items-start gap-1 text-gray-600 text-xs">
+              <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
+              <span className="line-clamp-1">
+                {address.stateOrProvince}, {address.countryOrRegion}
+              </span>
+            </div>
+
+            {/* Main Categories */}
+            <div className="flex flex-wrap gap-1">
+              {mainCategory.map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
+
+            {/* Sub Categories - RIGHT SIDE ME */}
+            <div className="flex flex-wrap gap-1">
+              {subCategory.map((subCat, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs capitalize"
+                >
+                  {subCat}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section: Seller Information */}
+        <div className="p-3 bg-gray-50">
+          <div className="flex items-center justify-between">
+            {/* Seller Info */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="w-7 h-7 bg-gradient-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
+                {seller.sellername.charAt(0)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-gray-900 line-clamp-1">
+                  {seller.sellername} ({seller.seller_status})
+                </p>
+                <p className="text-xs text-gray-500 line-clamp-1">
+                  {seller.companyregstartionlocation}
+                </p>
+              </div>
+            </div>
+
+            {/* Registration Year */}
+            <div className="flex items-center gap-1 text-gray-500 text-xs shrink-0 ml-2">
+              <Calendar className="w-3 h-3" />
+              <span className="whitespace-nowrap">
+                {companyBasicInfo.companyRegistrationYear}
+              </span>
+            </div>
           </div>
         </div>
       </div>
