@@ -183,11 +183,7 @@ export default function Teams() {
   const totalPages = Math.max(Math.ceil(filtered.length / pageSize), 1);
 
   return (
-<<<<<<< HEAD
     <div className="max-w-full max-h-screen sm:p-6">
-=======
-    <div className="p-6 border sm:h-[85vh]">
->>>>>>> sandeepcode
       {modalOpen && (
         <TeamModal
           form={form}
@@ -202,12 +198,7 @@ export default function Teams() {
           setSaving={setSaving}
         />
       )}
-<<<<<<< HEAD
       <div className="bg-white border sm:rounded-xl p-4 sm:p-6 shadow-sm">
-=======
-
-      <div className="bg-white border rounded-xl p-4 sm:p-6 shadow-sm flex flex-col h-full">
->>>>>>> sandeepcode
         <TeamHeader
           setFilterRole={setFilterRole}
           roleOptions={roleOptions}
@@ -215,12 +206,7 @@ export default function Teams() {
           openAddModal={openAddModal}
         />
 
-<<<<<<< HEAD
         <div className="mt-4 max-h-screen">
-=======
-        {/* MAIN CONTENT SCROLL AREA */}
-        <div className="mt-4 flex flex-col flex-1 overflow-x-auto ">
->>>>>>> sandeepcode
           {/* DESKTOP & TABLET TABLE */}
           <div className="hidden sm:block overflow-x-auto overflow-y-auto h-full ">
             <table className="min-w-full table-auto text-sm">
