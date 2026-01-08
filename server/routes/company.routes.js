@@ -2,6 +2,7 @@ import express from "express";
 import {
   registerCompany,
   getCompanyDetails,
+  getCompanyFullDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
@@ -24,6 +25,7 @@ router.post(
   registerCompany
 );
 router.get("/details", verifyUser, getCompanyDetails);
+router.get("/new/company/:id", getCompanyFullDetails);
 
 router.post(
   "/upload",

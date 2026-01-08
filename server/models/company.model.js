@@ -132,7 +132,7 @@ const CompanyDataSchema = new mongoose.Schema(
   {
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "seller",
+      ref: "User",
       required: true,
     },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },

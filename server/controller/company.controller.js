@@ -4,6 +4,8 @@ import {
 } from "../services/company.service.js";
 import CompanyDetails from "../models/company.model.js";
 import { cache } from "../services/cache.service.js";
+import mongoose from "mongoose";
+import Seller from "../models/sellerSingnup.model.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -101,7 +103,7 @@ export const getCompanyDetails = async (req, res) => {
           message: "Company not found for this seller ",
         });
       }
-
+      console.log("company details", company);
       companyId = company._id;
     } else {
       sellerId = req.query.sellerId;
@@ -147,6 +149,113 @@ export const getCompanyDetails = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// export const getCompanyFullDetails = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid id",
+//       });
+//     }
+
+//     /* ================= COMPANY + USER ================= */
+//     const company = await CompanyDetails.findById(id)
+//       .populate({
+//         path: "sellerId", // userId
+//         select: "name email mobile profileURL role status",
+//       })
+//       .lean();
+
+//     if (!company) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Company not found",
+//       });
+//     }
+
+//     /* ================= SELLER ================= */
+//     const userId = company.sellerId?._id;
+
+//     const seller = await Seller.findOne({ userId }).select("-__v").lean();
+
+//     return res.status(200).json({
+//       success: true,
+//       data: {
+//         company,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("❌ getCompanyFullDetails error:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
+
+export const getCompanyFullDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    /* ================= VALIDATION ================= */
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid company id",
+      });
+    }
+
+    /* ================= COMPANY + USER ================= */
+    const company = await CompanyDetails.findById(id)
+      .populate({
+        path: "sellerId", // userId reference
+        select: "name email mobile profileURL role status",
+      })
+      .select("-__v")
+      .lean();
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+
+    /* ================= SELLER ================= */
+    const userId = company?.sellerId?._id;
+
+    let seller = null;
+    if (userId) {
+      seller = await Seller.findOne({ userId })
+        .select("-__v -updatedAt")
+        .lean();
+    }
+
+    /* ================= RESPONSE SHAPING ================= */
+    return res.status(200).json({
+      success: true,
+      data: {
+        company: {
+          ...company,
+          seller, // attach seller safely
+        },
+      },
+    });
+  } catch (error) {
+    console.error("❌ getCompanyFullDetails:", {
+      message: error.message,
+      stack: error.stack,
+    });
+
     return res.status(500).json({
       success: false,
       message: "Internal server error",
