@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SellerProfile from "./SellerProfile";
+import SellerProfile from "./SellerCompanyProfile";
 import { useNavigate } from "react-router-dom";
 import api from "@/utils/axios.utils";
 
@@ -74,7 +74,7 @@ export default function Dashboard() {
           title="REVENUE (CURRENT MONTH)"
           value={`₹ ${totalamount.toLocaleString("en-IN")}`}
         />
-        <Card title="MARGIN (MONTH)" value="28.4%" />
+        <Card title="MARGIN (MONTH)" value="0" />
         <Card title="PENDING ORDERS" value={pendingOrders} button="Follow-up" />
         <Card
           title="Completed ORDERS"
@@ -179,7 +179,7 @@ export default function Dashboard() {
           className="bg-white rounded-xl border border-gray-300 
                   p-4 sm:p-5 md:p-6 
                   flex flex-col shadow-sm hover:shadow-md transition-all 
-                  h-auto lg:h-full"
+                  h-auto lg:h-full "
         >
           <SellerProfile />
         </div>

@@ -5,6 +5,7 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
 import mongoose from "mongoose";
+import { cache } from "../services/cache.service.js";
 
 // ✅ Add Product
 export const addProductService = async (data, files, sellerId, companyId) => {
@@ -115,16 +116,18 @@ export const addProductService = async (data, files, sellerId, companyId) => {
 // ✅ List All Products
 export const listAllProductsService = async (query, user) => {
   const { category, subCategory, search, status } = query;
-  const filter = {};
 
-  if (user.role === "seller") {
+  const filter = {};
+  const roles = user.role || [];
+
+  if (roles.includes("seller")) {
     // Seller dashboard → ignore any sellerId/companyId from frontend
     const company = await Company.findOne({ sellerId: user.userId });
     if (!company) throw new Error("Seller company not found");
 
     filter.sellerId = user.userId;
     filter.companyId = company._id;
-  } else if (user.role === "buyer" || user.role === "admin" || user.role === "public") {
+  } else if (user.role === "user" || user.role === "superadmin") {
     // Buyer/Admin → frontend must pass sellerId or companyId
     const { sellerId, companyId } = query;
     if (sellerId) filter.sellerId = sellerId;
@@ -154,11 +157,27 @@ export const updateProductStatusService = async (productId, status) => {
     throw new Error("Invalid status. Must be 'active' or 'inactive'.");
   }
 
-  return await Product.findByIdAndUpdate(
+  // return await Product.findByIdAndUpdate(
+  //   productId,
+  //   { $set: { status } },
+  //   { new: true, runValidators: true }
+  // );
+  const updatedProduct = await Product.findByIdAndUpdate(
     productId,
     { $set: { status } },
     { new: true, runValidators: true }
   );
+
+  if (!updatedProduct) throw new Error("Product not found");
+
+  await cache.del(`product:view:${productId}`);
+  await cache.del(`product:view:${productId}:active`);
+  await cache.del(`products:seller:${updatedProduct.sellerId}`);
+  await cache.clearPattern("products:list:*");
+
+  await cache.del(`company:${updatedProduct.companyId}`);
+
+  return updatedProduct;
 };
 
 // ✅ Delete Product

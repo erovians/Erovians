@@ -112,22 +112,43 @@ import Stock from "../models/stocks.model.js";
 import { success } from "zod";
 import CompanyDetails from "../models/company.model.js";
 import Product from "../models/product.model.js";
+import { cache } from "../services/cache.service.js";
 
 // ✅ Get Stocks (Optimized, Lean)
 export const getStocks = async (req, res) => {
   const sellerId = req.user.userId;
 
   try {
+    const cacheKey = `stocks:seller:${sellerId}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      console.log("🔥 Redis HIT getStocks:", cacheKey);
+      return res.json({
+        success: true,
+        stocks: cached,
+        fromCache: true,
+      });
+    }
+
     const stocks = await Stock.find({ sellerId })
       .sort({ createdAt: -1 })
       .lean();
-    res.json(stocks);
 
     if (!stocks) {
-      res
-        .status(404)
-        .json({ success: false, message: "stocks not found for this seller" });
+      return res.status(404).json({
+        success: false,
+        message: "stocks not found for this seller",
+      });
     }
+
+    await cache.set(cacheKey, stocks, 300); // 5 minutes
+
+    res.json({
+      success: true,
+      stocks,
+      fromCache: false,
+    });
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch stocks" });
   }
@@ -174,6 +195,7 @@ export const createStock = async (req, res) => {
       sellerId,
       companyId,
     });
+    await cache.del(`stocks:seller:${sellerId}`);
 
     res.json({ success: true, stock });
   } catch (err) {
@@ -310,7 +332,6 @@ export const exportStocks = async (req, res) => {
 // };
 // assumes you have: import fs from "fs"; import ExcelJS from "exceljs";
 // and Product model imported: import Product from "@/models/Product";
-
 export const importStocks = async (req, res) => {
   try {
     const sellerId = req.user?.userId;
@@ -454,6 +475,8 @@ export const importStocks = async (req, res) => {
     fs.unlink(filePath, (err) => {
       if (err) console.error("Failed to delete uploaded file", filePath, err);
     });
+
+    await cache.del(`stocks:seller:${sellerId}`);
 
     // Response with detailed report
     return res.json({

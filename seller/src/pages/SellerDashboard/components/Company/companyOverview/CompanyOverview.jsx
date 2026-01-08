@@ -398,10 +398,7 @@
 
 // export default CompanyOverview;
 
-
-
-//best *************** appproch and latest approch 
-
+//best *************** appproch and latest approch
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -682,10 +679,7 @@ const OverviewSection = ({ companyData, company }) => (
           highlight
         />
         <DetailItem label="Total Employees" value={companyData.employees} />
-        <DetailItem
-          label="Total Annual Revenue"
-          value={companyData.revenue}
-        />
+        <DetailItem label="Total Annual Revenue" value={companyData.revenue} />
         <DetailItem
           label="Year Established"
           value={companyData.yearEstablished}
@@ -781,7 +775,8 @@ const ProductsSection = ({ products }) => {
       <div className="bg-gradient-to-r from-gray-700 to-gray-600 text-white px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <h2 className="text-xl md:text-2xl font-bold">PRODUCTS</h2>
         <p className="text-xs md:text-sm opacity-90">
-          Showing {products.length} {products.length === 1 ? "product" : "products"}
+          Showing {products.length}{" "}
+          {products.length === 1 ? "product" : "products"}
         </p>
       </div>
 
@@ -916,29 +911,90 @@ const CompanyOverview = () => {
   }, [dispatch]);
 
   // Memoize company data transformation
+  // const companyData = useMemo(() => {
+  //   if (!company) return DEFAULT_COMPANY_DATA;
+
+  //   return {
+  //     name: company.companyBasicInfo?.companyName || DEFAULT_COMPANY_DATA.name,
+  //     verified: company.verified ?? false,
+  //     yearEstablished:
+  //       company.companyBasicInfo?.companyRegistrationYear ||
+  //       DEFAULT_COMPANY_DATA.yearEstablished,
+  //     location:
+  //       company.companyBasicInfo?.locationOfRegistration ||
+  //       DEFAULT_COMPANY_DATA.location,
+  //     employees: DEFAULT_COMPANY_DATA.employees,
+  //     businessType: DEFAULT_COMPANY_DATA.businessType,
+  //     revenue: DEFAULT_COMPANY_DATA.revenue,
+  //     description:
+  //       company.companyIntro?.companyDescription ||
+  //       DEFAULT_COMPANY_DATA.description,
+  //     mainProducts:
+  //       company.companyBasicInfo?.subCategory ||
+  //       DEFAULT_COMPANY_DATA.mainProducts,
+  //     mainMarkets: DEFAULT_COMPANY_DATA.mainMarkets,
+  //     factory: DEFAULT_COMPANY_DATA.factory,
+  //     rndTeam: DEFAULT_COMPANY_DATA.rndTeam,
+  //   };
+  // }, [company]);
+
   const companyData = useMemo(() => {
     if (!company) return DEFAULT_COMPANY_DATA;
 
+    const basic = company.companyBasicInfo || {};
+
     return {
-      name: company.companyBasicInfo?.companyName || DEFAULT_COMPANY_DATA.name,
+      name: basic.companyName || DEFAULT_COMPANY_DATA.name,
+
       verified: company.verified ?? false,
-      yearEstablished:
-        company.companyBasicInfo?.companyRegistrationYear ||
-        DEFAULT_COMPANY_DATA.yearEstablished,
-      location:
-        company.companyBasicInfo?.locationOfRegistration ||
-        DEFAULT_COMPANY_DATA.location,
-      employees: DEFAULT_COMPANY_DATA.employees,
-      businessType: DEFAULT_COMPANY_DATA.businessType,
-      revenue: DEFAULT_COMPANY_DATA.revenue,
+
+      yearEstablished: basic.companyRegistrationYear
+        ? new Date(basic.companyRegistrationYear).getFullYear()
+        : DEFAULT_COMPANY_DATA.yearEstablished,
+
+      location: basic.locationOfRegistration || DEFAULT_COMPANY_DATA.location,
+
+      employees:
+        basic.totalEmployees !== undefined
+          ? basic.totalEmployees
+          : DEFAULT_COMPANY_DATA.employees,
+
+      businessType: basic.businessType || DEFAULT_COMPANY_DATA.businessType,
+
+      revenue: basic.annualOutputValue || DEFAULT_COMPANY_DATA.revenue,
+
       description:
         company.companyIntro?.companyDescription ||
         DEFAULT_COMPANY_DATA.description,
-      mainProducts:
-        company.companyBasicInfo?.subCategory || DEFAULT_COMPANY_DATA.mainProducts,
-      mainMarkets: DEFAULT_COMPANY_DATA.mainMarkets,
-      factory: DEFAULT_COMPANY_DATA.factory,
-      rndTeam: DEFAULT_COMPANY_DATA.rndTeam,
+
+      mainProducts: basic.subCategory || DEFAULT_COMPANY_DATA.mainProducts,
+
+      mainMarkets:
+        basic.tradeCapabilities?.map((cap) => ({
+          region: cap,
+          percentage: "—",
+        })) || [],
+
+      factory: {
+        size: basic.factorySize || DEFAULT_COMPANY_DATA.factory.size,
+        location:
+          basic.factoryCountryOrRegion || DEFAULT_COMPANY_DATA.factory.location,
+
+        productionLines:
+          basic.numberOfProductionLines ??
+          DEFAULT_COMPANY_DATA.factory.productionLines,
+
+        contractManufacturing:
+          basic.contractManufacturing === true ? "Yes" : "No",
+
+        annualOutput:
+          basic.annualOutputValue || DEFAULT_COMPANY_DATA.factory.annualOutput,
+      },
+
+      rndTeam:
+        basic.rdTeamSize !== undefined
+          ? basic.rdTeamSize
+          : DEFAULT_COMPANY_DATA.rndTeam,
     };
   }, [company]);
 
@@ -974,12 +1030,7 @@ const CompanyOverview = () => {
 
   // No company data
   if (!company) {
-    return (
-      <ErrorState
-        error="No company data found"
-        onRetry={handleRetry}
-      />
-    );
+    return <ErrorState error="No company data found" onRetry={handleRetry} />;
   }
 
   return (

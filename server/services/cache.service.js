@@ -1,7 +1,6 @@
 import client from "../utils/redis.utils.js";
 
 export const cache = {
-  // GET KEY
   async get(key) {
     try {
       const value = await client.get(key);
@@ -20,7 +19,6 @@ export const cache = {
     }
   },
 
-  // DELETE A KEY
   async del(key) {
     try {
       await client.del(key);
@@ -29,7 +27,6 @@ export const cache = {
     }
   },
 
-  // DELETE MULTIPLE KEYS USING PATTERN
   async clearPattern(pattern) {
     try {
       const keys = await client.keys(pattern);
@@ -39,5 +36,9 @@ export const cache = {
     } catch (err) {
       console.error("Redis Clear Pattern Error:", err);
     }
+  },
+
+  async incr(key) {
+    return await client.incr(key);
   },
 };

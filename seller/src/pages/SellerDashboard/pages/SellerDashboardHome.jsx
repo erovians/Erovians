@@ -37,7 +37,7 @@
 
 import React from "react";
 import Dashboard from "../components/Home/SellerTotal";
-import SellerProfile from "../components/Home/SellerProfile";
+import SellerProfile from "../components/Home/SellerCompanyProfile";
 import SellerChart from "../components/Home/SellerChart";
 import SellerPieChart from "../components/Home/SellerPieChart";
 

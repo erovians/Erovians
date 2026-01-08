@@ -692,6 +692,25 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+const BUSINESS_TYPES = [
+  "manufacturer",
+  "trading company",
+  "distributor",
+  "exporter",
+  "importer",
+  "service provider",
+];
+
+const TRADE_CAPABILITIES = [
+  "OEM",
+  "ODM",
+  "Private Label",
+  "Custom Manufacturing",
+  "Wholesale",
+  "Retail",
+  "Dropshipping",
+];
+
 // ============================================================================
 // CONSTANTS - Extract for maintainability and reusability
 // ============================================================================
@@ -760,6 +779,19 @@ const DEFAULT_FORM_DATA = {
   acceptedCurrency: [],
   acceptedPaymentType: [],
   languageSpoken: [],
+
+  // 🔥 NEW FIELDS
+  totalEmployees: "",
+  businessType: "",
+
+  factorySize: "",
+  factoryCountryOrRegion: "",
+  contractManufacturing: false,
+  numberOfProductionLines: "",
+  annualOutputValue: "",
+
+  rdTeamSize: "",
+  tradeCapabilities: [],
 };
 
 // ============================================================================
@@ -1382,6 +1414,146 @@ const StepOne = ({
             type="input"
           />
         </section>
+
+        {/* ********************************************************************************* */}
+        <section className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            <Building className="text-navyblue" size={22} />
+            Company Overview
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              name="totalEmployees"
+              value={safeFormData.totalEmployees}
+              onChange={handleChange}
+              label="Total Employees"
+              icon={User}
+              type="number"
+              placeholder="e.g. 120"
+            />
+
+            <div className="flex flex-col">
+              <Select
+                value={safeFormData.businessType}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, businessType: value }))
+                }
+              >
+                <SelectTrigger className="h-14">
+                  <SelectValue placeholder="Select Business Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <label className="text-xs mt-1 text-gray-600">
+                Business Type
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            <Layers className="text-navyblue" size={22} />
+            Production Capacity
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              name="factorySize"
+              value={safeFormData.factorySize}
+              onChange={handleChange}
+              label="Factory Size"
+              icon={Building}
+              placeholder="e.g. 10,000 sq ft"
+            />
+
+            <FormField
+              name="factoryCountryOrRegion"
+              value={safeFormData.factoryCountryOrRegion}
+              onChange={handleChange}
+              label="Factory Country / Region"
+              icon={MapPin}
+            />
+
+            <FormField
+              name="numberOfProductionLines"
+              value={safeFormData.numberOfProductionLines}
+              onChange={handleChange}
+              label="No. of Production Lines"
+              icon={Layers}
+              type="number"
+            />
+
+            <FormField
+              name="annualOutputValue"
+              value={safeFormData.annualOutputValue}
+              onChange={handleChange}
+              label="Annual Output Value"
+              icon={DollarSign}
+              placeholder="e.g. $5M - $10M"
+            />
+          </div>
+
+          <label className="flex items-center gap-3 mt-4">
+            <input
+              type="checkbox"
+              checked={safeFormData.contractManufacturing}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  contractManufacturing: e.target.checked,
+                }))
+              }
+            />
+            <span className="text-sm text-gray-700">
+              Contract Manufacturing Available
+            </span>
+          </label>
+        </section>
+
+        <section className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            <User className="text-navyblue" size={22} />
+            Research & Development
+          </h3>
+
+          <FormField
+            name="rdTeamSize"
+            value={safeFormData.rdTeamSize}
+            onChange={handleChange}
+            label="R&D Team Size"
+            icon={User}
+            type="number"
+          />
+        </section>
+
+        <section className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            <Globe className="text-navyblue" size={22} />
+            Trade Capabilities
+          </h3>
+
+          <CheckboxGroup
+            options={TRADE_CAPABILITIES}
+            selected={safeFormData.tradeCapabilities}
+            onChange={(value) =>
+              handleCheckboxGroupChange("tradeCapabilities", value)
+            }
+            label="Trade Capabilities"
+            icon={Globe}
+            hint="Select all trade services your company provides."
+          />
+        </section>
+
+        {/* ********************************************************************************* */}
 
         {/* Payment & Languages */}
         <section

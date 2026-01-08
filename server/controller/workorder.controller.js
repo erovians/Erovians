@@ -3,6 +3,7 @@ import {
   createWorkOrderSchema,
   updateStatusSchema,
 } from "../zodSchemas/seller/workOrder.schema.js";
+import { cache } from "../services/cache.service.js";
 
 // export const createWorkOrder = async (req, res) => {
 //   try {
@@ -39,15 +40,15 @@ import {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // };
+
 export const createWorkOrder = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req?.user?.userId;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     const parsed = createWorkOrderSchema.safeParse(req.body);
@@ -58,24 +59,16 @@ export const createWorkOrder = async (req, res) => {
       });
     }
 
-    const lastWO = await WorkOrder.findOne()
-      .collation({ locale: "en_US", numericOrdering: true })
-      .sort({ wo_number: -1 })
-      .lean();
+    const year = new Date().getFullYear();
+    const counterKey = `workorder:counter:${year}`;
 
-    let nextNumber = 1;
-
-    if (lastWO?.wo_number) {
-      const lastNum = parseInt(lastWO.wo_number.replace("WO-", ""));
-      nextNumber = lastNum + 1;
-    }
-
+    const nextNumber = await cache.incr(counterKey);
     const formattedNumber = String(nextNumber).padStart(4, "0");
 
     const payload = {
       ...parsed.data,
       sellerId,
-      wo_number: `WO-${formattedNumber}`,
+      wo_number: `WO-${year}-${formattedNumber}`,
     };
 
     const newWO = await WorkOrder.create(payload);
@@ -92,13 +85,12 @@ export const createWorkOrder = async (req, res) => {
 
 export const getWorkOrders = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req.user?.userId;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     const list = await WorkOrder.find({ sellerId })
@@ -117,14 +109,14 @@ export const getWorkOrders = async (req, res) => {
 
 export const updateWorkOrderStatus = async (req, res) => {
   try {
-    const sellerId = req.user?.userId || "68e75d397041d2bbc45e40cd";
-    const role = req.user?.role || "seller";
+    const sellerId = req.user?.userId;
+
     const { id } = req.params;
 
-    if (!sellerId || role !== "seller") {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized: Seller access only" });
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
     }
 
     // Validate
@@ -155,6 +147,35 @@ export const updateWorkOrderStatus = async (req, res) => {
     });
   } catch (err) {
     console.error("UPDATE_WORK_ORDER_ERROR:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const deleteWorkOrder = async (req, res) => {
+  try {
+    const sellerId = req.user?.userId;
+    const { id } = req.params;
+
+    if (!sellerId || !req.user.role?.includes("seller")) {
+      return res.status(403).json({
+        error: "Unauthorized: Seller access only",
+      });
+    }
+
+    const existing = await WorkOrder.findOne({ _id: id, sellerId });
+    if (!existing) {
+      return res.status(404).json({
+        error: "Work order not found or access denied",
+      });
+    }
+    await WorkOrder.findByIdAndDelete(id);
+
+    res.json({
+      message: "Work order deleted successfully",
+      deletedWorkOrderId: id,
+    });
+  } catch (err) {
+    console.error("DELETE_WORK_ORDER_ERROR:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };

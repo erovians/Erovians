@@ -49,6 +49,43 @@ export const registerCompanySchema = z.object({
       (val) => (Array.isArray(val) ? val : [val]),
       z.array(z.string()).min(1, "At least one language is required")
     ),
+    // ================= NEW FIELDS (FIX) =================
+
+    totalEmployees: z
+      .number()
+      .min(1, "Total employees must be at least 1")
+      .optional(),
+
+    businessType: z
+      .enum([
+        "manufacturer",
+        "trading company",
+        "distributor",
+        "exporter",
+        "importer",
+        "service provider",
+      ])
+      .optional(),
+
+    factorySize: z.string().optional(),
+
+    factoryCountryOrRegion: z.string().optional(),
+
+    contractManufacturing: z.boolean().optional(),
+
+    numberOfProductionLines: z
+      .number()
+      .min(0, "Production lines cannot be negative")
+      .optional(),
+
+    annualOutputValue: z.string().optional(),
+
+    rdTeamSize: z
+      .number()
+      .min(0, "R&D team size cannot be negative")
+      .optional(),
+
+    tradeCapabilities: z.array(z.string()).optional(),
   }),
   companyIntro: z.object({
     logo: z.string().optional(),
