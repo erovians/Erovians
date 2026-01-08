@@ -11,12 +11,15 @@ import PaymentFilter from "../components/filters/filters/PaymentFilter";
 import CurrencyFilter from "../components/filters/filters/CurrencyFilter";
 import LanguageFilter from "../components/filters/filters/LanguageFilter";
 import CompanyCard from "../components/cards/CompanyCard";
+import Banner from "../components/common/Banner"; // 👈 ADD THIS IMPORT
 import companiesData from "../assets/fakeData/companyData";
 import sellersData from "../assets/fakeData/sellerData";
+import { useNavigate } from "react-router-dom";
 
 const Companies = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeBottomSheet, setActiveBottomSheet] = useState(null);
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     mainCategory: [],
@@ -136,8 +139,11 @@ const Companies = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
+        {/* 👇 FULL WIDTH BANNER - Desktop Only */}
+        <Banner />
+
         <div className="flex w-full">
-          {/* Desktop Sidebar */}
+          {/* Desktop Sidebar - Sticky after banner */}
           <div className="hidden lg:block">
             <Sidebar
               isCollapsed={isSidebarCollapsed}
