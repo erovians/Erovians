@@ -51,7 +51,7 @@ const CompanyCard = ({ company, seller }) => {
       {/* ========================================
           DESKTOP VIEW - Image Carousel
           ======================================== */}
-      <div className="hidden lg:block relative h-48 overflow-hidden bg-gray-200">
+      <div className="hidden lg:block relative h-40 overflow-hidden bg-gray-200">
         <Carousel
           opts={{
             align: "start",
@@ -64,9 +64,9 @@ const CompanyCard = ({ company, seller }) => {
           ]}
           className="w-full h-full"
         >
-          <CarouselContent className="h-48">
+          <CarouselContent className="h-40">
             {images.map((image, index) => (
-              <CarouselItem key={index} className="h-48">
+              <CarouselItem key={index} className="h-40">
                 <div className="relative w-full h-full">
                   {/* Loading Skeleton */}
                   {!imageLoadingStates[index] && (
@@ -97,13 +97,13 @@ const CompanyCard = ({ company, seller }) => {
         </Carousel>
 
         {/* Verification Badge */}
-        <div className="absolute top-3 right-3 z-10">
+        <div className="absolute top-2 right-2 z-10">
           {getVerificationBadge()}
         </div>
 
         {/* Logo Overlay */}
         {logo && (
-          <div className="absolute bottom-3 left-3 w-16 h-16 bg-white rounded-lg shadow-lg border-2 border-white overflow-hidden">
+          <div className="absolute bottom-2 left-2 w-12 h-12 bg-white rounded-lg shadow-lg border-2 border-white overflow-hidden">
             <img
               src={logo}
               alt={`${companyName} logo`}
@@ -115,7 +115,7 @@ const CompanyCard = ({ company, seller }) => {
 
         {/* Carousel Dots Indicator */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full z-10">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full z-10">
             {images.map((_, index) => (
               <div
                 key={index}
@@ -127,82 +127,81 @@ const CompanyCard = ({ company, seller }) => {
       </div>
 
       {/* Desktop Content */}
-      <div className="hidden lg:flex flex-col p-4 space-y-3">
+      <div className="hidden lg:flex flex-col p-3 space-y-2">
         {/* Company Name & Location */}
         <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-navyblue transition-colors">
+          <h3 className="text-base font-bold text-gray-900 mb-1.5 line-clamp-1 group-hover:text-navyblue transition-colors">
             {companyName}
           </h3>
-          <div className="flex items-start gap-2 text-gray-600 text-sm">
-            <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-            <span className="line-clamp-2">
-              {address.street}, {address.city}, {address.stateOrProvince},{" "}
-              {address.countryOrRegion} - {address.postalCode}
+          <div className="flex items-start gap-1.5 text-gray-600 text-xs">
+            <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+            <span className="line-clamp-1">
+              {address.city}, {address.stateOrProvince},{" "}
+              {address.countryOrRegion}
             </span>
           </div>
         </div>
 
-        {/* Main Categories */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            {/*  */}
-            {/* <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-              Main Categories
-            </span> */}
-          </div>
-          <div className="flex flex-wrap gap-2 items-center">
-            <Package className="w-4 h-4 text-gray-500" />
-            {mainCategory.map((cat, idx) => (
+        {/* Categories - Combined */}
+        <div className="space-y-1.5">
+          {/* Main Categories */}
+          <div className="flex flex-wrap gap-1.5 items-center">
+            <Package className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+            {mainCategory.slice(0, 3).map((cat, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
+                className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
               >
                 {cat}
               </span>
             ))}
-          </div>
-        </div>
-
-        {/* Sub Categories */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            {/* <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-              Sub Categories
-            </span> */}
-          </div>
-          <div className="flex flex-wrap gap-2 items-center line-clamp-2">
-            <Package className="w-4 h-4 text-gray-500" />
-            {subCategory.map((subCat, idx) => (
-              <span
-                key={idx}
-                className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs capitalize line-clamp-1"
-              >
-                {subCat}
+            {mainCategory.length > 3 && (
+              <span className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium">
+                +{mainCategory.length - 3}
               </span>
-            ))}
+            )}
+          </div>
+
+          {/* Sub Categories - Single Line */}
+          <div className="flex items-center gap-1.5 overflow-hidden">
+            <div className="flex flex-wrap gap-1.5 items-center line-clamp-1">
+              {subCategory.slice(0, 4).map((subCat, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs capitalize whitespace-nowrap"
+                >
+                  {subCat}
+                </span>
+              ))}
+              {subCategory.length > 4 && (
+                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
+                  +{subCategory.length - 4}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Footer - Seller Info & Meta */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-7 h-7 bg-linear-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
               {seller.sellername.charAt(0)}
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900 line-clamp-1">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-gray-900 line-clamp-1">
                 {seller.sellername}
               </p>
               <p className="text-xs text-gray-500 line-clamp-1">
-                {seller.companyregstartionlocation} {seller.seller_status}
+                {seller.companyregstartionlocation}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 text-gray-500 text-xs">
+          <div className="flex items-center gap-1 text-gray-500 text-xs shrink-0 ml-2">
             <Calendar className="w-3 h-3" />
             <span className="whitespace-nowrap">
-              Est. {companyBasicInfo.companyRegistrationYear}
+              {companyBasicInfo.companyRegistrationYear}
             </span>
           </div>
         </div>
@@ -215,7 +214,7 @@ const CompanyCard = ({ company, seller }) => {
         {/* Top Section: Logo + Company Info */}
         <div className="flex border-b border-gray-200">
           {/* LEFT: Company Logo - FULL COVER */}
-          <div className="w-32 h-32 shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 border-r border-gray-200 overflow-hidden">
+          <div className="w-32 h-32 shrink-0 bg-linear-to-br from-gray-50 to-gray-100 border-r border-gray-200 overflow-hidden">
             {logo ? (
               <img
                 src={logo}
@@ -279,7 +278,7 @@ const CompanyCard = ({ company, seller }) => {
           <div className="flex items-center justify-between">
             {/* Seller Info */}
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-7 h-7 bg-gradient-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
+              <div className="w-7 h-7 bg-linear-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
                 {seller.sellername.charAt(0)}
               </div>
               <div className="min-w-0 flex-1">
