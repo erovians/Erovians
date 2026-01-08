@@ -59,7 +59,7 @@ const sidebarMainItems = [
 ];
 
 const sidebarPublicItems = [
-  { icon: Package, label: "All Categories", path: "/categories" },
+  // { icon: Package, label: "All Categories", path: "/categories" },
   { icon: HelpCircle, label: "Help Center", path: "/help" },
   { icon: Phone, label: "Contact Us", path: "/contact" },
 ];
@@ -85,7 +85,7 @@ export default function Header() {
         isMobileVerified: true,
         profileURL: "",
         role: "user",
-        isSeller: true,
+        isSeller: false,
         sellerId: null,
       }
     : null;
@@ -124,6 +124,7 @@ export default function Header() {
 
   return (
     <>
+      {/* Top Bar - Navy Blue */}
       <div className="bg-navyblue text-white text-sm hidden md:block">
         <div className="max-w-full mx-auto px-6">
           <div className="flex items-center justify-between h-10">
@@ -179,9 +180,11 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Main Navbar */}
       <nav className="bg-white shadow-sm border-b sticky top-0 left-0 z-50 w-full">
         <div className="max-w-full mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-20 gap-6">
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -189,7 +192,8 @@ export default function Header() {
               <Menu size={28} />
             </button>
 
-            <div className="flex items-center">
+            {/* Logo */}
+            <div className="flex items-center shrink-0">
               <Link to="/">
                 <img
                   src={assets.logo}
@@ -199,85 +203,99 @@ export default function Header() {
               </Link>
             </div>
 
-            <div className="hidden lg:block  rounded-2xl border border-navyblue">
+            {/* Categories Menu - Desktop */}
+            <div className="hidden lg:block shrink-0">
               <CategoriesMenu />
             </div>
 
-            <div className="hidden md:flex flex-1 max-w-xl mx-4">
+            {/* Search Bar - Flexible width */}
+            <div className="hidden md:flex flex-1 max-w-2xl">
               <div className="relative w-full">
                 <input
                   type="text"
                   placeholder="Search Products, Suppliers, Companies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-sm focus:outline-none focus:border-navyblue text-sm"
+                  className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-sm focus:outline-none focus:border-navyblue focus:ring-2 focus:ring-navyblue/20 text-sm transition-all"
                 />
-                <button className="absolute right-0 top-0 h-full px-4 bg-navyblue hover:bg-blue transition-colors">
+                <button className="absolute right-0 top-0 h-full px-4 bg-navyblue hover:bg-blue transition-colors rounded-r-sm">
                   <Search className="h-5 w-5 text-white" />
                 </button>
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-2">
+            {/* Right Side Icons and Buttons */}
+            <div className="hidden md:flex items-center gap-4 shrink-0">
               {isAuthenticated && (
                 <>
+                  {/* Messages Icon */}
                   <Link to="/messages">
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 h-auto rounded-sm relative"
+                      size="icon"
+                      className="hover:bg-lightblue relative transition-all rounded-lg h-10 w-10"
                     >
-                      <MessageSquare className="h-5 w-5" />
+                      <MessageSquare className="h-5 w-5 text-navyblue" />
                       {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
                           {unreadCount}
                         </span>
                       )}
                     </Button>
                   </Link>
 
+                  {/* Favorites Icon */}
                   <Link to="/favorites">
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 h-auto rounded-sm"
+                      size="icon"
+                      className="hover:bg-lightblue transition-all rounded-lg h-10 w-10"
                     >
-                      <Heart className="h-5 w-5" />
+                      <Heart className="h-5 w-5 text-navyblue" />
                     </Button>
                   </Link>
                 </>
               )}
 
+              {/* Not Authenticated State */}
               {!isAuthenticated ? (
                 <>
-                  <Link
-                    to="/seller-registration"
-                    className="border border-navyblue px-4 mr-4 py-2  text-navyblue  hover:text-white hover:bg-navyblue rounded-2xl  font-medium transition-colors"
-                  >
-                    Become A Seller →
+                  {/* Become A Seller Button */}
+                  <Link to="/seller-registration">
+                    <Button
+                      variant="outline"
+                      className="border-2 border-navyblue bg-white hover:bg-navyblue text-navyblue hover:text-white px-5 py-2.5 h-auto rounded-lg font-semibold text-sm transition-all duration-200 flex items-center gap-2 whitespace-nowrap"
+                    >
+                      <Store size={16} />
+                      Become A Seller
+                    </Button>
                   </Link>
 
+                  {/* Login Button */}
                   <Button
                     onClick={handleLoginClick}
-                    className="bg-navyblue hover:bg-blue text-white px-6 py-2 h-auto font-medium text-sm rounded-sm"
+                    className="bg-navyblue hover:bg-blue text-white px-6 py-2.5 h-auto font-semibold text-sm rounded-lg transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap"
                   >
                     Log In
                   </Button>
                 </>
               ) : (
+                /* User Profile Dropdown */
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 hover:bg-gray-100 px-4 py-2 h-auto font-medium text-sm border border-transparent hover:border-gray-300 transition-all rounded-sm"
+                      className="flex items-center gap-2 hover:bg-lightblue px-3 py-2 h-auto font-medium text-sm border-2 border-transparent hover:border-navyblue transition-all rounded-lg"
                     >
                       {user.profileURL ? (
                         <img
                           src={user.profileURL}
                           alt={user.name}
-                          className="h-8 w-8 rounded-full object-cover"
+                          className="h-9 w-9 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="h-8 w-8 rounded-full bg-navyblue text-white flex items-center justify-center">
-                          <User className="h-4 w-4" />
+                        <div className="h-9 w-9 rounded-full bg-navyblue text-white flex items-center justify-center">
+                          <User className="h-5 w-5" />
                         </div>
                       )}
 
@@ -289,7 +307,7 @@ export default function Header() {
                           {user.email}
                         </span>
                       </div>
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-4 w-4 text-navyblue" />
                     </Button>
                   </DropdownMenuTrigger>
 
@@ -448,6 +466,7 @@ export default function Header() {
               )}
             </div>
 
+            {/* Mobile Icons */}
             <div className="flex md:hidden items-center gap-2">
               {isAuthenticated && (
                 <>
@@ -471,6 +490,7 @@ export default function Header() {
             </div>
           </div>
 
+          {/* Mobile Search Bar */}
           <div className="md:hidden pb-4">
             <div className="relative">
               <input
@@ -488,6 +508,7 @@ export default function Header() {
         </div>
       </nav>
 
+      {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-60 transition-opacity duration-300"
@@ -495,6 +516,7 @@ export default function Header() {
         />
       )}
 
+      {/* Mobile Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-70 transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -558,7 +580,7 @@ export default function Header() {
         <div className="overflow-y-auto h-[calc(100%-88px)] hide-scrollbar">
           <div className="border-b border-gray-200">
             <Link
-              to="/categories"
+              to="/company"
               onClick={closeSidebar}
               className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
             >
@@ -707,7 +729,7 @@ export default function Header() {
                 className="flex items-center gap-3 bg-navyblue text-white hover:bg-blue w-full px-4 py-3 rounded-lg transition-colors"
               >
                 <User className="h-5 w-5" />
-                <span className="font-medium">Join Free</span>
+                <span className="font-medium">Log In</span>
               </button>
             )}
           </div>
