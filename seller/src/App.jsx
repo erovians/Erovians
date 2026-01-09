@@ -44,7 +44,6 @@ import TasksAndProjects from "./pages/SellerDashboard/components/TasksAndProject
 import WorkOrdersTable from "./pages/SellerDashboard/components/Production/workOrders";
 import TransportEstimate from "./pages/SellerDashboard/components/Transport/TransportEstimate";
 
-
 function NotFound() {
   return (
     <div className=" h-full flex">
@@ -80,7 +79,10 @@ function App() {
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/legal/cookie-policy" element={<CookiePolicy />} />
             <Route path="/legal/terms-of-use" element={<TermsOfUse />} />
-            <Route path="/legal/community-guidelines" element={<CommunityGuidelines />}/>
+            <Route
+              path="/legal/community-guidelines"
+              element={<CommunityGuidelines />}
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/start-selling" element={<SellerSignUp />} />
           </>
@@ -100,7 +102,7 @@ function App() {
             <Route path="" element={<SellerDashboardHome />} />
 
             {/* seller Profile */}
-            <Route path="sellerprofile" element={<SellerProfile />} />
+            {/* <Route path="sellerprofile" element={<SellerProfile />} /> */}
 
             {/* company */}
             <Route path="company/profile" element={<CompanyProfile />} />
