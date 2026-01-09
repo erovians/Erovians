@@ -20,6 +20,9 @@ import listprodcut_img2 from "./listprodcut_img1.svg";
 import learn_banner1 from "./learn-bannerimage1.svg";
 import learn_banner2 from "./learn-bannerimage2.svg";
 import learn_banner3 from "./learn-bannerimage3.svg";
+import banner1 from "./banner1.webp";
+import banner2 from "./banner2.webp";
+import banner3 from "./banner3.webp";
 
 export const assets = {
   logo,
@@ -44,4 +47,7 @@ export const assets = {
   learn_banner1,
   learn_banner2,
   learn_banner3,
+  banner1,
+  banner2,
+  banner3,
 };

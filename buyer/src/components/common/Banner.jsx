@@ -7,28 +7,23 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { assets } from "../../assets/assets";
 
 const Banner = () => {
   const slides = [
     {
       id: 1,
-      image:
-        "https://rukminim2.flixcart.com/fk-p-flap/3240/540/image/66faf3950cda0b7a.png?q=60",
-      title: "Premium Marble Collection",
+      image: assets.banner1,
       bg: "bg-gradient-to-r from-blue-500 to-purple-600",
     },
     {
       id: 2,
-      image:
-        "https://rukminim2.flixcart.com/fk-p-flap/3240/540/image/1f9c9ad24c2bc37b.jpg?q=60",
-      title: "Luxury Stone Suppliers",
+      image: assets.banner2,
       bg: "bg-gradient-to-r from-green-500 to-teal-600",
     },
     {
       id: 3,
-      image:
-        "https://rukminim2.flixcart.com/fk-p-flap/3240/540/image/77747e6732f62339.png?q=60",
-      title: "Ceramic & Tiles Excellence",
+      image: assets.banner3,
       bg: "bg-gradient-to-r from-orange-500 to-red-600",
     },
   ];
@@ -50,11 +45,11 @@ const Banner = () => {
         <CarouselContent>
           {slides.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative w-full h-64 md:h-80 lg:h-70 overflow-hidden">
+              <div className="relative w-full h-64 md:h-80 lg:h-full overflow-hidden">
                 <img
                   src={slide.image}
                   alt={slide.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.nextSibling.style.display = "flex";
