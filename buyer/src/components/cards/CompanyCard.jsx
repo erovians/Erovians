@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-const CompanyCard = ({ company, seller }) => {
+const CompanyCard = ({ company, seller, onClick }) => {
   console.log(company);
   const { companyBasicInfo, companyIntro, _id } = company;
   const { companyName, address, mainCategory, subCategory } = companyBasicInfo;
@@ -47,7 +47,10 @@ const CompanyCard = ({ company, seller }) => {
   };
 
   return (
-    <div className="block bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer">
+    <div
+      className="block bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group cursor-pointer"
+      onClick={() => onClick(_id)}
+    >
       {/* ========================================
           DESKTOP VIEW - Image Carousel
           ======================================== */}
