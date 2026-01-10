@@ -17,7 +17,6 @@ import sellersData from "../assets/fakeData/sellerData";
 import { useNavigate } from "react-router-dom";
 
 const Companies = () => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeBottomSheet, setActiveBottomSheet] = useState(null);
   const navigate = useNavigate();
 
@@ -139,33 +138,25 @@ const Companies = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
-        {/* 👇 FULL WIDTH BANNER - Desktop Only */}
         <Banner />
 
         <div className="flex w-full">
-          {/* Desktop Sidebar - Sticky after banner */}
           <div className="hidden lg:block">
-            <Sidebar
-              isCollapsed={isSidebarCollapsed}
-              onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            />
+            <Sidebar type="company" />
           </div>
 
           <div className="flex-1 w-full">
-            {/* Mobile Filter Pills */}
             <FilterPillsBar
               activeFilters={filters}
               onPillClick={handlePillClick}
             />
 
-            {/* Applied Filters */}
             <AppliedFilters
               filters={filters}
               onRemove={handleRemoveFilter}
               onClearAll={handleClearAll}
             />
 
-            {/* Company Cards */}
             <div className="px-4 sm:px-6 py-3 sm:py-2 mt-15 sm:mt-2">
               <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">

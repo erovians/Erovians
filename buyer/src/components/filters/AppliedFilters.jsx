@@ -1,42 +1,79 @@
 import { X } from "lucide-react";
 
-const AppliedFilters = ({ filters, onRemove, onClearAll }) => {
+const AppliedFilters = ({
+  type = "company",
+  filters,
+  onRemove,
+  onClearAll,
+}) => {
   const getAppliedFiltersArray = () => {
     const applied = [];
 
-    filters.mainCategory.forEach((cat) => {
+    filters.mainCategory?.forEach((cat) => {
       applied.push({ type: "mainCategory", value: cat, label: cat });
     });
 
-    if (filters.country) {
-      applied.push({
-        type: "country",
-        value: filters.country,
-        label: filters.country,
+    filters.subCategory?.forEach((sub) => {
+      applied.push({ type: "subCategory", value: sub, label: sub });
+    });
+
+    if (type === "company") {
+      // Company-specific filters
+      if (filters.country) {
+        applied.push({
+          type: "country",
+          value: filters.country,
+          label: filters.country,
+        });
+      }
+      if (filters.state) {
+        applied.push({
+          type: "state",
+          value: filters.state,
+          label: filters.state,
+        });
+      }
+      if (filters.city) {
+        applied.push({
+          type: "city",
+          value: filters.city,
+          label: filters.city,
+        });
+      }
+
+      filters.paymentMethods?.forEach((pm) => {
+        applied.push({ type: "paymentMethods", value: pm, label: pm });
       });
-    }
-    if (filters.state) {
-      applied.push({
-        type: "state",
-        value: filters.state,
-        label: filters.state,
+
+      filters.currency?.forEach((curr) => {
+        applied.push({ type: "currency", value: curr, label: curr });
       });
+
+      filters.language?.forEach((lang) => {
+        applied.push({ type: "language", value: lang, label: lang });
+      });
+    } else {
+      // Product-specific filters
+      filters.grade?.forEach((g) => {
+        applied.push({ type: "grade", value: g, label: `Grade ${g}` });
+      });
+
+      filters.color?.forEach((c) => {
+        applied.push({ type: "color", value: c, label: c });
+      });
+
+      filters.priceUnit?.forEach((u) => {
+        applied.push({ type: "priceUnit", value: u, label: u });
+      });
+
+      if (filters.newArrivals) {
+        applied.push({
+          type: "newArrivals",
+          value: true,
+          label: "New Arrivals",
+        });
+      }
     }
-    if (filters.city) {
-      applied.push({ type: "city", value: filters.city, label: filters.city });
-    }
-
-    filters.paymentMethods.forEach((pm) => {
-      applied.push({ type: "paymentMethods", value: pm, label: pm });
-    });
-
-    filters.currency.forEach((curr) => {
-      applied.push({ type: "currency", value: curr, label: curr });
-    });
-
-    filters.language.forEach((lang) => {
-      applied.push({ type: "language", value: lang, label: lang });
-    });
 
     return applied;
   };
