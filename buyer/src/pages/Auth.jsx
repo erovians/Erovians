@@ -1,77 +1,167 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Smartphone, Mail, ArrowLeft } from "lucide-react";
 import { assets } from "../assets/assets";
 import Layout from "../components/common/Layout";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+import { toast } from "sonner";
+import {
+  checkUserAndSendOTP,
+  verifyOTP,
+  completeRegistration,
+  resendOTP,
+  setLoginMethod,
+  resetAuthFlow,
+  clearError,
+  clearSuccess,
+} from "../lib/redux/auth/authSlice";
 
 export default function Auth() {
-  const [step, setStep] = useState("initial"); // initial, otp, signup
-  const [loginMethod, setLoginMethod] = useState("mobile"); // mobile or email
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    loading,
+    error,
+    success,
+    message,
+    step,
+    isNewUser,
+    identifier,
+    loginMethod,
+    otpSent,
+    isAuthenticated,
+    nextRoute,
+  } = useSelector((state) => state.auth);
+
+  const [phoneValue, setPhoneValue] = useState("");
   const [formData, setFormData] = useState({
-    identifier: "", // mobile or email
+    email: "",
     otp: "",
     name: "",
-    email: "",
-    mobile: "",
   });
-  const [loading, setLoading] = useState(false);
+
+  // Handle success messages
+  useEffect(() => {
+    if (success && message) {
+      toast.success(message);
+      dispatch(clearSuccess());
+    }
+  }, [success, message, dispatch]);
+
+  // Handle error messages
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
+
+  // Redirect after authentication
+  useEffect(() => {
+    if (isAuthenticated && nextRoute) {
+      navigate(nextRoute);
+    }
+  }, [isAuthenticated, nextRoute, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleLoginMethodChange = (method) => {
+    dispatch(setLoginMethod(method));
+    setPhoneValue("");
+    setFormData({ ...formData, email: "" });
+  };
+
+  const getCurrentIdentifier = () => {
+    return loginMethod === "mobile" ? phoneValue : formData.email;
+  };
+
+  // ========================================
+  // 1. INITIAL SUBMIT (Check User & Send OTP)
+  // ========================================
   const handleInitialSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    const currentIdentifier = getCurrentIdentifier();
 
-    // Simulate API call to check if user exists
-    setTimeout(() => {
-      // If user exists -> go to OTP
-      // If user doesn't exist -> go to signup
-      const userExists = Math.random() > 0.5; // Random for demo
+    if (!currentIdentifier) {
+      toast.error(
+        `Please enter ${loginMethod === "mobile" ? "mobile number" : "email"}`
+      );
+      return;
+    }
 
-      if (userExists) {
-        setStep("otp");
-      } else {
-        setStep("signup");
-      }
-      setLoading(false);
-    }, 1000);
+    const payload = {
+      [loginMethod]: currentIdentifier,
+    };
+
+    dispatch(checkUserAndSendOTP(payload));
   };
 
+  // ========================================
+  // 2. OTP SUBMIT (Verify OTP)
+  // ========================================
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate OTP verification
-    setTimeout(() => {
-      console.log("Login successful!");
-      // Navigate to dashboard
-      setLoading(false);
-    }, 1000);
+    if (!formData.otp || formData.otp.length !== 6) {
+      toast.error("Please enter valid 6-digit OTP");
+      return;
+    }
+
+    const payload = {
+      [loginMethod]: identifier || getCurrentIdentifier(),
+      otp: formData.otp,
+    };
+
+    dispatch(verifyOTP(payload));
   };
 
-  const handleSignupSubmit = async (e) => {
+  // ========================================
+  // 3. NAME SUBMIT (Complete Registration)
+  // ========================================
+  const handleNameSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate signup API call
-    setTimeout(() => {
-      console.log("Signup successful!");
-      setStep("otp");
-      setLoading(false);
-    }, 1000);
+    if (!formData.name || formData.name.trim().length < 2) {
+      toast.error("Please enter a valid name");
+      return;
+    }
+
+    const payload = {
+      [loginMethod]: identifier || getCurrentIdentifier(),
+      name: formData.name.trim(),
+    };
+
+    dispatch(completeRegistration(payload));
   };
 
-  const resetForm = () => {
-    setStep("initial");
+  // ========================================
+  // RESEND OTP
+  // ========================================
+  const handleResendOTP = () => {
+    const payload = {
+      [loginMethod]: identifier || getCurrentIdentifier(),
+    };
+
+    dispatch(resendOTP(payload));
+  };
+
+  // ========================================
+  // RESET FORM
+  // ========================================
+  const handleReset = () => {
+    dispatch(resetAuthFlow());
+    setPhoneValue("");
     setFormData({
-      identifier: "",
+      email: "",
       otp: "",
       name: "",
-      email: "",
-      mobile: "",
     });
   };
 
@@ -80,7 +170,6 @@ export default function Auth() {
       <div className="bg-[#f8f9fa] flex items-center justify-center px-4 py-8 md:py-12">
         <div className="w-full max-w-5xl bg-white shadow-2xl rounded-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            {/* left side  */}
             <div className="hidden lg:block p-8">
               <div className="relative">
                 <img
@@ -94,7 +183,6 @@ export default function Auth() {
               </div>
             </div>
 
-            {/* right side */}
             <div className="bg-white p-6 md:p-8 lg:p-12 flex items-center">
               <div className="w-full">
                 <div className="mb-6">
@@ -107,17 +195,21 @@ export default function Auth() {
                     }}
                   />
                 </div>
+
+                {/* ========================================
+                    STEP 1: INITIAL (Mobile/Email Input)
+                    ======================================== */}
                 {step === "initial" && (
                   <>
                     <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Login
+                      Welcome
                     </h2>
                     <p className="text-sm text-gray-600 mb-6">
                       Get access to your Orders, Wishlist and Recommendations
                     </p>
                     <div className="flex gap-4 mb-6">
                       <button
-                        onClick={() => setLoginMethod("mobile")}
+                        onClick={() => handleLoginMethodChange("mobile")}
                         className={`flex-1 py-2 px-4 rounded-lg border transition-all flex flex-col items-center ${
                           loginMethod === "mobile"
                             ? "border-gray-900 bg-gray-50"
@@ -128,7 +220,7 @@ export default function Auth() {
                         <span className="text-xs">Mobile</span>
                       </button>
                       <button
-                        onClick={() => setLoginMethod("email")}
+                        onClick={() => handleLoginMethodChange("email")}
                         className={`flex-1 py-2 px-4 rounded-lg border transition-all flex flex-col items-center ${
                           loginMethod === "email"
                             ? "border-gray-900 bg-gray-50"
@@ -140,21 +232,28 @@ export default function Auth() {
                       </button>
                     </div>
 
-                    <div>
+                    <form onSubmit={handleInitialSubmit}>
                       <div className="mb-4">
-                        <Input
-                          type={loginMethod === "mobile" ? "tel" : "email"}
-                          name="identifier"
-                          placeholder={
-                            loginMethod === "mobile"
-                              ? "Enter Mobile Number"
-                              : "Enter Email Address"
-                          }
-                          value={formData.identifier}
-                          onChange={handleChange}
-                          className="w-full h-12 text-base border-gray-300 focus:border-gray-500 focus:ring-gray-500"
-                          required
-                        />
+                        {loginMethod === "mobile" ? (
+                          <PhoneInput
+                            international
+                            defaultCountry="IN"
+                            value={phoneValue}
+                            onChange={setPhoneValue}
+                            placeholder="Enter Mobile Number"
+                            className="phone-input-custom"
+                          />
+                        ) : (
+                          <Input
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email Address"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full h-12 text-base border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                            required
+                          />
+                        )}
                       </div>
 
                       <p className="text-xs text-gray-500 mb-4">
@@ -170,26 +269,23 @@ export default function Auth() {
                       </p>
 
                       <Button
-                        onClick={handleInitialSubmit}
-                        disabled={loading}
+                        type="submit"
+                        disabled={loading || !getCurrentIdentifier()}
                         className="w-full h-12 bg-gray-900 hover:bg-black text-white font-medium"
                       >
                         {loading ? "Please wait..." : "Continue"}
                       </Button>
-                    </div>
-
-                    <div className="mt-6 text-center">
-                      <p className="text-sm text-gray-600">
-                        Don't have an account? Continue to get started
-                      </p>
-                    </div>
+                    </form>
                   </>
                 )}
 
+                {/* ========================================
+                    STEP 2: OTP VERIFICATION
+                    ======================================== */}
                 {step === "otp" && (
                   <>
                     <button
-                      onClick={resetForm}
+                      onClick={handleReset}
                       className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
                     >
                       <ArrowLeft className="h-4 w-4" />
@@ -200,10 +296,10 @@ export default function Auth() {
                       Verify with OTP
                     </h2>
                     <p className="text-sm text-gray-600 mb-6">
-                      Sent to {formData.identifier}
+                      Sent to {identifier || getCurrentIdentifier()}
                     </p>
 
-                    <div>
+                    <form onSubmit={handleOtpSubmit}>
                       <div className="mb-4">
                         <Input
                           type="text"
@@ -212,32 +308,39 @@ export default function Auth() {
                           value={formData.otp}
                           onChange={handleChange}
                           maxLength={6}
-                          className="w-full h-12 text-base tracking-widest border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                          className="w-full h-12 text-base tracking-widest text-center border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                           required
                         />
                       </div>
 
                       <Button
-                        onClick={handleOtpSubmit}
-                        disabled={loading}
+                        type="submit"
+                        disabled={loading || !formData.otp}
                         className="w-full h-12 bg-gray-900 hover:bg-black text-white font-medium"
                       >
                         {loading ? "Verifying..." : "Verify & Continue"}
                       </Button>
-                    </div>
+                    </form>
 
                     <div className="mt-4 text-center">
-                      <button className="text-sm text-gray-900 hover:underline font-medium">
+                      <button
+                        onClick={handleResendOTP}
+                        disabled={loading}
+                        className="text-sm text-gray-900 hover:underline font-medium disabled:opacity-50"
+                      >
                         Resend OTP
                       </button>
                     </div>
                   </>
                 )}
 
-                {step === "signup" && (
+                {/* ========================================
+                    STEP 3: NAME INPUT (New Users Only)
+                    ======================================== */}
+                {step === "name" && (
                   <>
                     <button
-                      onClick={resetForm}
+                      onClick={handleReset}
                       className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
                     >
                       <ArrowLeft className="h-4 w-4" />
@@ -248,11 +351,11 @@ export default function Auth() {
                       Complete Your Profile
                     </h2>
                     <p className="text-sm text-gray-600 mb-6">
-                      We need a few more details to create your account
+                      Please enter your name to complete registration
                     </p>
 
-                    <div className="space-y-4">
-                      <div>
+                    <form onSubmit={handleNameSubmit}>
+                      <div className="mb-4">
                         <Input
                           type="text"
                           name="name"
@@ -264,56 +367,20 @@ export default function Auth() {
                         />
                       </div>
 
-                      {loginMethod === "mobile" ? (
-                        <div>
-                          <Input
-                            type="email"
-                            name="email"
-                            placeholder="Email Address"
-                            value={formData.email}
-                            onChange={handleChange}
-                            className="w-full h-12 text-base border-gray-300 focus:border-gray-500 focus:ring-gray-500"
-                            required
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <Input
-                            type="tel"
-                            name="mobile"
-                            placeholder="Mobile Number"
-                            value={formData.mobile}
-                            onChange={handleChange}
-                            className="w-full h-12 text-base border-gray-300 focus:border-gray-500 focus:ring-gray-500"
-                            required
-                          />
-                        </div>
-                      )}
-
-                      <p className="text-xs text-gray-500">
-                        By continuing, you agree to our{" "}
-                        <a href="#" className="text-gray-900 hover:underline">
-                          Terms of Use
-                        </a>{" "}
-                        and{" "}
-                        <a href="#" className="text-gray-900 hover:underline">
-                          Privacy Policy
-                        </a>
-                        .
-                      </p>
-
                       <Button
-                        onClick={handleSignupSubmit}
-                        disabled={loading}
+                        type="submit"
+                        disabled={loading || !formData.name}
                         className="w-full h-12 bg-gray-900 hover:bg-black text-white font-medium"
                       >
-                        {loading ? "Creating Account..." : "Continue"}
+                        {loading
+                          ? "Creating Account..."
+                          : "Complete Registration"}
                       </Button>
-                    </div>
+                    </form>
 
                     <div className="mt-6 text-center">
                       <p className="text-sm text-gray-600">
-                        Need help?
+                        Need help?{" "}
                         <a
                           href="#"
                           className="text-gray-900 hover:underline font-medium"

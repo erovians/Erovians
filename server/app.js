@@ -14,6 +14,9 @@ import contractRoutes from "./routes/contracts.routes.js";
 import taskAndProjectRoutes from "./routes/taskandprojects.routes.js";
 import workOrders from "./routes/workorder.routes.js";
 import estimateRoutes from "./routes/estimate.routes.js";
+import globalErrorHandler from "./middleware/users/globalErrorHandler.js";
+import userAuthRoutes from "./routes/user/auth.route.js";
+// user router import start from here
 
 const app = express();
 
@@ -77,4 +80,9 @@ app.use("/api/workorder", workOrders);
 // workorder routes
 app.use("/api/transport", estimateRoutes);
 
+// user routes implement here
+
+app.use("/api/v2/auth", userAuthRoutes);
+
+app.use(globalErrorHandler);
 export { app };
