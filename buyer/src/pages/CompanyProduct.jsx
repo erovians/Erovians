@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import Sidebar from "../components/common/Sidebar";
 import FilterPillsBar from "../components/filters/FilterPillsBar";
@@ -15,11 +15,11 @@ import PriceUnitFilter from "../components/filters/filters/PriceUnitFilter";
 import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
 import ProductCard from "../components/cards/ProductCard";
 import productsData from "../assets/fakeData/productData";
-import companiesData from "../assets/fakeData/companyData";
 
 const CompanyProduct = () => {
   const { productId } = useParams();
   const [activeBottomSheet, setActiveBottomSheet] = useState(null);
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     mainCategory: [],

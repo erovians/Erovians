@@ -33,6 +33,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import LanguageCurrencyModal from "./LanguageCurrencyModal";
 import CategoriesMenu from "./CategoriesMenu";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  logout,
+  clearError,
+  clearSuccess,
+} from "../../lib/redux/auth/authSlice";
 
 const sidebarMainItems = [
   { icon: FileText, label: "Post RFQ", path: "/post-rfq", requiresAuth: true },
@@ -59,7 +65,6 @@ const sidebarMainItems = [
 ];
 
 const sidebarPublicItems = [
-  // { icon: Package, label: "All Categories", path: "/categories" },
   { icon: HelpCircle, label: "Help Center", path: "/help" },
   { icon: Phone, label: "Contact Us", path: "/contact" },
 ];
@@ -75,6 +80,37 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Redux state
+  const {
+    user: logedUser,
+    isAuthenticated,
+    loading,
+    error,
+    success,
+  } = useSelector((state) => state.auth);
+
+  // Clear success message after 3 seconds
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        dispatch(clearSuccess());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, dispatch]);
+
+  // Clear error on component unmount or when user navigates
+  useEffect(() => {
+    return () => {
+      if (error) {
+        dispatch(clearError());
+      }
+    };
+  }, [error, dispatch]);
+
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -82,41 +118,11 @@ export default function Header() {
       document.body.style.overflow = "unset";
     }
   }, [isSidebarOpen]);
-  const navigate = useNavigate();
 
-  const isAuthenticated = true;
-  const user = isAuthenticated
-    ? {
-        name: "Ankur Agarwal",
-        email: "ankur@example.com",
-        mobile: "9876543210",
-        isMobileVerified: true,
-        profileURL: "",
-        role: "user",
-        isSeller: true,
-        sellerId: null,
-      }
-    : null;
+  // Check if user is seller (role array includes "seller")
+  const isSeller = logedUser?.role?.includes("seller") || false;
 
-  const isSeller =
-    user?.role === "seller" || user?.isSeller || user?.sellerId !== null;
-
-  const seller = isSeller
-    ? {
-        businessName: "Marble Trading Co.",
-        category: "Marbles",
-        verificationStatus: "Approved",
-      }
-    : null;
-
-  const company =
-    isSeller && seller
-      ? {
-          companyName: "Erovians Marble Pvt Ltd",
-          logo: "",
-        }
-      : null;
-
+  // Mock unread count - replace with actual logic
   const unreadCount = isAuthenticated ? 3 : 0;
 
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -126,8 +132,9 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    console.log("Logging out...");
-    // Add logout logic here
+    dispatch(logout());
+    navigate("/");
+    closeSidebar();
   };
 
   return (
@@ -175,7 +182,7 @@ export default function Header() {
                 </Link>
               )}
 
-              {!isAuthenticated && !isSeller && (
+              {!isAuthenticated && (
                 <Link
                   to="/seller-registration"
                   className="text-yellow-300 hover:text-yellow-100 font-medium transition-colors"
@@ -295,10 +302,10 @@ export default function Header() {
                       variant="ghost"
                       className="flex items-center gap-2 hover:bg-lightblue px-3 py-2 h-auto font-medium text-sm border-2 border-transparent hover:border-navyblue transition-all rounded-lg"
                     >
-                      {user.profileURL ? (
+                      {logedUser?.profileURL?.url ? (
                         <img
-                          src={user.profileURL}
-                          alt={user.name}
+                          src={logedUser.profileURL.url}
+                          alt={logedUser.name || "User"}
                           className="h-9 w-9 rounded-full object-cover"
                         />
                       ) : (
@@ -309,10 +316,10 @@ export default function Header() {
 
                       <div className="flex flex-col items-start">
                         <span className="text-sm font-semibold text-navyblue">
-                          {user.name || "User"}
+                          {logedUser?.name || "User"}
                         </span>
                         <span className="text-xs text-gray-600">
-                          {user.email}
+                          {logedUser?.email}
                         </span>
                       </div>
                       <ChevronDown className="h-4 w-4 text-navyblue" />
@@ -321,13 +328,21 @@ export default function Header() {
 
                   <DropdownMenuContent align="end" className="w-64">
                     <div className="px-3 py-2 border-b">
-                      <p className="text-sm font-semibold">{user.name}</p>
-                      <p className="text-xs text-gray-600">{user.email}</p>
-                      {user.mobile && (
+                      <p className="text-sm font-semibold">{logedUser?.name}</p>
+                      {logedUser?.email && (
+                        <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
+                          <Mail size={12} />
+                          {logedUser.email}
+                          {logedUser.isEmailVerified && (
+                            <Check size={12} className="text-green-600" />
+                          )}
+                        </p>
+                      )}
+                      {logedUser?.mobile && (
                         <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
                           <Phone size={12} />
-                          {user.mobile}
-                          {user.isMobileVerified && (
+                          {logedUser.mobile}
+                          {logedUser.isMobileVerified && (
                             <Check size={12} className="text-green-600" />
                           )}
                         </p>
@@ -438,7 +453,7 @@ export default function Header() {
                                 Seller Dashboard
                               </span>
                               <span className="text-xs text-gray-600">
-                                {seller?.businessName || "Manage products"}
+                                Manage products
                               </span>
                             </div>
                             <ChevronRight className="h-4 w-4 ml-auto" />
@@ -534,10 +549,10 @@ export default function Header() {
           <div className="bg-navyblue text-white p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {user.profileURL ? (
+                {logedUser?.profileURL?.url ? (
                   <img
-                    src={user.profileURL}
-                    alt={user.name}
+                    src={logedUser.profileURL.url}
+                    alt={logedUser.name || "User"}
                     className="h-12 w-12 rounded-full object-cover border-2 border-white"
                   />
                 ) : (
@@ -551,16 +566,12 @@ export default function Header() {
                 )}
                 <div>
                   <p className="font-semibold text-sm">
-                    {isSeller && company?.companyName
-                      ? company.companyName
-                      : user.name}
+                    {logedUser?.name || "User"}
                   </p>
-                  <p className="text-xs text-gray-300">
-                    {isSeller ? seller?.businessName : user.email}
-                  </p>
-                  {isSeller && seller?.verificationStatus && (
+                  <p className="text-xs text-gray-300">{logedUser?.email}</p>
+                  {isSeller && (
                     <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full mt-1 inline-block">
-                      {seller.verificationStatus}
+                      Seller
                     </span>
                   )}
                 </div>
@@ -588,7 +599,7 @@ export default function Header() {
         <div className="overflow-y-auto h-[calc(100%-88px)] hide-scrollbar">
           <div className="border-b border-gray-200">
             <Link
-              to="/company"
+              to="/categories"
               onClick={closeSidebar}
               className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
             >
