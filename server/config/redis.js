@@ -1,16 +1,20 @@
-import Redis from "ioredis";
+import { createClient } from "redis";
+import logger from "./winston.js"; // ✅ .js extension add karo agar ES modules use kar rahe ho
 
-const redis = new Redis({
-  host: "127.0.0.1",
-  port: 6379,
+const client = createClient({
+  url: `redis://${process.env.REDIS_HOST || "redis"}:${
+    process.env.REDIS_PORT || 6379
+  }`,
 });
 
-redis.on("connect", () => {
-  console.log("✅ Redis connected");
+client.connect();
+
+client.on("connect", () => {
+  logger.info("Redis connected"); // ✅ Winston use karo
 });
 
-redis.on("error", (err) => {
-  console.error("❌ Redis error:", err);
+client.on("error", (err) => {
+  logger.error(`Redis error: ${err.message}`); // ✅ Winston use karo
 });
 
-export default redis;
+export default client;
