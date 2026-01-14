@@ -1,437 +1,564 @@
+// src/components/common/Sidebar.jsx
 import { useState } from "react";
 import {
   ChevronDown,
-  ChevronRight,
-  Filter,
-  Layers,
-  Palette,
-  Home,
-  Award,
+  ChevronUp,
+  SlidersHorizontal,
+  Building2,
   MapPin,
-  PanelLeftClose,
-  PanelLeftOpen,
-  X,
+  Calendar,
+  DollarSign,
+  Globe,
+  Package,
+  Layers,
+  Award,
+  Palette,
+  Ruler,
+  Weight,
+  Sparkles,
+  Tag,
 } from "lucide-react";
 
-const marbleSubcategories = [
-  {
-    name: "Italian Marble",
-    subcategories: ["Statuario", "Carrara", "Calacatta", "Botticino"],
-  },
-  {
-    name: "Indian Marble",
-    subcategories: ["Makrana", "Rajasthan Pink", "Ambaji White"],
-  },
-  { name: "Imported Marble", subcategories: ["Turkish", "Egyptian", "Greek"] },
-];
+const Sidebar = ({ type = "company" }) => {
+  const [expandedSections, setExpandedSections] = useState({
+    mainCategory: true,
+    subCategory: false,
+    location: false,
+    year: false,
+    payment: false,
+    currency: false,
+    language: false,
+    grade: false,
+    color: false,
+    size: false,
+    weight: false,
+    weightUnit: false,
+    priceUnit: false,
+    newArrivals: false,
+  });
 
-const graniteSubcategories = [
-  {
-    name: "Indian Granite",
-    subcategories: ["Black Galaxy", "Tan Brown", "Kashmir White"],
-  },
-  {
-    name: "Imported Granite",
-    subcategories: ["Brazilian", "Italian", "African"],
-  },
-];
+  const [filters, setFilters] = useState({
+    mainCategory: [],
+    subCategory: [],
+    country: "",
+    state: "",
+    city: "",
+    yearRange: [1990, 2025],
+    paymentMethods: [],
+    currency: [],
+    language: [],
 
-const popularMarbles = [
-  "Imported Marble",
-  "Italian Marble",
-  "Flawless White Onyx",
-  "Statuario Marble",
-  "Carrara Marble",
-];
-const popularGranites = [
-  "Black Galaxy",
-  "Tan Brown",
-  "Kashmir White",
-  "Absolute Black",
-  "River White",
-];
+    grade: [],
+    color: [],
+    length: [0, 300],
+    width: [0, 300],
+    thickness: [0, 10],
+    weightRange: [0, 1000],
+    weightUnit: "kg",
+    priceUnit: [],
+    newArrivals: false,
+  });
 
-const colors = [
-  { name: "White", color: "#FFFFFF", border: true },
-  { name: "Black", color: "#000000" },
-  { name: "Gray", color: "#808080" },
-  { name: "Green", color: "#22c55e" },
-  { name: "Blue", color: "#3b82f6" },
-  { name: "Brown", color: "#92400e" },
-  { name: "Yellow", color: "#eab308" },
-  { name: "Red", color: "#ef4444" },
-];
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
 
-const spaces = [
-  "Living Room",
-  "Kitchen",
-  "Washroom",
-  "Bedroom",
-  "Dining Room",
-  "Office",
-];
-const grades = ["Grade A", "Grade B", "Grade C"];
-const origins = ["Dehradun", "Rajasthan", "Gujarat", "Karnataka", "Tamil Nadu"];
+  const handleCheckboxChange = (filterKey, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [filterKey]: prev[filterKey].includes(value)
+        ? prev[filterKey].filter((v) => v !== value)
+        : [...prev[filterKey], value],
+    }));
+  };
 
-const FilterSection = ({
-  title,
-  icon: Icon,
-  children,
-  defaultOpen = false,
-  isCollapsed,
-  setIsCollapsed,
-}) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const handleRangeChange = (filterKey, index, value) => {
+    setFilters((prev) => {
+      const newRange = [...prev[filterKey]];
+      newRange[index] = parseInt(value);
+      return { ...prev, [filterKey]: newRange };
+    });
+  };
 
-  if (isCollapsed) {
-    return (
-      <div
-        className="border-b border-gray-200 py-3 px-3 hover:bg-gray-50 transition-colors group relative cursor-pointer"
-        onClick={() => setIsCollapsed(false)}
-      >
-        <div className="flex items-center justify-center">
-          <Icon className="w-5 h-5 text-blue-600" />
-        </div>
-        <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-          {title}
-        </div>
-      </div>
-    );
-  }
+  const clearAllFilters = () => {
+    if (type === "company") {
+      setFilters({
+        mainCategory: [],
+        subCategory: [],
+        country: "",
+        state: "",
+        city: "",
+        yearRange: [1990, 2025],
+        paymentMethods: [],
+        currency: [],
+        language: [],
+      });
+    } else {
+      setFilters({
+        mainCategory: [],
+        subCategory: [],
+        grade: [],
+        color: [],
+        length: [0, 300],
+        width: [0, 300],
+        thickness: [0, 10],
+        weightRange: [0, 1000],
+        weightUnit: "kg",
+        priceUnit: [],
+        newArrivals: false,
+      });
+    }
+  };
 
-  return (
+  const getAppliedFiltersCount = () => {
+    let count = 0;
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) count += value.length;
+      else if (typeof value === "string" && value) count++;
+      else if (typeof value === "boolean" && value) count++;
+    });
+    return count;
+  };
+
+  // Filter Options
+  const filterOptions = {
+    mainCategories: [
+      "Natural Stones",
+      "Ceramic & Tiles",
+      "Alternatives & Finishes",
+    ],
+    subCategories: [
+      "Marble",
+      "Granite",
+      "Limestone",
+      "Sandstone",
+      "Quartzite",
+      "Onyx",
+      "Travertine",
+    ],
+    countries: ["India", "China", "Italy", "Turkey", "Brazil"],
+    paymentMethods: ["Cash", "Credit Card", "Bank Transfer", "LC", "PayPal"],
+    currencies: ["USD", "EUR", "INR", "GBP", "CNY"],
+    languages: ["English", "Hindi", "Spanish", "Chinese", "Arabic"],
+    grades: ["A", "B", "C"],
+    colors: [
+      "White",
+      "Black",
+      "Grey",
+      "Beige",
+      "Brown",
+      "Red",
+      "Green",
+      "Blue",
+      "Yellow",
+      "Pink",
+    ],
+    priceUnits: ["sq.ft", "sq.m", "piece"],
+  };
+
+  const FilterSection = ({ title, icon: Icon, section, children }) => (
     <div className="border-b border-gray-200">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+        onClick={() => toggleSection(section)}
+        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <Icon className="w-5 h-5 text-blue-600" />
-          <span className="font-semibold text-gray-900">{title}</span>
+        <div className="flex items-center gap-2">
+          <Icon className="w-5 h-5 text-gray-900" />
+          <span className="font-semibold text-sm text-gray-900">{title}</span>
         </div>
-        {isOpen ? (
-          <ChevronDown className="w-5 h-5 text-gray-600" />
+        {expandedSections[section] ? (
+          <ChevronUp className="w-4 h-4 text-gray-500" />
         ) : (
-          <ChevronRight className="w-5 h-5 text-gray-600" />
-        )}
-      </button>
-      {isOpen && <div className="px-6 pb-4">{children}</div>}
-    </div>
-  );
-};
-
-const NestedCategory = ({ category, subcategories }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <div className="ml-2">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between py-2 px-3 hover:bg-blue-50 rounded-lg transition-colors group"
-      >
-        <span className="text-sm text-gray-700 group-hover:text-blue-600">
-          {category}
-        </span>
-        {isExpanded ? (
           <ChevronDown className="w-4 h-4 text-gray-500" />
-        ) : (
-          <ChevronRight className="w-4 h-4 text-gray-500" />
         )}
       </button>
-      {isExpanded && (
-        <div className="ml-4 space-y-1 mt-1">
-          {subcategories.map((sub) => (
-            <label
-              key={sub}
-              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-lg cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-600 group-hover:text-gray-900">
-                {sub}
-              </span>
-            </label>
-          ))}
-        </div>
-      )}
+      {expandedSections[section] && <div className="px-4 pb-4">{children}</div>}
     </div>
   );
-};
 
-export default function Sidebar({ isCollapsed, setIsCollapsed }) {
-  const [selectedCategory, setSelectedCategory] = useState("marbles");
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const CheckboxGroup = ({ options, filterKey }) => (
+    <div className="space-y-2">
+      {options.map((option) => (
+        <label
+          key={option}
+          className="flex items-center gap-2 cursor-pointer group"
+        >
+          <input
+            type="checkbox"
+            checked={filters[filterKey].includes(option)}
+            onChange={() => handleCheckboxChange(filterKey, option)}
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">
+            {option}
+          </span>
+        </label>
+      ))}
+    </div>
+  );
+
+  const RangeSlider = ({ label, min, max, value, onChange, unit = "" }) => (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-600">{label}</span>
+        <span className="font-semibold text-gray-700">
+          {value[0]}
+          {unit} - {value[1]}
+          {unit}
+        </span>
+      </div>
+      <div className="space-y-2">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[0]}
+          onChange={(e) => onChange(0, e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-600"
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value[1]}
+          onChange={(e) => onChange(1, e.target.value)}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-600"
+        />
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      {/* Toggle Button - Moved outside the aside to avoid scrollbar interference */}
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="hidden lg:flex fixed bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-all hover:scale-110 z-50 items-center justify-center"
-        style={{
-          left: isCollapsed ? "80px" : "320px", // Position just outside the sidebar width
-          top: "120px", // 96px (aside top) + 24px (button top-6)
-          width: "32px",
-          height: "32px",
-        }}
-      >
-        {isCollapsed ? (
-          <PanelLeftOpen className="w-4 h-4" />
-        ) : (
-          <PanelLeftClose className="w-4 h-4" />
-        )}
-      </button>
-
-      {/* Mobile Filter Button */}
-      <button
-        onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-2xl hover:bg-blue-700 transition-all hover:scale-110"
-      >
-        <Filter className="w-6 h-6" />
-      </button>
-
-      {/* Mobile Overlay */}
-      {isMobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`fixed left-0 bg-white border-r border-gray-200 overflow-y-auto z-40 transition-all duration-300 ease-in-out ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        } ${isCollapsed ? "lg:w-20" : "lg:w-80"}`}
-        style={{
-          top: "96px", // Header height (h-24)
-          height: "calc(100vh - 96px)", // Full height minus header
-        }}
-      >
-        {/* Mobile Close Button */}
-        <button
-          onClick={() => setIsMobileOpen(false)}
-          className="lg:hidden absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Header Section */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 z-10 mt-3.5">
-          {!isCollapsed ? (
-            <>
-              <div className="px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-bold text-gray-900">Filters</h2>
-                </div>
-              </div>
-
-              <div className="px-6 pb-4">
-                <div className="bg-gray-100 rounded-lg p-1 flex gap-1">
-                  <button
-                    onClick={() => setSelectedCategory("marbles")}
-                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                      selectedCategory === "marbles"
-                        ? "bg-white text-blue-600 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    All Marbles
-                  </button>
-                  <button
-                    onClick={() => setSelectedCategory("granite")}
-                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                      selectedCategory === "granite"
-                        ? "bg-white text-blue-600 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    All Granite
-                  </button>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="px-3 py-4 flex items-center justify-center">
-              <Filter className="w-6 h-6 text-blue-600" />
-            </div>
-          )}
+    <div className="w-70 bg-white border-r border-gray-200 sticky top-20 h-[calc(100vh-80px)] flex flex-col">
+      <div className="bg-linear-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center  gap-3 ">
+            <SlidersHorizontal className="w-6 h-6 text-gray-900" />
+            <h2 className="text-lg font-bold text-gray-900">
+              {type === "company" ? "Company Filters" : "Product Filters"}
+            </h2>
+            {getAppliedFiltersCount() > 0 && (
+              <span className="bg-blue-600 text-white text-xs px-2.5 py-1 rounded-full font-bold">
+                {getAppliedFiltersCount()}
+              </span>
+            )}
+          </div>
         </div>
-
-        {/* Filters Content */}
-        <div className="pb-20">
-          <FilterSection
-            title="All Subcategory"
-            icon={Layers}
-            defaultOpen={true}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="space-y-1">
-                {(selectedCategory === "marbles"
-                  ? marbleSubcategories
-                  : graniteSubcategories
-                ).map((cat) => (
-                  <NestedCategory
-                    key={cat.name}
-                    category={cat.name}
-                    subcategories={cat.subcategories}
-                  />
-                ))}
-              </div>
-            )}
-          </FilterSection>
-
-          <FilterSection
-            title={`Popular ${
-              selectedCategory === "marbles" ? "Marbles" : "Granite"
-            }`}
-            icon={Award}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="space-y-2">
-                {(selectedCategory === "marbles"
-                  ? popularMarbles
-                  : popularGranites
-                ).map((item) => (
-                  <label
-                    key={item}
-                    className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-lg cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                      {item}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </FilterSection>
-
-          <FilterSection
-            title="By Color"
-            icon={Palette}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="grid grid-cols-2 gap-2">
-                {colors.map((color) => (
-                  <label
-                    key={color.name}
-                    className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-lg cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <div
-                      className="w-5 h-5 rounded-full shadow-sm"
-                      style={{
-                        backgroundColor: color.color,
-                        border: color.border ? "1px solid #e5e7eb" : "none",
-                      }}
-                    />
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                      {color.name}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </FilterSection>
-
-          <FilterSection
-            title="By Spaces"
-            icon={Home}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="space-y-2">
-                {spaces.map((space) => (
-                  <label
-                    key={space}
-                    className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-lg cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                      {space}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </FilterSection>
-
-          <FilterSection
-            title="By Grade"
-            icon={Award}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="flex gap-2">
-                {grades.map((grade) => (
-                  <label key={grade} className="flex-1 cursor-pointer">
-                    <input type="radio" name="grade" className="peer sr-only" />
-                    <div className="py-2 px-4 text-center border-2 border-gray-200 rounded-lg text-sm font-medium text-gray-700 peer-checked:border-blue-600 peer-checked:bg-blue-50 peer-checked:text-blue-600 hover:border-gray-300 transition-all">
-                      {grade.replace("Grade ", "")}
-                    </div>
-                  </label>
-                ))}
-              </div>
-            )}
-          </FilterSection>
-
-          <FilterSection
-            title="Origin"
-            icon={MapPin}
-            isCollapsed={isCollapsed}
-            setIsCollapsed={setIsCollapsed} // Pass the prop
-          >
-            {!isCollapsed && (
-              <div className="space-y-2">
-                {origins.map((origin) => (
-                  <label
-                    key={origin}
-                    className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-lg cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                      {origin}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </FilterSection>
-        </div>
-
-        {/* Clear Filters Button - Sticky Bottom */}
-        {!isCollapsed && (
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-            <button className="w-full py-2.5 px-4 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors">
-              Clear All Filters
+        {getAppliedFiltersCount() > 0 && (
+          <div className="px-4 pb-3">
+            <button
+              onClick={clearAllFilters}
+              className="text-sm text-red-600 hover:text-red-700 font-semibold transition-colors flex items-center gap-1"
+            >
+              <span>✕</span> Clear All Filters
             </button>
           </div>
         )}
-      </aside>
-    </>
+      </div>
+
+      <div className="flex-1 overflow-y-auto">
+        {type === "company" ? (
+          <>
+            <FilterSection
+              title="Main Category"
+              icon={Building2}
+              section="mainCategory"
+            >
+              <CheckboxGroup
+                options={filterOptions.mainCategories}
+                filterKey="mainCategory"
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="Sub Category"
+              icon={Layers}
+              section="subCategory"
+            >
+              <CheckboxGroup
+                options={filterOptions.subCategories}
+                filterKey="subCategory"
+              />
+            </FilterSection>
+
+            <FilterSection title="Location" icon={MapPin} section="location">
+              <div className="space-y-3">
+                <select
+                  value={filters.country}
+                  onChange={(e) =>
+                    setFilters({ ...filters, country: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                >
+                  <option value="">Select Country</option>
+                  {filterOptions.countries.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="State/Province"
+                  value={filters.state}
+                  onChange={(e) =>
+                    setFilters({ ...filters, state: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder="City"
+                  value={filters.city}
+                  onChange={(e) =>
+                    setFilters({ ...filters, city: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+              </div>
+            </FilterSection>
+
+            <FilterSection
+              title="Registration Year"
+              icon={Calendar}
+              section="year"
+            >
+              <RangeSlider
+                label="Year Range"
+                min={1990}
+                max={2025}
+                value={filters.yearRange}
+                onChange={(idx, val) =>
+                  handleRangeChange("yearRange", idx, val)
+                }
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="Payment Methods"
+              icon={DollarSign}
+              section="payment"
+            >
+              <CheckboxGroup
+                options={filterOptions.paymentMethods}
+                filterKey="paymentMethods"
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="Currency"
+              icon={DollarSign}
+              section="currency"
+            >
+              <CheckboxGroup
+                options={filterOptions.currencies}
+                filterKey="currency"
+              />
+            </FilterSection>
+
+            <FilterSection title="Language" icon={Globe} section="language">
+              <CheckboxGroup
+                options={filterOptions.languages}
+                filterKey="language"
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="New Arrivals"
+              icon={Sparkles}
+              section="newArrivals"
+            >
+              <label className="flex items-center gap-3 cursor-pointer group p-3 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all">
+                <input
+                  type="checkbox"
+                  checked={filters.newArrivals}
+                  onChange={(e) =>
+                    setFilters({ ...filters, newArrivals: e.target.checked })
+                  }
+                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    Show New Company
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Company added in last 7 days
+                  </p>
+                </div>
+                <Sparkles className="w-5 h-5 text-gray-900" />
+              </label>
+            </FilterSection>
+          </>
+        ) : (
+          <>
+            <FilterSection
+              title="Category"
+              icon={Package}
+              section="mainCategory"
+            >
+              <CheckboxGroup
+                options={filterOptions.mainCategories}
+                filterKey="mainCategory"
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="Sub Category"
+              icon={Layers}
+              section="subCategory"
+            >
+              <CheckboxGroup
+                options={filterOptions.subCategories}
+                filterKey="subCategory"
+              />
+            </FilterSection>
+
+            <FilterSection title="Grade" icon={Award} section="grade">
+              <CheckboxGroup options={filterOptions.grades} filterKey="grade" />
+            </FilterSection>
+
+            <FilterSection title="Color" icon={Palette} section="color">
+              <div className="space-y-2">
+                {filterOptions.colors.map((color) => (
+                  <label
+                    key={color}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={filters.color.includes(color)}
+                      onChange={() => handleCheckboxChange("color", color)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div
+                      className="w-5 h-5 rounded-full border-2 border-gray-300"
+                      style={{
+                        backgroundColor: color.toLowerCase(),
+                      }}
+                    />
+                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">
+                      {color}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection title="Size (cm)" icon={Ruler} section="size">
+              <div className="space-y-4">
+                <RangeSlider
+                  label="Length"
+                  min={0}
+                  max={300}
+                  value={filters.length}
+                  onChange={(idx, val) => handleRangeChange("length", idx, val)}
+                  unit=" cm"
+                />
+                <RangeSlider
+                  label="Width"
+                  min={0}
+                  max={300}
+                  value={filters.width}
+                  onChange={(idx, val) => handleRangeChange("width", idx, val)}
+                  unit=" cm"
+                />
+                <RangeSlider
+                  label="Thickness"
+                  min={0}
+                  max={10}
+                  value={filters.thickness}
+                  onChange={(idx, val) =>
+                    handleRangeChange("thickness", idx, val)
+                  }
+                  unit=" cm"
+                />
+              </div>
+            </FilterSection>
+
+            <FilterSection title="Weight" icon={Weight} section="weight">
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="weightUnit"
+                      value="kg"
+                      checked={filters.weightUnit === "kg"}
+                      onChange={(e) =>
+                        setFilters({ ...filters, weightUnit: e.target.value })
+                      }
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-700">Kilogram (kg)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="weightUnit"
+                      value="ton"
+                      checked={filters.weightUnit === "ton"}
+                      onChange={(e) =>
+                        setFilters({ ...filters, weightUnit: e.target.value })
+                      }
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-700">Ton</span>
+                  </label>
+                </div>
+
+                <RangeSlider
+                  label="Weight Range"
+                  min={0}
+                  max={filters.weightUnit === "kg" ? 1000 : 100}
+                  value={filters.weightRange}
+                  onChange={(idx, val) =>
+                    handleRangeChange("weightRange", idx, val)
+                  }
+                  unit={` ${filters.weightUnit}`}
+                />
+              </div>
+            </FilterSection>
+
+            <FilterSection title="Price Unit" icon={Tag} section="priceUnit">
+              <CheckboxGroup
+                options={filterOptions.priceUnits}
+                filterKey="priceUnit"
+              />
+            </FilterSection>
+
+            <FilterSection
+              title="New Arrivals"
+              icon={Sparkles}
+              section="newArrivals"
+            >
+              <label className="flex items-center gap-3 cursor-pointer group p-3 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all">
+                <input
+                  type="checkbox"
+                  checked={filters.newArrivals}
+                  onChange={(e) =>
+                    setFilters({ ...filters, newArrivals: e.target.checked })
+                  }
+                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    Show New Products
+                  </span>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Products added in last 7 days
+                  </p>
+                </div>
+                <Sparkles className="w-5 h-5 text-gray-900" />
+              </label>
+            </FilterSection>
+          </>
+        )}
+      </div>
+    </div>
   );
-}
+};
+
+export default Sidebar;

@@ -1,17 +1,20 @@
 import { createClient } from "redis";
+import logger from "../config/winston.js";
 
 const client = createClient({
-  url: "redis://127.0.0.1:6379",
+  url: `redis://${process.env.REDIS_HOST || "127.0.0.1"}:${
+    process.env.REDIS_PORT || 6379
+  }`,
 });
 
 client.connect();
 
 client.on("connect", () => {
-  console.log("🔥 Redis connected");
+  logger.info("✅ Redis connected");
 });
 
 client.on("error", (err) => {
-  console.error("Redis error:", err);
+  logger.error(`❌ Redis error: ${err.message}`);
 });
 
 export default client;

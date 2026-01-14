@@ -17,7 +17,6 @@ export const verifyUser = (req, res, next) => {
 
     // --- 🔑 Core Logic Change for Public Access ---
     if (!accessToken) {
-      // If no token is found, assign a default 'public' role
       req.user = {
         _id: null, // No user ID
         role: "user",
