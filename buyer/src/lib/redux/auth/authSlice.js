@@ -2,30 +2,26 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 
 const initialState = {
-  // Auth Status
   isAuthenticated: false,
   loading: false,
   user: null,
   error: null,
   message: null,
   success: false,
-
-  // Flow Control
-  step: "initial", // 'initial' | 'otp' | 'name'
-  isNewUser: null, // null | true | false
-  identifier: "", // mobile/email jo submit kiya
-  loginMethod: "mobile", // 'mobile' | 'email'
-
-  // OTP Management
+  step: "initial",
+  isNewUser: null,
+  identifier: "",
+  loginMethod: "mobile",
   otpSent: false,
-  otpPurpose: null, // 'login' | 'register' | 'forgot_password' | 'device_verification'
+  otpPurpose: null,
   otpExpiresAt: null,
   requiresVerification: false,
-
-  // Navigation
-  nextRoute: null, // '/profile' | '/reset-password' | '/verify-otp' etc
+  nextRoute: null,
 };
 
+// ========================================
+// 1. LOAD USER
+// ========================================
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, { rejectWithValue }) => {
@@ -36,7 +32,7 @@ export const loadUser = createAsyncThunk(
       return rejectWithValue(
         error?.response?.data || {
           success: false,
-          message: "Failed to send OTP",
+          message: "Failed to load user",
         }
       );
     }
@@ -44,7 +40,7 @@ export const loadUser = createAsyncThunk(
 );
 
 // ========================================
-// 1. CHECK USER & SEND OTP
+// 2. CHECK USER & SEND OTP
 // ========================================
 export const checkUserAndSendOTP = createAsyncThunk(
   "auth/checkUserAndSendOTP",
@@ -64,7 +60,7 @@ export const checkUserAndSendOTP = createAsyncThunk(
 );
 
 // ========================================
-// 2. VERIFY OTP
+// 3. VERIFY OTP
 // ========================================
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
@@ -84,7 +80,7 @@ export const verifyOTP = createAsyncThunk(
 );
 
 // ========================================
-// 3. COMPLETE REGISTRATION (Name Submit)
+// 4. COMPLETE REGISTRATION (Name Submit)
 // ========================================
 export const completeRegistration = createAsyncThunk(
   "auth/completeRegistration",
@@ -104,7 +100,7 @@ export const completeRegistration = createAsyncThunk(
 );
 
 // ========================================
-// 4. RESEND OTP
+// 5. RESEND OTP
 // ========================================
 export const resendOTP = createAsyncThunk(
   "auth/resendOTP",
@@ -124,19 +120,19 @@ export const resendOTP = createAsyncThunk(
 );
 
 // ========================================
-// 4. LOGOUT HAI BHAII
+// 6. LOGOUT
 // ========================================
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/auth/logout");
+      const response = await api.post("/auth/logout");
       return response.data;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data || {
           success: false,
-          message: "Failed to resend OTP",
+          message: "Failed to logout",
         }
       );
     }
@@ -173,7 +169,6 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
       return { ...initialState };
     },
   },
@@ -181,34 +176,34 @@ const authSlice = createSlice({
     builder
 
       // ========================================
-      // CHECK USER & SEND OTP
+      // 1. LOAD USER
       // ========================================
       .addCase(loadUser.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = false;
-        state.message = null;
       })
       .addCase(loadUser.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.success = true;
-
-        state.message = action.payload?.message || "";
+        state.isAuthenticated = true;
+        state.user = action.payload?.data || null;
+        state.message = action.payload?.message || "User loaded successfully";
       })
       .addCase(loadUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-
+        state.isAuthenticated = false;
+        state.user = null;
         state.error =
           action.payload?.message ||
           action.payload?.error ||
-          "Failed to get User";
+          "Failed to load user";
         state.message = state.error;
       })
 
       // ========================================
-      // CHECK USER & SEND OTP
+      // 2. CHECK USER & SEND OTP
       // ========================================
       .addCase(checkUserAndSendOTP.pending, (state) => {
         state.loading = true;
@@ -241,7 +236,7 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // VERIFY OTP
+      // 3. VERIFY OTP
       // ========================================
       .addCase(verifyOTP.pending, (state) => {
         state.loading = true;
@@ -255,12 +250,10 @@ const authSlice = createSlice({
         state.success = true;
         state.message = action.payload?.message || "OTP verified successfully";
 
-        // Check if new user (needs name)
         if (action.payload?.isNewUser) {
           state.step = "name";
           state.requiresVerification = false;
         } else {
-          // Existing user - Login complete
           state.isAuthenticated = true;
           state.user = action.payload?.data || null;
           state.step = "initial";
@@ -285,7 +278,7 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // COMPLETE REGISTRATION
+      // 4. COMPLETE REGISTRATION
       // ========================================
       .addCase(completeRegistration.pending, (state) => {
         state.loading = true;
@@ -323,7 +316,7 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // RESEND OTP
+      // 5. RESEND OTP
       // ========================================
       .addCase(resendOTP.pending, (state) => {
         state.loading = true;
@@ -346,6 +339,36 @@ const authSlice = createSlice({
           action.payload?.error ||
           "Failed to resend OTP";
         state.message = state.error;
+      })
+
+      // ========================================
+      // 6. LOGOUT
+      // ========================================
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+
+        return {
+          ...initialState,
+          message: action.payload?.message || "Logged out successfully",
+          success: true,
+          loading: false,
+        };
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload?.message ||
+          action.payload?.error ||
+          "Failed to logout";
+        state.message = state.error;
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        return { ...initialState, error: state.error };
       });
   },
 });

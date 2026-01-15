@@ -1,4 +1,4 @@
-import AppError from "../../utils/users/AppError.js";
+import AppError from "../../utils/buyer/AppError.js";
 import logger from "../../config/winston.js";
 
 const globalErrorHandler = (err, req, res, next) => {

@@ -5,6 +5,7 @@ import { combineReducers } from "redux";
 
 // Import your reducers
 import authReducer from "../lib/redux/auth/authSlice";
+import compnayReducer from "../lib/redux/company/companySlice";
 
 const authPersistConfig = {
   key: "auth",
@@ -17,6 +18,7 @@ const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 // Combine reducers
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
+  company: compnayReducer,
 });
 
 export const store = configureStore({

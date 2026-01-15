@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MapPin, Calendar, Package, BadgeCheck } from "lucide-react";
 import {
   Carousel,
@@ -10,20 +10,40 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 
 const CompanyCard = ({ company, seller, onClick }) => {
-  console.log(company);
   const { companyBasicInfo, companyIntro, _id } = company;
-  const { companyName, address, mainCategory, subCategory } = companyBasicInfo;
+  const {
+    companyName,
+    address,
+    mainCategory,
+    subCategory,
+    companyRegistrationYear,
+  } = companyBasicInfo;
   const { logo, companyPhotos } = companyIntro;
 
   const [imageLoadingStates, setImageLoadingStates] = useState({});
 
+  // Handle missing photos
   const images =
     companyPhotos?.length > 0
       ? companyPhotos
-      : ["https://via.placeholder.com/800x400"];
+      : ["https://via.placeholder.com/800x400?text=No+Image"];
 
-  // Get verification badge
+  // Extract year from backend date string
+  const getYear = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      // Extract year from string like "Thu Jan 01 2015 05:30:00 GMT+0530"
+      const match = dateString.match(/\d{4}/);
+      return match ? match[0] : "N/A";
+    } catch (e) {
+      return "N/A";
+    }
+  };
+
+  // Verification Badge
   const getVerificationBadge = () => {
+    if (!seller) return null;
+
     if (seller.varificationStatus === "Approved") {
       return (
         <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
@@ -56,26 +76,17 @@ const CompanyCard = ({ company, seller, onClick }) => {
           ======================================== */}
       <div className="hidden lg:block relative h-40 overflow-hidden bg-gray-200">
         <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 3000,
-            }),
-          ]}
+          opts={{ align: "start", loop: true }}
+          plugins={[Autoplay({ delay: 3000 })]}
           className="w-full h-full"
         >
           <CarouselContent className="h-40">
             {images.map((image, index) => (
               <CarouselItem key={index} className="h-40">
                 <div className="relative w-full h-full">
-                  {/* Loading Skeleton */}
                   {!imageLoadingStates[index] && (
                     <div className="absolute inset-0 bg-gray-300 animate-pulse" />
                   )}
-
                   <img
                     src={image}
                     alt={`${companyName} - Image ${index + 1}`}
@@ -90,7 +101,6 @@ const CompanyCard = ({ company, seller, onClick }) => {
             ))}
           </CarouselContent>
 
-          {/* Navigation Arrows */}
           {images.length > 1 && (
             <>
               <CarouselPrevious className="left-2 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -116,7 +126,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
           </div>
         )}
 
-        {/* Carousel Dots Indicator */}
+        {/* Carousel Dots */}
         {images.length > 1 && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full z-10">
             {images.map((_, index) => (
@@ -133,7 +143,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
       <div className="hidden lg:flex flex-col p-3 space-y-2">
         {/* Company Name & Location */}
         <div>
-          <h3 className="text-base font-bold text-gray-900 mb-1.5 line-clamp-1 group-hover:text-navyblue transition-colors">
+          <h3 className="text-base font-bold text-gray-900 mb-1.5 line-clamp-1 group-hover:text-blue-600 transition-colors">
             {companyName}
           </h3>
           <div className="flex items-start gap-1.5 text-gray-600 text-xs">
@@ -145,27 +155,27 @@ const CompanyCard = ({ company, seller, onClick }) => {
           </div>
         </div>
 
-        {/* Categories - Combined */}
+        {/* Categories */}
         <div className="space-y-1.5">
           {/* Main Categories */}
           <div className="flex flex-wrap gap-1.5 items-center">
             <Package className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-            {mainCategory.slice(0, 3).map((cat, idx) => (
+            {mainCategory.slice(0, 2).map((cat, idx) => (
               <span
                 key={idx}
-                className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
+                className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs font-medium capitalize"
               >
                 {cat}
               </span>
             ))}
-            {mainCategory.length > 3 && (
-              <span className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium">
-                +{mainCategory.length - 3}
+            {mainCategory.length > 2 && (
+              <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
+                +{mainCategory.length - 2}
               </span>
             )}
           </div>
 
-          {/* Sub Categories - Single Line */}
+          {/* Sub Categories */}
           <div className="flex items-center gap-1.5 overflow-hidden">
             <div className="flex flex-wrap gap-1.5 items-center line-clamp-1">
               {subCategory.slice(0, 4).map((subCat, idx) => (
@@ -185,26 +195,30 @@ const CompanyCard = ({ company, seller, onClick }) => {
           </div>
         </div>
 
-        {/* Footer - Seller Info & Meta */}
+        {/* Footer - Seller Info */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="w-7 h-7 bg-linear-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
-              {seller.sellername.charAt(0)}
+          {seller ? (
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="w-7 h-7 bg-linear-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
+                {seller.sellername.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-gray-900 line-clamp-1">
+                  {seller.sellername}
+                </p>
+                <p className="text-xs text-gray-500 line-clamp-1">
+                  {seller.seller_status || "Professional"}
+                </p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-gray-900 line-clamp-1">
-                {seller.sellername}
-              </p>
-              <p className="text-xs text-gray-500 line-clamp-1">
-                {seller.companyregstartionlocation}
-              </p>
-            </div>
-          </div>
+          ) : (
+            <div className="text-xs text-gray-400 italic">No seller info</div>
+          )}
 
           <div className="flex items-center gap-1 text-gray-500 text-xs shrink-0 ml-2">
             <Calendar className="w-3 h-3" />
             <span className="whitespace-nowrap">
-              {companyBasicInfo.companyRegistrationYear}
+              {getYear(companyRegistrationYear)}
             </span>
           </div>
         </div>
@@ -216,7 +230,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
       <div className="lg:hidden">
         {/* Top Section: Logo + Company Info */}
         <div className="flex border-b border-gray-200">
-          {/* LEFT: Company Logo - FULL COVER */}
+          {/* LEFT: Company Logo */}
           <div className="w-32 h-32 shrink-0 bg-linear-to-br from-gray-50 to-gray-100 border-r border-gray-200 overflow-hidden">
             {logo ? (
               <img
@@ -226,8 +240,8 @@ const CompanyCard = ({ company, seller, onClick }) => {
                 loading="lazy"
               />
             ) : (
-              <div className="w-full h-full bg-navyblue/10 flex items-center justify-center">
-                <Package className="w-8 h-8 text-navyblue" />
+              <div className="w-full h-full bg-blue-50 flex items-center justify-center">
+                <Package className="w-8 h-8 text-blue-600" />
               </div>
             )}
           </div>
@@ -236,13 +250,13 @@ const CompanyCard = ({ company, seller, onClick }) => {
           <div className="flex-1 p-3 flex flex-col gap-2">
             {/* Company Name + Badge */}
             <div className="flex items-start justify-between gap-2">
-              <h3 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-navyblue transition-colors flex-1">
+              <h3 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors flex-1">
                 {companyName}
               </h3>
               {getVerificationBadge()}
             </div>
 
-            {/* Location - State + Country ONLY */}
+            {/* Location */}
             <div className="flex items-start gap-1 text-gray-600 text-xs">
               <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
               <span className="line-clamp-1">
@@ -255,14 +269,14 @@ const CompanyCard = ({ company, seller, onClick }) => {
               {mainCategory.map((cat, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 bg-blue-50 text-navyblue rounded-full text-xs font-medium capitalize"
+                  className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs font-medium capitalize"
                 >
                   {cat}
                 </span>
               ))}
             </div>
 
-            {/* Sub Categories - RIGHT SIDE ME */}
+            {/* Sub Categories */}
             <div className="flex flex-wrap gap-1">
               {subCategory.map((subCat, idx) => (
                 <span
@@ -279,26 +293,32 @@ const CompanyCard = ({ company, seller, onClick }) => {
         {/* Bottom Section: Seller Information */}
         <div className="p-3 bg-gray-50">
           <div className="flex items-center justify-between">
-            {/* Seller Info */}
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-7 h-7 bg-linear-to-br from-navyblue to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                {seller.sellername.charAt(0)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-gray-900 line-clamp-1">
-                  {seller.sellername} ({seller.seller_status})
-                </p>
-                <p className="text-xs text-gray-500 line-clamp-1">
-                  {seller.companyregstartionlocation}
-                </p>
-              </div>
-            </div>
+            {seller ? (
+              <>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="w-7 h-7 bg-linear-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
+                    {seller.sellername.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-gray-900 line-clamp-1">
+                      {seller.sellername}{" "}
+                      {seller.seller_status && `(${seller.seller_status})`}
+                    </p>
+                    <p className="text-xs text-gray-500 line-clamp-1">
+                      {seller.companyregstartionlocation}
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-xs text-gray-400 italic">No seller info</div>
+            )}
 
             {/* Registration Year */}
             <div className="flex items-center gap-1 text-gray-500 text-xs shrink-0 ml-2">
               <Calendar className="w-3 h-3" />
               <span className="whitespace-nowrap">
-                {companyBasicInfo.companyRegistrationYear}
+                {getYear(companyRegistrationYear)}
               </span>
             </div>
           </div>
