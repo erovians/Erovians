@@ -1,18 +1,18 @@
-import asyncHandler from "../../middleware/users/asyncHandler.js";
+import asyncHandler from "../../middleware/buyer/asyncHandler.js";
 import User from "../../models/user.model.js";
-import AppError from "../../utils/users/AppError.js";
+import AppError from "../../utils/buyer/AppError.js";
 import validator from "validator";
-import sendMail from "../../utils/users/sendEmailByBrevo.js";
-import { sendOTPSMS } from "../../utils/users/sendNumberbyTwilio.js";
+import sendMail from "../../utils/buyer/sendEmailByBrevo.js";
+import { sendOTPSMS } from "../../utils/buyer/sendNumberbyTwilio.js";
 import {
   generateOTP,
   getOTPExpiry,
   isOTPExpired,
   verifyOTP as verifyOTPUtil,
-} from "../../utils/users/otpUtils.js";
-import { getOTPEmailTemplate } from "../../utils/users/emailTemplate.js";
+} from "../../utils/buyer/otpUtils.js";
+import { getOTPEmailTemplate } from "../../utils/buyer/emailTemplate.js";
 import logger from "../../config/winston.js";
-import sendToken from "../../utils/users/sendToken.js";
+import sendToken from "../../utils/buyer/sendToken.js";
 
 // ========================================
 // 1. Check User & Send OTP
@@ -362,9 +362,69 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
   }
 });
 
+// ========================================
+// 5. GET USER PROFILE (Me)
+// ========================================
 export const getMe = asyncHandler(async (req, res, next) => {
-  console.log("done dana done ");
-  res.send("done dana done");
+  const userId = req.user.id;
+
+  logger.info("User profile requested", { userId });
+
+  // Find user by ID
+  const user = await User.findById(userId);
+
+  if (!user) {
+    logger.warn("Profile request for non-existent user", { userId });
+    return next(new AppError("User not found", 404));
+  }
+
+  logger.info("User profile retrieved successfully", {
+    userId,
+    email: user.email,
+  });
+
+  // Send response with user data
+  res.status(200).json({
+    success: true,
+    message: "User profile retrieved successfully",
+    data: user.toSafeObject(),
+  });
 });
 
-export const logoutUser = asyncHandler(async (req, res, next) => {});
+// ========================================
+// 6. LOGOUT USER
+// ========================================
+export const logoutUser = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+
+  logger.info("Logout request", { userId });
+
+  const user = await User.findById(userId);
+
+  // Check if user exists
+  if (!user) {
+    logger.warn("Logout attempted for non-existent user", { userId });
+    return next(new AppError("User not found", 404));
+  }
+
+  // Cookie options
+  const cookieOptions = {
+    httpOnly: true,
+    expires: new Date(0), // Expire immediately
+  };
+
+  // Clear both tokens
+  res.clearCookie("accessToken", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+
+  logger.info("User logged out successfully", {
+    userId,
+    email: user.email,
+  });
+
+  // Send response
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});

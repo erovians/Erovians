@@ -35,7 +35,7 @@ import LanguageCurrencyModal from "./LanguageCurrencyModal";
 import CategoriesMenu from "./CategoriesMenu";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  logout,
+  logoutUser,
   clearError,
   clearSuccess,
 } from "../../lib/redux/auth/authSlice";
@@ -132,7 +132,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/");
     closeSidebar();
   };
@@ -179,15 +179,6 @@ export default function Header() {
                 >
                   <Store size={14} />
                   Seller Dashboard
-                </Link>
-              )}
-
-              {!isAuthenticated && (
-                <Link
-                  to="/seller-registration"
-                  className="text-yellow-300 hover:text-yellow-100 font-medium transition-colors"
-                >
-                  Sell on Erovians →
                 </Link>
               )}
             </div>

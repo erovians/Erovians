@@ -1,5 +1,5 @@
-import asyncHandler from "../users/asyncHandler.js";
-import AppError from "../../utils/users/AppError.js";
+import asyncHandler from "../buyer/asyncHandler.js";
+import AppError from "../../utils/buyer/AppError.js";
 import logger from "../../config/winston.js";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
@@ -41,8 +41,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
 //generate access token using refresh token
 export const refreshToken = asyncHandler(async (req, res, next) => {
   try {
-    const refreshToken = req.cookies.refreshtoken;
-
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       logger.warn("Refresh token missing", { ip: req.ip });
       return next(new AppError("Please login again", 401));

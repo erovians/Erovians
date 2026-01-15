@@ -3,14 +3,15 @@ import {
   checkUserAndSendOTP,
   completeRegistration,
   getMe,
+  logoutUser,
   resendOTP,
   verifyOTP,
-} from "../../controller/user/auth.controller.js";
+} from "../../controller/buyer/auth.controller.js";
 const router = express.Router();
 import {
   isAuthenticated,
   refreshToken,
-} from "../../middleware/users/auth.middleware.js";
+} from "../../middleware/buyer/auth.middleware.js";
 
 router.post("/check-user", checkUserAndSendOTP);
 router.post("/resend-otp", resendOTP);
@@ -19,4 +20,5 @@ router.post("/complete-registration", completeRegistration);
 
 router.get("/refresh-token", refreshToken);
 router.get("/me", isAuthenticated, getMe);
+router.post("/logout", isAuthenticated, logoutUser);
 export default router;
