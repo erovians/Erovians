@@ -139,6 +139,25 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// ========================================
+// 7. LOGOUT
+// ========================================
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/update-user", formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || {
+          success: false,
+          message: "Failed to update User",
+        }
+      );
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState,
