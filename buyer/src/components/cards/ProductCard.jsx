@@ -35,6 +35,16 @@ const ProductCard = ({ product, onClick }) => {
 
   const [imageLoadingStates, setImageLoadingStates] = useState({});
 
+  // Normalize category & subCategory to arrays
+  const normalizeToArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (typeof value === "string" && value) return [value];
+    return [];
+  };
+
+  const categories = normalizeToArray(category);
+  const subCategories = normalizeToArray(subCategory);
+
   const images =
     productImages?.length > 0
       ? productImages
@@ -133,41 +143,45 @@ const ProductCard = ({ product, onClick }) => {
         {/* Categories */}
         <div className="space-y-1.5">
           {/* Main Categories */}
-          <div className="flex flex-wrap gap-1.5 items-center">
-            <Package className="w-3.5 h-3.5 text-gray-500 shrink-0" />
-            {category?.slice(0, 3).map((cat, idx) => (
-              <span
-                key={idx}
-                className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize"
-              >
-                {cat}
-              </span>
-            ))}
-            {category?.length > 3 && (
-              <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
-                +{category.length - 3}
-              </span>
-            )}
-          </div>
-
-          {/* Sub Categories */}
-          <div className="flex items-center gap-1.5 overflow-hidden">
-            <div className="flex flex-wrap gap-1.5 items-center line-clamp-1">
-              {subCategory?.slice(0, 4).map((subCat, idx) => (
+          {categories.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 items-center">
+              <Package className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+              {categories.slice(0, 3).map((cat, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs capitalize whitespace-nowrap"
+                  className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize"
                 >
-                  {subCat}
+                  {cat}
                 </span>
               ))}
-              {subCategory?.length > 4 && (
-                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
-                  +{subCategory.length - 4}
+              {categories.length > 3 && (
+                <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
+                  +{categories.length - 3}
                 </span>
               )}
             </div>
-          </div>
+          )}
+
+          {/* Sub Categories */}
+          {subCategories.length > 0 && (
+            <div className="flex items-center gap-1.5 overflow-hidden">
+              <div className="flex flex-wrap gap-1.5 items-center line-clamp-1">
+                {subCategories.slice(0, 4).map((subCat, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs capitalize whitespace-nowrap"
+                  >
+                    {subCat}
+                  </span>
+                ))}
+                {subCategories.length > 4 && (
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs whitespace-nowrap">
+                    +{subCategories.length - 4}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Color & Origin */}

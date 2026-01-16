@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import Sidebar from "../components/common/Sidebar";
@@ -14,12 +14,15 @@ import WeightFilter from "../components/filters/filters/WeightFilter";
 import PriceUnitFilter from "../components/filters/filters/PriceUnitFilter";
 import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
 import ProductCard from "../components/cards/ProductCard";
-import productsData from "../assets/fakeData/productData";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompaniesProduct } from "../lib/redux/company/companySlice";
 
 const CompanyProduct = () => {
-  const { productId } = useParams();
-  const [activeBottomSheet, setActiveBottomSheet] = useState(null);
+  const { companyId } = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { products, loading, error } = useSelector((state) => state.company);
 
   const [filters, setFilters] = useState({
     mainCategory: [],
@@ -36,6 +39,54 @@ const CompanyProduct = () => {
   });
 
   const [tempFilters, setTempFilters] = useState(filters);
+  const [activeBottomSheet, setActiveBottomSheet] = useState(null);
+
+  // Initial fetch
+  useEffect(() => {
+    dispatch(
+      fetchCompaniesProduct({
+        companyId,
+        page: 1,
+        limit: 10,
+        filters: {},
+      })
+    );
+  }, [companyId, dispatch]);
+
+  // Re-fetch when filters change
+  useEffect(() => {
+    const apiFilters = {};
+
+    // Map frontend filters to backend format
+    if (filters.mainCategory.length > 0) {
+      apiFilters.category = filters.mainCategory;
+    }
+    if (filters.subCategory.length > 0) {
+      apiFilters.subCategory = filters.subCategory;
+    }
+    if (filters.grade.length > 0) {
+      apiFilters.grade = filters.grade;
+    }
+    if (filters.color.length > 0) {
+      apiFilters.color = filters.color[0]; // Send first color only
+    }
+    if (filters.newArrivals) {
+      apiFilters.newArrivals = true;
+    }
+
+    // Only fetch if filters are applied
+    const hasFilters = Object.keys(apiFilters).length > 0;
+    if (hasFilters) {
+      dispatch(
+        fetchCompaniesProduct({
+          companyId,
+          page: 1,
+          limit: 10,
+          filters: apiFilters,
+        })
+      );
+    }
+  }, [filters, companyId, dispatch]);
 
   const handlePillClick = (filterId) => {
     setTempFilters(filters);
@@ -44,6 +95,7 @@ const CompanyProduct = () => {
 
   const handleApplyFilter = () => {
     setFilters(tempFilters);
+    setActiveBottomSheet(null);
   };
 
   const handleRemoveFilter = (type, value) => {
@@ -58,7 +110,7 @@ const CompanyProduct = () => {
   };
 
   const handleClearAll = () => {
-    setFilters({
+    const clearedFilters = {
       mainCategory: [],
       subCategory: [],
       grade: [],
@@ -70,7 +122,18 @@ const CompanyProduct = () => {
       weightUnit: "kg",
       priceUnit: [],
       newArrivals: false,
-    });
+    };
+    setFilters(clearedFilters);
+
+    // Re-fetch without filters
+    dispatch(
+      fetchCompaniesProduct({
+        companyId,
+        page: 1,
+        limit: 10,
+        filters: {},
+      })
+    );
   };
 
   const handleSizeChange = (type, value) => {
@@ -176,9 +239,9 @@ const CompanyProduct = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
-        <div className="flex w-full">
-          <div className="hidden lg:block">
-            <Sidebar type="product" />
+        <div className="flex w-full min-h-screen">
+          <div className="hidden lg:block ">
+            <Sidebar type="product" companyId={companyId} />
           </div>
 
           <div className="flex-1 w-full">
@@ -197,15 +260,42 @@ const CompanyProduct = () => {
 
             <div className="px-4 sm:px-6 py-3 sm:py-2 mt-15 sm:mt-2">
               <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
-                  {productsData.map((product) => (
-                    <ProductCard
-                      key={product._id}
-                      product={product}
-                      onClick={(id) => navigate(`/product/${id}`)}
-                    />
-                  ))}
-                </div>
+                {/* Loading State */}
+                {loading && (
+                  <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                  </div>
+                )}
+
+                {/* Error State */}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                    <p className="text-red-600 font-semibold">{error}</p>
+                  </div>
+                )}
+
+                {/* Empty State */}
+                {!loading && !error && products.length === 0 && (
+                  <div className="bg-white rounded-lg shadow-md p-8 text-center">
+                    <p className="text-gray-500 text-lg">No products found</p>
+                    <p className="text-gray-400 text-sm mt-2">
+                      Try adjusting your filters
+                    </p>
+                  </div>
+                )}
+
+                {/* Products Grid */}
+                {!loading && !error && products.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
+                    {products.map((product) => (
+                      <ProductCard
+                        key={product._id}
+                        product={product}
+                        onClick={(id) => navigate(`/product/${id}`)}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
