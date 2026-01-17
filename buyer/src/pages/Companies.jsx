@@ -1,30 +1,182 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchCompanies } from "../lib/redux/company/companySlice";
+import {
+  fetchCompanies,
+  setCompanyFilters,
+  clearCompanyFilters,
+} from "../lib/redux/company/companySlice";
 import Layout from "../components/common/Layout";
 import Sidebar from "../components/common/Sidebar";
 import CompanyCard from "../components/cards/CompanyCard";
 import Banner from "../components/common/Banner";
+import FilterPillsBar from "../components/filters/FilterPillsBar";
+import AppliedFilters from "../components/filters/AppliedFilters";
+import FilterBottomSheet from "../components/filters/FilterBottomSheet";
+import CategoryFilter from "../components/filters/filters/CategoryFilter";
+import SubCategoryFilter from "../components/filters/filters/SubCategoryFilter";
+import LocationFilter from "../components/filters/filters/LocationFilter";
+import YearFilter from "../components/filters/filters/YearFilter";
+import PaymentFilter from "../components/filters/filters/PaymentFilter";
+import CurrencyFilter from "../components/filters/filters/CurrencyFilter";
+import LanguageFilter from "../components/filters/filters/LanguageFilter";
+import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
 import { Loader2 } from "lucide-react";
 
 const Companies = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { companies, pagination, filters, loading, error } = useSelector(
+  const { companies, pagination, companyFilters, loading, error } = useSelector(
     (state) => state.company
   );
 
+  const [tempFilters, setTempFilters] = useState(companyFilters);
+  const [activeBottomSheet, setActiveBottomSheet] = useState(null);
+
+  // Initial fetch
   useEffect(() => {
-    dispatch(fetchCompanies({ page: 1, limit: 10, filters }));
+    dispatch(fetchCompanies({ page: 1, limit: 10, filters: companyFilters }));
   }, [dispatch]);
+
+  // Re-fetch when filters change
+  useEffect(() => {
+    dispatch(fetchCompanies({ page: 1, limit: 10, filters: companyFilters }));
+  }, [companyFilters, dispatch]);
 
   const handlePageChange = (newPage) => {
     dispatch(
-      fetchCompanies({ page: newPage, limit: pagination.limit, filters })
+      fetchCompanies({
+        page: newPage,
+        limit: pagination.limit,
+        filters: companyFilters,
+      })
     );
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePillClick = (filterId) => {
+    setTempFilters(companyFilters);
+    setActiveBottomSheet(filterId);
+  };
+
+  const handleApplyFilter = () => {
+    dispatch(setCompanyFilters(tempFilters));
+    setActiveBottomSheet(null);
+  };
+
+  const handleRemoveFilter = (type, value) => {
+    const updatedFilters = { ...companyFilters };
+
+    if (Array.isArray(updatedFilters[type])) {
+      updatedFilters[type] = updatedFilters[type].filter((v) => v !== value);
+    } else if (typeof updatedFilters[type] === "boolean") {
+      updatedFilters[type] = false;
+    } else {
+      updatedFilters[type] = "";
+    }
+
+    dispatch(setCompanyFilters(updatedFilters));
+  };
+
+  const handleClearAll = () => {
+    dispatch(clearCompanyFilters());
+  };
+
+  const handleYearChange = (value) => {
+    setTempFilters({
+      ...tempFilters,
+      yearFrom: value[0],
+      yearTo: value[1],
+    });
+  };
+
+  const handleLocationChange = (type, value) => {
+    setTempFilters({ ...tempFilters, [type]: value });
+  };
+
+  const renderFilterContent = () => {
+    switch (activeBottomSheet) {
+      case "category":
+        return (
+          <CategoryFilter
+            selected={tempFilters.mainCategory}
+            onChange={(val) =>
+              setTempFilters({ ...tempFilters, mainCategory: val })
+            }
+          />
+        );
+      case "subCategory":
+        return (
+          <SubCategoryFilter
+            selected={tempFilters.subCategory}
+            onChange={(val) =>
+              setTempFilters({ ...tempFilters, subCategory: val })
+            }
+          />
+        );
+      case "location":
+        return (
+          <LocationFilter
+            country={tempFilters.country}
+            state={tempFilters.state}
+            city={tempFilters.city}
+            onChange={handleLocationChange}
+          />
+        );
+      case "year":
+        return (
+          <YearFilter
+            yearRange={[
+              tempFilters.yearFrom || 1990,
+              tempFilters.yearTo || 2025,
+            ]}
+            onChange={handleYearChange}
+          />
+        );
+      case "payment":
+        return (
+          <PaymentFilter
+            selected={tempFilters.paymentMethods}
+            onChange={(val) =>
+              setTempFilters({ ...tempFilters, paymentMethods: val })
+            }
+          />
+        );
+      case "currency":
+        return (
+          <CurrencyFilter
+            selected={tempFilters.currency}
+            onChange={(val) =>
+              setTempFilters({ ...tempFilters, currency: val })
+            }
+          />
+        );
+      case "language":
+        return (
+          <LanguageFilter
+            selected={tempFilters.language}
+            onChange={(val) =>
+              setTempFilters({ ...tempFilters, language: val })
+            }
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getSheetTitle = () => {
+    const titles = {
+      category: "Select Category",
+      subCategory: "Select Sub Category",
+      location: "Select Location",
+      year: "Select Year Range",
+      payment: "Select Payment Methods",
+      currency: "Select Currency",
+      language: "Select Language",
+    };
+    return titles[activeBottomSheet] || "Filter";
   };
 
   return (
@@ -38,6 +190,19 @@ const Companies = () => {
           </div>
 
           <div className="flex-1 w-full">
+            <FilterPillsBar
+              type="company"
+              activeFilters={companyFilters}
+              onPillClick={handlePillClick}
+            />
+
+            <AppliedFilters
+              type="company"
+              filters={companyFilters}
+              onRemove={handleRemoveFilter}
+              onClearAll={handleClearAll}
+            />
+
             {loading && (
               <div className="flex items-center justify-center h-96">
                 <div className="flex flex-col items-center gap-4">
@@ -58,7 +223,13 @@ const Companies = () => {
                   <p className="text-red-600">{error}</p>
                   <button
                     onClick={() =>
-                      dispatch(fetchCompanies({ page: 1, limit: 10, filters }))
+                      dispatch(
+                        fetchCompanies({
+                          page: 1,
+                          limit: 10,
+                          filters: companyFilters,
+                        })
+                      )
                     }
                     className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   >
@@ -180,6 +351,15 @@ const Companies = () => {
             )}
           </div>
         </div>
+
+        <FilterBottomSheet
+          isOpen={activeBottomSheet !== null}
+          onClose={() => setActiveBottomSheet(null)}
+          title={getSheetTitle()}
+          onApply={handleApplyFilter}
+        >
+          {renderFilterContent()}
+        </FilterBottomSheet>
       </div>
     </Layout>
   );

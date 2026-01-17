@@ -139,9 +139,6 @@ export const fetchProductDetails = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/company/fetch/${productId}/detail`);
-      console.log("fetch product detail respsonse", response);
-      console.log("fetch product detail respsonse.data", response.data);
-      console.log("fetch product detail respsonse.data.data", response.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(

@@ -15,30 +15,22 @@ import PriceUnitFilter from "../components/filters/filters/PriceUnitFilter";
 import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
 import ProductCard from "../components/cards/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCompaniesProduct } from "../lib/redux/company/companySlice";
+import {
+  fetchCompaniesProduct,
+  setProductFilters,
+  clearProductFilters,
+} from "../lib/redux/company/companySlice";
 
 const CompanyProduct = () => {
   const { companyId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, loading, error } = useSelector((state) => state.company);
+  const { products, productFilters, loading, error } = useSelector(
+    (state) => state.company
+  );
 
-  const [filters, setFilters] = useState({
-    mainCategory: [],
-    subCategory: [],
-    grade: [],
-    color: [],
-    length: [0, 300],
-    width: [0, 300],
-    thickness: [0, 10],
-    weightRange: [0, 1000],
-    weightUnit: "kg",
-    priceUnit: [],
-    newArrivals: false,
-  });
-
-  const [tempFilters, setTempFilters] = useState(filters);
+  const [tempFilters, setTempFilters] = useState(productFilters);
   const [activeBottomSheet, setActiveBottomSheet] = useState(null);
 
   // Initial fetch
@@ -58,19 +50,19 @@ const CompanyProduct = () => {
     const apiFilters = {};
 
     // Map frontend filters to backend format
-    if (filters.mainCategory.length > 0) {
-      apiFilters.category = filters.mainCategory;
+    if (productFilters.category?.length > 0) {
+      apiFilters.category = productFilters.category;
     }
-    if (filters.subCategory.length > 0) {
-      apiFilters.subCategory = filters.subCategory;
+    if (productFilters.subCategory?.length > 0) {
+      apiFilters.subCategory = productFilters.subCategory;
     }
-    if (filters.grade.length > 0) {
-      apiFilters.grade = filters.grade;
+    if (productFilters.grade?.length > 0) {
+      apiFilters.grade = productFilters.grade;
     }
-    if (filters.color.length > 0) {
-      apiFilters.color = filters.color[0]; // Send first color only
+    if (productFilters.color?.length > 0) {
+      apiFilters.color = productFilters.color[0]; // Send first color only
     }
-    if (filters.newArrivals) {
+    if (productFilters.newArrivals) {
       apiFilters.newArrivals = true;
     }
 
@@ -86,44 +78,34 @@ const CompanyProduct = () => {
         })
       );
     }
-  }, [filters, companyId, dispatch]);
+  }, [productFilters, companyId, dispatch]);
 
   const handlePillClick = (filterId) => {
-    setTempFilters(filters);
+    setTempFilters(productFilters);
     setActiveBottomSheet(filterId);
   };
 
   const handleApplyFilter = () => {
-    setFilters(tempFilters);
+    dispatch(setProductFilters(tempFilters));
     setActiveBottomSheet(null);
   };
 
   const handleRemoveFilter = (type, value) => {
-    setFilters((prev) => {
-      if (Array.isArray(prev[type])) {
-        return { ...prev, [type]: prev[type].filter((v) => v !== value) };
-      } else if (typeof prev[type] === "boolean") {
-        return { ...prev, [type]: false };
-      }
-      return { ...prev, [type]: "" };
-    });
+    const updatedFilters = { ...productFilters };
+
+    if (Array.isArray(updatedFilters[type])) {
+      updatedFilters[type] = updatedFilters[type].filter((v) => v !== value);
+    } else if (typeof updatedFilters[type] === "boolean") {
+      updatedFilters[type] = false;
+    } else {
+      updatedFilters[type] = "";
+    }
+
+    dispatch(setProductFilters(updatedFilters));
   };
 
   const handleClearAll = () => {
-    const clearedFilters = {
-      mainCategory: [],
-      subCategory: [],
-      grade: [],
-      color: [],
-      length: [0, 300],
-      width: [0, 300],
-      thickness: [0, 10],
-      weightRange: [0, 1000],
-      weightUnit: "kg",
-      priceUnit: [],
-      newArrivals: false,
-    };
-    setFilters(clearedFilters);
+    dispatch(clearProductFilters());
 
     // Re-fetch without filters
     dispatch(
@@ -153,9 +135,9 @@ const CompanyProduct = () => {
       case "category":
         return (
           <CategoryFilter
-            selected={tempFilters.mainCategory}
+            selected={tempFilters.category}
             onChange={(val) =>
-              setTempFilters({ ...tempFilters, mainCategory: val })
+              setTempFilters({ ...tempFilters, category: val })
             }
           />
         );
@@ -247,13 +229,13 @@ const CompanyProduct = () => {
           <div className="flex-1 w-full">
             <FilterPillsBar
               type="product"
-              activeFilters={filters}
+              activeFilters={productFilters}
               onPillClick={handlePillClick}
             />
 
             <AppliedFilters
               type="product"
-              filters={filters}
+              filters={productFilters}
               onRemove={handleRemoveFilter}
               onClearAll={handleClearAll}
             />
