@@ -54,7 +54,7 @@ export default function ChatApp() {
       </div>
 
       {/* Chat Window */}
-      <div className="  h-[400px] sm:h-full  w-full md:w-2/3 lg:w-2/4">
+      <div className="  h-100 sm:h-full  w-full md:w-2/3 lg:w-2/4">
         {chat ? (
           // <ChatWindow selectedChat={selectedChat} onlineUsers={onlineUsers} />
           <ChatWindow
