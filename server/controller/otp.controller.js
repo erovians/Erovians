@@ -3,9 +3,13 @@ import qs from "qs";
 import Seller from "../models/sellerSingnup.model.js";
 import twilio from "twilio";
 
-const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
-const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
-const TWILIO_FROM_NUMBER = "+18723169588";
+// const TWILIO_ACCOUNT_SID = "AC01c46a6ae1ea755d36a017c380895612";
+// const TWILIO_AUTH_TOKEN = "ac18eab3e7de5ee4c611fd8a4df649d8";
+// const TWILIO_FROM_NUMBER = "+18723169588";
+
+const TWILIO_ACCOUNT_SID = "ACbe46bf83f649efa49081cc766f276815";
+const TWILIO_AUTH_TOKEN = "3318aad2863eb7079a99bbbf97b4a2b3";
+const TWILIO_FROM_NUMBER = "+14482210616";
 
 const TWILIO_API_URL = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
 
