@@ -178,11 +178,11 @@ const ProductInfo = ({ product, seller }) => {
         <div className="grid grid-cols-2 gap-3">
           <button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2.5 rounded transition-all flex items-center justify-center gap-2">
             <MessageSquare className="w-4 h-4" />
-            Contact Now
+            By Now
           </button>
           <button className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-2.5 rounded transition-all flex items-center justify-center gap-2">
             <Package className="w-4 h-4" />
-            Request Sample
+            Add to cart
           </button>
         </div>
       </div>
