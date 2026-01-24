@@ -1,42 +1,14 @@
 import mongoose from "mongoose";
-import { encrypt } from "../utils/encryption.utils.js";
 
 const sellerSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      lowercase: true,
-      trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
-    },
-    mobile: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
       unique: true,
-      match: [/^[6-9]\d{9}$/, "Please provide a valid 10-digit mobile number"],
     },
-    isMobileVerified: {
-      type: Boolean,
-      default: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlength: 6,
-      select: false,
-    },
-    role: {
-      type: String,
-      enum: ["admin", "user", "seller"],
-      default: "user",
-    },
-    status: {
-      type: String,
-      enum: ["active", "suspended"],
-      default: "active",
-    },
+
     // Business details
     businessId: {
       type: String,
@@ -53,12 +25,7 @@ const sellerSchema = new mongoose.Schema(
       enum: ["All", "Marbles", "Granites"],
       default: "All",
     },
-    // New fields from controller
-    sellername: {
-      type: String,
-      required: [true, "Seller name is required"],
-      trim: true,
-    },
+
     companyregstartionlocation: {
       type: String,
       required: [true, "Company registration location is required"],
@@ -76,57 +43,34 @@ const sellerSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // -----------------______________________________NEW FIELD TO ADD __________________________________________-------------------
+    // Seller specific fields
     seller_status: {
       type: String,
       enum: ["professional", "Individual"],
+      required: true,
     },
 
     seller_address: {
       type: String,
+      required: true,
+      trim: true,
     },
 
-    // -----------------______________________________NEW FIELD TO ADD__________________________________________-------------------
+    // Status for seller account (active/suspended)
+    status: {
+      type: String,
+      enum: ["active", "suspended"],
+      default: "active",
+    },
   },
   { timestamps: true }
 );
 
-// const sellerSchema = new mongoose.Schema(
-//   {
-//     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-
-//     businessId: { type: String, required: true, unique: true },
-//     businessName: { type: String, required: true },
-//     category: {
-//       type: String,
-//       enum: ["All", "Marbles", "Granites"],
-//       default: "All",
-//     },
-
-//     sellername: { type: String, required: true },
-//     companyRegistrationLocation: { type: String, required: true },
-
-//     documentUrl: { type: String, required: true },
-//     verificationStatus: {
-//       type: String,
-//       enum: ["Pending", "Approved", "Rejected"],
-//       default: "Pending",
-//     },
-
-//     sellerStatus: { type: String, enum: ["professional", "individual"] },
-//     sellerAddress: { type: String },
-//   },
-//   { timestamps: true }
-// );
-
-sellerSchema.pre("save", function (next) {
-  if (this.isModified("gstin")) this.gstin = encrypt(this.gstin);
-  next();
-});
-
-sellerSchema.methods.getDecryptedData = function () {
-  return { gstin: this.gstin };
-};
+// Indexes
+sellerSchema.index({ userId: 1 }, { unique: true });
+sellerSchema.index({ businessId: 1 }, { unique: true });
+sellerSchema.index({ varificationStatus: 1 });
+sellerSchema.index({ status: 1 });
 
 const Seller = mongoose.model("Seller", sellerSchema);
 export default Seller;

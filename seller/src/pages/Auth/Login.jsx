@@ -35,6 +35,10 @@ export default function Login() {
       toast.success(`${res.data.message} Redirecting...`, {
         duration: 2000,
       });
+      console.log("this is data", res.data);
+      if (res.data.accessToken) {
+        localStorage.setItem("accessToken", res.data.accessToken);
+      }
 
       setTimeout(() => {
         navigate("/sellerdashboard");
