@@ -302,7 +302,7 @@ export default function Auth() {
                     <form onSubmit={handleOtpSubmit}>
                       <div className="mb-4">
                         <Input
-                          type="text"
+                          type="password"
                           name="otp"
                           placeholder="Enter OTP"
                           value={formData.otp}

@@ -123,7 +123,7 @@ export default function Header() {
   const isSeller = logedUser?.role?.includes("seller") || false;
 
   // Mock unread count - replace with actual logic
-  const unreadCount = isAuthenticated ? 3 : 0;
+  const unreadCount = isAuthenticated ? 0 : 0;
 
   const closeSidebar = () => setIsSidebarOpen(false);
 

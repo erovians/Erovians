@@ -13,6 +13,7 @@ import HowItWorks from "./pages/HowItWorks";
 import HelpCenter from "./pages/HelpCenter";
 import Contact from "./pages/Contact";
 import HowToPay from "./pages/HowToPay";
+import TermsOfService from "./pages/TermsOfService";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/help" element={<HelpCenter />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/how-to-pay" element={<HowToPay />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
       </Routes>
     </>
   );
