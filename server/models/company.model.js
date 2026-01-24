@@ -62,6 +62,52 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       default: ["English"],
       required: true,
     },
+
+    // New fields
+    totalEmployees: {
+      type: Number,
+      min: 1,
+    },
+    businessType: {
+      type: String,
+      enum: [
+        "manufacturer",
+        "trading company",
+        "distributor",
+        "exporter",
+        "importer",
+        "service provider",
+      ],
+    },
+    factorySize: {
+      type: String,
+      trim: true,
+    },
+    factoryCountryOrRegion: {
+      type: String,
+      trim: true,
+    },
+    contractManufacturing: {
+      type: Boolean,
+      default: false,
+    },
+    numberOfProductionLines: {
+      type: Number,
+      min: 0,
+    },
+    annualOutputValue: {
+      type: String,
+      trim: true,
+    },
+    rdTeamSize: {
+      type: Number,
+      min: 0,
+    },
+    tradeCapabilities: {
+      type: [String],
+      default: [],
+      set: (arr) => [...new Set(arr.map((v) => v.trim()))],
+    },
   },
   { _id: false }
 );
@@ -84,7 +130,7 @@ const CompanyDataSchema = new mongoose.Schema(
   {
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "seller",
+      ref: "Seller",
       required: true,
     },
     companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
@@ -93,6 +139,7 @@ const CompanyDataSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Indexes
 CompanyDataSchema.index(
   { sellerId: 1 },
   { unique: true, partialFilterExpression: { sellerId: { $exists: true } } }
@@ -101,7 +148,7 @@ CompanyDataSchema.index(
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
 
-// text index for quick name/description search (weights help rank)
+// Text index for search
 CompanyDataSchema.index(
   {
     "companyBasicInfo.companyName": "text",
@@ -115,7 +162,7 @@ CompanyDataSchema.index(
   }
 );
 
-// tidy API payloads
+// JSON transform
 CompanyDataSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,

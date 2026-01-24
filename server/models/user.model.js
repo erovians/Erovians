@@ -107,10 +107,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-    idProof: {
-      type: String,
-      enum: ["aadhar", "pan", "passport", "driving_license", "voter_id"],
-    },
+
     gender: {
       type: String,
       enum: {

@@ -1,6 +1,5 @@
 import api from "@/utils/axios.utils";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 export const registerSeller = createAsyncThunk(
   "seller/registerSeller",
@@ -8,6 +7,7 @@ export const registerSeller = createAsyncThunk(
     try {
       const response = await api.post("/seller/register", sellerData);
       console.log(response.data);
+
       return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -46,13 +46,12 @@ const sellerSlice = createSlice({
       })
       .addCase(registerSeller.fulfilled, (state, action) => {
         state.loading = false;
-        state.seller = action.payload.seller;
-        state.token = action.payload.token;
+        state.seller = action.payload.data; // ✅ Changed
         state.successMessage = action.payload.message;
       })
       .addCase(registerSeller.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || "Something went wrong";
+        state.error = action.payload?.message || "Something went wrong";
       });
   },
 });

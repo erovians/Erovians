@@ -1,24 +1,12 @@
-import crypto from "crypto";
 import CompanyDetails from "../../models/company.model.js";
 import Seller from "../../models/sellerSingnup.model.js";
-import redisClient from "../../utils/redis.utils.js";
 import logger from "../../config/winston.js";
 
 export const getCompaniesListService = async ({ filters, page, limit }) => {
   try {
-    // Generate cache key with hash
-    const cacheKey = generateCacheKey(filters, page, limit);
+    logger.info("Fetching companies from database", { filters, page, limit });
 
-    // Check cache first
-    const cached = await redisClient.get(cacheKey);
-    if (cached) {
-      logger.info("Cache HIT for companies list", { cacheKey });
-      return JSON.parse(cached);
-    }
-
-    logger.info("Cache MISS - Fetching from DB", { cacheKey });
-
-    // Build MongoDB query
+    // Build MongoDB query (filters are now optional)
     const matchQuery = buildMatchQuery(filters);
 
     // Calculate skip
@@ -36,7 +24,7 @@ export const getCompaniesListService = async ({ filters, page, limit }) => {
     // Get total count for pagination
     const totalCompanies = await CompanyDetails.countDocuments(matchQuery);
 
-    // Populate seller data manually (better control)
+    // Populate seller data manually
     const sellerIds = companies.map((c) => c.sellerId);
     const sellers = await Seller.find({ _id: { $in: sellerIds } })
       .select(
@@ -72,17 +60,17 @@ export const getCompaniesListService = async ({ filters, page, limit }) => {
       },
     };
 
-    // Cache for 30 minutes (or 10 mins for newArrivals)
-    const ttl = filters.newArrivals ? 600 : 1800;
-    await redisClient.setEx(cacheKey, ttl, JSON.stringify(response));
-
-    logger.info("Data cached successfully", { cacheKey, ttl });
+    logger.info("Companies fetched successfully from database", {
+      totalCompanies,
+      page,
+      limit,
+    });
 
     return response;
   } catch (error) {
     logger.error("getCompaniesListService error", {
       error: error.message,
-      stack: error.stack, // ✅ Add this
+      stack: error.stack,
       name: error.name,
     });
     console.error("FULL ERROR:", error);
@@ -90,29 +78,15 @@ export const getCompaniesListService = async ({ filters, page, limit }) => {
   }
 };
 
-// Generate cache key with hash
-const generateCacheKey = (filters, page, limit) => {
-  // Sort filters alphabetically for consistent hash
-  const sortedFilters = Object.keys(filters)
-    .sort()
-    .reduce((acc, key) => {
-      acc[key] = filters[key];
-      return acc;
-    }, {});
-
-  // Create hash
-  const filterHash = crypto
-    .createHash("md5")
-    .update(JSON.stringify(sortedFilters))
-    .digest("hex")
-    .substring(0, 8);
-
-  return `companies:list:page:${page}:limit:${limit}:filters:${filterHash}`;
-};
-
-// Build MongoDB match query
+// Build MongoDB match query (handles empty filters gracefully)
 const buildMatchQuery = (filters) => {
   const matchQuery = {};
+
+  // Agar filters object hi nahi hai ya empty hai, toh empty query return hogi
+  // Iska matlab ALL companies fetch hongi
+  if (!filters || Object.keys(filters).length === 0) {
+    return matchQuery; // Empty query = fetch all
+  }
 
   if (filters.mainCategory && filters.mainCategory.length > 0) {
     matchQuery["companyBasicInfo.mainCategory"] = {
@@ -174,26 +148,4 @@ const buildMatchQuery = (filters) => {
   }
 
   return matchQuery;
-};
-
-// Cache invalidation helper (call this when company is updated)
-export const invalidateCompanyListCache = async () => {
-  try {
-    const keys = [];
-    for await (const key of redisClient.scanIterator({
-      MATCH: "companies:list:*",
-      COUNT: 100,
-    })) {
-      keys.push(key);
-    }
-
-    if (keys.length > 0) {
-      await redisClient.del(keys); // del() same hai
-      logger.info("Company list cache invalidated", {
-        keysDeleted: keys.length,
-      });
-    }
-  } catch (error) {
-    logger.error("Cache invalidation error", { error: error.message });
-  }
 };
