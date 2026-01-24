@@ -15,13 +15,12 @@ export const verifyUser = (req, res, next) => {
       accessToken = req.cookies.accessToken;
     }
 
-    // --- 🔑 Core Logic Change for Public Access ---
     if (!accessToken) {
       req.user = {
-        _id: null, // No user ID
+        _id: null,
         role: "user",
       };
-      return next(); // Proceed to the next middleware (e.g., allowRoles)
+      return next();
     }
 
     // Verify token
@@ -54,6 +53,7 @@ export const verifyUser = (req, res, next) => {
 //     next();
 //   };
 // }
+
 export function allowRoles(...allowedRoles) {
   return (req, res, next) => {
     const userRoles = req.user?.role;
