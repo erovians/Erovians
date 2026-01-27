@@ -16,7 +16,7 @@ export const uploadCertificate = async (req, res) => {
       comments,
     } = req.body;
 
-    const sellerId = req.user.userId;
+    const sellerId = req.user.id;
     console.log("User ID:", sellerId);
 
     if (!sellerId) {
@@ -98,7 +98,7 @@ export const uploadCertificate = async (req, res) => {
 
 export const getCertificates = async (req, res) => {
   try {
-    const sellerId = req.user.userId;
+    const sellerId = req.user.id;
 
     if (!sellerId) {
       return res.status(400).json({ message: "SellerId is required" });
@@ -122,7 +122,7 @@ export const getCertificates = async (req, res) => {
 export const deleteCertificate = async (req, res) => {
   try {
     console.log("Delete request params:");
-    const sellerId = req.user.userId;
+    const sellerId = req.user.id;
     const certificateId = req.params.id;
 
     if (!sellerId) {

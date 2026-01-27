@@ -4,6 +4,8 @@ import { assets } from "@/assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerSeller, clearSellerState } from "@/redux/slice/sellerSlice";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import {
   InputOTP,
   InputOTPGroup,
@@ -14,7 +16,6 @@ import api from "@/utils/axios.utils";
 
 import {
   validateEmail,
-  validateMobile,
   validatebusinessId,
   validatePassword,
   validateOtp,
@@ -66,9 +67,8 @@ const SellerSignUp = () => {
 
   // ======================== SEND OTP ========================
   const handleSendOtp = async () => {
-    const mobileError = validateMobile(formData.mobile);
-    if (mobileError) {
-      setErrors((prev) => ({ ...prev, mobile: mobileError }));
+    if (!formData.mobile) {
+      setErrors((prev) => ({ ...prev, mobile: "Mobile number is required" }));
       return;
     }
 
@@ -149,8 +149,9 @@ const SellerSignUp = () => {
     const emailError = validateEmail(formData.email);
     if (emailError) newErrors.email = emailError;
 
-    const mobileError = validateMobile(formData.mobile);
-    if (mobileError) newErrors.mobile = mobileError;
+    if (!formData.mobile) {
+      newErrors.mobile = "Mobile number is required";
+    }
 
     const businessIdError = validatebusinessId(formData.businessId);
     if (businessIdError) newErrors.businessId = businessIdError;
@@ -196,7 +197,6 @@ const SellerSignUp = () => {
   const handlePasswordContinue = () => {
     const newErrors = {};
 
-    // ✅ Validate sellername
     if (!formData.sellername || formData.sellername.trim().length < 2) {
       newErrors.sellername = "Seller name is required (min 2 characters)";
     } else if (!/^[a-zA-Z\s]+$/.test(formData.sellername.trim())) {
@@ -381,25 +381,28 @@ const SellerSignUp = () => {
           {/* ======================== STEP 1: EMAIL & GST + MOBILE OTP ======================== */}
           {step === 1 && (
             <form className="space-y-5" onSubmit={handleRegister}>
-              {/* Mobile Number with OTP */}
-              <div className="flex border rounded-md overflow-hidden flex-col sm:flex-row">
-                <input
-                  type="tel"
-                  name="mobile"
-                  placeholder="Enter Mobile Number *"
-                  value={formData.mobile}
-                  onChange={handleChange}
-                  className="flex-1 px-4 py-3 text-sm outline-none"
-                  disabled={isMobileVerified}
-                />
-                {!isMobileVerified && (
-                  <button
-                    type="button"
-                    onClick={handleSendOtp}
-                    disabled={
-                      otpStatus === "sending" || otpStatus === "verified"
+              {/* Mobile Number with PhoneInput */}
+              <div>
+                <div className="flex  rounded-md overflow-hidden flex-col sm:flex-row">
+                  <PhoneInput
+                    international
+                    defaultCountry="IN"
+                    value={formData.mobile}
+                    onChange={(value) =>
+                      setFormData({ ...formData, mobile: value || "" })
                     }
-                    className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
+                    placeholder="Enter Mobile Number *"
+                    disabled={isMobileVerified}
+                    className="flex-1 phone-input-custom"
+                  />
+                  {!isMobileVerified && (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={
+                        otpStatus === "sending" || otpStatus === "verified"
+                      }
+                      className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
                     ${
                       otpStatus === "verified"
                         ? "bg-green-600"
@@ -407,25 +410,26 @@ const SellerSignUp = () => {
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-navyblue hover:bg-[#1a4361]"
                     }`}
-                  >
-                    {otpStatus === "sending"
-                      ? "Sending..."
-                      : otpStatus === "sent"
-                      ? "Resend OTP"
-                      : otpStatus === "verified"
-                      ? "✓ Verified"
-                      : "Send OTP"}
-                  </button>
-                )}
-                {isMobileVerified && (
-                  <div className="px-4 py-2 sm:py-0 font-semibold text-sm text-white bg-green-600 flex items-center justify-center border-t sm:border-t-0 sm:border-l border-gray-200">
-                    ✓ Verified
-                  </div>
+                    >
+                      {otpStatus === "sending"
+                        ? "Sending..."
+                        : otpStatus === "sent"
+                        ? "Resend OTP"
+                        : otpStatus === "verified"
+                        ? "✓ Verified"
+                        : "Send OTP"}
+                    </button>
+                  )}
+                  {isMobileVerified && (
+                    <div className="px-4 py-2 sm:py-0 font-semibold text-sm text-white bg-green-600 flex items-center justify-center border-t sm:border-t-0 sm:border-l border-gray-200">
+                      ✓ Verified
+                    </div>
+                  )}
+                </div>
+                {errors.mobile && (
+                  <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>
                 )}
               </div>
-              {errors.mobile && (
-                <p className="text-red-500 text-sm">{errors.mobile}</p>
-              )}
 
               {/* OTP Input Field */}
               {showOtpField && !isMobileVerified && (

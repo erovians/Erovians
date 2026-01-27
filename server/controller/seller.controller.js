@@ -20,9 +20,7 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
   if (email && !isValidEmail(email)) {
     return next(new AppError("Invalid email format", 400));
   }
-  if (mobile && !isValidMobile(mobile)) {
-    return next(new AppError("Invalid mobile format", 400));
-  }
+
   if (businessId && !isValidGSTIN(businessId)) {
     return next(new AppError("Invalid GSTIN format", 400));
   }
@@ -70,9 +68,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
   if (!email || !isValidEmail(email)) {
     return next(new AppError("Valid email is required", 400));
   }
-  if (!mobile || !isValidMobile(mobile)) {
-    return next(new AppError("Valid mobile number is required", 400));
-  }
+
   if (!businessId || !isValidGSTIN(businessId)) {
     return next(new AppError("Valid GSTIN is required", 400));
   }

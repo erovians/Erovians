@@ -4,7 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { assets } from "@/assets/assets";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react"; // 👈 using lucide-react icons (or any icon library)
+import { Eye, EyeOff } from "lucide-react";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 export default function Login() {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
@@ -12,7 +14,7 @@ export default function Login() {
   const [success, setSuccess] = useState("");
   const [loginType, setLoginType] = useState("mobile");
   const [loading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 👈 new state
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -79,7 +81,7 @@ export default function Login() {
 
             {/* Title */}
             <h2 className="text-center text-base font-semibold text-gray-700 border-t border-dashed p-2">
-              Welcome to World’s fastest platform!
+              Welcome to World's fastest platform!
             </h2>
 
             {/* Login Type Selection */}
@@ -122,17 +124,33 @@ export default function Login() {
             {/* Form */}
             <form onSubmit={handleSubmit}>
               {/* Identifier */}
-              <input
-                type={loginType === "mobile" ? "tel" : "email"}
-                name="identifier"
-                value={formData.identifier}
-                onChange={handleChange}
-                placeholder={
-                  loginType === "mobile" ? "Mobile Number" : "Email ID"
-                }
-                className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
-                required
-              />
+              {loginType === "mobile" ? (
+                <div className="mt-4">
+                  <PhoneInput
+                    international
+                    defaultCountry="IN"
+                    value={formData.identifier}
+                    onChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        identifier: value || "",
+                      }))
+                    }
+                    placeholder="Enter Mobile Number"
+                    className="phone-input-custom"
+                  />
+                </div>
+              ) : (
+                <input
+                  type="email"
+                  name="identifier"
+                  value={formData.identifier}
+                  onChange={handleChange}
+                  placeholder="Email ID"
+                  className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
+                  required
+                />
+              )}
 
               {/* Password Field with Show/Hide */}
               <div className="relative mt-4">
@@ -170,7 +188,7 @@ export default function Login() {
 
             {/* Register Link */}
             <p className="text-center text-sm text-gray-500 mt-6">
-              Don’t have an account?{" "}
+              Don't have an account?{" "}
               <Link
                 to={"/start-selling"}
                 className="text-navyblue font-medium hover:underline"

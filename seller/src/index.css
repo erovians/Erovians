@@ -137,3 +137,49 @@ h3 {
   -moz-appearance: none;
   background-image: none !important;
 }
+/* // react phone number library  */
+/* Phone Input Custom Styling */
+.phone-input-custom .PhoneInputCountry {
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-right: 8px;
+  background-color: white;
+}
+
+.phone-input-custom .PhoneInputCountry:focus-within {
+  border-color: #6b7280;
+  ring: 1px;
+  ring-color: #6b7280;
+}
+
+.phone-input-custom .PhoneInputInput {
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.phone-input-custom .PhoneInputInput:focus {
+  outline: none;
+  border-color: #6b7280;
+  ring: 1px;
+  ring-color: #6b7280;
+}
+
+.PhoneInputCountrySelect {
+  max-height: 300px;
+}
+
+.PhoneInputCountrySelectDropdown {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.PhoneInputCountryIcon {
+  width: 1.2em;
+  height: 1em;
+}

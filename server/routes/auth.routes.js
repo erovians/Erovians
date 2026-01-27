@@ -5,6 +5,6 @@ import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/validate", verifyUser, validateUser);
+router.get("/validate", isAuthenticated, validateUser);
 
 export default router;

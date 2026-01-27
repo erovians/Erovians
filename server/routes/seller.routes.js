@@ -17,7 +17,6 @@ router.post("/refresh", refreshTokenController); // Route to refresh JWT tokens
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 
-//route to check the email and gst number alreday exist or not
 router.post("/check-unique", checkUniqueSeller);
 router.post("/register", upload.single("file"), registerSeller);
 router.post("/login", loginSeller);

@@ -11,15 +11,16 @@ import {
   exportOrders,
 } from "../controller/order.controller.js";
 import { verifyUser } from "../middleware/auth.middleware.js";
+import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/create", verifyUser, createOrder);
-router.get("/:id", verifyUser, getOrderById);
-router.get("/userorders", verifyUser, getUserOrders);
-router.get("/sellerorders/all/orders", verifyUser, getSellerOrders);
-router.patch("/:id/status", verifyUser, updateOrderStatus);
-router.get("/status/completed", verifyUser, getCompletedOrders);
-router.get("/status/pending", verifyUser, getPendingOrders);
-router.get("/ordersheet/download", verifyUser, exportOrders);
+router.post("/create", isAuthenticated, createOrder);
+router.get("/:id", isAuthenticated, getOrderById);
+router.get("/userorders", isAuthenticated, getUserOrders);
+router.get("/sellerorders/all/orders", isAuthenticated, getSellerOrders);
+router.patch("/:id/status", isAuthenticated, updateOrderStatus);
+router.get("/status/completed", isAuthenticated, getCompletedOrders);
+router.get("/status/pending", isAuthenticated, getPendingOrders);
+router.get("/ordersheet/download", isAuthenticated, exportOrders);
 export default router;

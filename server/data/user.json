@@ -1,0 +1,312 @@
+[
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d1"
+    },
+    "name": "Rajesh Kumar",
+    "email": "rajesh.kumar@stoneworks.in",
+    "mobile": "+919876543210",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "male",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d2"
+    },
+    "name": "Priya Sharma",
+    "email": "priya.sharma@marbleemporium.com",
+    "mobile": "+919876543211",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "female",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d3"
+    },
+    "name": "Mohammed Hassan",
+    "email": "mohammed.hassan@graniteworld.ae",
+    "mobile": "+919876543212",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "male",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d4"
+    },
+    "name": "Anita Patel",
+    "email": "anita.patel@ceramicplus.in",
+    "mobile": "+919876543213",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "female",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d5"
+    },
+    "name": "Vikram Singh",
+    "email": "vikram.singh@royalstones.in",
+    "mobile": "+919876543214",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "male",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d6"
+    },
+    "name": "Deepa Reddy",
+    "email": "deepa.reddy@tilesolutions.com",
+    "mobile": "+919876543215",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "female",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d7"
+    },
+    "name": "Arjun Mehta",
+    "email": "arjun.mehta@premiummarbles.in",
+    "mobile": "+919876543216",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "male",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d8"
+    },
+    "name": "Kavita Joshi",
+    "email": "kavita.joshi@luxuryfinishes.com",
+    "mobile": "+919876543217",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "female",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91d9"
+    },
+    "name": "Suresh Nair",
+    "email": "suresh.nair@globalstones.in",
+    "mobile": "+919876543218",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "male",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "697846c567440cf5936d91da"
+    },
+    "name": "Neha Kapoor",
+    "email": "neha.kapoor@elegantceramics.com",
+    "mobile": "+919876543219",
+    "isEmailVerified": true,
+    "isMobileVerified": true,
+    "hasPassword": true,
+    "password": "$2b$10$PBUYUoPPkgkYvoybKCxfi.yO./mgE/baumzHswuw0Vkt1JC5asXVC",
+    "role": ["user", "seller"],
+    "status": "active",
+    "gender": "female",
+    "profileURL": {
+      "url": null,
+      "publicId": null
+    },
+    "resetPasswordOtp": null,
+    "resetPasswordOtpExpires": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "address": [],
+    "createdAt": {
+      "$date": "2026-01-27T05:01:57.404Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:46.968Z"
+    },
+    "__v": 0
+  }
+]

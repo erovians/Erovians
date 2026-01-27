@@ -1,0 +1,242 @@
+[
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d1"
+    },
+    "businessId": "29AABCS1234E1Z5",
+    "businessName": "Imperial Stone Works",
+    "category": "Marbles",
+    "companyregstartionlocation": "Jaipur",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc1.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Sector 12, Industrial Area, Jaipur, Rajasthan",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d2"
+    },
+    "businessId": "27AABCS5678F2Z6",
+    "businessName": "Marble Emporium India",
+    "category": "All",
+    "companyregstartionlocation": "Mumbai",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc2.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Andheri East, Mumbai, Maharashtra",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d3"
+    },
+    "businessId": "24AABCS9012G3Z7",
+    "businessName": "Granite World Exports",
+    "category": "Granites",
+    "companyregstartionlocation": "Bangalore",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc3.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Whitefield, Bangalore, Karnataka",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d4"
+    },
+    "businessId": "07AABCS3456H4Z8",
+    "businessName": "Ceramic Plus Solutions",
+    "category": "All",
+    "companyregstartionlocation": "Ahmedabad",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc4.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Navrangpura, Ahmedabad, Gujarat",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d5"
+    },
+    "businessId": "09AABCS7890I5Z9",
+    "businessName": "Royal Stones International",
+    "category": "Marbles",
+    "companyregstartionlocation": "Udaipur",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc5.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Hiran Magri, Udaipur, Rajasthan",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d6"
+    },
+    "businessId": "36AABCS2345J6Z0",
+    "businessName": "Tile Solutions Pro",
+    "category": "All",
+    "companyregstartionlocation": "Hyderabad",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc6.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Madhapur, Hyderabad, Telangana",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d7"
+    },
+    "businessId": "19AABCS6789K7Z1",
+    "businessName": "Premium Marble Gallery",
+    "category": "Marbles",
+    "companyregstartionlocation": "Delhi",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc7.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Mayur Vihar, New Delhi",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d8"
+    },
+    "businessId": "32AABCS0123L8Z2",
+    "businessName": "Luxury Finishes Ltd",
+    "category": "All",
+    "companyregstartionlocation": "Pune",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc8.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Baner, Pune, Maharashtra",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91d9"
+    },
+    "businessId": "33AABCS4567M9Z3",
+    "businessName": "Global Stone Traders",
+    "category": "Granites",
+    "companyregstartionlocation": "Chennai",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc9.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Anna Nagar, Chennai, Tamil Nadu",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "userId": {
+      "$oid": "697846c567440cf5936d91da"
+    },
+    "businessId": "27AABCS8901N0Z4",
+    "businessName": "Elegant Ceramics Hub",
+    "category": "All",
+    "companyregstartionlocation": "Kolkata",
+    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc10.png",
+    "varificationStatus": "Approved",
+    "seller_status": "professional",
+    "seller_address": "Salt Lake, Kolkata, West Bengal",
+    "status": "active",
+    "createdAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-27T05:03:47.155Z"
+    },
+    "__v": 0
+  }
+]

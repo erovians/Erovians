@@ -1,0 +1,1902 @@
+[
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e1"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e1"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e1"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e1"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e1"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e1"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e2"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e2"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e2"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e2"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e2"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e2"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e3"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e3"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e3"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e3"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e3"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e3"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e4"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e4"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e4"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e4"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e4"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e4"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e5"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e5"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e5"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e5"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e5"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e5"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e6"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e6"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e6"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e6"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e6"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e6"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e7"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e7"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e7"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e7"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e7"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e7"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e8"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e8"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e8"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e8"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e8"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e8"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e9"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e9"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e9"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e9"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05e9"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91e9"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05ea"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "productName": "Makrana White Marble Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "Makrana, Rajasthan",
+    "size": {
+      "length": 8,
+      "lengthMeasurement": "ft",
+      "width": 4,
+      "widthMeasurement": "ft",
+      "thickness": 1.8,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 250,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 85,
+    "priceUnit": "sq.ft",
+    "description": "Premium Makrana white marble slabs, the same marble used in the iconic Taj Mahal. Known for its pure white color and minimal veining, this marble exudes elegance and timelessness. Perfect for flooring, wall cladding, and countertops.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05ea"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "productName": "Black Galaxy Granite Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Black with Gold Specks",
+    "origin": "Ongole, Andhra Pradesh",
+    "size": {
+      "length": 9,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 320,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 95,
+    "priceUnit": "sq.ft",
+    "description": "Premium Black Galaxy granite slabs featuring deep black background with spectacular golden bronze specks that shimmer like stars. One of India's most sought-after granite varieties, perfect for kitchen countertops and luxury applications.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05ea"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "productName": "Porcelain Wood Effect Tiles",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Natural Oak",
+    "origin": "Morbi, Gujarat",
+    "size": {
+      "length": 4,
+      "lengthMeasurement": "ft",
+      "width": 1,
+      "widthMeasurement": "ft",
+      "thickness": 1,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 18,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 42,
+    "priceUnit": "sq.ft",
+    "description": "Premium porcelain tiles with realistic wood effect finish. These tiles provide the warm aesthetics of wood with the durability and water resistance of porcelain, perfect for kitchens, bathrooms, and high-moisture areas.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05ea"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "productName": "Quartz Engineered Stone Slabs",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Pure White",
+    "origin": "China",
+    "size": {
+      "length": 10,
+      "lengthMeasurement": "ft",
+      "width": 5,
+      "widthMeasurement": "ft",
+      "thickness": 2,
+      "thicknessMeasurement": "cm"
+    },
+    "weight": 380,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "description": "Premium engineered quartz slabs composed of 93% natural quartz crystals. Non-porous surface resists staining, bacteria growth, and requires no sealing. Perfect for kitchen countertops and bathroom vanities.",
+    "status": "active"
+  },
+  {
+    "companyId": {
+      "$oid": "6978491c25e75818051a05ea"
+    },
+    "sellerId": {
+      "$oid": "6978473367440cf5936d91ea"
+    },
+    "productName": "Red Agra Sandstone Blocks",
+    "productImages": [
+      "https://images.unsplash.com/photo-1600566753355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80"
+    ],
+    "views": 0,
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "A",
+    "color": "Red",
+    "origin": "Agra, Uttar Pradesh",
+    "size": {
+      "length": 3,
+      "lengthMeasurement": "ft",
+      "width": 2,
+      "widthMeasurement": "ft",
+      "thickness": 6,
+      "thicknessMeasurement": "inch"
+    },
+    "weight": 180,
+    "weightMeasurement": "kg",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "description": "Authentic Red Agra sandstone blocks renowned for their warm red tones and excellent weather resistance. Perfect for exterior cladding, garden landscaping, paving, and architectural features.",
+    "status": "active"
+  }
+]

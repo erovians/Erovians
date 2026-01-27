@@ -6,18 +6,23 @@ import {
   deleteTeamMember,
 } from "../controller/team.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { verifyUser } from "../middleware/auth.middleware.js";
+import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
 router.post(
   "/addteammember",
-  verifyUser,
+  isAuthenticated,
   upload.single("photo"),
   addTeamMember
 );
-router.get("/getteammember", verifyUser, getTeamMembers);
-router.put("/update/:id", verifyUser, upload.single("photo"), updateTeamMember);
-router.delete("/delete/:id", verifyUser, deleteTeamMember);
+router.get("/getteammember", isAuthenticated, getTeamMembers);
+router.put(
+  "/update/:id",
+  isAuthenticated,
+  upload.single("photo"),
+  updateTeamMember
+);
+router.delete("/delete/:id", isAuthenticated, deleteTeamMember);
 
 export default router;

@@ -17,6 +17,7 @@ import estimateRoutes from "./routes/estimate.routes.js";
 import globalErrorHandler from "./middleware/buyer/globalErrorHandler.js";
 import userAuthRoutes from "./routes/buyer/auth.route.js";
 import companyBuyerRoutes from "./routes/buyer/company.route.js";
+import { seedDatabase } from "./controller/seed.controller.js";
 // user router import start from here
 
 const app = express();
@@ -85,6 +86,20 @@ app.use("/api/transport", estimateRoutes);
 
 app.use("/api/v2/auth", userAuthRoutes);
 app.use("/api/v2/company", companyBuyerRoutes);
+
+// OPTION 2: Manual trigger endpoint (recommended)
+app.post("/seed-database", async (req, res) => {
+  try {
+    const result = await seedDatabase();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error seeding database",
+      error: error.message,
+    });
+  }
+});
 
 app.use(globalErrorHandler);
 export { app };

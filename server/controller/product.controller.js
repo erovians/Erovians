@@ -12,20 +12,37 @@ import {
 import CompanyDetails from "../models/company.model.js";
 import { addProductSchema } from "../zodSchemas/Product/addProduct.schema.js";
 import Product from "../models/product.model.js";
+import Seller from "../models/sellerSingnup.model.js";
 
 // ✅ Add Product
+// product.controller.js - addProduct function
+
 export const addProduct = async (req, res) => {
   try {
-    const sellerId = req.user.userId;
-    if (!sellerId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "sellerId is required" });
+    const userId = req.user.id; // ✅ Token se User ID
+    console.log(req.body);
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
     }
+
+    // ✅ User ID se Seller find karo
+    const seller = await Seller.findOne({ userId });
+
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller account not found. Please register as a seller first.",
+      });
+    }
+
+    const sellerId = seller._id.toString();
 
     // 1️⃣ Validate text fields
     if (req.body.size && typeof req.body.size === "string") {
-      //validate the size field
       try {
         req.body.size = JSON.parse(req.body.size);
       } catch (err) {
@@ -63,22 +80,26 @@ export const addProduct = async (req, res) => {
       });
     }
 
+    // ✅ Seller ID se Company find karo
     const company = await CompanyDetails.findOne({ sellerId }).select("_id");
 
-    const companyId = company?._id;
-    if (!companyId) {
+    if (!company) {
       return res.status(400).json({
         success: false,
         message:
           "Company not found for this seller. Please register a company first.",
       });
     }
+
+    const companyId = company._id.toString();
+
     const savedProduct = await addProductService(
-      parsedBody.data, //passing the validated data from zod schema
+      parsedBody.data,
       req.files,
       sellerId,
       companyId
     );
+
     res.status(201).json({
       success: true,
       message: "Product added successfully",
