@@ -7,20 +7,21 @@ import {
   downloadContractPDF,
 } from "../controller/contracts.controller.js";
 import { verifyUser, allowRoles } from "../middleware/auth.middleware.js";
+import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/add", verifyUser, allowRoles("seller"), addContract);
-router.get("/", verifyUser, allowRoles("seller"), getContracts);
+router.post("/add", isAuthenticated, allowRoles("seller"), addContract);
+router.get("/", isAuthenticated, allowRoles("seller"), getContracts);
 router.put(
   "/update/:id",
-  verifyUser,
+  isAuthenticated,
   allowRoles("seller"),
   updateContractStatus
 );
 router.get(
   "/download/:id",
-  verifyUser,
+  isAuthenticated,
   allowRoles("seller"),
   downloadContractPDF
 );

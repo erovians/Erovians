@@ -10,14 +10,18 @@ import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { registerCompany, clearCompanyState } from "@/redux/slice/companySlice";
+import {
+  registerCompany,
+  clearCompanyState,
+  getCompany,
+} from "@/redux/slice/companySlice";
 import { toast } from "sonner";
-import api from "@/utils/axios.utils";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
     id: 1,
-    title: "Comapny Basic Details",
+    title: "Company Basic Details",
     component: StepOne,
     schema: stepOneSchema,
   },
@@ -31,16 +35,16 @@ const steps = [
 ];
 
 export default function CompanyProfileForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem("currentStep");
     return savedStep ? Number(savedStep) : 1;
   });
 
-  const dispatch = useDispatch();
-
-  const { loading, error, success, message } = useSelector(
-    (state) => state.company
-  );
+  const { company, loading, error } = useSelector((state) => state.company);
+  const loadingProfile = loading;
 
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("companyFormData");
@@ -63,7 +67,6 @@ export default function CompanyProfileForm() {
           acceptedCurrency: [],
           acceptedPaymentType: [],
           languageSpoken: [],
-          // Step 2
           companyDescription: "",
           logo: null,
           companyPhotos: [],
@@ -74,56 +77,62 @@ export default function CompanyProfileForm() {
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
 
-  // fetch all the data of the company associated with the current loggedin seller
+  // ✅ Fetch company data on mount
   useEffect(() => {
-    async function loadProfile() {
-      try {
-        const res = await api.get("/company/details");
+    dispatch(getCompany());
+  }, [dispatch]);
 
-        if (!res.data.company) {
-          setLoadingProfile(false);
-          return;
+  // ✅ Populate form when company data arrives
+  useEffect(() => {
+    if (company) {
+      const c = company;
+
+      // Helper function to split comma-separated strings
+      const splitString = (str) => {
+        if (!str) return [];
+        if (Array.isArray(str)) {
+          // If already array, flatten and split each item
+          return str.flatMap((item) =>
+            typeof item === "string"
+              ? item.split(",").map((s) => s.trim())
+              : item
+          );
         }
+        return str.split(",").map((s) => s.trim());
+      };
 
-        const c = res.data.company;
-
-        setFormData((prev) => ({
-          ...prev,
-
-          companyName: c.companyBasicInfo?.companyName || "",
-          legalowner: c.companyBasicInfo?.legalowner || "",
-          locationOfRegistration:
-            c.companyBasicInfo?.locationOfRegistration || "",
-          companyRegistrationYear:
-            c.companyBasicInfo?.companyRegistrationYear || "",
-
-          address: {
-            ...prev.address,
-            ...c.companyBasicInfo?.address,
-          },
-
-          mainCategory: c.companyBasicInfo?.mainCategory || [],
-          mainProduct: c.companyBasicInfo?.subCategory || [],
-          acceptedCurrency: c.companyBasicInfo?.acceptedCurrency || [],
-          acceptedPaymentType: c.companyBasicInfo?.acceptedPaymentType || [],
-          languageSpoken: c.companyBasicInfo?.languageSpoken || [],
-
-          companyDescription: c.companyIntro?.companyDescription || "",
-
-          logoUrl: c.companyIntro?.logo || "",
-          companyPhotosUrl: c.companyIntro?.companyPhotos || [],
-          companyVideosUrl: c.companyIntro?.companyVideos || [],
-        }));
-
-        setLoadingProfile(false);
-      } catch (err) {
-        console.error("Error loading profile", err);
-        setLoadingProfile(false);
-      }
+      setFormData((prev) => ({
+        ...prev,
+        companyName: c.companyBasicInfo?.companyName || "",
+        legalowner: c.companyBasicInfo?.legalowner || "",
+        locationOfRegistration:
+          c.companyBasicInfo?.locationOfRegistration || "",
+        companyRegistrationYear: c.companyBasicInfo?.companyRegistrationYear
+          ? new Date(c.companyBasicInfo.companyRegistrationYear)
+              .getFullYear()
+              .toString()
+          : "",
+        address: {
+          street: c.companyBasicInfo?.address?.street || "",
+          city: c.companyBasicInfo?.address?.city || "",
+          stateOrProvince: c.companyBasicInfo?.address?.stateOrProvince || "",
+          countryOrRegion: c.companyBasicInfo?.address?.countryOrRegion || "",
+          postalCode: c.companyBasicInfo?.address?.postalCode || "",
+        },
+        mainCategory: c.companyBasicInfo?.mainCategory || [],
+        mainProduct: c.companyBasicInfo?.subCategory || [],
+        acceptedCurrency: splitString(c.companyBasicInfo?.acceptedCurrency),
+        acceptedPaymentType: splitString(
+          c.companyBasicInfo?.acceptedPaymentType
+        ),
+        languageSpoken: splitString(c.companyBasicInfo?.languageSpoken),
+        companyDescription: c.companyIntro?.companyDescription || "",
+        logoUrl: c.companyIntro?.logo || "",
+        companyPhotosUrl: c.companyIntro?.companyPhotos || [],
+        companyVideosUrl: c.companyIntro?.companyVideos || [],
+      }));
     }
-
-    loadProfile();
-  }, []);
+  }, [company]);
 
   useEffect(() => {
     const { logo, companyPhotos, companyVideos, ...safeData } = formData;
@@ -149,7 +158,6 @@ export default function CompanyProfileForm() {
         }
       });
     }
-    console.log("Validation errors:", formatted);
     return formatted;
   };
 
@@ -174,100 +182,14 @@ export default function CompanyProfileForm() {
     setCurrentStep((s) => Math.max(1, s - 1));
   };
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     console.log("Submitting form data...");
-  //     await stepOneSchema.parseAsync(formData);
-  //     await stepTwoSchema.parseAsync(formData);
-  //     setErrors({});
-  //     setIsSubmitting(true);
-
-  //     const form = new FormData();
-
-  //     // Append primitive fields
-  //     form.append("companyName", formData.companyName);
-  //     form.append("legalowner", formData.legalowner);
-  //     form.append("locationOfRegistration", formData.locationOfRegistration);
-  //     form.append("companyRegistrationYear", formData.companyRegistrationYear);
-  //     form.append("address", JSON.stringify(formData.address));
-  //     form.append("mainCategory", formData.mainCategory);
-  //     form.append("subCategory", formData.mainProduct.join(","));
-  //     form.append("acceptedCurrency", formData.acceptedCurrency.join(","));
-  //     form.append(
-  //       "acceptedPaymentType",
-  //       formData.acceptedPaymentType.join(",")
-  //     );
-  //     form.append("languageSpoken", formData.languageSpoken.join(","));
-  //     form.append("companyDescription", formData.companyDescription);
-
-  //     // Append optional files safely
-  //     if (formData.logo instanceof File) {
-  //       form.append("logo", formData.logo);
-  //     }
-
-  //     if (Array.isArray(formData.companyPhotos)) {
-  //       formData.companyPhotos.forEach((photo, idx) => {
-  //         if (photo instanceof File) form.append("companyPhotos", photo);
-  //       });
-  //     }
-
-  //     if (Array.isArray(formData.companyVideos)) {
-  //       formData.companyVideos.forEach((video, idx) => {
-  //         if (video instanceof File) form.append("companyVideo", video);
-  //       });
-  //     }
-
-  //     console.log("Files appended successfully ✅");
-
-  //     // Send request
-  //     const res = await api.post("/company/register", form ,{
-  //        headers: { "Content-Type": undefined },
-  //     });
-  //     console.log("Response:", res);
-
-  //     if (!res.data.success) {
-  //       throw new Error(res.data.message || "Something went wrong");
-  //     }
-
-  //     if (res.status === 201) {
-  //       alert("Company registered successfully");
-  //       localStorage.removeItem("companyFormData");
-  //       localStorage.removeItem("currentStep");
-  //     }
-  //   } catch (err) {
-  //     console.error("Submit error:", err);
-  //     const formatted = mapZodErrors(err);
-  //     setErrors(formatted);
-
-  //     // Jump to the step where error occurred
-  //     if (
-  //       formatted["companyName"] ||
-  //       formatted["address.street"] ||
-  //       formatted["acceptedCurrency"]
-  //     ) {
-  //       setCurrentStep(1);
-  //     } else if (
-  //       formatted["companyDescription"] ||
-  //       formatted["logo"] ||
-  //       formatted["companyPhotos"]
-  //     ) {
-  //       setCurrentStep(2);
-  //     }
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     try {
-      console.log("Submitting form data...");
       await stepOneSchema.parseAsync(formData);
       await stepTwoSchema.parseAsync(formData);
       setErrors({});
 
       const form = new FormData();
 
-      // Append primitive fields
       form.append("companyName", formData.companyName);
       form.append("legalowner", formData.legalowner);
       form.append("locationOfRegistration", formData.locationOfRegistration);
@@ -283,7 +205,6 @@ export default function CompanyProfileForm() {
       form.append("languageSpoken", formData.languageSpoken.join(","));
       form.append("companyDescription", formData.companyDescription);
 
-      // Append optional files safely
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
       }
@@ -294,7 +215,6 @@ export default function CompanyProfileForm() {
         });
       }
 
-      // Only append first video to match multer maxCount = 1
       if (
         Array.isArray(formData.companyVideos) &&
         formData.companyVideos[0] instanceof File
@@ -302,20 +222,23 @@ export default function CompanyProfileForm() {
         form.append("companyVideo", formData.companyVideos[0]);
       }
 
-      console.log("Files appended successfully ✅");
+      const result = await dispatch(registerCompany(form)).unwrap();
 
-      const result = await dispatch(registerCompany(form)).unwrap(); // redux disptach
-      // alert(result.message);
-      toast.success(result.message);
+      toast.success(result.message || "Company registered successfully!");
+
       localStorage.removeItem("companyFormData");
       localStorage.removeItem("currentStep");
+
       dispatch(clearCompanyState());
+
+      setTimeout(() => {
+        navigate("/sellerdashboard");
+      }, 1000);
     } catch (err) {
       console.error("Submit error:", err);
       const formatted = mapZodErrors(err);
       setErrors(formatted);
 
-      // Jump to the step where error occurred
       if (
         formatted["companyName"] ||
         formatted["address.street"] ||
@@ -347,7 +270,6 @@ export default function CompanyProfileForm() {
           />
         </div>
 
-        {/* Step indicators */}
         <div className="flex justify-between mt-6">
           {steps.map((step) => {
             const isActive = currentStep === step.id;
@@ -374,7 +296,6 @@ export default function CompanyProfileForm() {
                   {step.title}
                 </p>
 
-                {/* Connector line between steps */}
                 {step.id < steps.length && (
                   <div
                     className={`absolute top-4 left-1/2 w-full h-0.5 -translate-y-1/2 z-[-1]
@@ -387,39 +308,48 @@ export default function CompanyProfileForm() {
         </div>
       </div>
 
-      <div className="pt-6 md:p-6 ">
-        <CurrentComponent
-          formData={formData}
-          setFormData={setFormData}
-          errors={errors}
-        />
-
-        <div className="mt-6 flex gap-2 justify-between items-center">
-          <div>
-            {currentStep > 1 && (
-              <Button onClick={prevStep} variant="secondary">
-                Back
-              </Button>
-            )}
+      <div className="pt-6 md:p-6">
+        {loadingProfile ? (
+          <div className="flex justify-center items-center h-64">
+            <Spinner />
+            <span className="ml-2">Loading company details...</span>
           </div>
+        ) : (
+          <>
+            <CurrentComponent
+              formData={formData}
+              setFormData={setFormData}
+              errors={errors}
+            />
 
-          <div className="flex flex-col items-center gap-2">
-            {currentStep < steps.length ? (
-              <Button onClick={nextStep} variant="secondary">
-                Next <MoveRight size={20} />
-              </Button>
-            ) : (
-              <Button
-                onClick={handleSubmit}
-                variant={"formButton"}
-                disabled={loading}
-              >
-                {loading && <Spinner />}
-                {loading ? "Submitting" : "Submit"}
-              </Button>
-            )}
-          </div>
-        </div>
+            <div className="mt-6 flex gap-2 justify-between items-center">
+              <div>
+                {currentStep > 1 && (
+                  <Button onClick={prevStep} variant="secondary">
+                    Back
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                {currentStep < steps.length ? (
+                  <Button onClick={nextStep} variant="secondary">
+                    Next <MoveRight size={20} />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    variant={"formButton"}
+                    disabled={loading}
+                  >
+                    {loading && <Spinner />}
+                    {loading ? "Submitting" : "Submit"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

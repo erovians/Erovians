@@ -18,6 +18,9 @@ const CompanyCard = ({ company, seller, onClick }) => {
     subCategory,
     companyRegistrationYear,
   } = companyBasicInfo;
+
+  console.log("all compnay data", company);
+  console.log("all seller data", seller);
   const { logo, companyPhotos } = companyIntro;
 
   const [imageLoadingStates, setImageLoadingStates] = useState({});
@@ -200,7 +203,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
           {seller ? (
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <div className="w-7 h-7 bg-linear-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                {seller.sellername.charAt(0).toUpperCase()}
+                {/* {seller.sellername.charAt(0).toUpperCase()} */}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium text-gray-900 line-clamp-1">
@@ -297,7 +300,7 @@ const CompanyCard = ({ company, seller, onClick }) => {
               <>
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <div className="w-7 h-7 bg-linear-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0">
-                    {seller.sellername.charAt(0).toUpperCase()}
+                    {/* {seller.sellername.charAt(0).toUpperCase()} */}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-gray-900 line-clamp-1">

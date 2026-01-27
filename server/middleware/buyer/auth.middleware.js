@@ -46,7 +46,7 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
       logger.warn("Refresh token missing", { ip: req.ip });
       return next(new AppError("Please login again", 401));
     }
-
+    console.log(refreshToken);
     const decoded = await jwt.verify(
       refreshToken,
       process.env.JWT_REFRESH_SECRET
@@ -84,29 +84,24 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
 });
 
 // roles middlewares
-export const authorizeRoles = (...roles) => {
+export const authorizeRoles = (...allowedRoles) => {
   return asyncHandler(async (req, res, next) => {
     if (!req.user) {
-      logger.warn("Authorization attempt without authentication");
       return next(new AppError("Authentication required", 401));
     }
-    if (!roles.includes(req.user.role)) {
-      logger.warn(`Unauthorized role access: ${req.user.role}`, {
-        userId: req.user.id,
-        requiredRoles: roles,
-        path: req.originalUrl,
-      });
+
+    const userRoles = Array.isArray(req.user.role)
+      ? req.user.role
+      : [req.user.role];
+
+    const isAllowed = userRoles.some((role) => allowedRoles.includes(role));
+
+    if (!isAllowed) {
       return next(
-        new AppError(
-          `Role (${req.user.role}) is not authorized to access this resource`,
-          403
-        )
+        new AppError(`Role (${userRoles.join(", ")}) is not authorized`, 403)
       );
     }
-    logger.info(`Role authorized: ${req.user.role}`, {
-      userId: req.user.id,
-      path: req.originalUrl,
-    });
+
     next();
   });
 };

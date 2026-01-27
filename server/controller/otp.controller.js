@@ -5,17 +5,11 @@ import { generateOTP, getOTPExpiry } from "../utils/buyer/otpUtils.js";
 import { sendOTPSMS } from "../utils/buyer/sendNumberbyTwilio.js";
 import logger from "../config/winston.js";
 
-// Validation helper
-const isValidMobile = (mobile) => /^[6-9]\d{9}$/.test(mobile);
-
 // ======================== SEND OTP ========================
 export const sendOtp = asyncHandler(async (req, res, next) => {
   const { mobile } = req.body;
-  console.log(req.body);
+  console.log("this is mobile ", req.body);
   // Validation
-  if (!mobile || !isValidMobile(mobile)) {
-    return next(new AppError("Valid mobile number is required", 400));
-  }
 
   // ✅ Check if user exists
   let user = await User.findByMobile(mobile);

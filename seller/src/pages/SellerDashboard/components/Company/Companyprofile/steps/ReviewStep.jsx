@@ -31,7 +31,7 @@ export default function ReviewStep({ formData = {} }) {
   } = formData;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 ">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-blue-50 to-gray-100 ">
       <div className="w-full bg-white shadow-2xl overflow-hidden">
         {/* Header with Gradient
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6">
@@ -48,7 +48,7 @@ export default function ReviewStep({ formData = {} }) {
             {/* Left Column */}
             <div className="space-y-6">
               {/* Company Logo and Name Card */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
+              <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-gray-800 font-bold text-2xl overflow-hidden shadow-lg ring-2 ring-gray-200">
                     {logo ? (
@@ -88,7 +88,7 @@ export default function ReviewStep({ formData = {} }) {
                 <div className="space-y-3 text-sm">
                   {legalowner && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Mail className="w-4 h-4 text-navyblue mt-0.5 flex-shrink-0" />
+                      <Mail className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">Legal Owner</p>
                         <p className="font-semibold text-gray-900">
@@ -100,7 +100,7 @@ export default function ReviewStep({ formData = {} }) {
 
                   {companyRegistrationYear && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Calendar className="w-4 h-4 text-navyblue mt-0.5 flex-shrink-0" />
+                      <Calendar className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">Founding Date</p>
                         <p className="font-semibold text-gray-900">
@@ -112,7 +112,7 @@ export default function ReviewStep({ formData = {} }) {
 
                   {locationOfRegistration && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <FileText className="w-4 h-4 text-navyblue mt-0.5 flex-shrink-0" />
+                      <FileText className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">
                           Registration Location
@@ -126,7 +126,7 @@ export default function ReviewStep({ formData = {} }) {
 
                   {mainProduct && mainProduct.length > 0 && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Package className="w-4 h-4 navyblue mt-0.5 flex-shrink-0" />
+                      <Package className="w-4 h-4 navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">Main Products</p>
                         <p className="font-semibold text-gray-900">
@@ -138,7 +138,7 @@ export default function ReviewStep({ formData = {} }) {
 
                   {languageSpoken && languageSpoken.length > 0 && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Languages className="w-4 h-4 text-navyblue mt-0.5 flex-shrink-0" />
+                      <Languages className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">Languages</p>
                         <p className="font-semibold text-gray-900">
@@ -150,7 +150,7 @@ export default function ReviewStep({ formData = {} }) {
 
                   {attendedTradeShows && (
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Award className="w-4 h-4 text-navyblue mt-0.5 flex-shrink-0" />
+                      <Award className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
                       <div>
                         <p className="text-gray-500 text-xs">Trade Shows</p>
                         <p className="font-semibold text-gray-900">
@@ -216,7 +216,7 @@ export default function ReviewStep({ formData = {} }) {
                           {acceptedCurrency.map((cur, i) => (
                             <span
                               key={i}
-                              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
+                              className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
                             >
                               {cur}
                             </span>
@@ -234,7 +234,7 @@ export default function ReviewStep({ formData = {} }) {
                           {acceptedPaymentType.map((pay, i) => (
                             <span
                               key={i}
-                              className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
+                              className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
                             >
                               {pay}
                             </span>
@@ -248,7 +248,7 @@ export default function ReviewStep({ formData = {} }) {
 
               {/* Company Description Card */}
               {companyDescription && (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
+                <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-3 text-sm flex items-center gap-2">
                     <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center">
                       <FileText className="w-3 h-3 text-amber-600" />
@@ -298,13 +298,13 @@ export default function ReviewStep({ formData = {} }) {
                         ))
                     ) : (
                       <>
-                        <div className="aspect-video rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <div className="aspect-video rounded-xl bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
                           <div className="text-center">
                             <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-1" />
                             <p className="text-xs text-gray-500">No photo</p>
                           </div>
                         </div>
-                        <div className="aspect-video rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <div className="aspect-video rounded-xl bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
                           <div className="text-center">
                             <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-1" />
                             <p className="text-xs text-gray-500">No photo</p>
@@ -336,7 +336,7 @@ export default function ReviewStep({ formData = {} }) {
                         controls
                       />
                     ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-gray-200 via-gray-100 to-gray-200">
                         <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-3 shadow-lg ring-4 ring-gray-200">
                           <svg
                             className="w-8 h-8 text-gray-600 ml-1"

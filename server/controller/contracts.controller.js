@@ -43,7 +43,7 @@ export const addContract = async (req, res) => {
 
 export const getContracts = async (req, res) => {
   try {
-    const sellerId = req.user?.userId;
+    const sellerId = req.user?.id;
     const cacheKey = `contracts:${sellerId}`;
 
     const cachedContracts = await cache.get(cacheKey);

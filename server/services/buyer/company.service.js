@@ -1,5 +1,6 @@
 import CompanyDetails from "../../models/company.model.js";
 import Seller from "../../models/sellerSingnup.model.js";
+import User from "../../models/user.model.js";
 import logger from "../../config/winston.js";
 
 export const getCompaniesListService = async ({ filters, page, limit }) => {
@@ -24,17 +25,34 @@ export const getCompaniesListService = async ({ filters, page, limit }) => {
     // Get total count for pagination
     const totalCompanies = await CompanyDetails.countDocuments(matchQuery);
 
-    // Populate seller data manually
+    // ✅ Populate seller data with userId
     const sellerIds = companies.map((c) => c.sellerId);
     const sellers = await Seller.find({ _id: { $in: sellerIds } })
       .select(
-        "sellername companyregstartionlocation varificationStatus seller_status"
+        "userId businessName companyregstartionlocation varificationStatus seller_status"
       )
       .lean();
 
-    // Create seller map for quick lookup
+    // ✅ Get all user IDs from sellers
+    const userIds = sellers.map((s) => s.userId);
+    const users = await User.find({ _id: { $in: userIds } })
+      .select("name email")
+      .lean();
+
+    // ✅ Create user map for quick lookup
+    const userMap = users.reduce((acc, user) => {
+      acc[user._id.toString()] = user;
+      return acc;
+    }, {});
+
+    // ✅ Create seller map with user data
     const sellerMap = sellers.reduce((acc, seller) => {
-      acc[seller._id.toString()] = seller;
+      const user = userMap[seller.userId.toString()];
+      acc[seller._id.toString()] = {
+        ...seller,
+        sellername: user ? user.name : "Unknown", // ✅ User ka naam as sellername
+        email: user ? user.email : null,
+      };
       return acc;
     }, {});
 
