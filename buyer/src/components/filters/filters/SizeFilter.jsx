@@ -1,11 +1,27 @@
-const SizeFilter = ({ length, width, thickness, onChange }) => {
+const SizeFilter = ({
+  lengthMin,
+  lengthMax,
+  widthMin,
+  widthMax,
+  thicknessMin,
+  thicknessMax,
+  onChange,
+}) => {
+  const minLength = lengthMin || 0;
+  const maxLength = lengthMax || 100;
+  const minWidth = widthMin || 0;
+  const maxWidth = widthMax || 100;
+  const minThickness = thicknessMin || 0;
+  const maxThickness = thicknessMax || 10;
+
   return (
     <div className="space-y-6">
+      {/* Length Filter */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Length (cm)</span>
+          <span className="text-sm font-medium text-gray-700">Length (ft)</span>
           <span className="text-sm font-bold text-blue-600">
-            {length[0]} - {length[1]} cm
+            {minLength} - {maxLength} ft
           </span>
         </div>
         <div className="space-y-3">
@@ -16,11 +32,9 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             <input
               type="range"
               min={0}
-              max={300}
-              value={length[0]}
-              onChange={(e) =>
-                onChange("length", [parseInt(e.target.value), length[1]])
-              }
+              max={maxLength}
+              value={minLength}
+              onChange={(e) => onChange("lengthMin", parseInt(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
@@ -30,23 +44,22 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             </label>
             <input
               type="range"
-              min={0}
-              max={300}
-              value={length[1]}
-              onChange={(e) =>
-                onChange("length", [length[0], parseInt(e.target.value)])
-              }
+              min={minLength}
+              max={100}
+              value={maxLength}
+              onChange={(e) => onChange("lengthMax", parseInt(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
         </div>
       </div>
 
+      {/* Width Filter */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">Width (cm)</span>
+          <span className="text-sm font-medium text-gray-700">Width (ft)</span>
           <span className="text-sm font-bold text-blue-600">
-            {width[0]} - {width[1]} cm
+            {minWidth} - {maxWidth} ft
           </span>
         </div>
         <div className="space-y-3">
@@ -57,11 +70,9 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             <input
               type="range"
               min={0}
-              max={300}
-              value={width[0]}
-              onChange={(e) =>
-                onChange("width", [parseInt(e.target.value), width[1]])
-              }
+              max={maxWidth}
+              value={minWidth}
+              onChange={(e) => onChange("widthMin", parseInt(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
@@ -71,25 +82,24 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             </label>
             <input
               type="range"
-              min={0}
-              max={300}
-              value={width[1]}
-              onChange={(e) =>
-                onChange("width", [width[0], parseInt(e.target.value)])
-              }
+              min={minWidth}
+              max={100}
+              value={maxWidth}
+              onChange={(e) => onChange("widthMax", parseInt(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
           </div>
         </div>
       </div>
 
+      {/* Thickness Filter */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-gray-700">
-            Thickness (cm)
+            Thickness (inch)
           </span>
           <span className="text-sm font-bold text-blue-600">
-            {thickness[0]} - {thickness[1]} cm
+            {minThickness} - {maxThickness} inch
           </span>
         </div>
         <div className="space-y-3">
@@ -100,10 +110,10 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             <input
               type="range"
               min={0}
-              max={10}
-              value={thickness[0]}
+              max={maxThickness}
+              value={minThickness}
               onChange={(e) =>
-                onChange("thickness", [parseInt(e.target.value), thickness[1]])
+                onChange("thicknessMin", parseInt(e.target.value))
               }
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
@@ -114,11 +124,11 @@ const SizeFilter = ({ length, width, thickness, onChange }) => {
             </label>
             <input
               type="range"
-              min={0}
+              min={minThickness}
               max={10}
-              value={thickness[1]}
+              value={maxThickness}
               onChange={(e) =>
-                onChange("thickness", [thickness[0], parseInt(e.target.value)])
+                onChange("thicknessMax", parseInt(e.target.value))
               }
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />

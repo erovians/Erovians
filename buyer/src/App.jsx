@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Auth from "./pages/Auth";
 import Companies from "./pages/Companies";
 import Profile from "./pages/Profile";
 import CompanyProduct from "./pages/CompanyProduct";
-import { loadUser } from "./lib/redux/auth/authSlice";
+import { loadUser, clearError, clearSuccess } from "./lib/redux/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ProductDetail from "./pages/ProductDetail";
 import Setting from "./pages/Setting";
@@ -14,14 +14,25 @@ import HelpCenter from "./pages/HelpCenter";
 import Contact from "./pages/Contact";
 import HowToPay from "./pages/HowToPay";
 import TermsOfService from "./pages/TermsOfService";
+import { Toaster } from "sonner";
 
 const App = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
+
+  // Clear errors and success messages on route change
+  useEffect(() => {
+    dispatch(clearError());
+    dispatch(clearSuccess());
+  }, [location.pathname, dispatch]);
+
   return (
     <>
+      <Toaster position="top-right" richColors closeButton duration={3000} />
       <Routes>
         <Route path="/" element={<Companies />} />
         <Route path="/profile" element={<Profile />} />

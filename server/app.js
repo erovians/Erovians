@@ -32,6 +32,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "http://192.168.29.142:5173",
+      "http://192.168.29.80:5173",
     ],
     credentials: true,
   })
@@ -39,6 +40,10 @@ app.use(
 
 // Cookie parser
 app.use(cookieParser());
+app.use((req, res, next) => {
+  console.log("HIT:", req.method, req.url);
+  next();
+});
 
 // Serve static files
 app.use("/api/uploads", express.static("uploads"));

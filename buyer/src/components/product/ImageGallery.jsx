@@ -16,8 +16,8 @@ const ImageGallery = ({ images, productName }) => {
 
   if (!images || images.length === 0) {
     return (
-      <div className="flex gap-4">
-        <div className="w-14 bg-gray-100 rounded"></div>
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="hidden lg:block w-14 bg-gray-100 rounded"></div>
         <div className="flex-1 bg-gray-100 rounded h-96 flex items-center justify-center">
           <Package className="h-24 w-24 text-gray-300" />
         </div>
@@ -26,8 +26,9 @@ const ImageGallery = ({ images, productName }) => {
   }
 
   return (
-    <div className="flex gap-4">
-      <div className="flex flex-col gap-3 w-14">
+    <div className="flex flex-col lg:flex-row gap-4">
+      {/* Desktop: Thumbnails on LEFT (Column) */}
+      <div className="hidden lg:flex flex-col gap-3 w-14">
         {images.map((img, index) => (
           <button
             key={index}
@@ -48,42 +49,68 @@ const ImageGallery = ({ images, productName }) => {
         ))}
       </div>
 
-      <div className="flex-1 relative">
-        <div
-          className="relative bg-white border border-gray-300 rounded overflow-hidden cursor-crosshair"
-          style={{ height: "500px" }}
-          onMouseMove={handleMouseMove}
-          onMouseEnter={() => setShowMagnifier(true)}
-          onMouseLeave={() => setShowMagnifier(false)}
-        >
-          <img
-            src={images[selectedImage]}
-            alt={productName}
-            className="w-full h-full object-contain p-8"
-          />
+      {/* Main Content Wrapper */}
+      <div className="flex-1">
+        {/* Main Image */}
+        <div className="relative">
+          <div
+            className="relative bg-white border border-gray-300 rounded overflow-hidden cursor-crosshair h-50 lg:h-125"
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setShowMagnifier(true)}
+            onMouseLeave={() => setShowMagnifier(false)}
+          >
+            <img
+              src={images[selectedImage]}
+              alt={productName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Magnifier - Desktop only */}
+          {showMagnifier && (
+            <div className="absolute left-full top-0 ml-4 hidden lg:block z-10">
+              <div
+                className="border-2 border-gray-400 rounded overflow-hidden bg-white shadow-2xl"
+                style={{
+                  width: "600px",
+                  height: "600px",
+                }}
+              >
+                <div
+                  className="w-full h-full"
+                  style={{
+                    backgroundImage: `url(${images[selectedImage]})`,
+                    backgroundSize: "250%",
+                    backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
+                    backgroundRepeat: "no-repeat",
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {showMagnifier && (
-          <div className="absolute left-full top-0 ml-4 hidden lg:block z-50">
-            <div
-              className="border-2 border-gray-400 rounded overflow-hidden bg-white shadow-2xl"
-              style={{
-                width: "500px",
-                height: "500px",
-              }}
+        {/* Mobile/Tablet: Thumbnails at BOTTOM (Horizontal Row) */}
+        <div className="flex lg:hidden gap-3 mt-4 overflow-x-auto pb-2">
+          {images.map((img, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedImage(index)}
+              className={`border-2 rounded overflow-hidden transition-all shrink-0 ${
+                selectedImage === index
+                  ? "border-blue-500"
+                  : "border-gray-300 hover:border-gray-400"
+              }`}
+              style={{ width: "64px", height: "64px" }}
             >
-              <div
-                className="w-full h-full"
-                style={{
-                  backgroundImage: `url(${images[selectedImage]})`,
-                  backgroundSize: "250%",
-                  backgroundPosition: `${magnifierPosition.x}% ${magnifierPosition.y}%`,
-                  backgroundRepeat: "no-repeat",
-                }}
+              <img
+                src={img}
+                alt={`${productName} ${index + 1}`}
+                className="w-full h-full object-cover"
               />
-            </div>
-          </div>
-        )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,10 @@ import Layout from "../components/common/Layout";
 import ImageGallery from "../components/product/ImageGallery";
 import ProductInfo from "../components/product/ProductInfo";
 import SellerInfo from "../components/product/SellerInfo";
+import NaturalStoneClause from "../components/product/NaturalStoneClause";
+import ComplianceSection from "../components/product/ComplianceSection";
+import WarrantySection from "../components/product/WarrantySection";
+import ShippingInfoSection from "../components/product/ShippingInfoSection";
 import { ChevronRight, AlertCircle, FileText, Package } from "lucide-react";
 
 const ProductDetail = () => {
@@ -22,21 +26,6 @@ const ProductDetail = () => {
 
   const { product, company, seller } = productDetail || {};
   const images = product?.productImages || [];
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-            <p className="mt-3 text-gray-600 text-sm">
-              Loading product details...
-            </p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   if (error || !productDetail || !product) {
     return (
@@ -64,8 +53,9 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <div className="bg-white min-h-screen">
-        <div className="border-b bg-gray-50">
+      <div className="bg-gray-50 min-h-screen">
+        {/* Breadcrumb */}
+        <div className="border-b bg-white">
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center gap-2 text-xs text-gray-600">
               <Link to="/" className="hover:text-blue-600 transition-colors">
@@ -83,23 +73,27 @@ const ProductDetail = () => {
           </div>
         </div>
 
+        {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Product Gallery + Info */}
           <div className="grid lg:grid-cols-2 gap-8 mb-6">
-            <div>
+            <div className="bg-white p-6 rounded-lg border border-gray-200">
               <ImageGallery images={images} productName={product.productName} />
             </div>
 
-            <div>
+            <div className="bg-white p-6 rounded-lg border border-gray-200">
               <ProductInfo product={product} seller={seller} />
             </div>
           </div>
 
+          {/* Seller Info */}
           {company && (
             <div className="mb-6">
               <SellerInfo company={company} seller={seller} />
             </div>
           )}
 
+          {/* Description */}
           {product.description && (
             <div className="bg-white border border-gray-300 rounded-lg p-6 mb-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -112,7 +106,11 @@ const ProductDetail = () => {
             </div>
           )}
 
-          <div className="bg-white border border-gray-300 rounded-lg p-6">
+          {/* Compliance Section */}
+          <ComplianceSection product={product} />
+
+          {/* Technical Specifications */}
+          <div className="bg-white border border-gray-300 rounded-lg p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Package className="w-5 h-5" />
               Technical Specifications
@@ -183,12 +181,12 @@ const ProductDetail = () => {
                   {product.size && (
                     <tr>
                       <td className="py-3 px-4 text-sm text-gray-600 font-medium bg-gray-50">
-                        Dimensions (L × W × H)
+                        Dimensions (L × W × T)
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-900">
-                        {product.size.length} {product.size.lengthMeasurement}
-                        {product.size.width} {product.size.widthMeasurement}
-                        {product.size.thickness}
+                        {product.size.length} {product.size.lengthMeasurement} ×{" "}
+                        {product.size.width} {product.size.widthMeasurement} ×{" "}
+                        {product.size.thickness}{" "}
                         {product.size.thicknessMeasurement}
                       </td>
                     </tr>
@@ -208,25 +206,14 @@ const ProductDetail = () => {
                   {product.pricePerUnit && (
                     <tr>
                       <td className="py-3 px-4 text-sm text-gray-600 font-medium bg-gray-50">
-                        Price Range
+                        Price
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-900">
                         ₹{product.pricePerUnit.toLocaleString()} /{" "}
                         {product.priceUnit}
                         <span className="text-xs text-gray-500 ml-2">
-                          (Price varies based on order quantity)
+                          (Price negotiable based on quantity)
                         </span>
-                      </td>
-                    </tr>
-                  )}
-
-                  {product.moq && (
-                    <tr>
-                      <td className="py-3 px-4 text-sm text-gray-600 font-medium bg-gray-50">
-                        Minimum Order Quantity
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-900 font-semibold">
-                        {product.moq} {product.priceUnit}
                       </td>
                     </tr>
                   )}
@@ -234,6 +221,12 @@ const ProductDetail = () => {
               </table>
             </div>
           </div>
+
+          {/* Warranty Section */}
+          <WarrantySection product={product} seller={seller} />
+
+          {/* Shipping Info */}
+          <ShippingInfoSection product={product} company={company} />
         </div>
       </div>
     </Layout>

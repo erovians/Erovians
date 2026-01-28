@@ -346,3 +346,53 @@ h3 {
   width: 1.2em;
   height: 1em;
 }
+
+/* Sidebar Scrollbar Styling */
+.sidebar-scrollbar .flex-1::-webkit-scrollbar {
+  width: 12px;
+}
+
+.sidebar-scrollbar .flex-1::-webkit-scrollbar-track {
+  background: #0c2c43;
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar .flex-1::-webkit-scrollbar-thumb {
+  background: #0c2c43; /* Navy Blue */
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar .flex-1::-webkit-scrollbar-thumb:hover {
+  background: #0c2c43; /* Darker Navy on hover */
+}
+
+/* Firefox support */
+.sidebar-scrollbar .flex-1 {
+  scrollbar-width: thin;
+  scrollbar-color: #0c2c43 #f1f5f9;
+}
+
+/* Quotation Modal Scrollbar */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #0c2c43;
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0a2436;
+}
+
+/* Firefox */
+.sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0c2c43 #f1f5f9;
+}

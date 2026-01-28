@@ -140,13 +140,14 @@ export const logoutUser = createAsyncThunk(
 );
 
 // ========================================
-// 7. LOGOUT
+// 7. UPDATE USER
 // ========================================
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async (formData, { rejectWithValue }) => {
+    console.log("this is update user formdata", formData);
     try {
-      const response = await api.post("/auth/update-user", formData);
+      const response = await api.put("/auth/update-user", formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -158,6 +159,36 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+
+// ========================================
+// 8. UPDATE ADDRESS (Billing/Shipping)
+// ========================================
+export const updateAddress = createAsyncThunk(
+  "auth/updateAddress",
+  async ({ type, action, data, index }, { rejectWithValue }) => {
+    console.log("this is type", type);
+    console.log("this is action", action);
+    console.log("this is user data", data);
+    console.log("this is index", index);
+    try {
+      const response = await api.put("/auth/update-address", {
+        type, // 'billing' or 'shipping'
+        action, // 'add', 'edit', 'delete'
+        data, // address object
+        index, // for edit/delete
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || {
+          success: false,
+          message: "Failed to update address",
+        }
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -207,7 +238,7 @@ const authSlice = createSlice({
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data || null;
-        state.message = action.payload?.message || "User loaded successfully";
+        // state.message = action.payload?.message || "User loaded successfully";
       })
       .addCase(loadUser.rejected, (state, action) => {
         state.loading = false;
@@ -388,6 +419,57 @@ const authSlice = createSlice({
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         return { ...initialState, error: state.error };
+      })
+
+      // ========================================
+      // 7. UPDATE USER
+      // ========================================
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.success = true;
+        state.user = action.payload?.data || state.user;
+        state.message = action.payload?.message || "User updated successfully";
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error =
+          action.payload?.message ||
+          action.payload?.error ||
+          "Failed to update user";
+        state.message = state.error;
+      })
+
+      // ========================================
+      // 8. UPDATE ADDRESS
+      // ========================================
+      .addCase(updateAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(updateAddress.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.success = true;
+        state.user = action.payload?.data || state.user;
+        state.message =
+          action.payload?.message || "Address updated successfully";
+      })
+      .addCase(updateAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error =
+          action.payload?.message ||
+          action.payload?.error ||
+          "Failed to update address";
+        state.message = state.error;
       });
   },
 });

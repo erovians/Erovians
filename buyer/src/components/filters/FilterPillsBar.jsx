@@ -13,6 +13,9 @@ import {
   Weight,
   Tag,
   Sparkles,
+  MapPinned,
+  TrendingUp,
+  ArrowUpDown,
 } from "lucide-react";
 
 const FilterPillsBar = ({ type = "company", activeFilters, onPillClick }) => {
@@ -27,13 +30,15 @@ const FilterPillsBar = ({ type = "company", activeFilters, onPillClick }) => {
   ];
 
   const productPills = [
+    { id: "sortBy", label: "Sort By", icon: ArrowUpDown }, // ✅ NEW
     { id: "category", label: "Category", icon: Building2 },
     { id: "subCategory", label: "Sub Category", icon: Layers },
     { id: "grade", label: "Grade", icon: Award },
     { id: "color", label: "Color", icon: Palette },
+    { id: "origin", label: "Origin", icon: MapPinned }, // ✅ NEW
+    { id: "priceRange", label: "Price Range", icon: TrendingUp }, // ✅ NEW
     { id: "size", label: "Size", icon: Ruler },
     { id: "weight", label: "Weight", icon: Weight },
-    { id: "priceUnit", label: "Price Unit", icon: Tag },
     { id: "newArrivals", label: "New", icon: Sparkles },
   ];
 
@@ -41,8 +46,12 @@ const FilterPillsBar = ({ type = "company", activeFilters, onPillClick }) => {
 
   const getFilterCount = (filterId) => {
     switch (filterId) {
+      case "sortBy": // ✅ NEW
+        return activeFilters.sortBy ? 1 : 0;
       case "category":
-        return activeFilters.mainCategory?.length || 0;
+        return type === "company"
+          ? activeFilters.mainCategory?.length || 0
+          : activeFilters.category?.length || 0;
       case "subCategory":
         return activeFilters.subCategory?.length || 0;
       case "location":
@@ -61,16 +70,21 @@ const FilterPillsBar = ({ type = "company", activeFilters, onPillClick }) => {
         return activeFilters.grade?.length || 0;
       case "color":
         return activeFilters.color?.length || 0;
+      case "origin": // ✅ NEW
+        return activeFilters.origin ? 1 : 0;
+      case "priceRange": // ✅ NEW
+        return activeFilters.priceMin || activeFilters.priceMax ? 1 : 0;
       case "size":
-        return activeFilters.length ||
-          activeFilters.width ||
-          activeFilters.thickness
+        return activeFilters.lengthMin ||
+          activeFilters.lengthMax ||
+          activeFilters.widthMin ||
+          activeFilters.widthMax ||
+          activeFilters.thicknessMin ||
+          activeFilters.thicknessMax
           ? 1
           : 0;
       case "weight":
-        return activeFilters.weightRange ? 1 : 0;
-      case "priceUnit":
-        return activeFilters.priceUnit?.length || 0;
+        return activeFilters.weightMin || activeFilters.weightMax ? 1 : 0;
       case "newArrivals":
         return activeFilters.newArrivals ? 1 : 0;
       default:

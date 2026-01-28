@@ -80,6 +80,7 @@ export const fetchCompany = asyncHandler(async (req, res, next) => {
   }
 });
 
+// ✅ UPDATED - fetchCompanyProduct with NEW filters
 export const fetchCompanyProduct = asyncHandler(async (req, res, next) => {
   const { companyId } = req.params;
   const {
@@ -92,6 +93,15 @@ export const fetchCompanyProduct = asyncHandler(async (req, res, next) => {
     origin,
     priceMin,
     priceMax,
+    lengthMin, // ✅ NEW
+    lengthMax, // ✅ NEW
+    widthMin, // ✅ NEW
+    widthMax, // ✅ NEW
+    thicknessMin, // ✅ NEW
+    thicknessMax, // ✅ NEW
+    weightMin, // ✅ NEW
+    weightMax, // ✅ NEW
+    sortBy, // ✅ NEW
     newArrivals,
   } = req.query;
 
@@ -112,8 +122,9 @@ export const fetchCompanyProduct = asyncHandler(async (req, res, next) => {
   if (grade) {
     filters.grade = grade.split(",").map((g) => g.trim().toUpperCase());
   }
+  // ✅ Color - Now supports multiple colors
   if (color) {
-    filters.color = color.trim();
+    filters.color = color.split(",").map((c) => c.trim().toLowerCase());
   }
   if (origin) {
     filters.origin = origin.trim();
@@ -124,6 +135,40 @@ export const fetchCompanyProduct = asyncHandler(async (req, res, next) => {
   if (priceMax) {
     filters.priceMax = parseFloat(priceMax);
   }
+
+  // ✅ NEW - Size filters
+  if (lengthMin) {
+    filters.lengthMin = parseFloat(lengthMin);
+  }
+  if (lengthMax) {
+    filters.lengthMax = parseFloat(lengthMax);
+  }
+  if (widthMin) {
+    filters.widthMin = parseFloat(widthMin);
+  }
+  if (widthMax) {
+    filters.widthMax = parseFloat(widthMax);
+  }
+  if (thicknessMin) {
+    filters.thicknessMin = parseFloat(thicknessMin);
+  }
+  if (thicknessMax) {
+    filters.thicknessMax = parseFloat(thicknessMax);
+  }
+
+  // ✅ NEW - Weight filter
+  if (weightMin) {
+    filters.weightMin = parseFloat(weightMin);
+  }
+  if (weightMax) {
+    filters.weightMax = parseFloat(weightMax);
+  }
+
+  // ✅ NEW - Sort filter
+  if (sortBy) {
+    filters.sortBy = sortBy.trim();
+  }
+
   if (newArrivals === "true") {
     filters.newArrivals = true;
   }

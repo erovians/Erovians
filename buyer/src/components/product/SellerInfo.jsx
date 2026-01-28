@@ -9,11 +9,6 @@ import {
 } from "lucide-react";
 
 const SellerInfo = ({ company, seller }) => {
-  const getRegistrationYear = () => {
-    if (!company?.companyRegistrationYear) return "N/A";
-    return new Date(company.companyRegistrationYear).getFullYear();
-  };
-
   if (!company) return null;
 
   return (
@@ -41,15 +36,19 @@ const SellerInfo = ({ company, seller }) => {
                 {company.companyName}
               </h4>
               <div className="flex items-center gap-2 mt-1">
-                {seller?.varificationStatus === "Verified" && (
+                {/* ✅ Fixed: Approved instead of Verified */}
+                {seller?.varificationStatus === "Approved" && (
                   <span className="inline-flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2 py-1 rounded font-medium">
                     <CheckCircle className="w-3 h-3" />
                     Verified Supplier
                   </span>
                 )}
-                <span className="text-xs text-gray-500 font-medium">
-                  Since {getRegistrationYear()}
-                </span>
+                {/* ✅ Fixed: Direct string use */}
+                {company.companyRegistrationYear && (
+                  <span className="text-xs text-gray-500 font-medium">
+                    Since {company.companyRegistrationYear}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -89,7 +88,6 @@ const SellerInfo = ({ company, seller }) => {
             </div>
           )}
 
-          {/* Contact Actions */}
           <div className="flex gap-2 pt-3 border-t">
             <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded text-sm transition-all flex items-center justify-center gap-2">
               <Mail className="w-4 h-4" />
@@ -107,11 +105,13 @@ const SellerInfo = ({ company, seller }) => {
           <div className="flex items-center gap-2 text-sm text-gray-700">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
               <span className="text-blue-600 font-semibold text-xs">
-                {seller.sellername?.charAt(0).toUpperCase()}
+                {seller.sellername?.charAt(0).toUpperCase() || "S"}
               </span>
             </div>
             <div>
-              <p className="font-medium text-gray-900">{seller.sellername}</p>
+              <p className="font-medium text-gray-900">
+                {seller.sellername || "Sales Representative"}
+              </p>
               <p className="text-xs text-gray-500">Sales Representative</p>
             </div>
           </div>
