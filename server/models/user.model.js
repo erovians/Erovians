@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    address: [
+    billing_address: [
       {
         name: {
           type: String,
@@ -107,7 +107,83 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
-
+    shipping_address: [
+      {
+        name: {
+          type: String,
+          trim: true,
+          maxlength: [100, "Address name cannot exceed 100 characters"],
+        },
+        mobile: {
+          type: String,
+          validate: {
+            validator: function (v) {
+              return !v || validator.isMobilePhone(v.toString(), "any");
+            },
+            message: "Please provide a valid mobile number in address",
+          },
+        },
+        city: {
+          type: String,
+          trim: true,
+          maxlength: [50, "City name cannot exceed 50 characters"],
+        },
+        state: {
+          type: String,
+          trim: true,
+          maxlength: [50, "State name cannot exceed 50 characters"],
+        },
+        country: {
+          type: String,
+          trim: true,
+          maxlength: [50, "Country name cannot exceed 50 characters"],
+        },
+        alternateMobile: {
+          type: String,
+          validate: {
+            validator: function (v) {
+              return !v || validator.isMobilePhone(v.toString(), "any");
+            },
+            message: "Please provide a valid alternate mobile number",
+          },
+        },
+        landmark: {
+          type: String,
+          trim: true,
+          maxlength: [200, "Landmark cannot exceed 200 characters"],
+        },
+        pincode: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function (v) {
+              return !v || /^\d{6}$/.test(v);
+            },
+            message: "Please provide a valid 6-digit pincode",
+          },
+        },
+      },
+    ],
+    buyer_kyc_hash: {
+      type: Map,
+      of: String,
+      default: new Map(),
+    },
+    buyer_signature: {
+      url: {
+        type: String,
+        default: null,
+      },
+      publicId: {
+        type: String,
+        default: null,
+      },
+    },
+    buyer_country: {
+      type: String,
+      trim: true,
+      maxlength: [50, "Country name cannot exceed 50 characters"],
+    },
     gender: {
       type: String,
       enum: {
@@ -148,6 +224,7 @@ const userSchema = new mongoose.Schema(
       },
       default: "active",
     },
+
     profileURL: {
       url: {
         type: String,

@@ -5,6 +5,8 @@ import {
   getMe,
   logoutUser,
   resendOTP,
+  updateAddress,
+  updateBasicProfile,
   verifyOTP,
 } from "../../controller/buyer/auth.controller.js";
 const router = express.Router();
@@ -17,6 +19,8 @@ router.post("/check-user", checkUserAndSendOTP);
 router.post("/resend-otp", resendOTP);
 router.post("/verify-otp", verifyOTP);
 router.post("/complete-registration", completeRegistration);
+router.put("/update-user", isAuthenticated, updateBasicProfile);
+router.put("/update-address", isAuthenticated, updateAddress);
 
 router.get("/refresh-token", refreshToken);
 router.get("/me", isAuthenticated, getMe);

@@ -28,15 +28,24 @@ const initialState = {
     newArrivals: false,
   },
 
-  // Separate filters for products
+  // ✅ UPDATED - Product filters with NEW fields
   productFilters: {
     category: [],
     subCategory: [],
     grade: [],
-    color: "",
+    color: [], // ✅ Changed to array for multiple colors
     origin: "",
     priceMin: null,
     priceMax: null,
+    lengthMin: null, // ✅ NEW
+    lengthMax: null, // ✅ NEW
+    widthMin: null, // ✅ NEW
+    widthMax: null, // ✅ NEW
+    thicknessMin: null, // ✅ NEW
+    thicknessMax: null, // ✅ NEW
+    weightMin: null, // ✅ NEW
+    weightMax: null, // ✅ NEW
+    sortBy: "", // ✅ NEW - priceAsc, priceDesc, newest, mostViewed
     newArrivals: false,
   },
 
@@ -91,6 +100,7 @@ export const fetchCompanies = createAsyncThunk(
   }
 );
 
+// ✅ UPDATED - fetchCompaniesProduct with new filters
 export const fetchCompaniesProduct = createAsyncThunk(
   "company/fetchCompaniesProduct",
   async (
@@ -111,10 +121,31 @@ export const fetchCompaniesProduct = createAsyncThunk(
       if (filters.grade?.length > 0) {
         params.append("grade", filters.grade.join(","));
       }
-      if (filters.color) params.append("color", filters.color);
+      // ✅ Color - Now array
+      if (filters.color?.length > 0) {
+        params.append("color", filters.color.join(","));
+      }
       if (filters.origin) params.append("origin", filters.origin);
       if (filters.priceMin) params.append("priceMin", filters.priceMin);
       if (filters.priceMax) params.append("priceMax", filters.priceMax);
+
+      // ✅ NEW - Size filters
+      if (filters.lengthMin) params.append("lengthMin", filters.lengthMin);
+      if (filters.lengthMax) params.append("lengthMax", filters.lengthMax);
+      if (filters.widthMin) params.append("widthMin", filters.widthMin);
+      if (filters.widthMax) params.append("widthMax", filters.widthMax);
+      if (filters.thicknessMin)
+        params.append("thicknessMin", filters.thicknessMin);
+      if (filters.thicknessMax)
+        params.append("thicknessMax", filters.thicknessMax);
+
+      // ✅ NEW - Weight filter
+      if (filters.weightMin) params.append("weightMin", filters.weightMin);
+      if (filters.weightMax) params.append("weightMax", filters.weightMax);
+
+      // ✅ NEW - Sort filter
+      if (filters.sortBy) params.append("sortBy", filters.sortBy);
+
       if (filters.newArrivals) {
         params.append("newArrivals", "true");
       }
@@ -134,6 +165,7 @@ export const fetchCompaniesProduct = createAsyncThunk(
     }
   }
 );
+
 export const fetchProductDetails = createAsyncThunk(
   "company/fetchProductDetails",
   async (productId, { rejectWithValue }) => {
@@ -229,7 +261,7 @@ const companySlice = createSlice({
       })
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.productDetail = action.payload; // ✅ Store complete product detail
+        state.productDetail = action.payload;
         state.error = null;
       })
       .addCase(fetchProductDetails.rejected, (state, action) => {

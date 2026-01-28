@@ -87,22 +87,22 @@ const Profile = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
-          <div className="grid lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5 lg:py-6">
+          <div className="grid lg:grid-cols-4 gap-4 sm:gap-5">
             {/* Desktop Sidebar - No Scroll */}
             <div className="hidden lg:block lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-6 max-h-[calc(100vh-3rem)]">
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden sticky top-5 max-h-[calc(100vh-2.5rem)]">
                 {/* User Profile Header */}
-                <div className="bg-linear-to-br from-gray-900 via-gray-800 to-black p-6 text-white">
+                <div className="bg-linear-to-br from-gray-900 via-gray-800 to-black p-5 text-white">
                   <div className="flex flex-col items-center text-center gap-3">
                     {user.profileURL?.url ? (
                       <img
                         src={user.profileURL.url}
                         alt={user.name}
-                        className="w-20 h-20 rounded-full border-4 border-white/20 object-cover shadow-xl"
+                        className="w-20 h-20 rounded-full border-4 border-white/20 object-cover shadow-lg"
                       />
                     ) : (
-                      <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-4 border-white/20 shadow-xl">
+                      <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-4 border-white/20 shadow-lg">
                         <User className="w-10 h-10 text-white" />
                       </div>
                     )}
@@ -125,13 +125,13 @@ const Profile = () => {
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="overflow-y-auto max-h-[calc(100vh-20rem)]">
+                <div className="overflow-y-auto max-h-[calc(100vh-18rem)]">
                   {/* Seller Dashboard Button */}
                   {isSeller && (
                     <div className="p-4 border-b border-gray-100">
                       <button
                         onClick={() => navigate("/seller/dashboard")}
-                        className="w-full flex items-center justify-center gap-2 bg-navyblue text-white px-4 py-3 rounded-xl transition-all duration-200 font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg"
+                        className="w-full flex items-center justify-center gap-2 bg-navyblue text-white px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg"
                       >
                         <LayoutDashboard className="w-5 h-5" />
                         <span>Seller Dashboard</span>
@@ -150,13 +150,13 @@ const Profile = () => {
                       <button
                         key={item.id}
                         onClick={() => setActiveTab(item.id)}
-                        className={`w-full flex items-center justify-between px-5 py-3.5 transition-all duration-200 ${
+                        className={`w-full flex items-center justify-between px-4 py-3 transition-all duration-200 ${
                           activeTab === item.id
                             ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-semibold shadow-sm"
-                            : "text-gray-700 hover:bg-gray-50 hover:pl-6"
+                            : "text-gray-700 hover:bg-gray-50 hover:pl-5"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5">
                           <item.icon className="w-5 h-5" />
                           <span className="text-sm">{item.label}</span>
                         </div>
@@ -182,9 +182,9 @@ const Profile = () => {
                       <button
                         key={item.id}
                         onClick={() => handleNavigation(item.route)}
-                        className="w-full flex items-center justify-between px-5 py-3.5 text-gray-700 hover:bg-gray-50 hover:pl-6 transition-all duration-200 group"
+                        className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 hover:pl-5 transition-all duration-200 group"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5">
                           <item.icon className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" />
                           <span className="text-sm">{item.label}</span>
                         </div>
@@ -196,7 +196,7 @@ const Profile = () => {
 
                 {/* Logout Button - Fixed at Bottom */}
                 <div className="border-t border-gray-100 p-4">
-                  <button className="w-full flex items-center gap-3 text-red-600 hover:bg-red-50 px-4 py-3 rounded-xl transition-all duration-200 font-medium hover:shadow-md">
+                  <button className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium hover:shadow-md">
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
                   </button>
@@ -223,7 +223,7 @@ const Profile = () => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Mobile Header */}
-                  <div className="bg-linear-to-br from-gray-900 via-gray-800 to-black p-6 text-white">
+                  <div className="bg-linear-to-br from-gray-900 via-gray-800 to-black p-5 text-white">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="font-bold text-lg">Menu</h3>
                       <button onClick={() => setSidebarOpen(false)}>
@@ -235,7 +235,7 @@ const Profile = () => {
                         <img
                           src={user.profileURL.url}
                           alt={user.name}
-                          className="w-16 h-16 rounded-full border-4 border-white/20 object-cover shadow-xl"
+                          className="w-16 h-16 rounded-full border-4 border-white/20 object-cover shadow-lg"
                         />
                       ) : (
                         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-4 border-white/20">
@@ -243,8 +243,10 @@ const Profile = () => {
                         </div>
                       )}
                       <div>
-                        <p className="font-bold">{user.name || "User"}</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
+                        <p className="font-bold text-base">
+                          {user.name || "User"}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5 mt-1">
                           {user.role?.map((role) => (
                             <span
                               key={role}
@@ -266,7 +268,7 @@ const Profile = () => {
                           navigate("/seller/dashboard");
                           setSidebarOpen(false);
                         }}
-                        className="w-full flex items-center justify-center gap-2 bg-navyblue text-white px-4 py-3 rounded-xl transition-all font-semibold hover:bg-blue-700"
+                        className="w-full flex items-center justify-center gap-2 bg-navyblue text-white px-4 py-2.5 text-sm rounded-lg transition-all font-semibold hover:bg-blue-700"
                       >
                         <LayoutDashboard className="w-5 h-5" />
                         <span>Seller Dashboard</span>
@@ -285,7 +287,7 @@ const Profile = () => {
                       <button
                         key={item.id}
                         onClick={() => handleTabChange(item.id)}
-                        className={`w-full flex items-center justify-between px-6 py-4 transition-all ${
+                        className={`w-full flex items-center justify-between px-5 py-3.5 transition-all ${
                           activeTab === item.id
                             ? "bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-semibold"
                             : "text-gray-700 hover:bg-gray-50"
@@ -308,7 +310,7 @@ const Profile = () => {
 
                   {/* Mobile Logout */}
                   <div className="border-t border-gray-100 p-4 bg-white">
-                    <button className="w-full flex items-center gap-3 text-red-600 hover:bg-red-50 px-4 py-3 rounded-xl transition-all font-medium">
+                    <button className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all font-medium">
                       <LogOut className="w-5 h-5" />
                       <span>Logout</span>
                     </button>

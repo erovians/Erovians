@@ -9,9 +9,11 @@ import CategoryFilter from "../components/filters/filters/CategoryFilter";
 import SubCategoryFilter from "../components/filters/filters/SubCategoryFilter";
 import GradeFilter from "../components/filters/filters/GradeFilter";
 import ColorFilter from "../components/filters/filters/ColorFilter";
+import OriginFilter from "../components/filters/filters/OriginFilter";
+import PriceRangeFilter from "../components/filters/filters/PriceRangeFilter";
 import SizeFilter from "../components/filters/filters/SizeFilter";
 import WeightFilter from "../components/filters/filters/WeightFilter";
-import PriceUnitFilter from "../components/filters/filters/PriceUnitFilter";
+import SortByFilter from "../components/filters/filters/SortByFilter";
 import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
 import ProductCard from "../components/cards/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +28,7 @@ const CompanyProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, productFilters, loading, error } = useSelector(
+  const { products, productFilters, loading, error, pagination } = useSelector(
     (state) => state.company
   );
 
@@ -60,7 +62,43 @@ const CompanyProduct = () => {
       apiFilters.grade = productFilters.grade;
     }
     if (productFilters.color?.length > 0) {
-      apiFilters.color = productFilters.color[0]; // Send first color only
+      apiFilters.color = productFilters.color;
+    }
+    if (productFilters.origin) {
+      apiFilters.origin = productFilters.origin;
+    }
+    if (productFilters.priceMin) {
+      apiFilters.priceMin = productFilters.priceMin;
+    }
+    if (productFilters.priceMax) {
+      apiFilters.priceMax = productFilters.priceMax;
+    }
+    if (productFilters.lengthMin) {
+      apiFilters.lengthMin = productFilters.lengthMin;
+    }
+    if (productFilters.lengthMax) {
+      apiFilters.lengthMax = productFilters.lengthMax;
+    }
+    if (productFilters.widthMin) {
+      apiFilters.widthMin = productFilters.widthMin;
+    }
+    if (productFilters.widthMax) {
+      apiFilters.widthMax = productFilters.widthMax;
+    }
+    if (productFilters.thicknessMin) {
+      apiFilters.thicknessMin = productFilters.thicknessMin;
+    }
+    if (productFilters.thicknessMax) {
+      apiFilters.thicknessMax = productFilters.thicknessMax;
+    }
+    if (productFilters.weightMin) {
+      apiFilters.weightMin = productFilters.weightMin;
+    }
+    if (productFilters.weightMax) {
+      apiFilters.weightMax = productFilters.weightMax;
+    }
+    if (productFilters.sortBy) {
+      apiFilters.sortBy = productFilters.sortBy;
     }
     if (productFilters.newArrivals) {
       apiFilters.newArrivals = true;
@@ -98,13 +136,36 @@ const CompanyProduct = () => {
     } else if (typeof updatedFilters[type] === "boolean") {
       updatedFilters[type] = false;
     } else {
-      updatedFilters[type] = "";
+      updatedFilters[type] = null;
     }
 
     dispatch(setProductFilters(updatedFilters));
   };
 
+  // ✅ UPDATED - Global Clear All Function
   const handleClearAll = () => {
+    // Clear temp filters immediately
+    setTempFilters({
+      category: [],
+      subCategory: [],
+      grade: [],
+      color: [],
+      origin: "",
+      priceMin: null,
+      priceMax: null,
+      lengthMin: null,
+      lengthMax: null,
+      widthMin: null,
+      widthMax: null,
+      thicknessMin: null,
+      thicknessMax: null,
+      weightMin: null,
+      weightMax: null,
+      sortBy: "",
+      newArrivals: false,
+    });
+
+    // Clear Redux filters
     dispatch(clearProductFilters());
 
     // Re-fetch without filters
@@ -118,85 +179,88 @@ const CompanyProduct = () => {
     );
   };
 
-  const handleSizeChange = (type, value) => {
-    setTempFilters({ ...tempFilters, [type]: value });
-  };
-
-  const handleWeightChange = (type, value) => {
-    if (type === "unit") {
-      setTempFilters({ ...tempFilters, weightUnit: value });
-    } else if (type === "range") {
-      setTempFilters({ ...tempFilters, weightRange: value });
-    }
+  // Generic onChange handler
+  const handleFilterChange = (key, value) => {
+    setTempFilters({ ...tempFilters, [key]: value });
   };
 
   const renderFilterContent = () => {
     switch (activeBottomSheet) {
+      case "sortBy":
+        return (
+          <SortByFilter
+            selected={tempFilters.sortBy}
+            onChange={(val) => handleFilterChange("sortBy", val)}
+          />
+        );
       case "category":
         return (
           <CategoryFilter
-            selected={tempFilters.category}
-            onChange={(val) =>
-              setTempFilters({ ...tempFilters, category: val })
-            }
+            selected={tempFilters.category || []}
+            onChange={(val) => handleFilterChange("category", val)}
           />
         );
       case "subCategory":
         return (
           <SubCategoryFilter
-            selected={tempFilters.subCategory}
-            onChange={(val) =>
-              setTempFilters({ ...tempFilters, subCategory: val })
-            }
+            selected={tempFilters.subCategory || []}
+            onChange={(val) => handleFilterChange("subCategory", val)}
           />
         );
       case "grade":
         return (
           <GradeFilter
-            selected={tempFilters.grade}
-            onChange={(val) => setTempFilters({ ...tempFilters, grade: val })}
+            selected={tempFilters.grade || []}
+            onChange={(val) => handleFilterChange("grade", val)}
           />
         );
       case "color":
         return (
           <ColorFilter
-            selected={tempFilters.color}
-            onChange={(val) => setTempFilters({ ...tempFilters, color: val })}
+            selected={tempFilters.color || []}
+            onChange={(val) => handleFilterChange("color", val)}
+          />
+        );
+      case "origin":
+        return (
+          <OriginFilter
+            origin={tempFilters.origin || ""}
+            onChange={(val) => handleFilterChange("origin", val)}
+          />
+        );
+      case "priceRange":
+        return (
+          <PriceRangeFilter
+            priceMin={tempFilters.priceMin}
+            priceMax={tempFilters.priceMax}
+            onChange={handleFilterChange}
           />
         );
       case "size":
         return (
           <SizeFilter
-            length={tempFilters.length}
-            width={tempFilters.width}
-            thickness={tempFilters.thickness}
-            onChange={handleSizeChange}
+            lengthMin={tempFilters.lengthMin}
+            lengthMax={tempFilters.lengthMax}
+            widthMin={tempFilters.widthMin}
+            widthMax={tempFilters.widthMax}
+            thicknessMin={tempFilters.thicknessMin}
+            thicknessMax={tempFilters.thicknessMax}
+            onChange={handleFilterChange}
           />
         );
       case "weight":
         return (
           <WeightFilter
-            weightRange={tempFilters.weightRange}
-            weightUnit={tempFilters.weightUnit}
-            onChange={handleWeightChange}
-          />
-        );
-      case "priceUnit":
-        return (
-          <PriceUnitFilter
-            selected={tempFilters.priceUnit}
-            onChange={(val) =>
-              setTempFilters({ ...tempFilters, priceUnit: val })
-            }
+            weightMin={tempFilters.weightMin}
+            weightMax={tempFilters.weightMax}
+            onChange={handleFilterChange}
           />
         );
       case "newArrivals":
         return (
           <NewArrivalsFilter
-            checked={tempFilters.newArrivals}
-            onChange={(val) =>
-              setTempFilters({ ...tempFilters, newArrivals: val })
-            }
+            checked={tempFilters.newArrivals || false}
+            onChange={(val) => handleFilterChange("newArrivals", val)}
           />
         );
       default:
@@ -206,13 +270,15 @@ const CompanyProduct = () => {
 
   const getSheetTitle = () => {
     const titles = {
+      sortBy: "Sort Products",
       category: "Select Category",
       subCategory: "Select Sub Category",
       grade: "Select Grade",
       color: "Select Color",
+      origin: "Select Origin",
+      priceRange: "Select Price Range",
       size: "Select Size Range",
       weight: "Select Weight",
-      priceUnit: "Select Price Unit",
       newArrivals: "New Arrivals",
     };
     return titles[activeBottomSheet] || "Filter";
@@ -283,11 +349,13 @@ const CompanyProduct = () => {
           </div>
         </div>
 
+        {/* ✅ UPDATED - Pass onClearAll prop */}
         <FilterBottomSheet
           isOpen={activeBottomSheet !== null}
           onClose={() => setActiveBottomSheet(null)}
           title={getSheetTitle()}
           onApply={handleApplyFilter}
+          onClearAll={handleClearAll}
         >
           {renderFilterContent()}
         </FilterBottomSheet>

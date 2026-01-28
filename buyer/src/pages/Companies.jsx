@@ -79,7 +79,24 @@ const Companies = () => {
     dispatch(setCompanyFilters(updatedFilters));
   };
 
+  // ✅ UPDATED - Enhanced Clear All Function
   const handleClearAll = () => {
+    // Clear temp filters immediately
+    setTempFilters({
+      mainCategory: [],
+      subCategory: [],
+      country: "",
+      state: "",
+      city: "",
+      yearFrom: null,
+      yearTo: null,
+      paymentMethods: [],
+      currency: [],
+      language: [],
+      newArrivals: false,
+    });
+
+    // Clear Redux filters
     dispatch(clearCompanyFilters());
   };
 
@@ -100,7 +117,7 @@ const Companies = () => {
       case "category":
         return (
           <CategoryFilter
-            selected={tempFilters.mainCategory}
+            selected={tempFilters.mainCategory || []}
             onChange={(val) =>
               setTempFilters({ ...tempFilters, mainCategory: val })
             }
@@ -109,7 +126,7 @@ const Companies = () => {
       case "subCategory":
         return (
           <SubCategoryFilter
-            selected={tempFilters.subCategory}
+            selected={tempFilters.subCategory || []}
             onChange={(val) =>
               setTempFilters({ ...tempFilters, subCategory: val })
             }
@@ -118,9 +135,9 @@ const Companies = () => {
       case "location":
         return (
           <LocationFilter
-            country={tempFilters.country}
-            state={tempFilters.state}
-            city={tempFilters.city}
+            country={tempFilters.country || ""}
+            state={tempFilters.state || ""}
+            city={tempFilters.city || ""}
             onChange={handleLocationChange}
           />
         );
@@ -137,7 +154,7 @@ const Companies = () => {
       case "payment":
         return (
           <PaymentFilter
-            selected={tempFilters.paymentMethods}
+            selected={tempFilters.paymentMethods || []}
             onChange={(val) =>
               setTempFilters({ ...tempFilters, paymentMethods: val })
             }
@@ -146,7 +163,7 @@ const Companies = () => {
       case "currency":
         return (
           <CurrencyFilter
-            selected={tempFilters.currency}
+            selected={tempFilters.currency || []}
             onChange={(val) =>
               setTempFilters({ ...tempFilters, currency: val })
             }
@@ -155,7 +172,7 @@ const Companies = () => {
       case "language":
         return (
           <LanguageFilter
-            selected={tempFilters.language}
+            selected={tempFilters.language || []}
             onChange={(val) =>
               setTempFilters({ ...tempFilters, language: val })
             }
@@ -352,11 +369,13 @@ const Companies = () => {
           </div>
         </div>
 
+        {/* ✅ ONLY CHANGE - Added onClearAll prop */}
         <FilterBottomSheet
           isOpen={activeBottomSheet !== null}
           onClose={() => setActiveBottomSheet(null)}
           title={getSheetTitle()}
           onApply={handleApplyFilter}
+          onClearAll={handleClearAll}
         >
           {renderFilterContent()}
         </FilterBottomSheet>

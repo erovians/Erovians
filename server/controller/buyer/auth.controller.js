@@ -429,3 +429,291 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
     message: "Logged out successfully",
   });
 });
+
+// ========================================
+// 7. UPDATE USER Basic Profile
+// ========================================
+export const updateBasicProfile = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const { name, gender, buyer_country } = req.body;
+  console.log("this is update basic profile req.body", req.body);
+
+  logger.info("Profile update request", { userId, updates: req.body });
+
+  // Find user
+  const user = await User.findById(userId);
+
+  if (!user) {
+    logger.warn("Profile update attempted for non-existent user", { userId });
+    return next(new AppError("User not found", 404));
+  }
+
+  // Validate name (required)
+  if (!name || name.trim().length < 2) {
+    return next(
+      new AppError("Name is required and must be at least 2 characters", 400)
+    );
+  }
+
+  // Validate name format (only letters and spaces)
+  if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+    return next(new AppError("Name can only contain letters and spaces", 400));
+  }
+
+  // Validate gender (if provided)
+  if (gender && !["male", "female", "others"].includes(gender)) {
+    return next(new AppError("Invalid gender value", 400));
+  }
+
+  // Validate buyer_country (if provided)
+  if (buyer_country && buyer_country.trim().length > 50) {
+    return next(new AppError("Country name cannot exceed 50 characters", 400));
+  }
+
+  // Update fields
+  user.name = name.trim();
+
+  if (gender) {
+    user.gender = gender;
+  }
+
+  if (buyer_country) {
+    user.buyer_country = buyer_country.trim();
+  }
+
+  // Save user
+  await user.save();
+
+  logger.info("Profile updated successfully", {
+    userId,
+    name: user.name,
+    gender: user.gender,
+    buyer_country: user.buyer_country,
+  });
+
+  // Send response
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    data: user.toSafeObject(),
+  });
+});
+
+// ========================================
+// 8. UPDATE USER ADDRESS
+// ========================================
+export const updateAddress = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const { type, action, data, index } = req.body;
+  console.log("this is update address req body", req.body);
+
+  logger.info("Address update request", {
+    userId,
+    type,
+    action,
+    index,
+  });
+
+  // Validate type
+  if (!type || !["billing", "shipping"].includes(type)) {
+    return next(
+      new AppError("Invalid address type. Must be 'billing' or 'shipping'", 400)
+    );
+  }
+
+  // Validate action
+  if (!action || !["add", "edit", "delete"].includes(action)) {
+    return next(
+      new AppError("Invalid action. Must be 'add', 'edit', or 'delete'", 400)
+    );
+  }
+
+  // Find user
+  const user = await User.findById(userId);
+
+  if (!user) {
+    logger.warn("Address update attempted for non-existent user", { userId });
+    return next(new AppError("User not found", 404));
+  }
+
+  // Determine which address array to work with
+  const addressField =
+    type === "billing" ? "billing_address" : "shipping_address";
+  const addresses = user[addressField] || [];
+
+  // Handle different actions
+  if (action === "add") {
+    // Validate required fields for add
+    if (!data) {
+      return next(new AppError("Address data is required", 400));
+    }
+
+    const { name, mobile, city, state, country, pincode } = data;
+
+    // Validate required fields
+    if (!name || name.trim().length < 1) {
+      return next(new AppError("Address name is required", 400));
+    }
+
+    if (!mobile || !validator.isMobilePhone(mobile.toString(), "any")) {
+      return next(new AppError("Valid mobile number is required", 400));
+    }
+
+    if (!city || city.trim().length < 1) {
+      return next(new AppError("City is required", 400));
+    }
+
+    if (!state || state.trim().length < 1) {
+      return next(new AppError("State is required", 400));
+    }
+
+    if (!country || country.trim().length < 1) {
+      return next(new AppError("Country is required", 400));
+    }
+
+    if (!pincode || !/^\d{6}$/.test(pincode)) {
+      return next(new AppError("Valid 6-digit pincode is required", 400));
+    }
+
+    // Validate alternate mobile if provided
+    if (
+      data.alternateMobile &&
+      !validator.isMobilePhone(data.alternateMobile.toString(), "any")
+    ) {
+      return next(new AppError("Invalid alternate mobile number", 400));
+    }
+
+    // Create new address object
+    const newAddress = {
+      name: name.trim(),
+      mobile: mobile.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      country: country.trim(),
+      pincode: pincode.trim(),
+      alternateMobile: data.alternateMobile
+        ? data.alternateMobile.trim()
+        : undefined,
+      landmark: data.landmark ? data.landmark.trim() : undefined,
+    };
+
+    // Add to array
+    addresses.push(newAddress);
+    user[addressField] = addresses;
+
+    logger.info(`${type} address added`, {
+      userId,
+      addressCount: addresses.length,
+    });
+  } else if (action === "edit") {
+    // Validate index
+    if (
+      index === undefined ||
+      index === null ||
+      index < 0 ||
+      index >= addresses.length
+    ) {
+      return next(new AppError("Invalid address index", 400));
+    }
+
+    // Validate required fields for edit
+    if (!data) {
+      return next(new AppError("Address data is required", 400));
+    }
+
+    const { name, mobile, city, state, country, pincode } = data;
+
+    // Validate required fields
+    if (!name || name.trim().length < 1) {
+      return next(new AppError("Address name is required", 400));
+    }
+
+    if (!mobile || !validator.isMobilePhone(mobile.toString(), "any")) {
+      return next(new AppError("Valid mobile number is required", 400));
+    }
+
+    if (!city || city.trim().length < 1) {
+      return next(new AppError("City is required", 400));
+    }
+
+    if (!state || state.trim().length < 1) {
+      return next(new AppError("State is required", 400));
+    }
+
+    if (!country || country.trim().length < 1) {
+      return next(new AppError("Country is required", 400));
+    }
+
+    if (!pincode || !/^\d{6}$/.test(pincode)) {
+      return next(new AppError("Valid 6-digit pincode is required", 400));
+    }
+
+    // Validate alternate mobile if provided
+    if (
+      data.alternateMobile &&
+      !validator.isMobilePhone(data.alternateMobile.toString(), "any")
+    ) {
+      return next(new AppError("Invalid alternate mobile number", 400));
+    }
+
+    // Update address at index
+    addresses[index] = {
+      name: name.trim(),
+      mobile: mobile.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      country: country.trim(),
+      pincode: pincode.trim(),
+      alternateMobile: data.alternateMobile
+        ? data.alternateMobile.trim()
+        : undefined,
+      landmark: data.landmark ? data.landmark.trim() : undefined,
+    };
+
+    user[addressField] = addresses;
+
+    logger.info(`${type} address updated`, {
+      userId,
+      index,
+    });
+  } else if (action === "delete") {
+    // Validate index
+    if (
+      index === undefined ||
+      index === null ||
+      index < 0 ||
+      index >= addresses.length
+    ) {
+      return next(new AppError("Invalid address index", 400));
+    }
+
+    // Remove address at index
+    addresses.splice(index, 1);
+    user[addressField] = addresses;
+
+    logger.info(`${type} address deleted`, {
+      userId,
+      index,
+      remainingCount: addresses.length,
+    });
+  }
+
+  // Save user
+  await user.save();
+
+  logger.info("Address updated successfully", {
+    userId,
+    type,
+    action,
+    totalAddresses: user[addressField].length,
+  });
+
+  // Send response
+  res.status(200).json({
+    success: true,
+    message: `${
+      type.charAt(0).toUpperCase() + type.slice(1)
+    } address ${action}ed successfully`,
+    data: user.toSafeObject(),
+  });
+});
