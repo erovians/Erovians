@@ -41,7 +41,7 @@ import {
 } from "../../lib/redux/auth/authSlice";
 
 const sidebarMainItems = [
-  { icon: FileText, label: "Post RFQ", path: "/post-rfq", requiresAuth: true },
+  { icon: FileText, label: "Post RFQ", path: "/rfqs", requiresAuth: true },
   { icon: Package, label: "My Orders", path: "/orders", requiresAuth: true },
   {
     icon: MessageSquare,

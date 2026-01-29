@@ -56,7 +56,7 @@ const ProductDetail = () => {
       <div className="bg-gray-50 min-h-screen">
         {/* Breadcrumb */}
         <div className="border-b bg-white">
-          <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="w-full mx-auto px-4 py-3">
             <div className="flex items-center gap-2 text-xs text-gray-600">
               <Link to="/" className="hover:text-blue-600 transition-colors">
                 Home
@@ -74,7 +74,7 @@ const ProductDetail = () => {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="w-full mx-auto px-4 py-6">
           {/* Product Gallery + Info */}
           <div className="grid lg:grid-cols-2 gap-8 mb-6">
             <div className="bg-white p-6 rounded-lg border border-gray-200">
