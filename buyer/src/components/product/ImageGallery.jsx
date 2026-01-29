@@ -68,12 +68,12 @@ const ImageGallery = ({ images, productName }) => {
 
           {/* Magnifier - Desktop only */}
           {showMagnifier && (
-            <div className="absolute left-full top-0 ml-4 hidden lg:block z-10">
+            <div className="absolute left-full top-0 ml-15 hidden lg:block z-10">
               <div
                 className="border-2 border-gray-400 rounded overflow-hidden bg-white shadow-2xl"
                 style={{
-                  width: "600px",
-                  height: "600px",
+                  width: "720px",
+                  height: "620px",
                 }}
               >
                 <div

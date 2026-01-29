@@ -18,6 +18,22 @@ export const registerSeller = createAsyncThunk(
     }
   }
 );
+export const loadSeller = createAsyncThunk(
+  "seller/loadSeller",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/seller/me");
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue({ message: "server error" });
+      }
+    }
+  }
+);
 
 const sellerSlice = createSlice({
   name: "seller",

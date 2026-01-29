@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loadUser } from "../lib/redux/auth/authSlice";
+import { loadUser, logoutUser } from "../lib/redux/auth/authSlice";
 import {
   User,
   MapPin,
@@ -84,10 +84,15 @@ const Profile = () => {
     setSidebarOpen(false);
   };
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/");
+  };
+
   return (
     <Layout>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5 lg:py-6">
+        <div className="w-full mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5 lg:py-6">
           <div className="grid lg:grid-cols-4 gap-4 sm:gap-5">
             {/* Desktop Sidebar - No Scroll */}
             <div className="hidden lg:block lg:col-span-1">
@@ -131,7 +136,7 @@ const Profile = () => {
                     <div className="p-4 border-b border-gray-100">
                       <button
                         onClick={() => navigate("/seller/dashboard")}
-                        className="w-full flex items-center justify-center gap-2 bg-navyblue text-white px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg"
+                        className="w-full flex items-center justify-center gap-2 bg-yellow-500 text-navyblue px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-semibold hover:bg-yellow-400 shadow-md hover:shadow-lg"
                       >
                         <LayoutDashboard className="w-5 h-5" />
                         <span>Seller Dashboard</span>
@@ -196,7 +201,10 @@ const Profile = () => {
 
                 {/* Logout Button - Fixed at Bottom */}
                 <div className="border-t border-gray-100 p-4">
-                  <button className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium hover:shadow-md">
+                  <button
+                    className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 font-medium hover:shadow-md"
+                    onClick={handleLogout}
+                  >
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
                   </button>
@@ -310,7 +318,10 @@ const Profile = () => {
 
                   {/* Mobile Logout */}
                   <div className="border-t border-gray-100 p-4 bg-white">
-                    <button className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all font-medium">
+                    <button
+                      className="w-full flex items-center gap-2.5 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm rounded-lg transition-all font-medium"
+                      onClick={handleLogout}
+                    >
                       <LogOut className="w-5 h-5" />
                       <span>Logout</span>
                     </button>

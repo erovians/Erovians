@@ -5,22 +5,35 @@ import {
   clearError,
   clearSuccess,
 } from "../../lib/redux/auth/authSlice";
-import { Mail, Phone, Shield, Check, X, Edit2, Globe } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  Shield,
+  Check,
+  X,
+  Edit2,
+  Globe,
+  User,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Country } from "country-state-city";
 import * as Dialog from "@radix-ui/react-dialog";
 import { OTPInput } from "input-otp";
+import { checkUserAndSendOTP } from "../../lib/redux/auth/authSlice";
 
 const ProfileInfo = ({ user }) => {
   const dispatch = useDispatch();
   const { loading, error, success, message } = useSelector(
     (state) => state.auth
   );
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: user.name || "",
-    gender: user.gender || "",
-    buyer_country: user.buyer_country || "",
+
+  // Personal Info Modal States
+  const [isPersonalInfoModalOpen, setIsPersonalInfoModalOpen] = useState(false);
+  const [personalInfoData, setPersonalInfoData] = useState({
+    firstName: "",
+    lastName: "",
+    gender: "",
+    buyer_country: "",
   });
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -38,7 +51,6 @@ const ProfileInfo = ({ user }) => {
     if (success && message) {
       toast.success(message);
       dispatch(clearSuccess());
-      setIsEditingProfile(false);
     }
     if (error) {
       toast.error(error);
@@ -46,22 +58,51 @@ const ProfileInfo = ({ user }) => {
     }
   }, [success, error, message, dispatch]);
 
-  const handleProfileSave = async () => {
-    if (!profileData.name) {
-      toast.error("Name is required");
-      return;
-    }
+  // Personal Info Modal Functions
+  const handleOpenPersonalInfoModal = () => {
+    const [firstName = "", ...lastNameParts] = (user.name || "").split(" ");
+    const lastName = lastNameParts.join(" ");
 
-    await dispatch(updateUser(profileData)).unwrap();
-  };
-
-  const handleProfileCancel = () => {
-    setProfileData({
-      name: user.name || "",
+    setPersonalInfoData({
+      firstName,
+      lastName,
       gender: user.gender || "",
       buyer_country: user.buyer_country || "",
     });
-    setIsEditingProfile(false);
+    setIsPersonalInfoModalOpen(true);
+  };
+
+  const handleSavePersonalInfo = async () => {
+    if (!personalInfoData.firstName) {
+      toast.error("First name is required");
+      return;
+    }
+
+    const fullName =
+      `${personalInfoData.firstName} ${personalInfoData.lastName}`.trim();
+
+    const updateData = {
+      name: fullName,
+      gender: personalInfoData.gender,
+      buyer_country: personalInfoData.buyer_country,
+    };
+
+    try {
+      await dispatch(updateUser(updateData)).unwrap();
+      setIsPersonalInfoModalOpen(false);
+      resetPersonalInfoModal();
+    } catch (err) {
+      // Error handled by useEffect
+    }
+  };
+
+  const resetPersonalInfoModal = () => {
+    setPersonalInfoData({
+      firstName: "",
+      lastName: "",
+      gender: "",
+      buyer_country: "",
+    });
   };
 
   // Email Edit Functions
@@ -73,6 +114,7 @@ const ProfileInfo = ({ user }) => {
 
     setOtpLoading(true);
     try {
+      dispatch(checkUserAndSendOTP(newEmail));
       setTimeout(() => {
         setIsOtpSent(true);
         setOtpLoading(false);
@@ -113,10 +155,6 @@ const ProfileInfo = ({ user }) => {
 
     setOtpLoading(true);
     try {
-      // Replace with your API call
-      // await axios.post('/api/send-mobile-otp', { mobile: newMobile });
-
-      // Simulating API call
       setTimeout(() => {
         setIsOtpSent(true);
         setOtpLoading(false);
@@ -136,16 +174,11 @@ const ProfileInfo = ({ user }) => {
 
     setOtpLoading(true);
     try {
-      // Replace with your API call
-      // await axios.post('/api/verify-mobile-otp', { mobile: newMobile, otp });
-
-      // Simulating API call
       setTimeout(() => {
         setOtpLoading(false);
         toast.success("Mobile number updated successfully!");
         setIsMobileModalOpen(false);
         resetMobileModal();
-        // Refresh user data or update local state
       }, 1000);
     } catch (err) {
       setOtpLoading(false);
@@ -165,6 +198,30 @@ const ProfileInfo = ({ user }) => {
     setIsOtpSent(false);
   };
 
+  // OTP Slot Component (for email/mobile modals)
+  const Slot = (props) => {
+    return (
+      <div
+        className={`w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 rounded-lg flex items-center justify-center font-semibold transition-all ${
+          props.isActive
+            ? "border-blue-500 ring-2 ring-blue-200"
+            : "border-gray-300"
+        }`}
+      >
+        {props.char !== null && <div>{props.char}</div>}
+        {props.hasFakeCaret && <FakeCaret />}
+      </div>
+    );
+  };
+
+  const FakeCaret = () => {
+    return (
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center animate-caret-blink">
+        <div className="w-px h-5 bg-blue-600" />
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
       {/* Personal Information */}
@@ -173,31 +230,13 @@ const ProfileInfo = ({ user }) => {
           <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
             Personal Information
           </h2>
-          {!isEditingProfile ? (
-            <button
-              onClick={() => setIsEditingProfile(true)}
-              className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
-            >
-              <Edit2 className="w-4 h-4" />
-              Edit
-            </button>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={handleProfileSave}
-                disabled={loading}
-                className="flex items-center gap-2 bg-navyblue text-white px-4 md:px-5 py-2 md:py-2.5 text-sm md:text-base rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-all"
-              >
-                {loading ? "Saving..." : "Save"}
-              </button>
-              <button
-                onClick={handleProfileCancel}
-                className="flex items-center gap-2 bg-gray-200 text-gray-700 px-4 md:px-5 py-2 md:py-2.5 text-sm md:text-base rounded-lg font-semibold hover:bg-gray-300 transition-all"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
+          <button
+            onClick={handleOpenPersonalInfoModal}
+            className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
+          >
+            <Edit2 className="w-4 h-4" />
+            Edit
+          </button>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
@@ -207,19 +246,9 @@ const ProfileInfo = ({ user }) => {
             </label>
             <input
               type="text"
-              value={profileData.name?.split(" ")[0] || ""}
-              onChange={(e) => {
-                const lastName =
-                  profileData.name?.split(" ").slice(1).join(" ") || "";
-                setProfileData({
-                  ...profileData,
-                  name: `${e.target.value} ${lastName}`.trim(),
-                });
-              }}
-              readOnly={!isEditingProfile}
-              className={`w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all ${
-                isEditingProfile ? "bg-white" : "bg-gray-50"
-              }`}
+              value={user.name?.split(" ")[0] || ""}
+              readOnly
+              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
             />
           </div>
           <div>
@@ -228,18 +257,9 @@ const ProfileInfo = ({ user }) => {
             </label>
             <input
               type="text"
-              value={profileData.name?.split(" ").slice(1).join(" ") || ""}
-              onChange={(e) => {
-                const firstName = profileData.name?.split(" ")[0] || "";
-                setProfileData({
-                  ...profileData,
-                  name: `${firstName} ${e.target.value}`.trim(),
-                });
-              }}
-              readOnly={!isEditingProfile}
-              className={`w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all ${
-                isEditingProfile ? "bg-white" : "bg-gray-50"
-              }`}
+              value={user.name?.split(" ").slice(1).join(" ") || ""}
+              readOnly
+              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
             />
           </div>
         </div>
@@ -249,45 +269,36 @@ const ProfileInfo = ({ user }) => {
             Your Gender
           </label>
           <div className="flex flex-wrap gap-3 md:gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-not-allowed">
               <input
                 type="radio"
-                name="gender"
-                checked={profileData.gender === "male"}
-                onChange={() =>
-                  setProfileData({ ...profileData, gender: "male" })
-                }
-                disabled={!isEditingProfile}
+                name="gender-display"
+                checked={user.gender === "male"}
+                disabled
                 className="w-4 h-4 text-blue-600"
               />
               <span className="text-sm md:text-base font-medium text-gray-700">
                 Male
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-not-allowed">
               <input
                 type="radio"
-                name="gender"
-                checked={profileData.gender === "female"}
-                onChange={() =>
-                  setProfileData({ ...profileData, gender: "female" })
-                }
-                disabled={!isEditingProfile}
+                name="gender-display"
+                checked={user.gender === "female"}
+                disabled
                 className="w-4 h-4 text-blue-600"
               />
               <span className="text-sm md:text-base font-medium text-gray-700">
                 Female
               </span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-not-allowed">
               <input
                 type="radio"
-                name="gender"
-                checked={profileData.gender === "others"}
-                onChange={() =>
-                  setProfileData({ ...profileData, gender: "others" })
-                }
-                disabled={!isEditingProfile}
+                name="gender-display"
+                checked={user.gender === "others"}
+                disabled
                 className="w-4 h-4 text-blue-600"
               />
               <span className="text-sm md:text-base font-medium text-gray-700">
@@ -304,32 +315,12 @@ const ProfileInfo = ({ user }) => {
           </label>
           <div className="flex items-center gap-2 md:gap-3">
             <Globe className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0" />
-            {isEditingProfile ? (
-              <select
-                value={profileData.buyer_country}
-                onChange={(e) =>
-                  setProfileData({
-                    ...profileData,
-                    buyer_country: e.target.value,
-                  })
-                }
-                className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Country</option>
-                {countries.map((country) => (
-                  <option key={country.isoCode} value={country.name}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type="text"
-                value={profileData.buyer_country || "Not set"}
-                readOnly
-                className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
-              />
-            )}
+            <input
+              type="text"
+              value={user.buyer_country || "Not set"}
+              readOnly
+              className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+            />
           </div>
         </div>
       </div>
@@ -483,6 +474,164 @@ const ProfileInfo = ({ user }) => {
           </button>
         </div>
       </div>
+
+      {/* Personal Info Edit Modal - NO OTP */}
+      <Dialog.Root
+        open={isPersonalInfoModalOpen}
+        onOpenChange={(open) => {
+          setIsPersonalInfoModalOpen(open);
+          if (!open) resetPersonalInfoModal();
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-5 md:p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
+            <Dialog.Title className="text-lg md:text-xl font-bold text-gray-900 mb-4">
+              Update Personal Information
+            </Dialog.Title>
+
+            <div className="space-y-4">
+              {/* First Name */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  First Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={personalInfoData.firstName}
+                  onChange={(e) =>
+                    setPersonalInfoData({
+                      ...personalInfoData,
+                      firstName: e.target.value,
+                    })
+                  }
+                  placeholder="Enter first name"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={personalInfoData.lastName}
+                  onChange={(e) =>
+                    setPersonalInfoData({
+                      ...personalInfoData,
+                      lastName: e.target.value,
+                    })
+                  }
+                  placeholder="Enter last name"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Gender
+                </label>
+                <div className="flex flex-wrap gap-3 md:gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender-edit"
+                      checked={personalInfoData.gender === "male"}
+                      onChange={() =>
+                        setPersonalInfoData({
+                          ...personalInfoData,
+                          gender: "male",
+                        })
+                      }
+                      className="w-4 h-4 text-blue-600 cursor-pointer"
+                    />
+                    <span className="text-sm md:text-base font-medium text-gray-700">
+                      Male
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender-edit"
+                      checked={personalInfoData.gender === "female"}
+                      onChange={() =>
+                        setPersonalInfoData({
+                          ...personalInfoData,
+                          gender: "female",
+                        })
+                      }
+                      className="w-4 h-4 text-blue-600 cursor-pointer"
+                    />
+                    <span className="text-sm md:text-base font-medium text-gray-700">
+                      Female
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="gender-edit"
+                      checked={personalInfoData.gender === "others"}
+                      onChange={() =>
+                        setPersonalInfoData({
+                          ...personalInfoData,
+                          gender: "others",
+                        })
+                      }
+                      className="w-4 h-4 text-blue-600 cursor-pointer"
+                    />
+                    <span className="text-sm md:text-base font-medium text-gray-700">
+                      Others
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Country */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Country
+                </label>
+                <select
+                  value={personalInfoData.buyer_country}
+                  onChange={(e) =>
+                    setPersonalInfoData({
+                      ...personalInfoData,
+                      buyer_country: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
+                <button
+                  onClick={handleSavePersonalInfo}
+                  disabled={loading}
+                  className="flex-1 bg-navyblue text-white px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-all text-sm md:text-base"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+                <Dialog.Close asChild>
+                  <button className="flex-1 bg-gray-200 text-gray-700 px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all text-sm md:text-base">
+                    Cancel
+                  </button>
+                </Dialog.Close>
+              </div>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
 
       {/* Email Edit Modal */}
       <Dialog.Root
@@ -651,49 +800,32 @@ const ProfileInfo = ({ user }) => {
                 </p>
 
                 <div className="flex flex-col items-center gap-4">
-                  <InputOTP
+                  <OTPInput
                     maxLength={6}
                     value={otp}
                     onChange={setOtp}
-                    className="justify-center"
-                  >
-                    <InputOTPGroup>
-                      <InputOTPSlot
-                        index={0}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                      <InputOTPSlot
-                        index={1}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                    </InputOTPGroup>
-                    <InputOTPSeparator>
-                      <span className="text-gray-400 mx-1">-</span>
-                    </InputOTPSeparator>
-                    <InputOTPGroup>
-                      <InputOTPSlot
-                        index={2}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                      <InputOTPSlot
-                        index={3}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                    </InputOTPGroup>
-                    <InputOTPSeparator>
-                      <span className="text-gray-400 mx-1">-</span>
-                    </InputOTPSeparator>
-                    <InputOTPGroup>
-                      <InputOTPSlot
-                        index={4}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                      <InputOTPSlot
-                        index={5}
-                        className="w-10 h-10 sm:w-12 sm:h-12 text-base sm:text-lg border-2 border-gray-300 rounded-lg"
-                      />
-                    </InputOTPGroup>
-                  </InputOTP>
+                    render={({ slots }) => (
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {slots.slice(0, 2).map((slot, idx) => (
+                            <Slot key={idx} {...slot} />
+                          ))}
+                        </div>
+                        <span className="text-gray-400">-</span>
+                        <div className="flex gap-1">
+                          {slots.slice(2, 4).map((slot, idx) => (
+                            <Slot key={idx + 2} {...slot} />
+                          ))}
+                        </div>
+                        <span className="text-gray-400">-</span>
+                        <div className="flex gap-1">
+                          {slots.slice(4, 6).map((slot, idx) => (
+                            <Slot key={idx + 4} {...slot} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  />
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">

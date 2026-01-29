@@ -81,7 +81,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await api.get("/auth/refresh-token");
+        const response = await api.get("/v2/auth/refresh-token");
 
         if (response.data.accessToken) {
           const newToken = response.data.accessToken;

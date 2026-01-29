@@ -14,6 +14,10 @@ import HelpCenter from "./pages/HelpCenter";
 import Contact from "./pages/Contact";
 import HowToPay from "./pages/HowToPay";
 import TermsOfService from "./pages/TermsOfService";
+import CategoriesPage from "./pages/CategoriesPage";
+import CategoryProductsPage from "./pages/CategoryProductsPage";
+import SubCategoryProductsPage from "./pages/SubCategoryProductsPage";
+import RFQPage from "./pages/RFQPage";
 import { Toaster } from "sonner";
 
 const App = () => {
@@ -46,6 +50,16 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/how-to-pay" element={<HowToPay />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+        <Route
+          path="/categories/:category-slug"
+          element={<CategoryProductsPage />}
+        />
+        <Route
+          path="/categories/:category-slug/:sub-category-slug"
+          element={<SubCategoryProductsPage />}
+        />
+        <Route path="/rfqs" element={<RFQPage />} />
       </Routes>
     </>
   );
