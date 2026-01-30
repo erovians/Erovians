@@ -52,11 +52,11 @@ const App = () => {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route
-          path="/categories/:category-slug"
+          path="/categories/:categorySlug"
           element={<CategoryProductsPage />}
         />
         <Route
-          path="/categories/:category-slug/:sub-category-slug"
+          path="/categories/:categorySlug/:subCategorySlug"
           element={<SubCategoryProductsPage />}
         />
         <Route path="/rfqs" element={<RFQPage />} />
