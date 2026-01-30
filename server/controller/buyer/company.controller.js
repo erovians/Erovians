@@ -80,7 +80,6 @@ export const fetchCompany = asyncHandler(async (req, res, next) => {
   }
 });
 
-// ✅ UPDATED - fetchCompanyProduct with NEW filters
 export const fetchCompanyProduct = asyncHandler(async (req, res, next) => {
   const { companyId } = req.params;
   const {
