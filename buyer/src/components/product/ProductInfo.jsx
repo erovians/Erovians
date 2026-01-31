@@ -14,37 +14,146 @@ import {
   Upload,
   Mail,
   Phone,
+  MapPin,
+  Calendar,
+  DollarSign,
 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
+import { Country, State, City } from "country-state-city";
+import { createQuotationRequest } from "../../lib/redux/quotation/quotationSlice";
 
 const ProductInfo = ({ product, seller }) => {
   const { user: logedUser, isAuthenticated } = useSelector(
     (state) => state.auth
   );
+  const dispatch = useDispatch();
 
   const [quantity, setQuantity] = useState(1);
   const [isQuotationModalOpen, setIsQuotationModalOpen] = useState(false);
   const [isChatEnabled] = useState(false);
 
+  // Get countries, states, cities
+  const countries = Country.getAllCountries();
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
   // Quotation Form States
   const [formData, setFormData] = useState({
+    quotation_type: "product",
     quantity: "",
     unit: product?.priceUnit || "sq.ft",
     message: "",
+    timeline: "",
+    country: "",
+    state: "",
+    city: "",
+    budgetMin: "",
+    budgetMax: "",
+    broadcastToCategory: false,
     contactEmail: isAuthenticated ? logedUser?.email || "" : "",
-    contactPhone: isAuthenticated ? logedUser?.phone || "" : "",
+    contactPhone: isAuthenticated ? logedUser?.mobile || "" : "",
+    selectedShippingAddress: logedUser?.shipping_address?.[0] || null,
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
+  // ========== SHIPPING ADDRESS CHANGE (Logged in) ==========
+  const handleShippingAddressChange = (e) => {
+    const index = parseInt(e.target.value);
+    const selected = logedUser?.shipping_address?.[index] || null;
+    setFormData({
+      ...formData,
+      selectedShippingAddress: selected,
+    });
+  };
+
+  // ========== COUNTRY CHANGE (Not logged in) ==========
+  const handleCountryChange = (e) => {
+    const countryCode = e.target.value;
+    setFormData({
+      ...formData,
+      country: countryCode,
+      state: "",
+      city: "",
+    });
+    setStates(State.getStatesOfCountry(countryCode));
+    setCities([]);
+  };
+
+  // ========== STATE CHANGE (Not logged in) ==========
+  const handleStateChange = (e) => {
+    const stateCode = e.target.value;
+    setFormData({ ...formData, state: stateCode, city: "" });
+    setCities(City.getCitiesOfState(formData.country, stateCode));
+  };
+
+  // ========== SUBMIT ==========
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Quotation Request:", { ...formData, files: uploadedFiles });
-    alert("Quotation request sent! Seller will respond soon.");
+
+    let location = "";
+
+    if (isAuthenticated && formData.selectedShippingAddress) {
+      // Logged in — use selected shipping address
+      const addr = formData.selectedShippingAddress;
+      location = `${addr.city}, ${addr.state}, ${addr.country}`;
+    } else {
+      // Not logged in — use manual country/state/city
+      const countryName =
+        countries.find((c) => c.isoCode === formData.country)?.name || "";
+      const stateName =
+        states.find((s) => s.isoCode === formData.state)?.name || "";
+      const cityName = formData.city;
+      location = `${cityName}, ${stateName}, ${countryName}`.trim();
+    }
+
+    // Determine quotation type
+    const quotationType = formData.broadcastToCategory
+      ? "product-broadcast"
+      : "product";
+
+    // Prepare final data
+    const finalData = {
+      quotation_type: quotationType,
+      userId: logedUser?._id || null,
+      sellerId: seller?._id || null,
+      productId: product?._id || null,
+      quantity: parseInt(formData.quantity),
+      unit: formData.unit,
+      message: formData.message,
+      timeline: formData.timeline,
+      location: location,
+      budgetMin: formData.budgetMin ? parseFloat(formData.budgetMin) : null,
+      budgetMax: formData.budgetMax ? parseFloat(formData.budgetMax) : null,
+      uploadedFiles: uploadedFiles.map((f) => ({
+        name: f.name,
+        type: f.type,
+        file: f.file,
+      })),
+    };
+
+    // Contact info — only if not logged in
+    if (!isAuthenticated) {
+      finalData.contactEmail = formData.contactEmail;
+      finalData.contactPhone = formData.contactPhone;
+    }
+
+    // Broadcast category data
+    if (formData.broadcastToCategory) {
+      finalData.category = product?.category?.[0] || "";
+      finalData.subcategories = product?.subCategory || [];
+    }
+
+    console.log("✅ Quotation Request Data:", finalData);
+
+    // Dispatch
+    dispatch(createQuotationRequest(finalData));
+
     setIsQuotationModalOpen(false);
     resetForm();
   };
 
+  // ========== FILE UPLOAD ==========
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
 
@@ -70,15 +179,27 @@ const ProductInfo = ({ product, seller }) => {
     setUploadedFiles(newFiles);
   };
 
+  // ========== RESET ==========
   const resetForm = () => {
     setFormData({
+      quotation_type: "product",
       quantity: "",
       unit: product?.priceUnit || "sq.ft",
       message: "",
+      timeline: "",
+      country: "",
+      state: "",
+      city: "",
+      budgetMin: "",
+      budgetMax: "",
+      broadcastToCategory: false,
       contactEmail: isAuthenticated ? logedUser?.email || "" : "",
-      contactPhone: isAuthenticated ? logedUser?.phone || "" : "",
+      contactPhone: isAuthenticated ? logedUser?.mobile || "" : "",
+      selectedShippingAddress: logedUser?.shipping_address?.[0] || null,
     });
     setUploadedFiles([]);
+    setStates([]);
+    setCities([]);
   };
 
   return (
@@ -258,7 +379,7 @@ const ProductInfo = ({ product, seller }) => {
         </div>
       </div>
 
-      {/* Quotation Modal - EXACT COPY of AddressManager Modal Structure */}
+      {/* ==================== QUOTATION MODAL ==================== */}
       <Dialog.Root
         open={isQuotationModalOpen}
         onOpenChange={(open) => {
@@ -269,7 +390,7 @@ const ProductInfo = ({ product, seller }) => {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
           <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-4xl max-h-[90vh] -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-5 md:p-6 overflow-y-auto data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sidebar-scrollbar">
-            <div className="flex items-center justify-between mb-4 ">
+            <div className="flex items-center justify-between mb-4">
               <Dialog.Title className="text-lg md:text-xl font-bold text-gray-900">
                 Request Quotation
               </Dialog.Title>
@@ -282,7 +403,7 @@ const ProductInfo = ({ product, seller }) => {
 
             {/* Product Info */}
             <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg mb-4">
-              <div className="flex items-center gap-3 ">
+              <div className="flex items-center gap-3">
                 {product?.productImages?.[0] && (
                   <img
                     src={product.productImages[0]}
@@ -338,8 +459,177 @@ const ProductInfo = ({ product, seller }) => {
                     <option value="piece">piece</option>
                     <option value="ton">ton</option>
                     <option value="kg">kg</option>
+                    <option value="running meter">running meter</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Timeline */}
+              <div>
+                <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  Expected Timeline <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  value={formData.timeline}
+                  onChange={(e) =>
+                    setFormData({ ...formData, timeline: e.target.value })
+                  }
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select timeline</option>
+                  <option value="Within 1 week">Within 1 week</option>
+                  <option value="Within 2 weeks">Within 2 weeks</option>
+                  <option value="Within 1 month">Within 1 month</option>
+                  <option value="1-3 months">1-3 months</option>
+                  <option value="3+ months">3+ months</option>
+                  <option value="Flexible">Flexible</option>
+                </select>
+              </div>
+
+              {/* ========== LOCATION ========== */}
+              <div>
+                <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
+                  <MapPin className="w-4 h-4 inline mr-1" />
+                  Delivery Location <span className="text-red-500">*</span>
+                </label>
+
+                {/* Logged in — Shipping Address Dropdown */}
+                {isAuthenticated && logedUser?.shipping_address?.length > 0 ? (
+                  <div>
+                    <select
+                      required
+                      value={
+                        logedUser.shipping_address.findIndex(
+                          (addr) =>
+                            addr._id === formData.selectedShippingAddress?._id
+                        ) !== -1
+                          ? logedUser.shipping_address.findIndex(
+                              (addr) =>
+                                addr._id ===
+                                formData.selectedShippingAddress?._id
+                            )
+                          : 0
+                      }
+                      onChange={handleShippingAddressChange}
+                      className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      {logedUser.shipping_address.map((addr, index) => (
+                        <option key={addr._id} value={index}>
+                          {addr.name} — {addr.city}, {addr.state}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Selected address details */}
+                    {formData.selectedShippingAddress && (
+                      <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-xs text-gray-600">
+                          <span className="font-medium text-gray-800">
+                            {formData.selectedShippingAddress.name}
+                          </span>{" "}
+                          — {formData.selectedShippingAddress.landmark},{" "}
+                          {formData.selectedShippingAddress.city},{" "}
+                          {formData.selectedShippingAddress.state},{" "}
+                          {formData.selectedShippingAddress.country} -{" "}
+                          {formData.selectedShippingAddress.pincode}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // Not logged in — Manual country/state/city
+                  <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
+                    {/* Country */}
+                    <div>
+                      <select
+                        required
+                        value={formData.country}
+                        onChange={handleCountryChange}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Select Country</option>
+                        {countries.map((country) => (
+                          <option key={country.isoCode} value={country.isoCode}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* State */}
+                    <div>
+                      <select
+                        required
+                        value={formData.state}
+                        onChange={handleStateChange}
+                        disabled={!formData.country}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      >
+                        <option value="">Select State</option>
+                        {states.map((state) => (
+                          <option key={state.isoCode} value={state.isoCode}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* City */}
+                    <div>
+                      <select
+                        required
+                        value={formData.city}
+                        onChange={(e) =>
+                          setFormData({ ...formData, city: e.target.value })
+                        }
+                        disabled={!formData.state}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      >
+                        <option value="">Select City</option>
+                        {cities.map((city) => (
+                          <option key={city.name} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Budget Range (Optional) */}
+              <div>
+                <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
+                  <DollarSign className="w-4 h-4 inline mr-1" />
+                  Budget Range (Optional)
+                </label>
+                <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.budgetMin}
+                    onChange={(e) =>
+                      setFormData({ ...formData, budgetMin: e.target.value })
+                    }
+                    placeholder="Min budget (₹)"
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.budgetMax}
+                    onChange={(e) =>
+                      setFormData({ ...formData, budgetMax: e.target.value })
+                    }
+                    placeholder="Max budget (₹)"
+                    className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Providing budget helps seller give relevant quotes
+                </p>
               </div>
 
               {/* Message */}
@@ -353,7 +643,7 @@ const ProductInfo = ({ product, seller }) => {
                     setFormData({ ...formData, message: e.target.value })
                   }
                   rows={3}
-                  placeholder="Describe your requirements, dimensions, finish type, delivery location, expected timeline, etc."
+                  placeholder="Describe your requirements, dimensions, finish type, etc."
                   className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
@@ -416,11 +706,38 @@ const ProductInfo = ({ product, seller }) => {
                 </p>
               </div>
 
+              {/* ========== BROADCAST CHECKBOX ========== */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.broadcastToCategory}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        broadcastToCategory: e.target.checked,
+                      })
+                    }
+                    className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold text-blue-900">
+                      Also send this request to other sellers in this category
+                    </p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      Get more quotations from sellers offering similar products
+                      in <strong>{product?.category?.[0]}</strong> category
+                    </p>
+                  </div>
+                </label>
+              </div>
+
               {/* Contact Info - Only if NOT authenticated */}
               {!isAuthenticated && (
                 <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                   <div>
                     <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
+                      <Mail className="w-4 h-4 inline mr-1" />
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -439,6 +756,7 @@ const ProductInfo = ({ product, seller }) => {
                   </div>
                   <div>
                     <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
+                      <Phone className="w-4 h-4 inline mr-1" />
                       Phone Number
                     </label>
                     <input
@@ -470,7 +788,7 @@ const ProductInfo = ({ product, seller }) => {
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 md:py-3 rounded-lg font-semibold  transition-all text-sm md:text-base"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 md:py-3 rounded-lg font-semibold transition-all text-sm md:text-base"
                 >
                   Request Quotation
                 </button>

@@ -7,7 +7,7 @@ import { combineReducers } from "redux";
 import authReducer from "../lib/redux/auth/authSlice";
 import compnayReducer from "../lib/redux/company/companySlice";
 import categoryReducer from "../lib/redux/category/categorySlice";
-
+import quotationReducer from "../lib/redux/quotation/quotationSlice";
 const authPersistConfig = {
   key: "auth",
   storage,
@@ -21,6 +21,7 @@ const rootReducer = combineReducers({
   auth: persistedAuthReducer,
   company: compnayReducer,
   category: categoryReducer,
+  quotation: quotationReducer,
 });
 
 export const store = configureStore({

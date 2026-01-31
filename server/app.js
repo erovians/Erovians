@@ -19,6 +19,7 @@ import userAuthRoutes from "./routes/buyer/auth.route.js";
 import companyBuyerRoutes from "./routes/buyer/company.route.js";
 import categoryRoutes from "./routes/buyer/category.route.js";
 import { seedDatabase } from "./controller/seed.controller.js";
+import quotationRoutes from "./routes/buyer/quotation.route.js";
 // user router import start from here
 
 const app = express();
@@ -90,6 +91,7 @@ app.use("/api/transport", estimateRoutes);
 app.use("/api/v2/auth", userAuthRoutes);
 app.use("/api/v2/company", companyBuyerRoutes);
 app.use("/api/v2/category", categoryRoutes);
+app.use("/api/v2/quotation", quotationRoutes);
 
 // OPTION 2: Manual trigger endpoint (recommended)
 app.post("/seed-database", async (req, res) => {

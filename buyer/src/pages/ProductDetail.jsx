@@ -6,7 +6,6 @@ import Layout from "../components/common/Layout";
 import ImageGallery from "../components/product/ImageGallery";
 import ProductInfo from "../components/product/ProductInfo";
 import SellerInfo from "../components/product/SellerInfo";
-import NaturalStoneClause from "../components/product/NaturalStoneClause";
 import ComplianceSection from "../components/product/ComplianceSection";
 import WarrantySection from "../components/product/WarrantySection";
 import ShippingInfoSection from "../components/product/ShippingInfoSection";
