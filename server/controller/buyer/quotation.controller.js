@@ -287,7 +287,6 @@ const createQuotationRequest = asyncHandler(async (req, res, next) => {
     status: "pending",
   };
 
-  // Add fields based on quotation type
   if (quotation_type === "product" || quotation_type === "product-broadcast") {
     quotationData.sellerId = sellerId;
     quotationData.productId = productId;

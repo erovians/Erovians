@@ -8,46 +8,9 @@ import { cache } from "../services/cache.service.js";
 
 export const registerCompany = async (req, res) => {
   try {
-    const userId = req.user.id; // Token se User ID aati hai
-
-    // ✅ User ID se Seller find karo
-    const seller = await Seller.findOne({ userId });
-
-    if (!seller) {
-      return res.status(404).json({
-        success: false,
-        message: "Seller account not found",
-      });
-    }
-
-    // ✅ Seller ki ID use karo
-    const sellerId = seller._id.toString();
-
-    console.log("this is", req.body);
-
-    const company = await registerCompanyService(req.body, req.files, sellerId);
-    await cache.clearPattern(`company:*`);
-
-    return res.status(201).json({
-      success: true,
-      message: "Company registered successfully.",
-      company,
-    });
+    res.send("done");
   } catch (error) {
     console.error("RegisterCompany Error:", error);
-
-    if (error.name === "ZodError") {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed.",
-        errors: error.errors,
-      });
-    }
-
-    res.status(400).json({
-      success: false,
-      message: error.message || "Internal server error",
-    });
   }
 };
 
@@ -116,7 +79,6 @@ export const getCompanyDetails = async (req, res) => {
 
     await cache.set(cacheKey, companyData, 3600);
 
-    console.log("here is tempory consolling the compnay", companyData);
     return res.status(200).json({
       success: true,
       fromCache: false,

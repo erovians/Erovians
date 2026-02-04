@@ -5,19 +5,22 @@ import {
   clearError,
   clearSuccess,
 } from "../../lib/redux/auth/authSlice";
-import { MapPin, Edit2, Trash2, Plus, Save, X } from "lucide-react";
+import { MapPin, Edit2, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Country, State, City } from "country-state-city";
 import * as Dialog from "@radix-ui/react-dialog";
 
 const AddressManager = ({ user }) => {
   const dispatch = useDispatch();
-  const { loading, error, success, message } = useSelector(
+
+  // ✅ Use addressLoading instead of loading
+  const { addressLoading, error, success, message } = useSelector(
     (state) => state.auth
   );
-  const [addressType, setAddressType] = useState("billing"); // 'billing' or 'shipping'
+
+  const [addressType, setAddressType] = useState("billing");
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState("add");
   const [editingIndex, setEditingIndex] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -56,7 +59,6 @@ const AddressManager = ({ user }) => {
     }
   }, [selectedState]);
 
-  // Toast notifications
   useEffect(() => {
     if (success && message) {
       toast.success(message);
@@ -97,14 +99,12 @@ const AddressManager = ({ user }) => {
     setModalMode("edit");
     setEditingIndex(index);
 
-    // Find country
     const country = countries.find((c) => c.name === address.country);
     if (country) {
       setSelectedCountry(country.isoCode);
       const countryStates = State.getStatesOfCountry(country.isoCode);
       setStates(countryStates);
 
-      // Find state
       const state = countryStates.find((s) => s.name === address.state);
       if (state) {
         setSelectedState(state.isoCode);
@@ -144,7 +144,6 @@ const AddressManager = ({ user }) => {
   };
 
   const handleSave = async () => {
-    // Validation
     if (
       !formData.name ||
       !formData.mobile ||
@@ -191,13 +190,12 @@ const AddressManager = ({ user }) => {
 
   const addresses =
     addressType === "billing"
-      ? user.billing_address || []
-      : user.shipping_address || [];
+      ? user.buyer_data?.billing_address || []
+      : user.buyer_data?.shipping_address || [];
 
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
-        {/* Header with Address Type Toggle */}
         <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
@@ -212,7 +210,6 @@ const AddressManager = ({ user }) => {
             </button>
           </div>
 
-          {/* Address Type Tabs */}
           <div className="flex gap-1 sm:gap-2 border-b border-gray-200 overflow-x-auto">
             <button
               onClick={() => setAddressType("billing")}
@@ -222,7 +219,7 @@ const AddressManager = ({ user }) => {
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              Billing ({user.billing_address?.length || 0})
+              Billing ({user.buyer_data?.billing_address?.length || 0})
             </button>
             <button
               onClick={() => setAddressType("shipping")}
@@ -232,20 +229,23 @@ const AddressManager = ({ user }) => {
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              Shipping ({user.shipping_address?.length || 0})
+              Shipping ({user.buyer_data?.shipping_address?.length || 0})
             </button>
           </div>
         </div>
 
-        {/* Existing Addresses List */}
-        {addresses.length > 0 ? (
+        {/* ✅ Show loading ONLY for address section */}
+        {addressLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+          </div>
+        ) : addresses.length > 0 ? (
           <div className="space-y-3 md:space-y-4">
             {addresses.map((address, index) => (
               <div
                 key={index}
                 className="border border-gray-200 rounded-lg md:rounded-xl p-3 sm:p-4 hover:border-blue-300 transition-colors relative"
               >
-                {/* Address Content */}
                 <div className="space-y-1.5 md:space-y-2 text-xs sm:text-sm text-gray-700 mb-3 md:mb-4">
                   {address.name && (
                     <p className="wrap-break-words">
@@ -292,7 +292,6 @@ const AddressManager = ({ user }) => {
                   )}
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex flex-wrap gap-2 md:gap-3">
                   <button
                     onClick={() => handleEdit(address, index)}
@@ -356,7 +355,6 @@ const AddressManager = ({ user }) => {
 
             <div className="space-y-4">
               <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-                {/* Name */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Name <span className="text-red-500">*</span>
@@ -372,7 +370,6 @@ const AddressManager = ({ user }) => {
                   />
                 </div>
 
-                {/* Mobile */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Mobile <span className="text-red-500">*</span>
@@ -387,7 +384,6 @@ const AddressManager = ({ user }) => {
                   />
                 </div>
 
-                {/* Alternate Mobile */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Alternate Mobile
@@ -402,7 +398,6 @@ const AddressManager = ({ user }) => {
                   />
                 </div>
 
-                {/* Pincode */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Pincode <span className="text-red-500">*</span>
@@ -418,7 +413,6 @@ const AddressManager = ({ user }) => {
                   />
                 </div>
 
-                {/* Country */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Country <span className="text-red-500">*</span>
@@ -447,7 +441,6 @@ const AddressManager = ({ user }) => {
                   </select>
                 </div>
 
-                {/* State */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     State <span className="text-red-500">*</span>
@@ -472,7 +465,6 @@ const AddressManager = ({ user }) => {
                   </select>
                 </div>
 
-                {/* City */}
                 <div>
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     City <span className="text-red-500">*</span>
@@ -494,7 +486,6 @@ const AddressManager = ({ user }) => {
                   </select>
                 </div>
 
-                {/* Landmark */}
                 <div className="md:col-span-2">
                   <label className="text-xs sm:text-sm text-gray-700 mb-1.5 md:mb-2 block font-medium">
                     Landmark
@@ -511,14 +502,14 @@ const AddressManager = ({ user }) => {
                 </div>
               </div>
 
-              {/* Form Actions */}
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                 <button
                   onClick={handleSave}
-                  disabled={loading}
+                  disabled={addressLoading}
                   className="flex-1 bg-navyblue text-white px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-all text-sm md:text-base"
                 >
-                  {loading ? "Saving..." : "Save Address"}
+                  {addressLoading ? "Saving..." : "Save Address"}{" "}
+                  {/* ✅ Use addressLoading */}
                 </button>
                 <Dialog.Close asChild>
                   <button className="flex-1 bg-gray-200 text-gray-700 px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all text-sm md:text-base">

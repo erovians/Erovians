@@ -1,176 +1,252 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Seller from "../models/sellerSingnup.model.js";
 import CompanyDetails from "../models/company.model.js";
 import Product from "../models/product.model.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { IMAGE_MAP, getProductImages } from "../data/imageMap.js"; // ← image URLs
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Function to fix thickness measurement from mm to cm
-const fixThicknessMeasurement = (productData) => {
-  if (productData.size && productData.size.thicknessMeasurement === "mm") {
-    // Convert mm to cm
-    productData.size.thickness = productData.size.thickness / 10;
-    productData.size.thicknessMeasurement = "cm";
-    console.log(
-      `    🔧 Fixed thickness: ${productData.size.thickness * 10}mm → ${
-        productData.size.thickness
-      }cm for ${productData.productName}`
-    );
-  }
-  return productData;
-};
+// ─── 4 alag files padhte hai ────────────────────────────────────
+const usersRaw = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../data/user.json"), "utf-8")
+);
+const sellersRaw = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../data/seller.json"), "utf-8")
+);
+const companiesRaw = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../data/compnay.json"), "utf-8")
+);
+const productsRaw = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../data/product.json"), "utf-8")
+);
 
-export const seedDatabase = async () => {
+// ─── Helper: $oid → ObjectId ────────────────────────────────────
+const toId = (val) => new mongoose.Types.ObjectId(val.$oid);
+// ─── Helper: $date → Date ───────────────────────────────────────
+const toDate = (val) => (val ? new Date(val.$date) : null);
+
+// ─────────────────────────────────────────────────────────────────
+// IMAGE REPLACE FUNCTION — seed se pehle chalenga
+// ─────────────────────────────────────────────────────────────────
+function replaceAllImages(users, companies, products) {
+  console.log("🖼️  Replacing placeholder images with real Unsplash URLs...");
+
+  // ── 1. USERS — profileURL aur signature replace ──
+  users.forEach((user) => {
+    const uid = user._id.$oid;
+
+    // profile image
+    if (IMAGE_MAP.userProfiles[uid]) {
+      user.profileURL = {
+        url: IMAGE_MAP.userProfiles[uid],
+        publicId: `profiles/${user.name.toLowerCase().replace(" ", "_")}`,
+      };
+    }
+
+    // signature
+    if (IMAGE_MAP.signatures[uid]) {
+      user.buyer_data.buyer_signature = {
+        url: IMAGE_MAP.signatures[uid],
+        publicId: `signatures/${user.name.toLowerCase().replace(" ", "_")}`,
+      };
+    }
+  });
+  console.log("  ✅ User profiles & signatures updated");
+
+  // ── 2. COMPANIES — logo aur companyPhotos replace ──
+  companies.forEach((company) => {
+    const cid = company._id.$oid;
+
+    // logo
+    if (IMAGE_MAP.companyLogos[cid]) {
+      company.companyIntro.logo = IMAGE_MAP.companyLogos[cid];
+    }
+
+    // company photos
+    if (IMAGE_MAP.companyPhotos[cid]) {
+      company.companyIntro.companyPhotos = IMAGE_MAP.companyPhotos[cid];
+    }
+  });
+  console.log("  ✅ Company logos & photos updated");
+
+  // ── 3. PRODUCTS — productImages replace (subCategory se sahi images milenge) ──
+  products.forEach((product) => {
+    const imgCount = product.productImages?.length || 3; // original kitni thi utni rakhein
+    product.productImages = getProductImages(product, imgCount);
+  });
+  console.log("  ✅ Product images updated");
+
+  console.log("🖼️  All images replaced successfully!");
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SEED DATABASE
+// ─────────────────────────────────────────────────────────────────
+export const seedDatabase = async (req, res) => {
   try {
-    // Read JSON files
-    const usersData = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../data/user.json"), "utf-8")
-    );
-    console.log("user data json path", usersData);
-    const sellersData = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../data/seller.json"), "utf-8")
-    );
-    console.log("sellers data json path", sellersData);
-    const companiesData = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../data/compnay.json"), "utf-8")
-    );
-    console.log("companie data json path", companiesData);
-    const productsData = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../data/product.json"), "utf-8")
-    );
-
-    console.log("products data json path", productsData);
-
     console.log("🌱 Starting database seeding...");
 
-    // Clear existing data
-    await User.deleteMany({});
-    await Seller.deleteMany({});
-    await CompanyDetails.deleteMany({});
-    await Product.deleteMany({});
-    console.log("✅ Cleared existing data");
-
-    // Maps to store old ID -> new ID mappings
-    const userIdMap = new Map();
-    const sellerIdMap = new Map();
-    const companyIdMap = new Map();
-
-    // 1. Insert Users
-    console.log("📝 Inserting users...");
-    for (const userData of usersData) {
-      const oldUserId = userData._id.$oid;
-      delete userData._id;
-
-      if (userData.createdAt?.$date) {
-        userData.createdAt = new Date(userData.createdAt.$date);
+    // ── check karo existing data ──
+    if (!req.skipCheck) {
+      const existingUsers = await User.countDocuments();
+      if (existingUsers > 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Database already has data. Use POST /force-seed-database",
+        });
       }
-      if (userData.updatedAt?.$date) {
-        userData.updatedAt = new Date(userData.updatedAt.$date);
-      }
-      if (userData.passwordChangedAt?.$date) {
-        userData.passwordChangedAt = new Date(userData.passwordChangedAt.$date);
-      }
-
-      const newUser = await User.create(userData);
-      userIdMap.set(oldUserId, newUser._id);
-      console.log(`  ✓ Created user: ${newUser.name}`);
     }
 
-    // 2. Insert Sellers
-    console.log("📝 Inserting sellers...");
-    for (const sellerData of sellersData) {
-      const oldSellerId = sellerData._id.$oid;
-      const oldUserId = sellerData.userId.$oid;
+    // ── RAW JSON copy karein (mutate nahi karna original) ──
+    const usersData = JSON.parse(JSON.stringify(usersRaw));
+    const companiesData = JSON.parse(JSON.stringify(companiesRaw));
+    const productsData = JSON.parse(JSON.stringify(productsRaw));
 
-      delete sellerData._id;
-      sellerData.userId = userIdMap.get(oldUserId);
+    // ── 🖼️ SEED SE PEHLE — sab images replace kar dein ──
+    replaceAllImages(usersData, companiesData, productsData);
 
-      if (sellerData.createdAt?.$date) {
-        sellerData.createdAt = new Date(sellerData.createdAt.$date);
-      }
-      if (sellerData.updatedAt?.$date) {
-        sellerData.updatedAt = new Date(sellerData.updatedAt.$date);
-      }
+    // ── 1. USERS ──
+    const users = usersData.map((u) => ({
+      ...u,
+      _id: toId(u._id),
+      buyer_data: {
+        ...u.buyer_data,
+        billing_address: u.buyer_data.billing_address.map((addr) => ({
+          ...addr,
+          _id: toId(addr._id),
+        })),
+        shipping_address: u.buyer_data.shipping_address.map((addr) => ({
+          ...addr,
+          _id: toId(addr._id),
+        })),
+      },
+      createdAt: toDate(u.createdAt),
+      updatedAt: toDate(u.updatedAt),
+      lastLogin: toDate(u.lastLogin),
+    }));
 
-      const newSeller = await Seller.create(sellerData);
-      sellerIdMap.set(oldSellerId, newSeller._id);
-      console.log(`  ✓ Created seller: ${newSeller.businessName}`);
-    }
+    // ── 2. SELLERS ──
+    const sellers = sellersRaw.map((s) => ({
+      ...s,
+      _id: toId(s._id),
+      userId: toId(s.userId),
+      createdAt: toDate(s.createdAt),
+      updatedAt: toDate(s.updatedAt),
+    }));
 
-    // 3. Insert Companies
-    console.log("📝 Inserting companies...");
-    for (const companyData of companiesData) {
-      const oldCompanyId = companyData._id.$oid;
-      const oldSellerId = companyData.sellerId.$oid;
+    // ── 3. COMPANIES ──
+    const companies = companiesData.map((c) => ({
+      ...c,
+      _id: toId(c._id),
+      sellerId: toId(c.sellerId),
+      createdAt: toDate(c.createdAt),
+      updatedAt: toDate(c.updatedAt),
+    }));
 
-      delete companyData._id;
-      companyData.sellerId = sellerIdMap.get(oldSellerId);
+    // ── 4. PRODUCTS ──
+    const products = productsData.map((p) => ({
+      ...p,
+      _id: toId(p._id),
+      companyId: toId(p.companyId),
+      sellerId: toId(p.sellerId),
+      userId: p.userId ? toId(p.userId) : undefined,
+      createdAt: toDate(p.createdAt),
+      updatedAt: toDate(p.updatedAt),
+      technical_file: p.technical_file
+        ? {
+            ...p.technical_file,
+            upload_timestamp: toDate(p.technical_file.upload_timestamp),
+            seller_validation_timestamp: toDate(
+              p.technical_file.seller_validation_timestamp
+            ),
+          }
+        : undefined,
+    }));
 
-      if (companyData.createdAt?.$date) {
-        companyData.createdAt = new Date(companyData.createdAt.$date);
-      }
-      if (companyData.updatedAt?.$date) {
-        companyData.updatedAt = new Date(companyData.updatedAt.$date);
-      }
+    // ── Insert — order important hai ──
+    console.log("🔄 Inserting data...");
 
-      const newCompany = await CompanyDetails.create(companyData);
-      companyIdMap.set(oldCompanyId, newCompany._id);
-      console.log(
-        `  ✓ Created company: ${newCompany.companyBasicInfo.companyName}`
-      );
-    }
+    await User.insertMany(users, { ordered: true });
+    console.log(`✅ Users: ${users.length}`);
 
-    // 4. Insert Products
-    console.log("📝 Inserting products...");
-    let productCount = 0;
-    for (const productData of productsData) {
-      const oldCompanyId = productData.companyId.$oid;
-      const oldSellerId = productData.sellerId.$oid;
+    await Seller.insertMany(sellers, { ordered: true });
+    console.log(`✅ Sellers: ${sellers.length}`);
 
-      delete productData._id;
-      productData.companyId = companyIdMap.get(oldCompanyId);
-      productData.sellerId = sellerIdMap.get(oldSellerId);
+    await CompanyDetails.insertMany(companies, { ordered: true });
+    console.log(`✅ Companies: ${companies.length}`);
 
-      if (productData.createdAt?.$date) {
-        productData.createdAt = new Date(productData.createdAt.$date);
-      }
-      if (productData.updatedAt?.$date) {
-        productData.updatedAt = new Date(productData.updatedAt.$date);
-      }
+    await Product.insertMany(products, { ordered: true });
+    console.log(`✅ Products: ${products.length}`);
 
-      // ✅ Fix thickness measurement before saving
-      const fixedProductData = fixThicknessMeasurement(productData);
+    console.log("🎉 Seeding completed!");
 
-      await Product.create(fixedProductData);
-      productCount++;
-    }
-    console.log(`  ✓ Created ${productCount} products`);
-
-    console.log("✅ Database seeding completed successfully!");
-    console.log(`
-📊 Summary:
-  - Users: ${usersData.length}
-  - Sellers: ${sellersData.length}
-  - Companies: ${companiesData.length}
-  - Products: ${productsData.length}
-    `);
-
-    return {
+    res.status(200).json({
       success: true,
       message: "Database seeded successfully",
       data: {
-        users: usersData.length,
-        sellers: sellersData.length,
-        companies: companiesData.length,
-        products: productsData.length,
+        users: users.length,
+        sellers: sellers.length,
+        companies: companies.length,
+        products: products.length,
       },
-    };
+    });
   } catch (error) {
-    console.error("❌ Error seeding database:", error);
-    throw error;
+    console.error("❌ Seed error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error seeding database",
+      error: error.message,
+    });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────
+// CLEAR DATABASE
+// ─────────────────────────────────────────────────────────────────
+export const clearDatabase = async (req, res) => {
+  try {
+    console.log("🗑️  Clearing database...");
+    await Product.deleteMany({});
+    await CompanyDetails.deleteMany({});
+    await Seller.deleteMany({});
+    await User.deleteMany({});
+    console.log("🎉 Database cleared!");
+    res.status(200).json({ success: true, message: "Database cleared" });
+  } catch (error) {
+    console.error("❌ Clear error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error clearing database",
+      error: error.message,
+    });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────
+// FORCE SEED (clear → seed)
+// ─────────────────────────────────────────────────────────────────
+export const forceSeedDatabase = async (req, res) => {
+  try {
+    console.log("🔄 Force seed: pehle clear...");
+    await Product.deleteMany({});
+    await CompanyDetails.deleteMany({});
+    await Seller.deleteMany({});
+    await User.deleteMany({});
+    console.log("✅ Cleared");
+
+    req.skipCheck = true;
+    await seedDatabase(req, res);
+  } catch (error) {
+    console.error("❌ Force seed error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error force seeding",
+      error: error.message,
+    });
   }
 };

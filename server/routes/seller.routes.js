@@ -2,12 +2,14 @@ import express from "express";
 
 import {
   registerSeller,
+  sendOtp,
+  verifyOtp,
   loginSeller,
   checkUniqueSeller,
   refreshTokenController,
   logoutSeller,
 } from "../controller/seller.controller.js";
-import { sendOtp, verifyOtp } from "../controller/otp.controller.js";
+
 import { upload } from "../middleware/multer.middleware.js";
 
 const router = express.Router();

@@ -4,6 +4,9 @@ import api from "../../services/api";
 const initialState = {
   isAuthenticated: false,
   loading: false,
+  profileLoading: false,
+  buyerLoading: false,
+  addressLoading: false,
   user: null,
   error: null,
   message: null,
@@ -12,6 +15,9 @@ const initialState = {
   isNewUser: null,
   identifier: "",
   loginMethod: "mobile",
+  authMode: "login", // "login" or "signup"
+  loginType: null, // "otp" or "password" (only for login mode)
+  hasPassword: false, // to check if user can login with password
   otpSent: false,
   otpPurpose: null,
   otpExpiresAt: null,
@@ -100,7 +106,27 @@ export const completeRegistration = createAsyncThunk(
 );
 
 // ========================================
-// 5. RESEND OTP
+// 5. LOGIN WITH PASSWORD
+// ========================================
+export const loginWithPassword = createAsyncThunk(
+  "auth/loginWithPassword",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/login-password", formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || {
+          success: false,
+          message: "Login failed",
+        }
+      );
+    }
+  }
+);
+
+// ========================================
+// 6. RESEND OTP
 // ========================================
 export const resendOTP = createAsyncThunk(
   "auth/resendOTP",
@@ -120,7 +146,7 @@ export const resendOTP = createAsyncThunk(
 );
 
 // ========================================
-// 6. LOGOUT
+// 7. LOGOUT
 // ========================================
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
@@ -140,12 +166,11 @@ export const logoutUser = createAsyncThunk(
 );
 
 // ========================================
-// 7. UPDATE USER
+// 8. UPDATE USER
 // ========================================
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async (formData, { rejectWithValue }) => {
-    console.log("this is update user formdata", formData);
     try {
       const response = await api.put("/auth/update-user", formData);
       return response.data;
@@ -161,21 +186,17 @@ export const updateUser = createAsyncThunk(
 );
 
 // ========================================
-// 8. UPDATE ADDRESS (Billing/Shipping)
+// 9. UPDATE ADDRESS (Billing/Shipping)
 // ========================================
 export const updateAddress = createAsyncThunk(
   "auth/updateAddress",
   async ({ type, action, data, index }, { rejectWithValue }) => {
-    console.log("this is type", type);
-    console.log("this is action", action);
-    console.log("this is user data", data);
-    console.log("this is index", index);
     try {
       const response = await api.put("/auth/update-address", {
-        type, // 'billing' or 'shipping'
-        action, // 'add', 'edit', 'delete'
-        data, // address object
-        index, // for edit/delete
+        type,
+        action,
+        data,
+        index,
       });
       return response.data;
     } catch (error) {
@@ -205,10 +226,24 @@ const authSlice = createSlice({
       state.loginMethod = action.payload;
       state.identifier = "";
     },
+    setAuthMode: (state, action) => {
+      state.authMode = action.payload;
+      state.step = "initial";
+      state.loginType = null;
+      state.hasPassword = false;
+      state.identifier = "";
+      state.error = null;
+      state.message = null;
+    },
+    setLoginType: (state, action) => {
+      state.loginType = action.payload;
+    },
     resetAuthFlow: (state) => {
       state.step = "initial";
       state.isNewUser = null;
       state.identifier = "";
+      state.loginType = null;
+      state.hasPassword = false;
       state.otpSent = false;
       state.otpPurpose = null;
       state.otpExpiresAt = null;
@@ -229,7 +264,7 @@ const authSlice = createSlice({
       // 1. LOAD USER
       // ========================================
       .addCase(loadUser.pending, (state) => {
-        state.loading = true;
+        state.loading = true; // General loading for page load
         state.error = null;
       })
       .addCase(loadUser.fulfilled, (state, action) => {
@@ -238,7 +273,6 @@ const authSlice = createSlice({
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data || null;
-        // state.message = action.payload?.message || "User loaded successfully";
       })
       .addCase(loadUser.rejected, (state, action) => {
         state.loading = false;
@@ -266,13 +300,21 @@ const authSlice = createSlice({
         state.error = null;
         state.success = true;
         state.otpSent = true;
-        state.step = "otp";
         state.isNewUser = action.payload?.isNewUser || false;
         state.identifier = action.payload?.identifier || state.identifier;
         state.otpPurpose = action.payload?.otpPurpose || "login";
         state.otpExpiresAt = action.payload?.otpExpiresAt || null;
         state.requiresVerification = true;
+        state.hasPassword = action.payload?.hasPassword || false;
         state.message = action.payload?.message || "OTP sent successfully";
+
+        if (state.authMode === "signup") {
+          state.step = "otp";
+        } else if (state.authMode === "login" && state.hasPassword) {
+          state.step = "loginChoice";
+        } else {
+          state.step = "otp";
+        }
       })
       .addCase(checkUserAndSendOTP.rejected, (state, action) => {
         state.loading = false;
@@ -366,7 +408,38 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // 5. RESEND OTP
+      // 5. LOGIN WITH PASSWORD
+      // ========================================
+      .addCase(loginWithPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+        state.message = null;
+      })
+      .addCase(loginWithPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.success = true;
+        state.isAuthenticated = true;
+        state.user = action.payload?.data || null;
+        state.step = "initial";
+        state.nextRoute = action.payload?.nextRoute || "/";
+        state.message = action.payload?.message || "Login successful";
+
+        if (action.payload?.accessToken) {
+          localStorage.setItem("accessToken", action.payload.accessToken);
+        }
+      })
+      .addCase(loginWithPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error =
+          action.payload?.message || action.payload?.error || "Login failed";
+        state.message = state.error;
+      })
+
+      // ========================================
+      // 6. RESEND OTP
       // ========================================
       .addCase(resendOTP.pending, (state) => {
         state.loading = true;
@@ -392,7 +465,7 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // 6. LOGOUT
+      // 7. LOGOUT
       // ========================================
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
@@ -422,22 +495,32 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // 7. UPDATE USER
+      // 8. UPDATE USER - SPLIT INTO PROFILE & BUYER
       // ========================================
-      .addCase(updateUser.pending, (state) => {
-        state.loading = true;
+      .addCase(updateUser.pending, (state, action) => {
+        // Check if it's profile update or buyer update based on payload
+        const payload = action.meta.arg;
+
+        if (payload.buyer_data) {
+          state.buyerLoading = true; // Buyer details loading
+        } else {
+          state.profileLoading = true; // Personal info loading
+        }
+
         state.error = null;
         state.success = false;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.loading = false;
+        state.profileLoading = false;
+        state.buyerLoading = false;
         state.error = null;
         state.success = true;
         state.user = action.payload?.data || state.user;
         state.message = action.payload?.message || "User updated successfully";
       })
       .addCase(updateUser.rejected, (state, action) => {
-        state.loading = false;
+        state.profileLoading = false;
+        state.buyerLoading = false;
         state.success = false;
         state.error =
           action.payload?.message ||
@@ -447,15 +530,15 @@ const authSlice = createSlice({
       })
 
       // ========================================
-      // 8. UPDATE ADDRESS
+      // 9. UPDATE ADDRESS
       // ========================================
       .addCase(updateAddress.pending, (state) => {
-        state.loading = true;
+        state.addressLoading = true; // Address specific loading
         state.error = null;
         state.success = false;
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
-        state.loading = false;
+        state.addressLoading = false;
         state.error = null;
         state.success = true;
         state.user = action.payload?.data || state.user;
@@ -463,7 +546,7 @@ const authSlice = createSlice({
           action.payload?.message || "Address updated successfully";
       })
       .addCase(updateAddress.rejected, (state, action) => {
-        state.loading = false;
+        state.addressLoading = false;
         state.success = false;
         state.error =
           action.payload?.message ||
@@ -478,6 +561,8 @@ export const {
   clearError,
   clearSuccess,
   setLoginMethod,
+  setAuthMode,
+  setLoginType,
   resetAuthFlow,
   logout,
 } = authSlice.actions;

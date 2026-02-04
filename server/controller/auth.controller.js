@@ -21,6 +21,7 @@ export const validateUser = async (req, res) => {
         message: "User not found",
       });
     }
+    console.log(user);
 
     return res.status(200).json({
       valid: true,

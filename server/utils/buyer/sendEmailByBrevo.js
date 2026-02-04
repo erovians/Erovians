@@ -2,7 +2,6 @@ import Brevo from "@getbrevo/brevo";
 import logger from "../../config/winston.js";
 
 const sendMail = async (options) => {
-  console.log(process.env.BREVO_API_KEY);
   try {
     const apiInstance = new Brevo.TransactionalEmailsApi();
     apiInstance.setApiKey(

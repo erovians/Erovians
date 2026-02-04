@@ -9,68 +9,123 @@ const sellerSchema = new mongoose.Schema(
       unique: true,
     },
 
-    // Business details
-    businessId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    businessName: {
+    seller_name: {
       type: String,
       required: true,
       trim: true,
-    },
-    category: {
-      type: String,
-      enum: ["All", "Marbles", "Granites"],
-      default: "All",
+      minlength: [2, "Seller name must be at least 2 characters"],
+      maxlength: [100, "Seller name cannot exceed 100 characters"],
     },
 
-    companyregstartionlocation: {
-      type: String,
-      required: [true, "Company registration location is required"],
-      trim: true,
-    },
-
-    // Document upload & verification
-    documentUrl: {
-      type: String,
-      required: true,
-    },
-    varificationStatus: {
-      type: String,
-      enum: ["Pending", "Approved", "Rejected"],
-      default: "Pending",
-    },
-
-    // Seller specific fields
     seller_status: {
       type: String,
-      enum: ["professional", "Individual"],
+      enum: ["professional", "individual"],
       required: true,
+    },
+
+    seller_company_number: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true, // ✅ Allows null for individual
+      required: function () {
+        return this.seller_status === "professional";
+      },
     },
 
     seller_address: {
       type: String,
       required: true,
       trim: true,
+      minlength: [10, "Address must be at least 10 characters"],
+      maxlength: [500, "Address cannot exceed 500 characters"],
     },
 
-    // Status for seller account (active/suspended)
+    seller_country: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: [50, "Country name cannot exceed 50 characters"],
+    },
+
+    seller_email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+    },
+
+    seller_phone: {
+      type: String,
+      trim: true,
+    },
+
+    seller_dispute_contact: {
+      type: String,
+      trim: true,
+    },
+
+    seller_kyc_hash: {
+      type: String,
+      trim: true,
+    },
+
+    seller_profile_url: {
+      type: String,
+      trim: true,
+    },
+
+    varificationStatus: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Pending",
+    },
+
     status: {
       type: String,
-      enum: ["active", "suspended"],
+      enum: ["active", "suspended", "inactive"],
       default: "active",
     },
+
+    // ❌ REMOVE - Not in PDF, Company mein hai
+    // category: { ... }
   },
   { timestamps: true }
 );
 
-// Indexes
+// INDEXES
 sellerSchema.index({ userId: 1 }, { unique: true });
-sellerSchema.index({ businessId: 1 }, { unique: true });
-sellerSchema.index({ varificationStatus: 1 });
-sellerSchema.index({ status: 1 });
+sellerSchema.index(
+  { seller_company_number: 1 },
+  { unique: true, sparse: true }
+);
+sellerSchema.index({ seller_status: 1, varificationStatus: 1 });
+
+// METHODS
+sellerSchema.methods.canHaveCompany = function () {
+  return this.seller_status === "professional";
+};
+
+sellerSchema.methods.isVerified = function () {
+  return this.varificationStatus === "Approved" && this.status === "active";
+};
+
+sellerSchema.methods.isProfessional = function () {
+  return this.seller_status === "professional";
+};
+
+sellerSchema.methods.isIndividual = function () {
+  return this.seller_status === "individual";
+};
+
+sellerSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform(doc, ret) {
+    ret.id = ret._id;
+    delete ret._id;
+    return ret;
+  },
+});
 
 const Seller = mongoose.model("Seller", sellerSchema);
 export default Seller;

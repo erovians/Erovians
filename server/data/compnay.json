@@ -1,532 +1,193 @@
 [
   {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e1"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e1"
-    },
+    "_id": { "$oid": "507f1f77bcf86cd799439201" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
     "companyBasicInfo": {
-      "companyName": "Imperial Stone Works",
+      "companyName": "Rajasthan Stone Exports",
+      "company_registration_number": "CIN-U12345MH2020PTC123456",
       "address": {
-        "street": "Plot No. 45, Industrial Area, Sector 12",
+        "street": "45 Stone Market Road",
         "city": "Jaipur",
         "stateOrProvince": "Rajasthan",
         "countryOrRegion": "India",
-        "postalCode": "302013"
+        "postalCode": "302001"
       },
       "legalowner": "Rajesh Kumar",
-      "locationOfRegistration": "Jaipur",
-      "companyRegistrationYear": "2010",
+      "locationOfRegistration": "Jaipur, Rajasthan",
+      "companyRegistrationYear": "2020",
+      "registration_documents": [],
       "mainCategory": ["natural stones"],
-      "subCategory": ["marble", "granite", "sandstone"],
-      "acceptedCurrency": ["USD", "INR", "EUR"],
-      "acceptedPaymentType": ["PayPal", "Credit Card", "Bank Transfer", "Letter of Credit"],
+      "subCategory": ["marble", "granite", "sandstone", "limestone"],
+      "acceptedCurrency": ["INR", "USD", "EUR"],
+      "acceptedPaymentType": ["Bank Transfer", "Letter of Credit", "PayPal"],
       "languageSpoken": ["English", "Hindi", "Rajasthani"],
-      "totalEmployees": 150,
+      "totalEmployees": 50,
       "businessType": "manufacturer",
-      "factorySize": "50000 sq.ft",
+      "factorySize": "10000 sqm",
       "factoryCountryOrRegion": "India",
       "contractManufacturing": true,
-      "numberOfProductionLines": 4,
-      "annualOutputValue": "$5 million",
-      "rdTeamSize": 8,
-      "tradeCapabilities": ["Export", "Wholesale", "Custom Manufacturing"]
+      "numberOfProductionLines": 3,
+      "annualOutputValue": "5 Million USD",
+      "rdTeamSize": 5,
+      "tradeCapabilities": ["Export", "Wholesale", "Custom Orders"]
     },
     "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Imperial Stone Works is a leading manufacturer and exporter of premium natural stones including marble, granite, and sandstone. With over 15 years of experience in the industry, we pride ourselves on delivering the highest quality products to clients worldwide. Our state-of-the-art facility in Jaipur processes stones sourced from the finest quarries across India.",
+      "logo": "https://example.com/logos/rajasthan-stone-exports.png",
+      "companyDescription": "Rajasthan Stone Exports is a leading manufacturer and exporter of premium natural stones including marble, granite, sandstone, and limestone. With over 20 years of experience in the stone industry, we pride ourselves on delivering high-quality products to clients worldwide. Our state-of-the-art processing facility ensures precision cutting and finishing for all types of stone requirements.",
       "companyPhotos": [
-        "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+        "https://example.com/company/rajasthan-1.jpg",
+        "https://example.com/company/rajasthan-2.jpg",
+        "https://example.com/company/rajasthan-3.jpg"
       ],
-      "companyVideos": []
+      "companyVideos": [
+        "https://example.com/videos/rajasthan-factory-tour.mp4"
+      ]
     },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
+    "createdAt": { "$date": "2025-01-15T10:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-15T10:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e2"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e2"
-    },
+    "_id": { "$oid": "507f1f77bcf86cd799439202" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
     "companyBasicInfo": {
-      "companyName": "Marble Emporium India",
+      "companyName": "Ceramic World India",
+      "company_registration_number": "CIN-U12345MH2021PTC654321",
       "address": {
-        "street": "Building 3, Andheri MIDC, Andheri East",
+        "street": "Unit 12, Ceramic Plaza",
         "city": "Mumbai",
         "stateOrProvince": "Maharashtra",
         "countryOrRegion": "India",
-        "postalCode": "400093"
+        "postalCode": "400053"
       },
       "legalowner": "Priya Sharma",
-      "locationOfRegistration": "Mumbai",
-      "companyRegistrationYear": "2008",
-      "mainCategory": ["natural stones", "ceramic & tiles"],
-      "subCategory": ["marble", "italian marble", "granite", "tiles"],
-      "acceptedCurrency": ["USD", "INR", "GBP"],
-      "acceptedPaymentType": ["Credit Card", "Bank Transfer", "Cash on Delivery"],
+      "locationOfRegistration": "Mumbai, Maharashtra",
+      "companyRegistrationYear": "2021",
+      "registration_documents": [],
+      "mainCategory": ["ceramic & tiles"],
+      "subCategory": ["floor tiles", "wall tiles", "vitrified tiles", "porcelain tiles", "mosaic tiles"],
+      "acceptedCurrency": ["INR", "USD"],
+      "acceptedPaymentType": ["Bank Transfer", "Credit Card", "UPI"],
       "languageSpoken": ["English", "Hindi", "Marathi"],
-      "totalEmployees": 200,
+      "totalEmployees": 80,
       "businessType": "trading company",
-      "factorySize": "N/A",
+      "factorySize": "15000 sqm",
       "factoryCountryOrRegion": "India",
       "contractManufacturing": false,
-      "numberOfProductionLines": 0,
-      "annualOutputValue": "$8 million",
-      "rdTeamSize": 5,
+      "numberOfProductionLines": 5,
+      "annualOutputValue": "8 Million USD",
+      "rdTeamSize": 8,
       "tradeCapabilities": ["Import", "Export", "Distribution", "Retail"]
     },
     "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Marble Emporium India is Mumbai's premier destination for luxury marble and tiles. Since 2008, we have been importing the finest Italian marble, Spanish ceramics, and Indian natural stones to serve discerning clients across India. Our extensive showroom displays over 500 varieties of marble and tiles.",
+      "logo": "https://example.com/logos/ceramic-world-india.png",
+      "companyDescription": "Ceramic World India specializes in importing and distributing premium ceramic tiles from leading manufacturers worldwide. We offer an extensive range of floor tiles, wall tiles, vitrified tiles, and designer mosaic tiles for residential and commercial projects. Our showroom showcases the latest trends in tile design and technology, ensuring our customers have access to cutting-edge products.",
       "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80"
+        "https://example.com/company/ceramic-world-1.jpg",
+        "https://example.com/company/ceramic-world-2.jpg",
+        "https://example.com/company/ceramic-world-3.jpg",
+        "https://example.com/company/ceramic-world-4.jpg"
       ],
-      "companyVideos": []
+      "companyVideos": [
+        "https://example.com/videos/ceramic-showroom-tour.mp4"
+      ]
     },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
+    "createdAt": { "$date": "2025-01-20T11:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-20T11:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e3"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e3"
-    },
+    "_id": { "$oid": "507f1f77bcf86cd799439203" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
     "companyBasicInfo": {
-      "companyName": "Granite World Exports",
+      "companyName": "Gujarat Granite Hub",
+      "company_registration_number": "CIN-U12345GJ2022PTC789456",
       "address": {
-        "street": "Export House, Whitefield Industrial Estate",
-        "city": "Bangalore",
-        "stateOrProvince": "Karnataka",
-        "countryOrRegion": "India",
-        "postalCode": "560066"
-      },
-      "legalowner": "Mohammed Hassan",
-      "locationOfRegistration": "Bangalore",
-      "companyRegistrationYear": "2012",
-      "mainCategory": ["natural stones"],
-      "subCategory": ["granite", "basalt", "quartzite"],
-      "acceptedCurrency": ["USD", "EUR", "AED", "INR"],
-      "acceptedPaymentType": ["Wire Transfer", "Letter of Credit", "PayPal"],
-      "languageSpoken": ["English", "Hindi", "Kannada", "Arabic"],
-      "totalEmployees": 180,
-      "businessType": "exporter",
-      "factorySize": "70000 sq.ft",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": true,
-      "numberOfProductionLines": 6,
-      "annualOutputValue": "$12 million",
-      "rdTeamSize": 10,
-      "tradeCapabilities": ["Export", "Custom Processing", "Quality Inspection"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Granite World Exports is a globally recognized exporter of premium Indian granite and natural stones. Established in 2012, we have built a strong reputation for delivering consistent quality and reliable service to clients in over 40 countries. Our modern processing facility in Bangalore is equipped with advanced Italian machinery.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1565183997392-2f69f29e44b7?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e4"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e4"
-    },
-    "companyBasicInfo": {
-      "companyName": "Ceramic Plus Solutions",
-      "address": {
-        "street": "1st Floor, Ceramic House, Navrangpura",
+        "street": "Plot 23, Industrial Area Phase 2",
         "city": "Ahmedabad",
         "stateOrProvince": "Gujarat",
         "countryOrRegion": "India",
-        "postalCode": "380009"
+        "postalCode": "382330"
       },
-      "legalowner": "Anita Patel",
-      "locationOfRegistration": "Ahmedabad",
-      "companyRegistrationYear": "2015",
-      "mainCategory": ["ceramic & tiles", "alternatives & finishes"],
-      "subCategory": ["porcelain tiles", "vitrified tiles", "wall tiles", "digital tiles"],
-      "acceptedCurrency": ["USD", "INR"],
-      "acceptedPaymentType": ["Credit Card", "Debit Card", "Net Banking", "UPI"],
+      "legalowner": "Amit Patel",
+      "locationOfRegistration": "Ahmedabad, Gujarat",
+      "companyRegistrationYear": "2022",
+      "registration_documents": [],
+      "mainCategory": ["natural stones", "alternatives & finishes"],
+      "subCategory": ["granite", "quartzite", "quartz", "engineered stone"],
+      "acceptedCurrency": ["INR", "USD", "GBP"],
+      "acceptedPaymentType": ["Bank Transfer", "Letter of Credit"],
       "languageSpoken": ["English", "Hindi", "Gujarati"],
-      "totalEmployees": 120,
-      "businessType": "manufacturer",
-      "factorySize": "40000 sq.ft",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": false,
-      "numberOfProductionLines": 3,
-      "annualOutputValue": "$6 million",
-      "rdTeamSize": 6,
-      "tradeCapabilities": ["Manufacturing", "Distribution", "B2B Sales"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Ceramic Plus Solutions is a leading manufacturer of innovative ceramic and vitrified tiles in India. Since 2015, we have revolutionized the tile industry with our cutting-edge digital printing technology and contemporary designs. Our product range includes porcelain tiles, vitrified tiles, and decorative finishes.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e5"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e5"
-    },
-    "companyBasicInfo": {
-      "companyName": "Royal Stones International",
-      "address": {
-        "street": "Marble Park, Hiran Magri Sector 4",
-        "city": "Udaipur",
-        "stateOrProvince": "Rajasthan",
-        "countryOrRegion": "India",
-        "postalCode": "313002"
-      },
-      "legalowner": "Vikram Singh",
-      "locationOfRegistration": "Udaipur",
-      "companyRegistrationYear": "2009",
-      "mainCategory": ["natural stones"],
-      "subCategory": ["marble", "onyx", "travertine"],
-      "acceptedCurrency": ["USD", "EUR", "INR"],
-      "acceptedPaymentType": ["Bank Transfer", "Letter of Credit", "Western Union"],
-      "languageSpoken": ["English", "Hindi", "Rajasthani", "Marwari"],
-      "totalEmployees": 95,
-      "businessType": "manufacturer",
-      "factorySize": "35000 sq.ft",
+      "totalEmployees": 65,
+      "businessType": "exporter",
+      "factorySize": "12000 sqm",
       "factoryCountryOrRegion": "India",
       "contractManufacturing": true,
-      "numberOfProductionLines": 3,
-      "annualOutputValue": "$4 million",
-      "rdTeamSize": 4,
-      "tradeCapabilities": ["Export", "Custom Design", "Installation Support"]
+      "numberOfProductionLines": 4,
+      "annualOutputValue": "6.5 Million USD",
+      "rdTeamSize": 6,
+      "tradeCapabilities": ["Export", "Custom Manufacturing", "Wholesale"]
     },
     "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Royal Stones International is renowned for sourcing and processing the most exquisite marble varieties from the historic quarries of Rajasthan. Established in 2009, we specialize in premium white marble, colored marble, and rare onyx stones that add timeless elegance to any space.",
+      "logo": "https://example.com/logos/gujarat-granite-hub.png",
+      "companyDescription": "Gujarat Granite Hub is a premier exporter of natural granite and engineered stone products. We source the finest granite from quarries across India and process them using advanced machinery to meet international quality standards. Our product range includes granite slabs, tiles, and custom-cut pieces for countertops, flooring, and architectural applications. We also specialize in quartz and engineered stone solutions for modern construction projects.",
       "companyPhotos": [
-        "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
+        "https://example.com/company/granite-hub-1.jpg",
+        "https://example.com/company/granite-hub-2.jpg",
+        "https://example.com/company/granite-hub-3.jpg"
       ],
-      "companyVideos": []
+      "companyVideos": [
+        "https://example.com/videos/granite-processing.mp4"
+      ]
     },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
+    "createdAt": { "$date": "2025-01-25T12:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-25T12:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e6"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e6"
-    },
+    "_id": { "$oid": "507f1f77bcf86cd799439204" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
     "companyBasicInfo": {
-      "companyName": "Tile Solutions Pro",
+      "companyName": "Marble Art Studio",
+      "company_registration_number": "PROP-TG-2023-456789",
       "address": {
-        "street": "Tech Park Building, Madhapur",
+        "street": "Studio 7, Marble Avenue",
         "city": "Hyderabad",
         "stateOrProvince": "Telangana",
         "countryOrRegion": "India",
-        "postalCode": "500081"
+        "postalCode": "500034"
       },
-      "legalowner": "Deepa Reddy",
-      "locationOfRegistration": "Hyderabad",
-      "companyRegistrationYear": "2016",
-      "mainCategory": ["ceramic & tiles", "alternatives & finishes"],
-      "subCategory": ["floor tiles", "wall tiles", "bathroom tiles", "kitchen tiles"],
-      "acceptedCurrency": ["USD", "INR"],
-      "acceptedPaymentType": ["Credit Card", "Net Banking", "Cash", "EMI"],
+      "legalowner": "Sneha Reddy",
+      "locationOfRegistration": "Hyderabad, Telangana",
+      "companyRegistrationYear": "2023",
+      "registration_documents": [],
+      "mainCategory": ["natural stones", "alternatives & finishes"],
+      "subCategory": ["marble", "travertine", "terrazzo", "resin"],
+      "acceptedCurrency": ["INR"],
+      "acceptedPaymentType": ["Bank Transfer", "UPI", "Cash"],
       "languageSpoken": ["English", "Hindi", "Telugu"],
-      "totalEmployees": 85,
-      "businessType": "distributor",
-      "factorySize": "N/A",
+      "totalEmployees": 15,
+      "businessType": "service provider",
+      "factorySize": "2000 sqm",
       "factoryCountryOrRegion": "India",
       "contractManufacturing": false,
-      "numberOfProductionLines": 0,
-      "annualOutputValue": "$3.5 million",
-      "rdTeamSize": 3,
-      "tradeCapabilities": ["Distribution", "Retail", "Design Consultation"]
+      "numberOfProductionLines": 1,
+      "annualOutputValue": "500 Thousand USD",
+      "rdTeamSize": 2,
+      "tradeCapabilities": ["Custom Design", "Installation", "Retail"]
     },
     "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Tile Solutions Pro is Hyderabad's trusted partner for comprehensive tiling solutions. Since 2016, we have been helping homeowners, builders, and designers find the perfect tiles for every application with our unique design consultation service and professional installation.",
+      "logo": "https://example.com/logos/marble-art-studio.png",
+      "companyDescription": "Marble Art Studio is a boutique design studio specializing in artistic marble work and custom stone installations. Founded by award-winning designer Sneha Reddy, we create bespoke marble pieces for luxury homes, hotels, and commercial spaces. Our expertise includes marble flooring, wall cladding, custom furniture, and decorative art pieces. We work with premium Italian marble, Indian marble, and modern alternatives like terrazzo and resin to bring our clients' visions to life.",
       "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80"
+        "https://example.com/company/marble-art-1.jpg",
+        "https://example.com/company/marble-art-2.jpg",
+        "https://example.com/company/marble-art-3.jpg"
       ],
       "companyVideos": []
     },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e7"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e7"
-    },
-    "companyBasicInfo": {
-      "companyName": "Premium Marble Gallery",
-      "address": {
-        "street": "Showroom Complex, Mayur Vihar Phase 3",
-        "city": "New Delhi",
-        "stateOrProvince": "Delhi",
-        "countryOrRegion": "India",
-        "postalCode": "110096"
-      },
-      "legalowner": "Arjun Mehta",
-      "locationOfRegistration": "Delhi",
-      "companyRegistrationYear": "2011",
-      "mainCategory": ["natural stones"],
-      "subCategory": ["italian marble", "marble", "granite", "limestone"],
-      "acceptedCurrency": ["USD", "INR", "GBP"],
-      "acceptedPaymentType": ["Credit Card", "Debit Card", "Bank Transfer", "Cheque"],
-      "languageSpoken": ["English", "Hindi", "Punjabi"],
-      "totalEmployees": 110,
-      "businessType": "trading company",
-      "factorySize": "N/A",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": false,
-      "numberOfProductionLines": 0,
-      "annualOutputValue": "$7 million",
-      "rdTeamSize": 5,
-      "tradeCapabilities": ["Import", "Wholesale", "Retail"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1615873968403-89e068629265?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Premium Marble Gallery is Delhi's most prestigious showroom for imported and Indian marble. Established in 2011, we have curated an exceptional collection of marble varieties from Italy, Turkey, Greece, and India's finest quarries in our 20,000 square foot showroom.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e8"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e8"
-    },
-    "companyBasicInfo": {
-      "companyName": "Luxury Finishes Ltd",
-      "address": {
-        "street": "Unit 5, Baner Business Hub",
-        "city": "Pune",
-        "stateOrProvince": "Maharashtra",
-        "countryOrRegion": "India",
-        "postalCode": "411045"
-      },
-      "legalowner": "Kavita Joshi",
-      "locationOfRegistration": "Pune",
-      "companyRegistrationYear": "2017",
-      "mainCategory": ["alternatives & finishes", "ceramic & tiles"],
-      "subCategory": ["quartz", "sintered stone", "engineered stone", "wall panels"],
-      "acceptedCurrency": ["USD", "INR", "EUR"],
-      "acceptedPaymentType": ["Credit Card", "Net Banking", "Bank Transfer"],
-      "languageSpoken": ["English", "Hindi", "Marathi"],
-      "totalEmployees": 70,
-      "businessType": "distributor",
-      "factorySize": "N/A",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": false,
-      "numberOfProductionLines": 0,
-      "annualOutputValue": "$4.5 million",
-      "rdTeamSize": 4,
-      "tradeCapabilities": ["Distribution", "Technical Support", "Project Management"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Luxury Finishes Ltd specializes in cutting-edge surface materials including quartz, sintered stone, and engineered surfaces. Founded in 2017, we represent world-leading brands that offer superior alternatives to natural stone with enhanced durability and consistency.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05e9"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91e9"
-    },
-    "companyBasicInfo": {
-      "companyName": "Global Stone Traders",
-      "address": {
-        "street": "Stone Export Hub, Anna Nagar West",
-        "city": "Chennai",
-        "stateOrProvince": "Tamil Nadu",
-        "countryOrRegion": "India",
-        "postalCode": "600040"
-      },
-      "legalowner": "Suresh Nair",
-      "locationOfRegistration": "Chennai",
-      "companyRegistrationYear": "2013",
-      "mainCategory": ["natural stones"],
-      "subCategory": ["granite", "charnockite", "gabbro"],
-      "acceptedCurrency": ["USD", "EUR", "CNY", "INR"],
-      "acceptedPaymentType": ["Wire Transfer", "Letter of Credit", "PayPal", "Western Union"],
-      "languageSpoken": ["English", "Hindi", "Tamil", "Malayalam"],
-      "totalEmployees": 160,
-      "businessType": "exporter",
-      "factorySize": "60000 sq.ft",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": true,
-      "numberOfProductionLines": 5,
-      "annualOutputValue": "$10 million",
-      "rdTeamSize": 7,
-      "tradeCapabilities": ["Export", "Custom Processing", "Container Loading", "Quality Control"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Global Stone Traders is a premier exporter of South Indian granite to markets worldwide. Since 2013, we have been supplying premium granite slabs, tiles, and monuments to importers, distributors, and contractors in USA, Europe, Middle East, and Southeast Asia.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1615873968403-89e068629265?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978491c25e75818051a05ea"
-    },
-    "sellerId": {
-      "$oid": "6978473367440cf5936d91ea"
-    },
-    "companyBasicInfo": {
-      "companyName": "Elegant Ceramics Hub",
-      "address": {
-        "street": "Ceramic Tower, Salt Lake Sector 5",
-        "city": "Kolkata",
-        "stateOrProvince": "West Bengal",
-        "countryOrRegion": "India",
-        "postalCode": "700091"
-      },
-      "legalowner": "Neha Kapoor",
-      "locationOfRegistration": "Kolkata",
-      "companyRegistrationYear": "2014",
-      "mainCategory": ["ceramic & tiles", "alternatives & finishes"],
-      "subCategory": ["ceramic tiles", "digital wall tiles", "mosaic tiles", "outdoor tiles"],
-      "acceptedCurrency": ["USD", "INR"],
-      "acceptedPaymentType": ["Credit Card", "Debit Card", "Net Banking", "Cash"],
-      "languageSpoken": ["English", "Hindi", "Bengali"],
-      "totalEmployees": 90,
-      "businessType": "trading company",
-      "factorySize": "N/A",
-      "factoryCountryOrRegion": "India",
-      "contractManufacturing": false,
-      "numberOfProductionLines": 0,
-      "annualOutputValue": "$5.5 million",
-      "rdTeamSize": 4,
-      "tradeCapabilities": ["Wholesale", "Retail", "Export", "Design Services"]
-    },
-    "companyIntro": {
-      "logo": "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=400&h=400&fit=crop&q=80",
-      "companyDescription": "Elegant Ceramics Hub is Eastern India's leading destination for designer ceramic tiles and innovative surface solutions. Since 2014, we have been importing premium ceramic tiles from Spain, Italy, and China, while also showcasing the best of Indian tile manufacturing.",
-      "companyPhotos": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607688969-a5bfcd46d87b?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&h=800&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=1200&h=800&fit=crop&q=80"
-      ],
-      "companyVideos": []
-    },
-    "createdAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:11:56.942Z"
-    },
+    "createdAt": { "$date": "2025-01-28T13:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-28T13:00:00.000Z" },
     "__v": 0
   }
 ]

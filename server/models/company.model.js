@@ -9,16 +9,23 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 100,
     },
+    // ✅ PDF: seller_company_number (VAT/SIRET/BCE/RC)
+    company_registration_number: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
     address: {
-      street: { type: String, trim: true, required: true },
-      city: { type: String, trim: true, required: true },
-      stateOrProvince: { type: String, trim: true, required: true },
-      countryOrRegion: { type: String, trim: true, required: true },
-      postalCode: { type: String, trim: true, required: true },
+      street: { type: String, trim: true, required: false },
+      city: { type: String, trim: true, required: false },
+      stateOrProvince: { type: String, trim: true, required: false },
+      countryOrRegion: { type: String, trim: true, required: false },
+      postalCode: { type: String, trim: true, required: false },
     },
     legalowner: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
       minlength: 2,
       maxlength: 100,
@@ -32,38 +39,42 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     },
     companyRegistrationYear: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
+
+    registration_documents: [
+      {
+        type: String, // URLs to KYB docs
+      },
+    ],
     mainCategory: {
       type: [String],
       enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
-      required: true,
+      required: false,
       set: (arr) => [...new Set(arr.map((v) => v.trim().toLowerCase()))],
     },
     subCategory: {
       type: [String],
-      required: true,
+      required: false,
       set: (arr) => [...new Set(arr.map((v) => v.trim().toLowerCase()))],
     },
     acceptedCurrency: [{ type: String }],
     acceptedPaymentType: {
       type: [String],
-      required: true,
-      validate: {
-        validator: function (arr) {
-          return arr.length > 0;
-        },
-        message: "At least one payment method is required",
-      },
+      required: false,
+      // validate: {
+      //   validator: function (arr) {
+      //     return arr.length > 0;
+      //   },
+      //   message: "At least one payment method is required",
+      // },
     },
     languageSpoken: {
       type: [String],
       default: ["English"],
-      required: true,
+      required: false,
     },
-
-    // New fields
     totalEmployees: {
       type: Number,
       min: 1,
@@ -115,11 +126,11 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
 const CompanyIntroSchema = new mongoose.Schema(
   {
     logo: { type: String, required: false },
-    companyDescription: { type: String, required: true, minlength: 50 },
+    companyDescription: { type: String, required: false, minlength: 50 },
     companyPhotos: {
       type: [String],
       required: false,
-      validate: (val) => val.length >= 1,
+      // validate: (val) => val.length >= 1,
     },
     companyVideos: { type: [String], default: [] },
   },
@@ -133,8 +144,8 @@ const CompanyDataSchema = new mongoose.Schema(
       ref: "Seller",
       required: true,
     },
-    companyBasicInfo: { type: CompanyBasicInfoSchema, required: true },
-    companyIntro: { type: CompanyIntroSchema, required: true },
+    companyBasicInfo: { type: CompanyBasicInfoSchema, required: false },
+    companyIntro: { type: CompanyIntroSchema, required: false },
   },
   { timestamps: true }
 );
@@ -144,11 +155,10 @@ CompanyDataSchema.index(
   { sellerId: 1 },
   { unique: true, partialFilterExpression: { sellerId: { $exists: true } } }
 );
-
 CompanyDataSchema.index({ "companyBasicInfo.mainCategory": 1 });
 CompanyDataSchema.index({ "companyBasicInfo.subCategory": 1 });
 
-// Text index for search
+// Text search
 CompanyDataSchema.index(
   {
     "companyBasicInfo.companyName": "text",
@@ -173,6 +183,22 @@ CompanyDataSchema.set("toJSON", {
   },
 });
 
+// ========== PRE-SAVE VALIDATION ==========
+CompanyDataSchema.pre("save", async function (next) {
+  // Verify seller is professional
+  const Seller = mongoose.model("Seller");
+  const seller = await Seller.findById(this.sellerId);
+
+  if (!seller) {
+    return next(new Error("Seller not found"));
+  }
+
+  if (seller.seller_status !== "professional") {
+    return next(new Error("Only professional sellers can create company"));
+  }
+
+  next();
+});
 const CompanyDetails = mongoose.model("Company", CompanyDataSchema);
 
 export default CompanyDetails;

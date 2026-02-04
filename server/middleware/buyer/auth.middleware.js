@@ -105,3 +105,26 @@ export const authorizeRoles = (...allowedRoles) => {
     next();
   });
 };
+
+// ========================================
+// OPTIONAL AUTHENTICATION MIDDLEWARE
+// Attaches user to req if token exists, but doesn't fail if no token
+// ========================================
+export const optionalAuth = asyncHandler(async (req, res, next) => {
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
+
+  if (!token) {
+    return next(); // Continue without user
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.user = { id: decoded.id, role: decoded.role };
+    next();
+  } catch (error) {
+    // Token invalid or expired, continue without user
+    next();
+  }
+});

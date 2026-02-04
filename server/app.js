@@ -93,11 +93,9 @@ app.use("/api/v2/company", companyBuyerRoutes);
 app.use("/api/v2/category", categoryRoutes);
 app.use("/api/v2/quotation", quotationRoutes);
 
-// OPTION 2: Manual trigger endpoint (recommended)
 app.post("/seed-database", async (req, res) => {
   try {
-    const result = await seedDatabase();
-    res.json(result);
+    await seedDatabase(req, res);
   } catch (error) {
     res.status(500).json({
       success: false,

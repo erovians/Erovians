@@ -1,242 +1,78 @@
 [
   {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e1"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d1"
-    },
-    "businessId": "29AABCS1234E1Z5",
-    "businessName": "Imperial Stone Works",
-    "category": "Marbles",
-    "companyregstartionlocation": "Jaipur",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc1.png",
-    "varificationStatus": "Approved",
+    "_id": { "$oid": "507f1f77bcf86cd799439101" },
+    "userId": { "$oid": "507f1f77bcf86cd799439011" },
+    "seller_name": "Rajesh Kumar",
     "seller_status": "professional",
-    "seller_address": "Sector 12, Industrial Area, Jaipur, Rajasthan",
+    "seller_company_number": "CIN-U12345MH2020PTC123456",
+    "seller_address": "Shop No. 45, Stone Market, Jaipur",
+    "seller_country": "India",
+    "seller_email": "frost.ankur019@gmail.com",
+    "seller_phone": "+919876543210",
+    "seller_dispute_contact": "+919876543213",
+    "seller_kyc_hash": "kyc_hash_rajesh_kumar_12345",
+    "seller_profile_url": "https://example.com/sellers/rajesh-kumar",
+    "varificationStatus": "Approved",
     "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
+    "createdAt": { "$date": "2025-01-15T09:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-16T10:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e2"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d2"
-    },
-    "businessId": "27AABCS5678F2Z6",
-    "businessName": "Marble Emporium India",
-    "category": "All",
-    "companyregstartionlocation": "Mumbai",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc2.png",
-    "varificationStatus": "Approved",
+    "_id": { "$oid": "507f1f77bcf86cd799439102" },
+    "userId": { "$oid": "507f1f77bcf86cd799439012" },
+    "seller_name": "Priya Sharma",
     "seller_status": "professional",
-    "seller_address": "Andheri East, Mumbai, Maharashtra",
+    "seller_company_number": "CIN-U12345MH2021PTC654321",
+    "seller_address": "Unit 12, Ceramic Plaza, Mumbai",
+    "seller_country": "India",
+    "seller_email": "ankul.127123@stu.upes.ac.in",
+    "seller_phone": "+919876543220",
+    "seller_dispute_contact": "+919876543223",
+    "seller_kyc_hash": "kyc_hash_priya_sharma_54321",
+    "seller_profile_url": "https://example.com/sellers/priya-sharma",
+    "varificationStatus": "Approved",
     "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
+    "createdAt": { "$date": "2025-01-20T10:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-21T11:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e3"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d3"
-    },
-    "businessId": "24AABCS9012G3Z7",
-    "businessName": "Granite World Exports",
-    "category": "Granites",
-    "companyregstartionlocation": "Bangalore",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc3.png",
-    "varificationStatus": "Approved",
+    "_id": { "$oid": "507f1f77bcf86cd799439103" },
+    "userId": { "$oid": "507f1f77bcf86cd799439013" },
+    "seller_name": "Amit Patel",
     "seller_status": "professional",
-    "seller_address": "Whitefield, Bangalore, Karnataka",
+    "seller_company_number": "CIN-U12345GJ2022PTC789456",
+    "seller_address": "Plot 23, Granite Market, Ahmedabad",
+    "seller_country": "India",
+    "seller_email": "ankuragrwal63@gmail.com",
+    "seller_phone": "+919876543230",
+    "seller_dispute_contact": "+919876543233",
+    "seller_kyc_hash": "kyc_hash_amit_patel_78945",
+    "seller_profile_url": "https://example.com/sellers/amit-patel",
+    "varificationStatus": "Approved",
     "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
+    "createdAt": { "$date": "2025-01-25T11:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-26T12:00:00.000Z" },
     "__v": 0
   },
   {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e4"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d4"
-    },
-    "businessId": "07AABCS3456H4Z8",
-    "businessName": "Ceramic Plus Solutions",
-    "category": "All",
-    "companyregstartionlocation": "Ahmedabad",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc4.png",
+    "_id": { "$oid": "507f1f77bcf86cd799439104" },
+    "userId": { "$oid": "507f1f77bcf86cd799439014" },
+    "seller_name": "Sneha Reddy",
+    "seller_status": "individual",
+    "seller_company_number": "PROP-TG-2023-456789",
+    "seller_address": "Studio 7, Marble Avenue, Hyderabad",
+    "seller_country": "India",
+    "seller_email": "ankuragrwal4@gmail.com",
+    "seller_phone": "+919876543240",
+    "seller_dispute_contact": "+919876543243",
+    "seller_kyc_hash": "kyc_hash_sneha_reddy_45678",
+    "seller_profile_url": "https://example.com/sellers/sneha-reddy",
     "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Navrangpura, Ahmedabad, Gujarat",
     "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e5"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d5"
-    },
-    "businessId": "09AABCS7890I5Z9",
-    "businessName": "Royal Stones International",
-    "category": "Marbles",
-    "companyregstartionlocation": "Udaipur",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc5.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Hiran Magri, Udaipur, Rajasthan",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e6"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d6"
-    },
-    "businessId": "36AABCS2345J6Z0",
-    "businessName": "Tile Solutions Pro",
-    "category": "All",
-    "companyregstartionlocation": "Hyderabad",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc6.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Madhapur, Hyderabad, Telangana",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e7"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d7"
-    },
-    "businessId": "19AABCS6789K7Z1",
-    "businessName": "Premium Marble Gallery",
-    "category": "Marbles",
-    "companyregstartionlocation": "Delhi",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc7.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Mayur Vihar, New Delhi",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e8"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d8"
-    },
-    "businessId": "32AABCS0123L8Z2",
-    "businessName": "Luxury Finishes Ltd",
-    "category": "All",
-    "companyregstartionlocation": "Pune",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc8.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Baner, Pune, Maharashtra",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91e9"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91d9"
-    },
-    "businessId": "33AABCS4567M9Z3",
-    "businessName": "Global Stone Traders",
-    "category": "Granites",
-    "companyregstartionlocation": "Chennai",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc9.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Anna Nagar, Chennai, Tamil Nadu",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "__v": 0
-  },
-  {
-    "_id": {
-      "$oid": "6978473367440cf5936d91ea"
-    },
-    "userId": {
-      "$oid": "697846c567440cf5936d91da"
-    },
-    "businessId": "27AABCS8901N0Z4",
-    "businessName": "Elegant Ceramics Hub",
-    "category": "All",
-    "companyregstartionlocation": "Kolkata",
-    "documentUrl": "https://res.cloudinary.com/erovians-cloud/image/upload/v1769490217/ero_vians_uploads/doc10.png",
-    "varificationStatus": "Approved",
-    "seller_status": "professional",
-    "seller_address": "Salt Lake, Kolkata, West Bengal",
-    "status": "active",
-    "createdAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
-    "updatedAt": {
-      "$date": "2026-01-27T05:03:47.155Z"
-    },
+    "createdAt": { "$date": "2025-01-28T12:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-29T13:00:00.000Z" },
     "__v": 0
   }
 ]
