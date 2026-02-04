@@ -19,8 +19,6 @@ import sendToken from "../../utils/buyer/sendToken.js";
 // ========================================
 export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
   const { email, mobile } = req.body;
-  console.log("this is mobile", mobile);
-  console.log("this is email", email);
 
   // Validate input
   if (!email && !mobile) {
@@ -91,12 +89,13 @@ export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
       });
     }
 
-    // Response
+    // Response with hasPassword flag
     res.status(200).json({
       success: true,
       message: `OTP sent successfully to your ${isEmail ? "email" : "mobile"}`,
       isNewUser,
       identifier,
+      hasPassword: user.hasPassword || false, // ✅ ADDED
       otpPurpose: isNewUser ? "register" : "login",
       otpExpiresAt: otpExpires,
     });
@@ -279,7 +278,64 @@ export const completeRegistration = asyncHandler(async (req, res, next) => {
 });
 
 // ========================================
-// 4. Resend OTP
+// 4. Login with Password (NEW)
+// ========================================
+export const loginWithPassword = asyncHandler(async (req, res, next) => {
+  const { email, mobile, password } = req.body;
+
+  // Validate input
+  if (!email && !mobile) {
+    return next(new AppError("Please provide email or mobile number", 400));
+  }
+
+  if (!password) {
+    return next(new AppError("Please provide password", 400));
+  }
+
+  // Determine identifier type
+  const isEmail = !!email;
+  const identifier = isEmail ? email.toLowerCase().trim() : mobile.trim();
+
+  // Find user with password field
+  const user = isEmail
+    ? await User.findByEmailWithAuth(identifier)
+    : await User.findByMobileWithAuth(identifier);
+
+  if (!user) {
+    logger.warn("Login attempt with non-existent user", { identifier });
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  // Check if user can login with password
+  if (!user.canLoginWithPassword()) {
+    logger.warn("Password login attempted for user without password", {
+      userId: user._id,
+    });
+    return next(new AppError("Password not set. Please login with OTP", 400));
+  }
+
+  // Verify password
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    logger.warn("Invalid password attempt", {
+      userId: user._id,
+      identifier,
+    });
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  logger.info("User logged in with password", {
+    userId: user._id,
+    identifier,
+  });
+
+  // Send tokens
+  sendToken(user, 200, res, "Login successful");
+});
+
+// ========================================
+// 5. Resend OTP
 // ========================================
 export const resendOTP = asyncHandler(async (req, res, next) => {
   const { email, mobile } = req.body;
@@ -365,7 +421,7 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
 });
 
 // ========================================
-// 5. GET USER PROFILE (Me)
+// 6. GET USER PROFILE (Me)
 // ========================================
 export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
@@ -394,7 +450,7 @@ export const getMe = asyncHandler(async (req, res, next) => {
 });
 
 // ========================================
-// 6. LOGOUT USER
+// 7. LOGOUT USER
 // ========================================
 export const logoutUser = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
@@ -432,11 +488,11 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
 });
 
 // ========================================
-// 7. UPDATE USER Basic Profile
+// 8. UPDATE USER Basic Profile
 // ========================================
 export const updateBasicProfile = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
-  const { name, gender, buyer_country } = req.body;
+  const { name, gender, buyer_data } = req.body;
   console.log("this is update basic profile req.body", req.body);
 
   logger.info("Profile update request", { userId, updates: req.body });
@@ -449,37 +505,66 @@ export const updateBasicProfile = asyncHandler(async (req, res, next) => {
     return next(new AppError("User not found", 404));
   }
 
-  // Validate name (required)
-  if (!name || name.trim().length < 2) {
-    return next(
-      new AppError("Name is required and must be at least 2 characters", 400)
-    );
-  }
+  // Validate name (if provided)
+  if (name !== undefined) {
+    if (!name || name.trim().length < 2) {
+      return next(
+        new AppError("Name is required and must be at least 2 characters", 400)
+      );
+    }
 
-  // Validate name format (only letters and spaces)
-  if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
-    return next(new AppError("Name can only contain letters and spaces", 400));
+    // Validate name format (only letters and spaces)
+    if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+      return next(
+        new AppError("Name can only contain letters and spaces", 400)
+      );
+    }
+
+    user.name = name.trim();
   }
 
   // Validate gender (if provided)
-  if (gender && !["male", "female", "others"].includes(gender)) {
-    return next(new AppError("Invalid gender value", 400));
-  }
-
-  // Validate buyer_country (if provided)
-  if (buyer_country && buyer_country.trim().length > 50) {
-    return next(new AppError("Country name cannot exceed 50 characters", 400));
-  }
-
-  // Update fields
-  user.name = name.trim();
-
-  if (gender) {
+  if (gender !== undefined) {
+    if (!["male", "female", "others"].includes(gender)) {
+      return next(new AppError("Invalid gender value", 400));
+    }
     user.gender = gender;
   }
 
-  if (buyer_country) {
-    user.buyer_country = buyer_country.trim();
+  // Handle buyer_data updates
+  if (buyer_data) {
+    // Initialize buyer_data if not exists
+    if (!user.buyer_data) {
+      user.buyer_data = {};
+    }
+
+    // Validate and update buyer_status
+    if (buyer_data.buyer_status !== undefined) {
+      const validStatuses = [
+        "individual",
+        "business",
+        "professional end-client",
+      ];
+      if (!validStatuses.includes(buyer_data.buyer_status)) {
+        return next(new AppError("Invalid buyer status value", 400));
+      }
+      user.buyer_data.buyer_status = buyer_data.buyer_status;
+    }
+
+    // Validate and update buyer_country
+    if (buyer_data.buyer_country !== undefined) {
+      if (buyer_data.buyer_country.trim().length > 50) {
+        return next(
+          new AppError("Country name cannot exceed 50 characters", 400)
+        );
+      }
+      user.buyer_data.buyer_country = buyer_data.buyer_country.trim();
+    }
+
+    // Validate and update buyer_vat_eori
+    if (buyer_data.buyer_vat_eori !== undefined) {
+      user.buyer_data.buyer_vat_eori = buyer_data.buyer_vat_eori.trim();
+    }
   }
 
   // Save user
@@ -489,7 +574,9 @@ export const updateBasicProfile = asyncHandler(async (req, res, next) => {
     userId,
     name: user.name,
     gender: user.gender,
-    buyer_country: user.buyer_country,
+    buyer_status: user.buyer_data?.buyer_status,
+    buyer_country: user.buyer_data?.buyer_country,
+    buyer_vat_eori: user.buyer_data?.buyer_vat_eori,
   });
 
   // Send response
@@ -499,9 +586,8 @@ export const updateBasicProfile = asyncHandler(async (req, res, next) => {
     data: user.toSafeObject(),
   });
 });
-
 // ========================================
-// 8. UPDATE USER ADDRESS
+// 9. UPDATE USER ADDRESS
 // ========================================
 export const updateAddress = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
@@ -537,10 +623,21 @@ export const updateAddress = asyncHandler(async (req, res, next) => {
     return next(new AppError("User not found", 404));
   }
 
+  // Initialize buyer_data if not exists
+  if (!user.buyer_data) {
+    user.buyer_data = {};
+  }
+
   // Determine which address array to work with
   const addressField =
     type === "billing" ? "billing_address" : "shipping_address";
-  const addresses = user[addressField] || [];
+
+  // Initialize address array if not exists
+  if (!user.buyer_data[addressField]) {
+    user.buyer_data[addressField] = [];
+  }
+
+  const addresses = user.buyer_data[addressField];
 
   // Handle different actions
   if (action === "add") {
@@ -600,7 +697,7 @@ export const updateAddress = asyncHandler(async (req, res, next) => {
 
     // Add to array
     addresses.push(newAddress);
-    user[addressField] = addresses;
+    user.buyer_data[addressField] = addresses;
 
     logger.info(`${type} address added`, {
       userId,
@@ -671,7 +768,7 @@ export const updateAddress = asyncHandler(async (req, res, next) => {
       landmark: data.landmark ? data.landmark.trim() : undefined,
     };
 
-    user[addressField] = addresses;
+    user.buyer_data[addressField] = addresses;
 
     logger.info(`${type} address updated`, {
       userId,
@@ -690,7 +787,7 @@ export const updateAddress = asyncHandler(async (req, res, next) => {
 
     // Remove address at index
     addresses.splice(index, 1);
-    user[addressField] = addresses;
+    user.buyer_data[addressField] = addresses;
 
     logger.info(`${type} address deleted`, {
       userId,
@@ -706,7 +803,7 @@ export const updateAddress = asyncHandler(async (req, res, next) => {
     userId,
     type,
     action,
-    totalAddresses: user[addressField].length,
+    totalAddresses: user.buyer_data[addressField].length,
   });
 
   // Send response

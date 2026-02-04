@@ -14,18 +14,22 @@ import {
   Edit2,
   Globe,
   User,
+  Building2,
+  FileText,
+  Upload,
+  PenTool,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Country } from "country-state-city";
 import * as Dialog from "@radix-ui/react-dialog";
+import * as Tabs from "@radix-ui/react-tabs";
 import { OTPInput } from "input-otp";
 import { checkUserAndSendOTP } from "../../lib/redux/auth/authSlice";
 
 const ProfileInfo = ({ user }) => {
   const dispatch = useDispatch();
-  const { loading, error, success, message } = useSelector(
-    (state) => state.auth
-  );
+  const { profileLoading, loading, buyerLoading, error, success, message } =
+    useSelector((state) => state.auth);
 
   // Personal Info Modal States
   const [isPersonalInfoModalOpen, setIsPersonalInfoModalOpen] = useState(false);
@@ -33,7 +37,14 @@ const ProfileInfo = ({ user }) => {
     firstName: "",
     lastName: "",
     gender: "",
+  });
+
+  // Buyer Details Modal States
+  const [isBuyerDetailsModalOpen, setIsBuyerDetailsModalOpen] = useState(false);
+  const [buyerDetailsData, setBuyerDetailsData] = useState({
+    buyer_status: "",
     buyer_country: "",
+    buyer_vat_eori: "",
   });
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -67,7 +78,6 @@ const ProfileInfo = ({ user }) => {
       firstName,
       lastName,
       gender: user.gender || "",
-      buyer_country: user.buyer_country || "",
     });
     setIsPersonalInfoModalOpen(true);
   };
@@ -84,7 +94,6 @@ const ProfileInfo = ({ user }) => {
     const updateData = {
       name: fullName,
       gender: personalInfoData.gender,
-      buyer_country: personalInfoData.buyer_country,
     };
 
     try {
@@ -101,7 +110,42 @@ const ProfileInfo = ({ user }) => {
       firstName: "",
       lastName: "",
       gender: "",
+    });
+  };
+
+  // Buyer Details Modal Functions
+  const handleOpenBuyerDetailsModal = () => {
+    setBuyerDetailsData({
+      buyer_status: user.buyer_data?.buyer_status || "",
+      buyer_country: user.buyer_data?.buyer_country || "",
+      buyer_vat_eori: user.buyer_data?.buyer_vat_eori || "",
+    });
+    setIsBuyerDetailsModalOpen(true);
+  };
+
+  const handleSaveBuyerDetails = async () => {
+    const updateData = {
+      buyer_data: {
+        buyer_status: buyerDetailsData.buyer_status,
+        buyer_country: buyerDetailsData.buyer_country,
+        buyer_vat_eori: buyerDetailsData.buyer_vat_eori,
+      },
+    };
+
+    try {
+      await dispatch(updateUser(updateData)).unwrap();
+      setIsBuyerDetailsModalOpen(false);
+      resetBuyerDetailsModal();
+    } catch (err) {
+      // Error handled by useEffect
+    }
+  };
+
+  const resetBuyerDetailsModal = () => {
+    setBuyerDetailsData({
+      buyer_status: "",
       buyer_country: "",
+      buyer_vat_eori: "",
     });
   };
 
@@ -114,7 +158,7 @@ const ProfileInfo = ({ user }) => {
 
     setOtpLoading(true);
     try {
-      dispatch(checkUserAndSendOTP(newEmail));
+      dispatch(checkUserAndSendOTP({ email: newEmail }));
       setTimeout(() => {
         setIsOtpSent(true);
         setOtpLoading(false);
@@ -198,7 +242,7 @@ const ProfileInfo = ({ user }) => {
     setIsOtpSent(false);
   };
 
-  // OTP Slot Component (for email/mobile modals)
+  // OTP Slot Component
   const Slot = (props) => {
     return (
       <div
@@ -227,9 +271,12 @@ const ProfileInfo = ({ user }) => {
       {/* Personal Information */}
       <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4 md:mb-6">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
-            Personal Information
-          </h2>
+          <div className="flex items-center gap-2">
+            <User className="w-5 h-5 text-gray-700" />
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+              Personal Information
+            </h2>
+          </div>
           <button
             onClick={handleOpenPersonalInfoModal}
             className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
@@ -239,88 +286,260 @@ const ProfileInfo = ({ user }) => {
           </button>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
-          <div>
-            <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
-              First Name
-            </label>
-            <input
-              type="text"
-              value={user.name?.split(" ")[0] || ""}
-              readOnly
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
-            />
+        {/* ✅ Show loading ONLY for this section */}
+        {profileLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-          <div>
-            <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
-              Last Name
-            </label>
-            <input
-              type="text"
-              value={user.name?.split(" ").slice(1).join(" ") || ""}
-              readOnly
-              className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
-            />
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
+              <div>
+                <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  value={user.name?.split(" ")[0] || "Not set"}
+                  readOnly
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+                />
+              </div>
+              <div>
+                <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={user.name?.split(" ").slice(1).join(" ") || "Not set"}
+                  readOnly
+                  className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 md:mt-5">
+              <label className="text-xs sm:text-sm text-gray-600 mb-2 md:mb-2.5 block font-medium">
+                Gender
+              </label>
+              <div className="flex flex-wrap gap-3 md:gap-4">
+                <label className="flex items-center gap-2 cursor-not-allowed">
+                  <input
+                    type="radio"
+                    name="gender-display"
+                    checked={user.gender === "male"}
+                    disabled
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm md:text-base font-medium text-gray-700">
+                    Male
+                  </span>
+                </label>
+                <label className="flex items-center gap-2 cursor-not-allowed">
+                  <input
+                    type="radio"
+                    name="gender-display"
+                    checked={user.gender === "female"}
+                    disabled
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm md:text-base font-medium text-gray-700">
+                    Female
+                  </span>
+                </label>
+                <label className="flex items-center gap-2 cursor-not-allowed">
+                  <input
+                    type="radio"
+                    name="gender-display"
+                    checked={user.gender === "others"}
+                    disabled
+                    className="w-4 h-4 text-blue-600"
+                  />
+                  <span className="text-sm md:text-base font-medium text-gray-700">
+                    Others
+                  </span>
+                </label>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Buyer Details */}
+      <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4 md:mb-6">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-gray-700" />
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+              Buyer Information
+            </h2>
           </div>
+          <button
+            onClick={handleOpenBuyerDetailsModal}
+            className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
+          >
+            <Edit2 className="w-4 h-4" />
+            Edit
+          </button>
         </div>
 
-        <div className="mt-4 md:mt-5">
-          <label className="text-xs sm:text-sm text-gray-600 mb-2 md:mb-2.5 block font-medium">
-            Your Gender
-          </label>
-          <div className="flex flex-wrap gap-3 md:gap-4">
-            <label className="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                name="gender-display"
-                checked={user.gender === "male"}
-                disabled
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className="text-sm md:text-base font-medium text-gray-700">
-                Male
-              </span>
-            </label>
-            <label className="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                name="gender-display"
-                checked={user.gender === "female"}
-                disabled
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className="text-sm md:text-base font-medium text-gray-700">
-                Female
-              </span>
-            </label>
-            <label className="flex items-center gap-2 cursor-not-allowed">
-              <input
-                type="radio"
-                name="gender-display"
-                checked={user.gender === "others"}
-                disabled
-                className="w-4 h-4 text-blue-600"
-              />
-              <span className="text-sm md:text-base font-medium text-gray-700">
-                Others
-              </span>
-            </label>
+        {/* ✅ Show loading ONLY for this section */}
+        {buyerLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
+        ) : (
+          <div className="space-y-4 md:space-y-5">
+            {/* Account Type */}
+            <div>
+              <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
+                Account Type
+              </label>
+              <input
+                type="text"
+                value={
+                  user.buyer_data?.buyer_status
+                    ? user.buyer_data.buyer_status
+                        .split("-")
+                        .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ")
+                    : "Not set"
+                }
+                readOnly
+                className="w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+              />
+            </div>
+
+            {/* Country */}
+            <div>
+              <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
+                Country
+              </label>
+              <div className="flex items-center gap-2 md:gap-3">
+                <Globe className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0" />
+                <input
+                  type="text"
+                  value={user.buyer_data?.buyer_country || "Not set"}
+                  readOnly
+                  className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+                />
+              </div>
+            </div>
+
+            {/* VAT/EORI Number */}
+            {user.buyer_data?.buyer_status === "business" && (
+              <div>
+                <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
+                  VAT/EORI Number
+                </label>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <FileText className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0" />
+                  <input
+                    type="text"
+                    value={user.buyer_data?.buyer_vat_eori || "Not set"}
+                    readOnly
+                    className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* KYC Documents & Signature */}
+      <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+          <Shield className="w-5 h-5 text-gray-700" />
+          <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+            Verification & Documents
+          </h2>
         </div>
 
-        {/* Buyer Country */}
-        <div className="mt-4 md:mt-5">
-          <label className="text-xs sm:text-sm text-gray-600 mb-1.5 md:mb-2 block font-medium">
-            Country
-          </label>
-          <div className="flex items-center gap-2 md:gap-3">
-            <Globe className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0" />
-            <input
-              type="text"
-              value={user.buyer_country || "Not set"}
-              readOnly
-              className="flex-1 px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900"
-            />
+        <div className="space-y-4 md:space-y-5">
+          {/* KYC Documents */}
+          <div>
+            <label className="text-xs sm:text-sm text-gray-600 mb-2 md:mb-3 block font-medium">
+              KYC Documents
+            </label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {user.buyer_data?.buyer_kyc_hash &&
+              Object.keys(user.buyer_data.buyer_kyc_hash).length > 0 ? (
+                Object.entries(user.buyer_data.buyer_kyc_hash).map(
+                  ([docType, docUrl]) => (
+                    <div
+                      key={docType}
+                      className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50"
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-gray-600" />
+                        <span className="text-sm font-medium text-gray-900 capitalize">
+                          {docType.replace(/_/g, " ")}
+                        </span>
+                      </div>
+                      <a
+                        href={docUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        View
+                      </a>
+                    </div>
+                  )
+                )
+              ) : (
+                <div className="col-span-full text-center py-6 border-2 border-dashed border-gray-200 rounded-lg">
+                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-500">No documents uploaded</p>
+                  <button className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    Upload KYC Documents
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Digital Signature */}
+          <div>
+            <label className="text-xs sm:text-sm text-gray-600 mb-2 md:mb-3 block font-medium">
+              Digital Signature
+            </label>
+            {user.buyer_data?.buyer_signature?.url ? (
+              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-center gap-3">
+                  <PenTool className="w-5 h-5 text-gray-600" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      Signature on file
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Uploaded and verified
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={user.buyer_data.buyer_signature.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  View
+                </a>
+              </div>
+            ) : (
+              <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+                <PenTool className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                <p className="text-sm text-gray-500 mb-3">
+                  No signature uploaded
+                </p>
+                <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  Add Digital Signature
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -328,9 +547,12 @@ const ProfileInfo = ({ user }) => {
       {/* Email Address */}
       <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4 md:mb-5">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
-            Email Address
-          </h2>
+          <div className="flex items-center gap-2">
+            <Mail className="w-5 h-5 text-gray-700" />
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+              Email Address
+            </h2>
+          </div>
           <button
             onClick={() => setIsEmailModalOpen(true)}
             className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
@@ -342,10 +564,9 @@ const ProfileInfo = ({ user }) => {
 
         <div className="flex flex-col gap-3 md:gap-0 md:flex-row md:items-center">
           <div className="flex items-start gap-2 md:gap-3 flex-1 w-full">
-            <Mail className="w-4 h-4 md:w-5 md:h-5 text-gray-400 mt-2.5 md:mt-2 shrink-0" />
             <input
               type="email"
-              value={user.email || ""}
+              value={user.email || "Not set"}
               readOnly
               className="flex-1 w-full px-3 md:px-4 py-2 md:py-2.5 text-sm md:text-base border border-gray-200 rounded-lg bg-gray-50 text-gray-900 break-all"
             />
@@ -367,9 +588,12 @@ const ProfileInfo = ({ user }) => {
       {/* Mobile Number */}
       <div className="bg-white rounded-lg md:rounded-xl shadow-sm md:shadow-md border border-gray-100 p-4 md:p-6 hover:shadow-lg transition-shadow">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4 md:mb-5">
-          <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
-            Mobile Number
-          </h2>
+          <div className="flex items-center gap-2">
+            <Phone className="w-5 h-5 text-gray-700" />
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+              Mobile Number
+            </h2>
+          </div>
           <button
             onClick={() => setIsMobileModalOpen(true)}
             className="self-start sm:self-auto text-black hover:text-blue-700 flex items-center gap-2 text-sm md:text-base font-medium hover:bg-blue-50 px-3 md:px-4 py-2 md:py-2.5 rounded-lg transition-all"
@@ -381,7 +605,6 @@ const ProfileInfo = ({ user }) => {
 
         <div className="flex flex-col gap-3 md:gap-0 md:flex-row md:items-center">
           <div className="flex items-start gap-2 md:gap-3 flex-1 w-full">
-            <Phone className="w-4 h-4 md:w-5 md:h-5 text-gray-400 mt-2.5 md:mt-2 shrink-0" />
             <input
               type="tel"
               value={user.mobile || "Not provided"}
@@ -475,7 +698,7 @@ const ProfileInfo = ({ user }) => {
         </div>
       </div>
 
-      {/* Personal Info Edit Modal - NO OTP */}
+      {/* Personal Info Edit Modal */}
       <Dialog.Root
         open={isPersonalInfoModalOpen}
         onOpenChange={(open) => {
@@ -589,30 +812,6 @@ const ProfileInfo = ({ user }) => {
                 </div>
               </div>
 
-              {/* Country */}
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  Country
-                </label>
-                <select
-                  value={personalInfoData.buyer_country}
-                  onChange={(e) =>
-                    setPersonalInfoData({
-                      ...personalInfoData,
-                      buyer_country: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Country</option>
-                  {countries.map((country) => (
-                    <option key={country.isoCode} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                 <button
@@ -633,7 +832,112 @@ const ProfileInfo = ({ user }) => {
         </Dialog.Portal>
       </Dialog.Root>
 
-      {/* Email Edit Modal */}
+      {/* Buyer Details Edit Modal */}
+      <Dialog.Root
+        open={isBuyerDetailsModalOpen}
+        onOpenChange={(open) => {
+          setIsBuyerDetailsModalOpen(open);
+          if (!open) resetBuyerDetailsModal();
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl p-5 md:p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
+            <Dialog.Title className="text-lg md:text-xl font-bold text-gray-900 mb-4">
+              Update Buyer Information
+            </Dialog.Title>
+
+            <div className="space-y-4">
+              {/* Account Type */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Account Type
+                </label>
+                <select
+                  value={buyerDetailsData.buyer_status}
+                  onChange={(e) =>
+                    setBuyerDetailsData({
+                      ...buyerDetailsData,
+                      buyer_status: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Account Type</option>
+                  <option value="individual">Individual Buyer</option>
+                  <option value="business">Business</option>
+                  <option value="professional end-client">
+                    Professional End-Client
+                  </option>
+                </select>
+              </div>
+
+              {/* Country */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Country
+                </label>
+                <select
+                  value={buyerDetailsData.buyer_country}
+                  onChange={(e) =>
+                    setBuyerDetailsData({
+                      ...buyerDetailsData,
+                      buyer_country: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* VAT/EORI - Show only for business */}
+              {buyerDetailsData.buyer_status === "business" && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    VAT/EORI Number
+                  </label>
+                  <input
+                    type="text"
+                    value={buyerDetailsData.buyer_vat_eori}
+                    onChange={(e) =>
+                      setBuyerDetailsData({
+                        ...buyerDetailsData,
+                        buyer_vat_eori: e.target.value,
+                      })
+                    }
+                    placeholder="Enter VAT/EORI number"
+                    className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
+                <button
+                  onClick={handleSaveBuyerDetails}
+                  disabled={loading}
+                  className="flex-1 bg-navyblue text-white px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-all text-sm md:text-base"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+                <Dialog.Close asChild>
+                  <button className="flex-1 bg-gray-200 text-gray-700 px-4 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all text-sm md:text-base">
+                    Cancel
+                  </button>
+                </Dialog.Close>
+              </div>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {/* Email Edit Modal - (Same as before) */}
       <Dialog.Root
         open={isEmailModalOpen}
         onOpenChange={(open) => {
@@ -745,7 +1049,7 @@ const ProfileInfo = ({ user }) => {
         </Dialog.Portal>
       </Dialog.Root>
 
-      {/* Mobile Edit Modal */}
+      {/* Mobile Edit Modal - (Same structure as Email) */}
       <Dialog.Root
         open={isMobileModalOpen}
         onOpenChange={(open) => {

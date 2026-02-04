@@ -1,0 +1,1520 @@
+{
+    "users": [
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439011" },
+        "name": "Rajesh Kumar",
+        "email": "frost.ankur019@gmail.com",
+        "isEmailVerified": true,
+        "mobile": "+919876543210",
+        "isMobileVerified": true,
+        "role": ["user", "buyer", "seller"],
+        "profileURL": {
+          "url": "https://example.com/profiles/rajesh.jpg",
+          "publicId": "profiles/rajesh_kumar"
+        },
+        "buyer_data": {
+          "buyer_status": "business",
+          "buyer_country": "India",
+          "buyer_vat_eori": "IND123456789",
+          "buyer_kyc_hash": {
+            "aadhaar": "a1b2c3d4e5f6",
+            "pan": "p1q2r3s4t5u6"
+          },
+          "buyer_signature": {
+            "url": "https://example.com/signatures/rajesh.png",
+            "publicId": "signatures/rajesh_kumar"
+          },
+          "billing_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439021" },
+              "name": "Rajesh Kumar",
+              "mobile": "09876543210",
+              "city": "Jaipur",
+              "state": "Rajasthan",
+              "country": "India",
+              "alternateMobile": "09876543211",
+              "landmark": "Near Pink City Mall",
+              "pincode": "302001"
+            }
+          ],
+          "shipping_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439022" },
+              "name": "Rajesh Kumar Warehouse",
+              "mobile": "09876543210",
+              "city": "Jaipur",
+              "state": "Rajasthan",
+              "country": "India",
+              "alternateMobile": "09876543212",
+              "landmark": "Industrial Area Phase 2",
+              "pincode": "302013"
+            }
+          ]
+        },
+        "gender": "male",
+        "hasPassword": true,
+        "status": "active",
+        "lastLogin": { "$date": "2026-02-01T10:30:00.000Z" },
+        "loginAttempts": 0,
+        "createdAt": { "$date": "2025-01-15T08:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T10:30:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439012" },
+        "name": "Priya Sharma",
+        "email": "ankuragrwal63@gmail.com",
+        "isEmailVerified": true,
+        "mobile": "+919876543220",
+        "isMobileVerified": true,
+        "role": ["user", "buyer", "seller"],
+        "profileURL": {
+          "url": "https://example.com/profiles/priya.jpg",
+          "publicId": "profiles/priya_sharma"
+        },
+        "buyer_data": {
+          "buyer_status": "professional end-client",
+          "buyer_country": "India",
+          "buyer_vat_eori": "IND987654321",
+          "buyer_kyc_hash": {
+            "aadhaar": "b2c3d4e5f6g7",
+            "pan": "q2r3s4t5u6v7"
+          },
+          "buyer_signature": {
+            "url": "https://example.com/signatures/priya.png",
+            "publicId": "signatures/priya_sharma"
+          },
+          "billing_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439023" },
+              "name": "Priya Sharma",
+              "mobile": "09876543220",
+              "city": "Mumbai",
+              "state": "Maharashtra",
+              "country": "India",
+              "alternateMobile": "09876543221",
+              "landmark": "Near Andheri Station",
+              "pincode": "400053"
+            }
+          ],
+          "shipping_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439024" },
+              "name": "Priya Sharma Office",
+              "mobile": "09876543220",
+              "city": "Mumbai",
+              "state": "Maharashtra",
+              "country": "India",
+              "alternateMobile": "09876543222",
+              "landmark": "BKC Business District",
+              "pincode": "400051"
+            }
+          ]
+        },
+        "gender": "female",
+        "hasPassword": true,
+        "status": "active",
+        "lastLogin": { "$date": "2026-02-01T14:20:00.000Z" },
+        "loginAttempts": 0,
+        "createdAt": { "$date": "2025-01-20T09:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T14:20:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439013" },
+        "name": "Amit Patel",
+        "email": "ankul.127123@stu.upes.ac.in",
+        "isEmailVerified": true,
+        "mobile": "+919876543230",
+        "isMobileVerified": true,
+        "role": ["user", "buyer", "seller"],
+        "profileURL": {
+          "url": "https://example.com/profiles/amit.jpg",
+          "publicId": "profiles/amit_patel"
+        },
+        "buyer_data": {
+          "buyer_status": "business",
+          "buyer_country": "India",
+          "buyer_vat_eori": "IND456789123",
+          "buyer_kyc_hash": {
+            "aadhaar": "c3d4e5f6g7h8",
+            "pan": "r3s4t5u6v7w8"
+          },
+          "buyer_signature": {
+            "url": "https://example.com/signatures/amit.png",
+            "publicId": "signatures/amit_patel"
+          },
+          "billing_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439025" },
+              "name": "Amit Patel",
+              "mobile": "09876543230",
+              "city": "Ahmedabad",
+              "state": "Gujarat",
+              "country": "India",
+              "alternateMobile": "09876543231",
+              "landmark": "Satellite Road",
+              "pincode": "380015"
+            }
+          ],
+          "shipping_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439026" },
+              "name": "Amit Patel Warehouse",
+              "mobile": "09876543230",
+              "city": "Ahmedabad",
+              "state": "Gujarat",
+              "country": "India",
+              "alternateMobile": "09876543232",
+              "landmark": "Naroda Industrial Estate",
+              "pincode": "382330"
+            }
+          ]
+        },
+        "gender": "male",
+        "hasPassword": true,
+        "status": "active",
+        "lastLogin": { "$date": "2026-02-01T16:45:00.000Z" },
+        "loginAttempts": 0,
+        "createdAt": { "$date": "2025-01-25T10:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T16:45:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439014" },
+        "name": "Sneha Reddy",
+        "email": "ankuragrwal4@gmail.com",
+        "isEmailVerified": true,
+        "mobile": "+919876543240",
+        "isMobileVerified": true,
+        "role": ["user", "buyer", "seller"],
+        "profileURL": {
+          "url": "https://example.com/profiles/sneha.jpg",
+          "publicId": "profiles/sneha_reddy"
+        },
+        "buyer_data": {
+          "buyer_status": "individual",
+          "buyer_country": "India",
+          "buyer_vat_eori": "IND789123456",
+          "buyer_kyc_hash": {
+            "aadhaar": "d4e5f6g7h8i9",
+            "pan": "s4t5u6v7w8x9"
+          },
+          "buyer_signature": {
+            "url": "https://example.com/signatures/sneha.png",
+            "publicId": "signatures/sneha_reddy"
+          },
+          "billing_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439027" },
+              "name": "Sneha Reddy",
+              "mobile": "09876543240",
+              "city": "Hyderabad",
+              "state": "Telangana",
+              "country": "India",
+              "alternateMobile": "09876543241",
+              "landmark": "Banjara Hills",
+              "pincode": "500034"
+            }
+          ],
+          "shipping_address": [
+            {
+              "_id": { "$oid": "607f1f77bcf86cd799439028" },
+              "name": "Sneha Reddy Studio",
+              "mobile": "09876543240",
+              "city": "Hyderabad",
+              "state": "Telangana",
+              "country": "India",
+              "alternateMobile": "09876543242",
+              "landmark": "Jubilee Hills",
+              "pincode": "500033"
+            }
+          ]
+        },
+        "gender": "female",
+        "hasPassword": true,
+        "status": "active",
+        "lastLogin": { "$date": "2026-02-01T18:15:00.000Z" },
+        "loginAttempts": 0,
+        "createdAt": { "$date": "2025-01-28T11:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T18:15:00.000Z" },
+        "__v": 0
+      }
+    ],
+    "sellers": [
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "seller_name": "Rajesh Kumar",
+        "seller_status": "professional",
+        "seller_company_number": "CIN-U12345MH2020PTC123456",
+        "seller_address": "Shop No. 45, Stone Market, Jaipur",
+        "seller_country": "India",
+        "seller_email": "frost.ankur019@gmail.com",
+        "seller_phone": "+919876543210",
+        "seller_dispute_contact": "+919876543213",
+        "seller_kyc_hash": "kyc_hash_rajesh_kumar_12345",
+        "seller_profile_url": "https://example.com/sellers/rajesh-kumar",
+        "businessId": "BIZ001",
+        "businessName": "Rajasthan Stone Exports",
+        "companyregstartionlocation": "Jaipur, Rajasthan",
+        "documentUrl": "https://example.com/docs/rajasthan-stone-exports.pdf",
+        "varificationStatus": "Approved",
+        "status": "active",
+        "category": "All",
+        "createdAt": { "$date": "2025-01-15T09:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-16T10:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "seller_name": "Priya Sharma",
+        "seller_status": "professional",
+        "seller_company_number": "CIN-U12345MH2021PTC654321",
+        "seller_address": "Unit 12, Ceramic Plaza, Mumbai",
+        "seller_country": "India",
+        "seller_email": "ankul.127123@stu.upes.ac.in",
+        "seller_phone": "+919876543220",
+        "seller_dispute_contact": "+919876543223",
+        "seller_kyc_hash": "kyc_hash_priya_sharma_54321",
+        "seller_profile_url": "https://example.com/sellers/priya-sharma",
+        "businessId": "BIZ002",
+        "businessName": "Ceramic World India",
+        "companyregstartionlocation": "Mumbai, Maharashtra",
+        "documentUrl": "https://example.com/docs/ceramic-world-india.pdf",
+        "varificationStatus": "Approved",
+        "status": "active",
+        "category": "All",
+        "createdAt": { "$date": "2025-01-20T10:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-21T11:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "seller_name": "Amit Patel",
+        "seller_status": "professional",
+        "seller_company_number": "CIN-U12345GJ2022PTC789456",
+        "seller_address": "Plot 23, Granite Market, Ahmedabad",
+        "seller_country": "India",
+        "seller_email": "ankuragrwal63@gmail.com",
+        "seller_phone": "+919876543230",
+        "seller_dispute_contact": "+919876543233",
+        "seller_kyc_hash": "kyc_hash_amit_patel_78945",
+        "seller_profile_url": "https://example.com/sellers/amit-patel",
+        "businessId": "BIZ003",
+        "businessName": "Gujarat Granite Hub",
+        "companyregstartionlocation": "Ahmedabad, Gujarat",
+        "documentUrl": "https://example.com/docs/gujarat-granite-hub.pdf",
+        "varificationStatus": "Approved",
+        "status": "active",
+        "category": "Granites",
+        "createdAt": { "$date": "2025-01-25T11:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-26T12:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "seller_name": "Sneha Reddy",
+        "seller_status": "individual",
+        "seller_company_number": "PROP-TG-2023-456789",
+        "seller_address": "Studio 7, Marble Avenue, Hyderabad",
+        "seller_country": "India",
+        "seller_email": "ankuragrwal4@gmail.com",
+        "seller_phone": "+919876543240",
+        "seller_dispute_contact": "+919876543243",
+        "seller_kyc_hash": "kyc_hash_sneha_reddy_45678",
+        "seller_profile_url": "https://example.com/sellers/sneha-reddy",
+        "businessId": "BIZ004",
+        "businessName": "Marble Art Studio",
+        "companyregstartionlocation": "Hyderabad, Telangana",
+        "documentUrl": "https://example.com/docs/marble-art-studio.pdf",
+        "varificationStatus": "Approved",
+        "status": "active",
+        "category": "Marbles",
+        "createdAt": { "$date": "2025-01-28T12:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-29T13:00:00.000Z" },
+        "__v": 0
+      }
+    ],
+    "companies": [
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "companyBasicInfo": {
+          "companyName": "Rajasthan Stone Exports",
+          "address": {
+            "street": "45 Stone Market Road",
+            "city": "Jaipur",
+            "stateOrProvince": "Rajasthan",
+            "countryOrRegion": "India",
+            "postalCode": "302001"
+          },
+          "legalowner": "Rajesh Kumar",
+          "locationOfRegistration": "Jaipur, Rajasthan",
+          "companyRegistrationYear": "2020",
+          "mainCategory": ["natural stones"],
+          "subCategory": ["marble", "granite", "sandstone", "limestone"],
+          "acceptedCurrency": ["INR", "USD", "EUR"],
+          "acceptedPaymentType": ["Bank Transfer", "Letter of Credit", "PayPal"],
+          "languageSpoken": ["English", "Hindi", "Rajasthani"],
+          "totalEmployees": 50,
+          "businessType": "manufacturer",
+          "factorySize": "10000 sqm",
+          "factoryCountryOrRegion": "India",
+          "contractManufacturing": true,
+          "numberOfProductionLines": 3,
+          "annualOutputValue": "5 Million USD",
+          "rdTeamSize": 5,
+          "tradeCapabilities": ["Export", "Wholesale", "Custom Orders"]
+        },
+        "companyIntro": {
+          "logo": "https://example.com/logos/rajasthan-stone-exports.png",
+          "companyDescription": "Rajasthan Stone Exports is a leading manufacturer and exporter of premium natural stones including marble, granite, sandstone, and limestone. With over 20 years of experience in the stone industry, we pride ourselves on delivering high-quality products to clients worldwide. Our state-of-the-art processing facility ensures precision cutting and finishing for all types of stone requirements.",
+          "companyPhotos": [
+            "https://example.com/company/rajasthan-1.jpg",
+            "https://example.com/company/rajasthan-2.jpg",
+            "https://example.com/company/rajasthan-3.jpg"
+          ],
+          "companyVideos": [
+            "https://example.com/videos/rajasthan-factory-tour.mp4"
+          ]
+        },
+        "createdAt": { "$date": "2025-01-15T10:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-15T10:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "companyBasicInfo": {
+          "companyName": "Ceramic World India",
+          "address": {
+            "street": "Unit 12, Ceramic Plaza",
+            "city": "Mumbai",
+            "stateOrProvince": "Maharashtra",
+            "countryOrRegion": "India",
+            "postalCode": "400053"
+          },
+          "legalowner": "Priya Sharma",
+          "locationOfRegistration": "Mumbai, Maharashtra",
+          "companyRegistrationYear": "2021",
+          "mainCategory": ["ceramic & tiles"],
+          "subCategory": ["floor tiles", "wall tiles", "vitrified tiles", "porcelain tiles", "mosaic tiles"],
+          "acceptedCurrency": ["INR", "USD"],
+          "acceptedPaymentType": ["Bank Transfer", "Credit Card", "UPI"],
+          "languageSpoken": ["English", "Hindi", "Marathi"],
+          "totalEmployees": 80,
+          "businessType": "trading company",
+          "factorySize": "15000 sqm",
+          "factoryCountryOrRegion": "India",
+          "contractManufacturing": false,
+          "numberOfProductionLines": 5,
+          "annualOutputValue": "8 Million USD",
+          "rdTeamSize": 8,
+          "tradeCapabilities": ["Import", "Export", "Distribution", "Retail"]
+        },
+        "companyIntro": {
+          "logo": "https://example.com/logos/ceramic-world-india.png",
+          "companyDescription": "Ceramic World India specializes in importing and distributing premium ceramic tiles from leading manufacturers worldwide. We offer an extensive range of floor tiles, wall tiles, vitrified tiles, and designer mosaic tiles for residential and commercial projects. Our showroom showcases the latest trends in tile design and technology, ensuring our customers have access to cutting-edge products.",
+          "companyPhotos": [
+            "https://example.com/company/ceramic-world-1.jpg",
+            "https://example.com/company/ceramic-world-2.jpg",
+            "https://example.com/company/ceramic-world-3.jpg",
+            "https://example.com/company/ceramic-world-4.jpg"
+          ],
+          "companyVideos": [
+            "https://example.com/videos/ceramic-showroom-tour.mp4"
+          ]
+        },
+        "createdAt": { "$date": "2025-01-20T11:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-20T11:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "companyBasicInfo": {
+          "companyName": "Gujarat Granite Hub",
+          "address": {
+            "street": "Plot 23, Industrial Area Phase 2",
+            "city": "Ahmedabad",
+            "stateOrProvince": "Gujarat",
+            "countryOrRegion": "India",
+            "postalCode": "382330"
+          },
+          "legalowner": "Amit Patel",
+          "locationOfRegistration": "Ahmedabad, Gujarat",
+          "companyRegistrationYear": "2022",
+          "mainCategory": ["natural stones", "alternatives & finishes"],
+          "subCategory": ["granite", "quartzite", "quartz", "engineered stone"],
+          "acceptedCurrency": ["INR", "USD", "GBP"],
+          "acceptedPaymentType": ["Bank Transfer", "Letter of Credit"],
+          "languageSpoken": ["English", "Hindi", "Gujarati"],
+          "totalEmployees": 65,
+          "businessType": "exporter",
+          "factorySize": "12000 sqm",
+          "factoryCountryOrRegion": "India",
+          "contractManufacturing": true,
+          "numberOfProductionLines": 4,
+          "annualOutputValue": "6.5 Million USD",
+          "rdTeamSize": 6,
+          "tradeCapabilities": ["Export", "Custom Manufacturing", "Wholesale"]
+        },
+        "companyIntro": {
+          "logo": "https://example.com/logos/gujarat-granite-hub.png",
+          "companyDescription": "Gujarat Granite Hub is a premier exporter of natural granite and engineered stone products. We source the finest granite from quarries across India and process them using advanced machinery to meet international quality standards. Our product range includes granite slabs, tiles, and custom-cut pieces for countertops, flooring, and architectural applications. We also specialize in quartz and engineered stone solutions for modern construction projects.",
+          "companyPhotos": [
+            "https://example.com/company/granite-hub-1.jpg",
+            "https://example.com/company/granite-hub-2.jpg",
+            "https://example.com/company/granite-hub-3.jpg"
+          ],
+          "companyVideos": [
+            "https://example.com/videos/granite-processing.mp4"
+          ]
+        },
+        "createdAt": { "$date": "2025-01-25T12:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-25T12:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "companyBasicInfo": {
+          "companyName": "Marble Art Studio",
+          "address": {
+            "street": "Studio 7, Marble Avenue",
+            "city": "Hyderabad",
+            "stateOrProvince": "Telangana",
+            "countryOrRegion": "India",
+            "postalCode": "500034"
+          },
+          "legalowner": "Sneha Reddy",
+          "locationOfRegistration": "Hyderabad, Telangana",
+          "companyRegistrationYear": "2023",
+          "mainCategory": ["natural stones", "alternatives & finishes"],
+          "subCategory": ["marble", "travertine", "terrazzo", "resin"],
+          "acceptedCurrency": ["INR"],
+          "acceptedPaymentType": ["Bank Transfer", "UPI", "Cash"],
+          "languageSpoken": ["English", "Hindi", "Telugu"],
+          "totalEmployees": 15,
+          "businessType": "service provider",
+          "factorySize": "2000 sqm",
+          "factoryCountryOrRegion": "India",
+          "contractManufacturing": false,
+          "numberOfProductionLines": 1,
+          "annualOutputValue": "500 Thousand USD",
+          "rdTeamSize": 2,
+          "tradeCapabilities": ["Custom Design", "Installation", "Retail"]
+        },
+        "companyIntro": {
+          "logo": "https://example.com/logos/marble-art-studio.png",
+          "companyDescription": "Marble Art Studio is a boutique design studio specializing in artistic marble work and custom stone installations. Founded by award-winning designer Sneha Reddy, we create bespoke marble pieces for luxury homes, hotels, and commercial spaces. Our expertise includes marble flooring, wall cladding, custom furniture, and decorative art pieces. We work with premium Italian marble, Indian marble, and modern alternatives like terrazzo and resin to bring our clients' visions to life.",
+          "companyPhotos": [
+            "https://example.com/company/marble-art-1.jpg",
+            "https://example.com/company/marble-art-2.jpg",
+            "https://example.com/company/marble-art-3.jpg"
+          ],
+          "companyVideos": []
+        },
+        "createdAt": { "$date": "2025-01-28T13:00:00.000Z" },
+        "updatedAt": { "$date": "2025-01-28T13:00:00.000Z" },
+        "__v": 0
+      }
+    ],
+    "products": [
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439301" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "product_type": "ready-to-go",
+        "productName": "Makrana White Marble Slab",
+        "product_sku": "MAK-WHT-001",
+        "description": "Premium quality Makrana white marble slab, famous for its pure white color and fine grain structure. This is the same marble used in the construction of the Taj Mahal. Perfect for luxury flooring, wall cladding, and countertops. Features minimal veining and exceptional polish retention. Ideal for high-end residential and commercial projects.",
+        "productImages": [
+          "https://example.com/products/makrana-white-1.jpg",
+          "https://example.com/products/makrana-white-2.jpg",
+          "https://example.com/products/makrana-white-3.jpg",
+          "https://example.com/products/makrana-white-4.jpg"
+        ],
+        "size": {
+          "length": 2440,
+          "lengthMeasurement": "mm",
+          "width": 1220,
+          "widthMeasurement": "mm",
+          "thickness": 20,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 145,
+        "weightMeasurement": "kg",
+        "product_material": "Makrana White Marble",
+        "origin": "Makrana, Rajasthan, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C503",
+          "technical_sheets": ["https://example.com/specs/makrana-white-tech.pdf"],
+          "certificates": ["https://example.com/certs/makrana-white-cert.pdf"]
+        },
+        "available_stock": 500,
+        "expected_shipping_time": 5,
+        "batch_number": "MKR-2026-001",
+        "category": ["natural stones"],
+        "subCategory": ["marble"],
+        "grade": "A",
+        "color": "Pure White",
+        "pricePerUnit": 85,
+        "priceUnit": "sq.ft",
+        "views": 1250,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-16T08:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T10:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439302" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "product_type": "ready-to-go",
+        "productName": "Absolute Black Granite",
+        "product_sku": "ABG-BLK-002",
+        "description": "Premium Absolute Black granite from South India, known for its deep black color without any patterns or veining. This granite offers exceptional durability and low porosity, making it ideal for kitchen countertops, bathroom vanities, and outdoor applications. Polished finish provides a mirror-like reflection. Resistant to heat, scratches, and stains.",
+        "productImages": [
+          "https://example.com/products/absolute-black-1.jpg",
+          "https://example.com/products/absolute-black-2.jpg",
+          "https://example.com/products/absolute-black-3.jpg"
+        ],
+        "size": {
+          "length": 3050,
+          "lengthMeasurement": "mm",
+          "width": 1400,
+          "widthMeasurement": "mm",
+          "thickness": 30,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 252,
+        "weightMeasurement": "kg",
+        "product_material": "Absolute Black Granite",
+        "origin": "Andhra Pradesh, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C615",
+          "technical_sheets": ["https://example.com/specs/absolute-black-tech.pdf"],
+          "certificates": ["https://example.com/certs/absolute-black-cert.pdf"]
+        },
+        "available_stock": 350,
+        "expected_shipping_time": 7,
+        "batch_number": "ABG-2026-002",
+        "category": ["natural stones"],
+        "subCategory": ["granite"],
+        "grade": "A",
+        "color": "Absolute Black",
+        "pricePerUnit": 65,
+        "priceUnit": "sq.ft",
+        "views": 980,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-16T09:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T11:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439303" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "product_type": "ready-to-go",
+        "productName": "Dholpur Beige Sandstone",
+        "product_sku": "DHP-BGE-003",
+        "description": "Natural Dholpur beige sandstone with uniform texture and warm earthy tones. This sandstone is highly suitable for exterior cladding, garden pathways, pool decks, and interior flooring. Features excellent slip resistance and weather durability. The beige color complements both traditional and contemporary architecture. Easy to maintain and ages beautifully.",
+        "productImages": [
+          "https://example.com/products/dholpur-beige-1.jpg",
+          "https://example.com/products/dholpur-beige-2.jpg",
+          "https://example.com/products/dholpur-beige-3.jpg",
+          "https://example.com/products/dholpur-beige-4.jpg"
+        ],
+        "size": {
+          "length": 600,
+          "lengthMeasurement": "mm",
+          "width": 600,
+          "widthMeasurement": "mm",
+          "thickness": 25,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 35,
+        "weightMeasurement": "kg",
+        "product_material": "Dholpur Beige Sandstone",
+        "origin": "Dholpur, Rajasthan, India",
+        "compliance_standards": {
+          "ce_marking": false,
+          "material_standard": "ASTM C616",
+          "technical_sheets": ["https://example.com/specs/dholpur-beige-tech.pdf"],
+          "certificates": []
+        },
+        "available_stock": 800,
+        "expected_shipping_time": 10,
+        "batch_number": "DHP-2026-003",
+        "category": ["natural stones"],
+        "subCategory": ["sandstone"],
+        "grade": "B",
+        "color": "Beige",
+        "pricePerUnit": 28,
+        "priceUnit": "sq.ft",
+        "views": 650,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-16T10:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T12:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439304" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "product_type": "made-to-order",
+        "productName": "Custom Jaisalmer Yellow Limestone",
+        "product_sku": "JSL-YEL-004",
+        "description": "Custom-cut Jaisalmer yellow limestone available in various sizes and finishes. This honey-colored limestone is perfect for heritage restoration projects, luxury villas, and traditional architecture. Known for its warmth and natural beauty. We offer custom sizing, edge profiling, and surface finishes including natural, honed, and bush-hammered. Minimum order quantity applies.",
+        "productImages": [
+          "https://example.com/products/jaisalmer-yellow-1.jpg",
+          "https://example.com/products/jaisalmer-yellow-2.jpg",
+          "https://example.com/products/jaisalmer-yellow-3.jpg"
+        ],
+        "size": {
+          "length": 1200,
+          "lengthMeasurement": "mm",
+          "width": 600,
+          "widthMeasurement": "mm",
+          "thickness": 30,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 54,
+        "weightMeasurement": "kg",
+        "product_material": "Jaisalmer Yellow Limestone",
+        "origin": "Jaisalmer, Rajasthan, India",
+        "compliance_standards": {
+          "ce_marking": false,
+          "material_standard": "ASTM C568",
+          "technical_sheets": ["https://example.com/specs/jaisalmer-yellow-tech.pdf"],
+          "certificates": []
+        },
+        "available_stock": 200,
+        "expected_shipping_time": 21,
+        "batch_number": "JSL-2026-004",
+        "custom_parameters": {
+          "height": null,
+          "width": 600,
+          "length": 1200,
+          "thickness": 30,
+          "tolerances": "+/- 2mm",
+          "finish_types": ["natural", "honed", "bush-hammered"],
+          "chamfers": "Available on request"
+        },
+        "category": ["natural stones"],
+        "subCategory": ["limestone"],
+        "grade": "A",
+        "color": "Yellow Honey",
+        "pricePerUnit": 42,
+        "priceUnit": "sq.ft",
+        "views": 420,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-16T11:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T13:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439305" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439201" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+        "userId": { "$oid": "507f1f77bcf86cd799439011" },
+        "product_type": "ready-to-go",
+        "productName": "Indian Black Slate Tiles",
+        "product_sku": "SLT-BLK-005",
+        "description": "Premium quality black slate tiles with natural riven surface texture. Perfect for rustic and contemporary interiors, outdoor patios, and wet areas. Features excellent anti-slip properties and frost resistance. The natural cleft surface provides unique character to each tile. Suitable for both residential and commercial applications. Low maintenance and highly durable.",
+        "productImages": [
+          "https://example.com/products/black-slate-1.jpg",
+          "https://example.com/products/black-slate-2.jpg",
+          "https://example.com/products/black-slate-3.jpg"
+        ],
+        "size": {
+          "length": 400,
+          "lengthMeasurement": "mm",
+          "width": 400,
+          "widthMeasurement": "mm",
+          "thickness": 10,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 12,
+        "weightMeasurement": "kg",
+        "product_material": "Indian Black Slate",
+        "origin": "Rajasthan, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "EN 12326",
+          "technical_sheets": ["https://example.com/specs/black-slate-tech.pdf"],
+          "certificates": ["https://example.com/certs/black-slate-cert.pdf"]
+        },
+        "available_stock": 1500,
+        "expected_shipping_time": 7,
+        "batch_number": "SLT-2026-005",
+        "category": ["natural stones"],
+        "subCategory": ["slate"],
+        "grade": "B",
+        "color": "Black",
+        "pricePerUnit": 18,
+        "priceUnit": "sq.ft",
+        "views": 890,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-16T12:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T14:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439306" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "product_type": "ready-to-go",
+        "productName": "Premium Vitrified Floor Tiles 800x800mm",
+        "product_sku": "VIT-FLR-101",
+        "description": "High-quality full-body vitrified floor tiles with superior strength and durability. Features nano-polished surface for stain resistance and easy maintenance. Suitable for high-traffic commercial and residential areas. Available in contemporary marble look design with consistent pattern throughout. Water absorption less than 0.5%. Tested for slip resistance and chemical resistance.",
+        "productImages": [
+          "https://example.com/products/vitrified-tile-1.jpg",
+          "https://example.com/products/vitrified-tile-2.jpg",
+          "https://example.com/products/vitrified-tile-3.jpg",
+          "https://example.com/products/vitrified-tile-4.jpg"
+        ],
+        "size": {
+          "length": 800,
+          "lengthMeasurement": "mm",
+          "width": 800,
+          "widthMeasurement": "mm",
+          "thickness": 10,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 18,
+        "weightMeasurement": "kg",
+        "product_material": "Vitrified Ceramic",
+        "origin": "Morbi, Gujarat, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ISO 13006",
+          "technical_sheets": ["https://example.com/specs/vitrified-tech.pdf"],
+          "certificates": ["https://example.com/certs/vitrified-cert.pdf"]
+        },
+        "available_stock": 2500,
+        "expected_shipping_time": 5,
+        "batch_number": "VIT-2026-101",
+        "category": ["ceramic & tiles"],
+        "subCategory": ["vitrified tiles"],
+        "grade": "A",
+        "color": "Carrara White",
+        "pricePerUnit": 32,
+        "priceUnit": "sq.ft",
+        "views": 2150,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-21T08:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T15:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439307" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "product_type": "ready-to-go",
+        "productName": "Designer Wall Tiles - Subway Style",
+        "product_sku": "WTL-SUB-102",
+        "description": "Classic subway-style ceramic wall tiles with glossy glazed finish. Perfect for modern kitchens, bathrooms, and feature walls. Available in various colors with beveled edges for a premium look. Easy to clean and maintain. Resistant to moisture and thermal shock. Can be installed in brick bond or herringbone pattern for added visual interest. Suitable for both residential and commercial spaces.",
+        "productImages": [
+          "https://example.com/products/subway-tile-1.jpg",
+          "https://example.com/products/subway-tile-2.jpg",
+          "https://example.com/products/subway-tile-3.jpg"
+        ],
+        "size": {
+          "length": 300,
+          "lengthMeasurement": "mm",
+          "width": 100,
+          "widthMeasurement": "mm",
+          "thickness": 8,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 2.5,
+        "weightMeasurement": "kg",
+        "product_material": "Glazed Ceramic",
+        "origin": "Morbi, Gujarat, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ISO 10545",
+          "technical_sheets": ["https://example.com/specs/subway-tech.pdf"],
+          "certificates": ["https://example.com/certs/subway-cert.pdf"]
+        },
+        "available_stock": 5000,
+        "expected_shipping_time": 3,
+        "batch_number": "WTL-2026-102",
+        "category": ["ceramic & tiles"],
+        "subCategory": ["wall tiles"],
+        "grade": "A",
+        "color": "Glossy White",
+        "pricePerUnit": 15,
+        "priceUnit": "sq.ft",
+        "views": 3200,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-21T09:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T16:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439308" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "product_type": "ready-to-go",
+        "productName": "Luxury Porcelain Tiles - Wood Effect",
+        "product_sku": "POR-WOD-103",
+        "description": "Premium wood-effect porcelain tiles that perfectly mimic natural hardwood flooring. Offers the beauty of wood with the durability and low maintenance of porcelain. Suitable for all areas including wet zones. Features realistic wood grain texture and color variation. Frost-proof and suitable for both indoor and outdoor applications. Available in multiple wood tone options. Rectified edges for minimal grout lines.",
+        "productImages": [
+          "https://example.com/products/porcelain-wood-1.jpg",
+          "https://example.com/products/porcelain-wood-2.jpg",
+          "https://example.com/products/porcelain-wood-3.jpg",
+          "https://example.com/products/porcelain-wood-4.jpg"
+        ],
+        "size": {
+          "length": 1200,
+          "lengthMeasurement": "mm",
+          "width": 200,
+          "widthMeasurement": "mm",
+          "thickness": 10,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 8,
+        "weightMeasurement": "kg",
+        "product_material": "Porcelain Ceramic",
+        "origin": "Italy",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ISO 13006 BIa",
+          "technical_sheets": ["https://example.com/specs/porcelain-wood-tech.pdf"],
+          "certificates": ["https://example.com/certs/porcelain-wood-cert.pdf"]
+        },
+        "available_stock": 1800,
+        "expected_shipping_time": 7,
+        "batch_number": "POR-2026-103",
+        "category": ["ceramic & tiles"],
+        "subCategory": ["porcelain tiles"],
+        "grade": "A",
+        "color": "Walnut Brown",
+        "pricePerUnit": 48,
+        "priceUnit": "sq.ft",
+        "views": 2800,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-21T10:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T17:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439309" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "product_type": "ready-to-go",
+        "productName": "Glass Mosaic Tiles - Premium Collection",
+        "product_sku": "MOS-GLS-104",
+        "description": "Stunning glass mosaic tiles perfect for creating eye-catching feature walls, backsplashes, and decorative accents. Made from recycled glass with vibrant colors that won't fade. Each sheet contains small glass pieces in coordinating colors for a sophisticated look. Easy to install on mesh backing. Resistant to water, stains, and chemicals. Ideal for pool surrounds, spa areas, and luxury bathrooms.",
+        "productImages": [
+          "https://example.com/products/glass-mosaic-1.jpg",
+          "https://example.com/products/glass-mosaic-2.jpg",
+          "https://example.com/products/glass-mosaic-3.jpg"
+        ],
+        "size": {
+          "length": 300,
+          "lengthMeasurement": "mm",
+          "width": 300,
+          "widthMeasurement": "mm",
+          "thickness": 4,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 2,
+        "weightMeasurement": "kg",
+        "product_material": "Recycled Glass",
+        "origin": "China",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C1027",
+          "technical_sheets": ["https://example.com/specs/glass-mosaic-tech.pdf"],
+          "certificates": ["https://example.com/certs/glass-mosaic-cert.pdf"]
+        },
+        "available_stock": 3500,
+        "expected_shipping_time": 10,
+        "batch_number": "MOS-2026-104",
+        "category": ["ceramic & tiles"],
+        "subCategory": ["mosaic tiles"],
+        "grade": "A",
+        "color": "Ocean Blue Mix",
+        "pricePerUnit": 38,
+        "priceUnit": "sq.ft",
+        "views": 1950,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-21T11:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T18:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439310" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439202" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+        "userId": { "$oid": "507f1f77bcf86cd799439012" },
+        "product_type": "ready-to-go",
+        "productName": "Heavy Duty Floor Tiles - Industrial Grade",
+        "product_sku": "FLR-IND-105",
+        "description": "Industrial-grade floor tiles designed for heavy-duty commercial and industrial applications. Features exceptional impact resistance and load-bearing capacity. Anti-slip R11 rated surface suitable for wet and oily conditions. Resistant to chemicals, acids, and thermal shock. Ideal for factories, warehouses, garages, and commercial kitchens. Available in neutral colors for professional appearance. Easy to clean and maintain.",
+        "productImages": [
+          "https://example.com/products/industrial-floor-1.jpg",
+          "https://example.com/products/industrial-floor-2.jpg",
+          "https://example.com/products/industrial-floor-3.jpg"
+        ],
+        "size": {
+          "length": 600,
+          "lengthMeasurement": "mm",
+          "width": 600,
+          "widthMeasurement": "mm",
+          "thickness": 12,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 16,
+        "weightMeasurement": "kg",
+        "product_material": "Industrial Porcelain",
+        "origin": "Spain",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ISO 10545-4",
+          "technical_sheets": ["https://example.com/specs/industrial-floor-tech.pdf"],
+          "certificates": ["https://example.com/certs/industrial-floor-cert.pdf"]
+        },
+        "available_stock": 4000,
+        "expected_shipping_time": 14,
+        "batch_number": "FLR-2026-105",
+        "category": ["ceramic & tiles"],
+        "subCategory": ["floor tiles"],
+        "grade": "A",
+        "color": "Industrial Grey",
+        "pricePerUnit": 42,
+        "priceUnit": "sq.ft",
+        "views": 1100,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-21T12:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-01T19:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439311" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "product_type": "ready-to-go",
+        "productName": "Imperial Red Granite - Premium Grade",
+        "product_sku": "GRN-RED-201",
+        "description": "Stunning Imperial Red granite with deep red background and black speckles. This premium-grade granite is highly sought after for its rich color and elegant appearance. Perfect for kitchen countertops, vanity tops, and luxury flooring. Features excellent hardness and durability. Polished to a mirror finish that enhances the natural beauty of the stone. Resistant to scratches, heat, and stains.",
+        "productImages": [
+          "https://example.com/products/imperial-red-1.jpg",
+          "https://example.com/products/imperial-red-2.jpg",
+          "https://example.com/products/imperial-red-3.jpg",
+          "https://example.com/products/imperial-red-4.jpg"
+        ],
+        "size": {
+          "length": 2800,
+          "lengthMeasurement": "mm",
+          "width": 1400,
+          "widthMeasurement": "mm",
+          "thickness": 20,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 196,
+        "weightMeasurement": "kg",
+        "product_material": "Imperial Red Granite",
+        "origin": "Rajasthan, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C615",
+          "technical_sheets": ["https://example.com/specs/imperial-red-tech.pdf"],
+          "certificates": ["https://example.com/certs/imperial-red-cert.pdf"]
+        },
+        "available_stock": 280,
+        "expected_shipping_time": 7,
+        "batch_number": "GRN-2026-201",
+        "category": ["natural stones"],
+        "subCategory": ["granite"],
+        "grade": "A",
+        "color": "Imperial Red",
+        "pricePerUnit": 72,
+        "priceUnit": "sq.ft",
+        "views": 1580,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-26T08:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T08:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439312" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "product_type": "ready-to-go",
+        "productName": "Crystal White Quartzite",
+        "product_sku": "QTZ-WHT-202",
+        "description": "Exquisite Crystal White quartzite with subtle grey veining that resembles fine marble. This natural stone offers superior hardness compared to marble while maintaining an elegant appearance. Ideal for high-end countertops, wall cladding, and luxury flooring. Features high resistance to heat, scratches, and etching. Available in polished and honed finishes. UV resistant and suitable for both indoor and outdoor applications.",
+        "productImages": [
+          "https://example.com/products/crystal-white-1.jpg",
+          "https://example.com/products/crystal-white-2.jpg",
+          "https://example.com/products/crystal-white-3.jpg"
+        ],
+        "size": {
+          "length": 3000,
+          "lengthMeasurement": "mm",
+          "width": 1500,
+          "widthMeasurement": "mm",
+          "thickness": 30,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 337,
+        "weightMeasurement": "kg",
+        "product_material": "Crystal White Quartzite",
+        "origin": "Brazil",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C616",
+          "technical_sheets": ["https://example.com/specs/crystal-white-tech.pdf"],
+          "certificates": ["https://example.com/certs/crystal-white-cert.pdf"]
+        },
+        "available_stock": 150,
+        "expected_shipping_time": 21,
+        "batch_number": "QTZ-2026-202",
+        "category": ["natural stones"],
+        "subCategory": ["quartzite"],
+        "grade": "A",
+        "color": "Crystal White",
+        "pricePerUnit": 95,
+        "priceUnit": "sq.ft",
+        "views": 920,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-26T09:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T09:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439313" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "product_type": "ready-to-go",
+        "productName": "Engineered Quartz - Calacatta Design",
+        "product_sku": "ENG-CAL-203",
+        "description": "Premium engineered quartz surface with Calacatta marble look. Composed of 93% natural quartz crystals and high-quality resin for exceptional strength and beauty. Non-porous surface resists stains, bacteria, and scratches. Maintenance-free and does not require sealing. Perfect for kitchen countertops, bathroom vanities, and commercial surfaces. Consistent pattern and color throughout. Available in polished finish with elegant veining.",
+        "productImages": [
+          "https://example.com/products/engineered-calacatta-1.jpg",
+          "https://example.com/products/engineered-calacatta-2.jpg",
+          "https://example.com/products/engineered-calacatta-3.jpg",
+          "https://example.com/products/engineered-calacatta-4.jpg"
+        ],
+        "size": {
+          "length": 3000,
+          "lengthMeasurement": "mm",
+          "width": 1400,
+          "widthMeasurement": "mm",
+          "thickness": 20,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 126,
+        "weightMeasurement": "kg",
+        "product_material": "Engineered Quartz",
+        "origin": "India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "NSF/ANSI 51",
+          "technical_sheets": ["https://example.com/specs/engineered-calacatta-tech.pdf"],
+          "certificates": ["https://example.com/certs/engineered-calacatta-cert.pdf"]
+        },
+        "available_stock": 400,
+        "expected_shipping_time": 10,
+        "batch_number": "ENG-2026-203",
+        "category": ["alternatives & finishes"],
+        "subCategory": ["quartz"],
+        "grade": "A",
+        "color": "Calacatta White",
+        "pricePerUnit": 88,
+        "priceUnit": "sq.ft",
+        "views": 2200,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-26T10:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T10:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439314" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "product_type": "CNC",
+        "productName": "CNC Carved Granite Panel - Custom Design",
+        "product_sku": "CNC-GRN-204",
+        "description": "Custom CNC-carved granite panels for architectural and decorative applications. We can create intricate patterns, logos, lettering, and artistic designs on granite surfaces using advanced CNC technology. Perfect for building facades, feature walls, monuments, and signage. Upload your design or work with our team to create unique patterns. Available in various granite colors. Precision cutting ensures consistent quality and detail.",
+        "productImages": [
+          "https://example.com/products/cnc-granite-1.jpg",
+          "https://example.com/products/cnc-granite-2.jpg",
+          "https://example.com/products/cnc-granite-3.jpg"
+        ],
+        "size": {
+          "length": 1200,
+          "lengthMeasurement": "mm",
+          "width": 600,
+          "widthMeasurement": "mm",
+          "thickness": 30,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 54,
+        "weightMeasurement": "kg",
+        "product_material": "Black Galaxy Granite",
+        "origin": "Andhra Pradesh, India",
+        "compliance_standards": {
+          "ce_marking": false,
+          "material_standard": "ASTM C615",
+          "technical_sheets": ["https://example.com/specs/cnc-granite-tech.pdf"],
+          "certificates": []
+        },
+        "available_stock": 0,
+        "expected_shipping_time": 30,
+        "batch_number": "CNC-2026-204",
+        "technical_file": {
+          "url": "https://example.com/technical/cnc-design-template.dxf",
+          "hash": "abc123def456",
+          "archive_path": "/archive/cnc-designs/",
+          "upload_timestamp": { "$date": "2025-01-26T11:00:00.000Z" }
+        },
+        "custom_parameters": {
+          "height": null,
+          "width": 600,
+          "length": 1200,
+          "thickness": 30,
+          "tolerances": "+/- 0.5mm",
+          "finish_types": ["polished", "flamed", "honed"],
+          "chamfers": "Custom as per design"
+        },
+        "preview_3d_url": "https://example.com/3d-preview/cnc-granite-sample.glb",
+        "category": ["natural stones"],
+        "subCategory": ["granite"],
+        "grade": "A",
+        "color": "Black Galaxy",
+        "pricePerUnit": 125,
+        "priceUnit": "sq.ft",
+        "views": 680,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-26T11:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T11:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439315" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439203" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+        "userId": { "$oid": "507f1f77bcf86cd799439013" },
+        "product_type": "ready-to-go",
+        "productName": "Kashmir White Granite",
+        "product_sku": "GRN-KSH-205",
+        "description": "Beautiful Kashmir White granite featuring white background with grey and burgundy specks. This versatile granite complements both traditional and contemporary designs. Ideal for kitchen countertops, bathroom vanities, and flooring. Known for its consistent pattern and easy maintenance. Highly durable and resistant to daily wear and tear. Available in polished and leathered finishes.",
+        "productImages": [
+          "https://example.com/products/kashmir-white-1.jpg",
+          "https://example.com/products/kashmir-white-2.jpg",
+          "https://example.com/products/kashmir-white-3.jpg"
+        ],
+        "size": {
+          "length": 2800,
+          "lengthMeasurement": "mm",
+          "width": 1400,
+          "widthMeasurement": "mm",
+          "thickness": 20,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 196,
+        "weightMeasurement": "kg",
+        "product_material": "Kashmir White Granite",
+        "origin": "Karnataka, India",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C615",
+          "technical_sheets": ["https://example.com/specs/kashmir-white-tech.pdf"],
+          "certificates": ["https://example.com/certs/kashmir-white-cert.pdf"]
+        },
+        "available_stock": 320,
+        "expected_shipping_time": 7,
+        "batch_number": "GRN-2026-205",
+        "category": ["natural stones"],
+        "subCategory": ["granite"],
+        "grade": "A",
+        "color": "Kashmir White",
+        "pricePerUnit": 55,
+        "priceUnit": "sq.ft",
+        "views": 1430,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-26T12:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T12:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439316" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "product_type": "ready-to-go",
+        "productName": "Italian Statuario Marble - Premium",
+        "product_sku": "MBL-STA-301",
+        "description": "Authentic Italian Statuario marble renowned for its pure white background and dramatic grey veining. This premium marble is considered one of the most prestigious natural stones in the world. Perfect for luxury residential projects, hotel lobbies, and high-end commercial spaces. Each slab is unique with distinctive veining patterns. Suitable for flooring, wall cladding, countertops, and sculptural elements. Requires professional sealing and maintenance.",
+        "productImages": [
+          "https://example.com/products/statuario-1.jpg",
+          "https://example.com/products/statuario-2.jpg",
+          "https://example.com/products/statuario-3.jpg",
+          "https://example.com/products/statuario-4.jpg"
+        ],
+        "size": {
+          "length": 3000,
+          "lengthMeasurement": "mm",
+          "width": 1800,
+          "widthMeasurement": "mm",
+          "thickness": 20,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 270,
+        "weightMeasurement": "kg",
+        "product_material": "Statuario Marble",
+        "origin": "Carrara, Italy",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "EN 12058",
+          "technical_sheets": ["https://example.com/specs/statuario-tech.pdf"],
+          "certificates": ["https://example.com/certs/statuario-cert.pdf"]
+        },
+        "available_stock": 45,
+        "expected_shipping_time": 28,
+        "batch_number": "MBL-2026-301",
+        "category": ["natural stones"],
+        "subCategory": ["marble"],
+        "grade": "A",
+        "color": "Statuario White",
+        "pricePerUnit": 245,
+        "priceUnit": "sq.ft",
+        "views": 3400,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-29T08:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T13:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439317" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "product_type": "made-to-order",
+        "productName": "Custom Travertine Tiles - Antique Finish",
+        "product_sku": "TRV-ANT-302",
+        "description": "Custom-made travertine tiles with antique tumbled finish for a rustic Mediterranean look. Available in various sizes and edge treatments. Natural stone with characteristic pitting and veining adds authentic character to any space. Perfect for outdoor patios, pool decks, kitchen backsplashes, and bathroom walls. We offer custom sizing, thickness options, and finish types including tumbled, honed, and brushed. Minimum order quantity applies for custom specifications.",
+        "productImages": [
+          "https://example.com/products/travertine-antique-1.jpg",
+          "https://example.com/products/travertine-antique-2.jpg",
+          "https://example.com/products/travertine-antique-3.jpg"
+        ],
+        "size": {
+          "length": 610,
+          "lengthMeasurement": "mm",
+          "width": 406,
+          "widthMeasurement": "mm",
+          "thickness": 12,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 11,
+        "weightMeasurement": "kg",
+        "product_material": "Ivory Travertine",
+        "origin": "Turkey",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C1527",
+          "technical_sheets": ["https://example.com/specs/travertine-tech.pdf"],
+          "certificates": ["https://example.com/certs/travertine-cert.pdf"]
+        },
+        "available_stock": 500,
+        "expected_shipping_time": 21,
+        "batch_number": "TRV-2026-302",
+        "custom_parameters": {
+          "height": null,
+          "width": 406,
+          "length": 610,
+          "thickness": 12,
+          "tolerances": "+/- 2mm",
+          "finish_types": ["tumbled", "honed", "brushed", "filled"],
+          "chamfers": "Tumbled edges"
+        },
+        "category": ["natural stones"],
+        "subCategory": ["travertine"],
+        "grade": "B",
+        "color": "Ivory Beige",
+        "pricePerUnit": 35,
+        "priceUnit": "sq.ft",
+        "views": 780,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-29T09:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T14:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439318" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "product_type": "ready-to-go",
+        "productName": "Modern Terrazzo Tiles - Designer Collection",
+        "product_sku": "TRZ-DES-303",
+        "description": "Contemporary terrazzo tiles featuring marble and glass aggregate in cement or epoxy matrix. Our designer collection offers modern interpretations of classic terrazzo with vibrant colors and unique patterns. Perfect for creating statement floors, feature walls, and countertops. Available in large format tiles for minimal grout lines. Durable, low-maintenance, and suitable for high-traffic areas. Each tile is sealed and ready for installation.",
+        "productImages": [
+          "https://example.com/products/terrazzo-modern-1.jpg",
+          "https://example.com/products/terrazzo-modern-2.jpg",
+          "https://example.com/products/terrazzo-modern-3.jpg",
+          "https://example.com/products/terrazzo-modern-4.jpg"
+        ],
+        "size": {
+          "length": 800,
+          "lengthMeasurement": "mm",
+          "width": 800,
+          "widthMeasurement": "mm",
+          "thickness": 15,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 28,
+        "weightMeasurement": "kg",
+        "product_material": "Epoxy Terrazzo",
+        "origin": "Italy",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ASTM C1863",
+          "technical_sheets": ["https://example.com/specs/terrazzo-tech.pdf"],
+          "certificates": ["https://example.com/certs/terrazzo-cert.pdf"]
+        },
+        "available_stock": 600,
+        "expected_shipping_time": 14,
+        "batch_number": "TRZ-2026-303",
+        "category": ["alternatives & finishes"],
+        "subCategory": ["terrazzo"],
+        "grade": "A",
+        "color": "Multicolor Grey",
+        "pricePerUnit": 68,
+        "priceUnit": "sq.ft",
+        "views": 1250,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-29T10:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T15:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439319" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "product_type": "made-to-order",
+        "productName": "Decorative Concrete Panels - Bespoke Design",
+        "product_sku": "CON-BES-304",
+        "description": "Custom decorative concrete panels for architectural applications. We create bespoke concrete elements with integrated colors, textures, and patterns. Perfect for feature walls, facades, and interior design elements. Can incorporate embedded materials, relief patterns, or custom molds. Available in various finishes including polished, exposed aggregate, and board-formed. Ideal for modern minimalist and industrial design aesthetics. Lead time required for custom design and fabrication.",
+        "productImages": [
+          "https://example.com/products/concrete-decorative-1.jpg",
+          "https://example.com/products/concrete-decorative-2.jpg",
+          "https://example.com/products/concrete-decorative-3.jpg"
+        ],
+        "size": {
+          "length": 2400,
+          "lengthMeasurement": "mm",
+          "width": 1200,
+          "widthMeasurement": "mm",
+          "thickness": 40,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 230,
+        "weightMeasurement": "kg",
+        "product_material": "Architectural Concrete",
+        "origin": "India",
+        "compliance_standards": {
+          "ce_marking": false,
+          "material_standard": "ASTM C1364",
+          "technical_sheets": ["https://example.com/specs/concrete-tech.pdf"],
+          "certificates": []
+        },
+        "available_stock": 0,
+        "expected_shipping_time": 45,
+        "batch_number": "CON-2026-304",
+        "custom_parameters": {
+          "height": 2400,
+          "width": 1200,
+          "length": null,
+          "thickness": 40,
+          "tolerances": "+/- 3mm",
+          "finish_types": ["polished", "exposed aggregate", "board-formed", "sandblasted"],
+          "chamfers": "Custom per design"
+        },
+        "category": ["alternatives & finishes"],
+        "subCategory": ["concrete"],
+        "grade": "A",
+        "color": "Custom Color",
+        "pricePerUnit": 95,
+        "priceUnit": "sq.ft",
+        "views": 520,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-29T11:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T16:00:00.000Z" },
+        "__v": 0
+      },
+      {
+        "_id": { "$oid": "507f1f77bcf86cd799439320" },
+        "companyId": { "$oid": "507f1f77bcf86cd799439204" },
+        "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+        "userId": { "$oid": "507f1f77bcf86cd799439014" },
+        "product_type": "ready-to-go",
+        "productName": "Premium Resin Surface - Solid Color",
+        "product_sku": "RSN-SOL-305",
+        "description": "High-quality solid surface resin material for seamless installations. Non-porous acrylic-based material available in wide range of solid colors and patterns. Perfect for countertops, sinks, wall panels, and furniture applications. Can be thermoformed and joined invisibly for custom shapes. Repairable and renewable surface. Resistant to moisture, bacteria, and stains. Ideal for healthcare, hospitality, and residential projects. Easy to fabricate and install.",
+        "productImages": [
+          "https://example.com/products/resin-solid-1.jpg",
+          "https://example.com/products/resin-solid-2.jpg",
+          "https://example.com/products/resin-solid-3.jpg"
+        ],
+        "size": {
+          "length": 3660,
+          "lengthMeasurement": "mm",
+          "width": 760,
+          "widthMeasurement": "mm",
+          "thickness": 12,
+          "thicknessMeasurement": "mm"
+        },
+        "weight": 42,
+        "weightMeasurement": "kg",
+        "product_material": "Acrylic Solid Surface",
+        "origin": "South Korea",
+        "compliance_standards": {
+          "ce_marking": true,
+          "material_standard": "ICPA SS-1",
+          "technical_sheets": ["https://example.com/specs/resin-tech.pdf"],
+          "certificates": ["https://example.com/certs/resin-cert.pdf"]
+        },
+        "available_stock": 450,
+        "expected_shipping_time": 10,
+        "batch_number": "RSN-2026-305",
+        "category": ["alternatives & finishes"],
+        "subCategory": ["resin"],
+        "grade": "A",
+        "color": "Arctic White",
+        "pricePerUnit": 78,
+        "priceUnit": "sq.ft",
+        "views": 890,
+        "status": "active",
+        "createdAt": { "$date": "2025-01-29T12:00:00.000Z" },
+        "updatedAt": { "$date": "2026-02-02T17:00:00.000Z" },
+        "__v": 0
+      }
+    ]
+  }

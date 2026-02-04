@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
     const checkAuth = async () => {
       try {
         const res = await api.get("/auth/validate", {
-          withCredentials: true, 
+          withCredentials: true,
         });
 
         if (res.data.valid) {

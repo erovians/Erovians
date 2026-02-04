@@ -6,7 +6,7 @@ import { createQuotationRequest } from "../lib/redux/quotation/quotationSlice";
 import CategoryStep from "../components/rfq/CategoryStep";
 import RequirementsStep from "../components/rfq/RequirementsStep";
 import DetailsReviewStep from "../components/rfq/DetailsReviewStep";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const RFQPage = () => {
@@ -137,7 +137,6 @@ const RFQPage = () => {
       finalData.contactPhone = formData.contactPhone;
     }
 
-    console.log("✅ RFQ Submitted:", finalData);
     dispatch(createQuotationRequest(finalData));
 
     navigate("/");

@@ -24,8 +24,12 @@ const App = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   useEffect(() => {
-    dispatch(loadUser());
+    if (isAuthenticated) {
+      dispatch(loadUser());
+    }
   }, [dispatch]);
 
   // Clear errors and success messages on route change

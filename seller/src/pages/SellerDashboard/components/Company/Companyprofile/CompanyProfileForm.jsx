@@ -12,8 +12,11 @@ import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
 import {
   registerCompany,
+  updateCompany,
   clearCompanyState,
   getCompany,
+  clearError,
+  clearSuccess,
 } from "@/redux/slice/companySlice";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -43,14 +46,21 @@ export default function CompanyProfileForm() {
     return savedStep ? Number(savedStep) : 1;
   });
 
-  const { company, loading, error } = useSelector((state) => state.company);
-  const loadingProfile = loading;
+  const { company, loading, error, success, message } = useSelector(
+    (state) => state.company
+  );
+  const { seller, loading: sellerLoading } = useSelector(
+    (state) => state.seller
+  );
+  console.log("this is seller", seller);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("companyFormData");
     return savedData
       ? JSON.parse(savedData)
       : {
+          // Basic Info
           companyName: "",
           legalowner: "",
           locationOfRegistration: "",
@@ -67,6 +77,16 @@ export default function CompanyProfileForm() {
           acceptedCurrency: [],
           acceptedPaymentType: [],
           languageSpoken: [],
+          totalEmployees: "",
+          businessType: "",
+          factorySize: "",
+          factoryCountryOrRegion: "",
+          contractManufacturing: false,
+          numberOfProductionLines: "",
+          annualOutputValue: "",
+          rdTeamSize: "",
+          tradeCapabilities: [],
+          // Company Intro
           companyDescription: "",
           logo: null,
           companyPhotos: [],
@@ -85,13 +105,13 @@ export default function CompanyProfileForm() {
   // ✅ Populate form when company data arrives
   useEffect(() => {
     if (company) {
+      setIsEditMode(true);
       const c = company;
 
-      // Helper function to split comma-separated strings
+      // Helper to split comma-separated strings
       const splitString = (str) => {
         if (!str) return [];
         if (Array.isArray(str)) {
-          // If already array, flatten and split each item
           return str.flatMap((item) =>
             typeof item === "string"
               ? item.split(",").map((s) => s.trim())
@@ -101,17 +121,14 @@ export default function CompanyProfileForm() {
         return str.split(",").map((s) => s.trim());
       };
 
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
+        // Basic Info
         companyName: c.companyBasicInfo?.companyName || "",
         legalowner: c.companyBasicInfo?.legalowner || "",
         locationOfRegistration:
           c.companyBasicInfo?.locationOfRegistration || "",
-        companyRegistrationYear: c.companyBasicInfo?.companyRegistrationYear
-          ? new Date(c.companyBasicInfo.companyRegistrationYear)
-              .getFullYear()
-              .toString()
-          : "",
+        companyRegistrationYear:
+          c.companyBasicInfo?.companyRegistrationYear || "",
         address: {
           street: c.companyBasicInfo?.address?.street || "",
           city: c.companyBasicInfo?.address?.city || "",
@@ -126,23 +143,56 @@ export default function CompanyProfileForm() {
           c.companyBasicInfo?.acceptedPaymentType
         ),
         languageSpoken: splitString(c.companyBasicInfo?.languageSpoken),
+        totalEmployees: c.companyBasicInfo?.totalEmployees?.toString() || "",
+        businessType: c.companyBasicInfo?.businessType || "",
+        factorySize: c.companyBasicInfo?.factorySize || "",
+        factoryCountryOrRegion:
+          c.companyBasicInfo?.factoryCountryOrRegion || "",
+        contractManufacturing:
+          c.companyBasicInfo?.contractManufacturing || false,
+        numberOfProductionLines:
+          c.companyBasicInfo?.numberOfProductionLines?.toString() || "",
+        annualOutputValue: c.companyBasicInfo?.annualOutputValue || "",
+        rdTeamSize: c.companyBasicInfo?.rdTeamSize?.toString() || "",
+        tradeCapabilities: c.companyBasicInfo?.tradeCapabilities || [],
+        // Company Intro
         companyDescription: c.companyIntro?.companyDescription || "",
         logoUrl: c.companyIntro?.logo || "",
         companyPhotosUrl: c.companyIntro?.companyPhotos || [],
         companyVideosUrl: c.companyIntro?.companyVideos || [],
-      }));
+      });
     }
   }, [company]);
 
+  // ✅ Save to localStorage
   useEffect(() => {
     const { logo, companyPhotos, companyVideos, ...safeData } = formData;
     localStorage.setItem("companyFormData", JSON.stringify(safeData));
   }, [formData]);
 
+  // ✅ Update progress
   useEffect(() => {
     localStorage.setItem("currentStep", currentStep);
     setProgress(Math.round(((currentStep - 1) / (steps.length - 1)) * 100));
   }, [currentStep]);
+
+  // ✅ Handle success/error
+  useEffect(() => {
+    if (success && message) {
+      toast.success(message);
+      setTimeout(() => {
+        localStorage.removeItem("companyFormData");
+        localStorage.removeItem("currentStep");
+        dispatch(clearSuccess());
+        navigate("/sellerdashboard");
+      }, 1500);
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [success, error, message, dispatch, navigate]);
 
   const CurrentComponent = steps[currentStep - 1].component;
 
@@ -174,6 +224,7 @@ export default function CompanyProfileForm() {
     } catch (err) {
       const formatted = mapZodErrors(err);
       setErrors(formatted);
+      toast.error("Please fix the errors before proceeding");
     }
   };
 
@@ -184,12 +235,15 @@ export default function CompanyProfileForm() {
 
   const handleSubmit = async () => {
     try {
+      // Validate all steps
       await stepOneSchema.parseAsync(formData);
       await stepTwoSchema.parseAsync(formData);
       setErrors({});
 
+      // Create FormData
       const form = new FormData();
 
+      // Basic Info
       form.append("companyName", formData.companyName);
       form.append("legalowner", formData.legalowner);
       form.append("locationOfRegistration", formData.locationOfRegistration);
@@ -203,8 +257,43 @@ export default function CompanyProfileForm() {
         formData.acceptedPaymentType.join(",")
       );
       form.append("languageSpoken", formData.languageSpoken.join(","));
+
+      // Optional fields
+      if (formData.totalEmployees) {
+        form.append("totalEmployees", formData.totalEmployees);
+      }
+      if (formData.businessType) {
+        form.append("businessType", formData.businessType);
+      }
+      if (formData.factorySize) {
+        form.append("factorySize", formData.factorySize);
+      }
+      if (formData.factoryCountryOrRegion) {
+        form.append("factoryCountryOrRegion", formData.factoryCountryOrRegion);
+      }
+      if (formData.contractManufacturing !== undefined) {
+        form.append("contractManufacturing", formData.contractManufacturing);
+      }
+      if (formData.numberOfProductionLines) {
+        form.append(
+          "numberOfProductionLines",
+          formData.numberOfProductionLines
+        );
+      }
+      if (formData.annualOutputValue) {
+        form.append("annualOutputValue", formData.annualOutputValue);
+      }
+      if (formData.rdTeamSize) {
+        form.append("rdTeamSize", formData.rdTeamSize);
+      }
+      if (formData.tradeCapabilities?.length > 0) {
+        form.append("tradeCapabilities", formData.tradeCapabilities.join(","));
+      }
+
+      // Company Intro
       form.append("companyDescription", formData.companyDescription);
 
+      // Files
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
       }
@@ -222,36 +311,36 @@ export default function CompanyProfileForm() {
         form.append("companyVideo", formData.companyVideos[0]);
       }
 
-      const result = await dispatch(registerCompany(form)).unwrap();
-
-      toast.success(result.message || "Company registered successfully!");
-
-      localStorage.removeItem("companyFormData");
-      localStorage.removeItem("currentStep");
-
-      dispatch(clearCompanyState());
-
-      setTimeout(() => {
-        navigate("/sellerdashboard");
-      }, 1000);
+      // Dispatch appropriate action
+      if (isEditMode) {
+        await dispatch(updateCompany(form)).unwrap();
+      } else {
+        await dispatch(registerCompany(form)).unwrap();
+      }
     } catch (err) {
       console.error("Submit error:", err);
-      const formatted = mapZodErrors(err);
-      setErrors(formatted);
 
-      if (
-        formatted["companyName"] ||
-        formatted["address.street"] ||
-        formatted["acceptedCurrency"]
-      ) {
-        setCurrentStep(1);
-      } else if (
-        formatted["companyDescription"] ||
-        formatted["logo"] ||
-        formatted["companyPhotos"]
-      ) {
-        setCurrentStep(2);
+      // Handle validation errors
+      if (err.issues) {
+        const formatted = mapZodErrors(err);
+        setErrors(formatted);
+
+        // Navigate to the step with errors
+        if (
+          formatted["companyName"] ||
+          formatted["address.street"] ||
+          formatted["acceptedCurrency"]
+        ) {
+          setCurrentStep(1);
+        } else if (
+          formatted["companyDescription"] ||
+          formatted["logo"] ||
+          formatted["companyPhotos"]
+        ) {
+          setCurrentStep(2);
+        }
       }
+
       toast.error(err.message || "Something went wrong");
     }
   };
@@ -259,6 +348,7 @@ export default function CompanyProfileForm() {
   return (
     <div className="max-w-7xl mx-auto rounded bg-white">
       <div className="p-2 md:p-4">
+        {/* Progress Bar */}
         <div className="flex justify-between mb-2">
           <span className="font-medium">Progress</span>
           <span className="text-sm">{progress}%</span>
@@ -270,6 +360,7 @@ export default function CompanyProfileForm() {
           />
         </div>
 
+        {/* Step Indicators */}
         <div className="flex justify-between mt-6">
           {steps.map((step) => {
             const isActive = currentStep === step.id;
@@ -309,7 +400,7 @@ export default function CompanyProfileForm() {
       </div>
 
       <div className="pt-6 md:p-6">
-        {loadingProfile ? (
+        {loading && currentStep === 1 ? (
           <div className="flex justify-center items-center h-64">
             <Spinner />
             <span className="ml-2">Loading company details...</span>
@@ -343,7 +434,11 @@ export default function CompanyProfileForm() {
                     disabled={loading}
                   >
                     {loading && <Spinner />}
-                    {loading ? "Submitting" : "Submit"}
+                    {loading
+                      ? "Submitting"
+                      : isEditMode
+                      ? "Update Company"
+                      : "Submit"}
                   </Button>
                 )}
               </div>

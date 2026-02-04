@@ -105,7 +105,7 @@ api.interceptors.response.use(
         localStorage.removeItem("refreshToken");
 
         if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
+          window.location.href = "/";
         }
         return Promise.reject(refreshError);
       } finally {
