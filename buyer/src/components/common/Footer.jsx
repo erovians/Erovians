@@ -5,29 +5,37 @@ import {
   Phone,
   MessageCircle,
   Package,
-  DollarSign,
   ShoppingBag,
   Info,
   Newspaper,
-  Share2,
   HelpCircle,
   Facebook,
   Twitter,
   Instagram,
   Linkedin,
   Youtube,
-  CreditCard,
   Store,
   FileCheck,
   ShieldCheck,
   RefreshCw,
+  CreditCard,
+  FileText,
+  Users,
+  Award,
+  Briefcase,
+  Globe,
+  AlertCircle,
+  Search,
+  Lock,
+  Smartphone,
 } from "lucide-react";
 import { assets } from "../../assets/assets";
 
 export default function Footer() {
   return (
     <footer className="text-white flex flex-col">
-      <div className="bg-navyblue px-4 sm:px-6 md:px-8 py-12 md:py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12">
+      <div className="bg-navyblue px-4 sm:px-6 md:px-8 py-12 md:py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 md:gap-10">
+        {/* Company Info */}
         <div className="lg:col-span-1">
           <Link to="/">
             <img
@@ -37,10 +45,9 @@ export default function Footer() {
             />
           </Link>
           <p className="text-sm leading-5 text-white/90 mb-8">
-            <span className="font-semibold text-white">Erovians</span> is a
-            digital marketplace built for the stone industry. We connect buyers
-            and sellers of marble, granite, and natural stones through a
-            transparent, reliable, and easy-to-use platform.
+            <span className="font-semibold text-white">Erovians</span> is a B2B
+            digital marketplace for the stone industry. Connecting global buyers
+            and sellers of marble, granite, and natural stones.
           </p>
           <div className="flex gap-3 flex-wrap">
             <a
@@ -91,30 +98,13 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Get Support */}
         <div>
           <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-white" />
-            Support
+            Get Support
           </h1>
           <ul className="space-y-3">
-            <li>
-              <Link
-                to="/contact"
-                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
-              >
-                <Mail className="w-4 h-4" />
-                <span>Contact Us</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/refund-policy"
-                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Refund</span>
-              </Link>
-            </li>
             <li>
               <Link
                 to="/help"
@@ -142,13 +132,142 @@ export default function Footer() {
                 <span>Check Order Status</span>
               </Link>
             </li>
+            <li>
+              <Link
+                to="/refund-policy"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>Refunds & Returns</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/report-issue"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <AlertCircle className="w-4 h-4" />
+                <span>Report Issue</span>
+              </Link>
+            </li>
           </ul>
         </div>
 
+        {/* Payments & Protections */}
         <div>
           <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-white" />
-            Selling
+            <ShieldCheck className="w-5 h-5 text-white" />
+            Payments & Protections
+          </h1>
+          <ul className="space-y-3">
+            <li>
+              <Link
+                to="/how-to-pay"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <CreditCard className="w-4 h-4" />
+                <span>Safe & Easy Payments</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/money-back-policy"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Money-Back Policy</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/escrow-protection"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Lock className="w-4 h-4" />
+                <span>Escrow Protection</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/after-sales"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Users className="w-4 h-4" />
+                <span>After-Sales Support</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/product-monitor"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Package className="w-4 h-4" />
+                <span>Product Monitoring</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Source on Erovians */}
+        <div>
+          <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
+            <Search className="w-5 h-5 text-white" />
+            Source on Erovians
+          </h1>
+          <ul className="space-y-3">
+            <li>
+              <Link
+                to="/rfqs"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Request for Quotation</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/categories"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Package className="w-4 h-4" />
+                <span>Browse Categories</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/verified-suppliers"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Award className="w-4 h-4" />
+                <span>Verified Suppliers</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/bulk-orders"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>Bulk Orders</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/trade-assurance"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Trade Assurance</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Sell on Erovians */}
+        <div>
+          <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
+            <Store className="w-5 h-5 text-white" />
+            Sell on Erovians
           </h1>
           <ul className="space-y-3">
             <li>
@@ -171,56 +290,39 @@ export default function Footer() {
             </li>
             <li>
               <Link
+                to="/seller-central"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Users className="w-4 h-4" />
+                <span>Seller Central</span>
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/partnership"
                 className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Erovians Partnership</span>
+                <Briefcase className="w-4 h-4" />
+                <span>Partnerships</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/seller-app"
+                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
+              >
+                <Smartphone className="w-4 h-4" />
+                <span>Download Seller App</span>
               </Link>
             </li>
           </ul>
         </div>
 
-        <div>
-          <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-white" />
-            Payment
-          </h1>
-          <ul className="space-y-3">
-            <li>
-              <Link
-                to="/product-monitor"
-                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
-              >
-                <Package className="w-4 h-4" />
-                <span>Product Monitor Service</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/money-back-policy"
-                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Money Back Policy</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/how-to-pay"
-                className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
-              >
-                <CreditCard className="w-4 h-4" />
-                <span>How to Pay?</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
-
+        {/* Get to Know Us */}
         <div>
           <h1 className="text-white font-bold text-base md:text-lg mb-6 flex items-center gap-2">
             <Info className="w-5 h-5 text-white" />
-            Erovians
+            Get to Know Us
           </h1>
           <ul className="space-y-3">
             <li>
@@ -229,7 +331,7 @@ export default function Footer() {
                 className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
               >
                 <Info className="w-4 h-4" />
-                <span>About</span>
+                <span>About Erovians</span>
               </Link>
             </li>
             <li>
@@ -243,20 +345,20 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                to="/social"
+                to="/responsibility"
                 className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
               >
-                <Share2 className="w-4 h-4" />
-                <span>Social Links</span>
+                <Globe className="w-4 h-4" />
+                <span>Corporate Responsibility</span>
               </Link>
             </li>
             <li>
               <Link
-                to="/company-info"
+                to="/careers"
                 className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
               >
-                <FileCheck className="w-4 h-4" />
-                <span>Erovians Information</span>
+                <Briefcase className="w-4 h-4" />
+                <span>Careers</span>
               </Link>
             </li>
             <li>
@@ -264,7 +366,7 @@ export default function Footer() {
                 to="/contact"
                 className="flex items-center gap-2.5 hover:translate-x-1 transition-transform text-sm text-white/80 hover:text-white"
               >
-                <Phone className="w-4 h-4" />
+                <Mail className="w-4 h-4" />
                 <span>Contact Us</span>
               </Link>
             </li>
@@ -272,16 +374,9 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Bottom Bar */}
       <div className="bg-gray-900 py-5 px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-gray-300">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-sm">
-          <Link
-            to="/help"
-            className="flex items-center gap-2 hover:text-white transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-            Help Center
-          </Link>
-          <span className="hidden sm:inline text-gray-600">|</span>
           <Link
             to="/privacy-policy"
             className="hover:text-white transition-colors"
@@ -294,6 +389,13 @@ export default function Footer() {
             className="hover:text-white transition-colors"
           >
             Terms of Service
+          </Link>
+          <span className="hidden sm:inline text-gray-600">|</span>
+          <Link
+            to="/legal-framework"
+            className="hover:text-white transition-colors"
+          >
+            Legal Framework
           </Link>
         </div>
         <p className="text-sm text-center sm:text-right">
