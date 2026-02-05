@@ -43,9 +43,19 @@ export const addContract = async (req, res) => {
 
 export const getContracts = async (req, res) => {
   try {
-    const sellerId = req.user?.userId;
+    const sellerId = req.user?.id;
+    const cacheKey = `contracts:${sellerId}`;
+
+    const cachedContracts = await cache.get(cacheKey);
+
+    if (cachedContracts) {
+      console.log("🔥Contract Redis HIT:", cacheKey);
+      return res.status(200).json(cachedContracts);
+    }
 
     const contracts = await Contract.find({ sellerId }).sort({ createdAt: -1 });
+
+    await cache.set(cacheKey, contracts);
 
     return res.status(200).json(contracts);
   } catch (error) {
@@ -83,7 +93,6 @@ export const updateContractStatus = async (req, res) => {
     res.status(500).json({ message: "Server error while updating status" });
   }
 };
-
 export const downloadContractPDF = async (req, res) => {
   try {
     const contract = await Contract.findById(req.params.id);

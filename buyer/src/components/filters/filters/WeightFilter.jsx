@@ -1,82 +1,88 @@
 import { Weight } from "lucide-react";
 
-const WeightFilter = ({ weightRange, weightUnit, onChange }) => {
-  const maxWeight = weightUnit === "kg" ? 1000 : 100;
+const WeightFilter = ({ weightMin, weightMax, onChange }) => {
+  const minValue = weightMin || 0;
+  const maxValue = weightMax || 1000;
 
   return (
     <div className="space-y-5">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          Weight Unit
-        </label>
-        <div className="flex gap-3">
-          <label className="flex-1 flex items-center justify-center gap-2 p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-600 hover:bg-blue-50 transition-all has-:checked:border-blue-600 has-:checked:bg-blue-50">
-            <input
-              type="radio"
-              name="weightUnit"
-              value="kg"
-              checked={weightUnit === "kg"}
-              onChange={(e) => onChange("unit", e.target.value)}
-              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-            />
-            <Weight className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Kilogram</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Weight className="w-5 h-5 text-blue-600" />
+          <span className="text-sm font-medium text-gray-700">
+            Weight Range (kg)
+          </span>
+        </div>
+        <span className="text-sm font-bold text-blue-600">
+          {minValue} - {maxValue} kg
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        {/* Min Weight Slider */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-2">
+            Min Weight (kg)
           </label>
-          <label className="flex-1 flex items-center justify-center gap-2 p-3 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-600 hover:bg-blue-50 transition-all has-:checked:border-blue-600 has-:checked:bg-blue-50">
-            <input
-              type="radio"
-              name="weightUnit"
-              value="ton"
-              checked={weightUnit === "ton"}
-              onChange={(e) => onChange("unit", e.target.value)}
-              className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-            />
-            <Weight className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">Ton</span>
+          <input
+            type="range"
+            min={0}
+            max={maxValue}
+            value={minValue}
+            onChange={(e) => onChange("weightMin", parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+        </div>
+
+        {/* Max Weight Slider */}
+        <div>
+          <label className="block text-xs text-gray-600 mb-2">
+            Max Weight (kg)
           </label>
+          <input
+            type="range"
+            min={minValue}
+            max={1000}
+            value={maxValue}
+            onChange={(e) => onChange("weightMax", parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
         </div>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-700">
-            Weight Range
-          </span>
-          <span className="text-sm font-bold text-blue-600">
-            {weightRange[0]} - {weightRange[1]} {weightUnit}
-          </span>
+      {/* Value Inputs */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <label className="text-xs text-gray-500 block mb-1">Min (kg)</label>
+          <input
+            type="number"
+            value={minValue}
+            onChange={(e) =>
+              onChange(
+                "weightMin",
+                Math.min(parseInt(e.target.value) || 0, maxValue)
+              )
+            }
+            min={0}
+            max={maxValue}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
         </div>
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs text-gray-600 mb-2">
-              Min Weight
-            </label>
-            <input
-              type="range"
-              min={0}
-              max={maxWeight}
-              value={weightRange[0]}
-              onChange={(e) =>
-                onChange("range", [parseInt(e.target.value), weightRange[1]])
-              }
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-600 mb-2">
-              Max Weight
-            </label>
-            <input
-              type="range"
-              min={0}
-              max={maxWeight}
-              value={weightRange[1]}
-              onChange={(e) =>
-                onChange("range", [weightRange[0], parseInt(e.target.value)])
-              }
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
-          </div>
+        <div className="flex-1">
+          <label className="text-xs text-gray-500 block mb-1">Max (kg)</label>
+          <input
+            type="number"
+            value={maxValue}
+            onChange={(e) =>
+              onChange(
+                "weightMax",
+                Math.max(parseInt(e.target.value) || 1000, minValue)
+              )
+            }
+            min={minValue}
+            max={1000}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
         </div>
       </div>
     </div>

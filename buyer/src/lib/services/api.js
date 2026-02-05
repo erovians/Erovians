@@ -64,19 +64,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // ✅ Skip token refresh logic for public routes
     if (isPublicRoute(originalRequest.url)) {
       return Promise.reject(error);
     }
 
-    // ✅ Handle 401 (Token Expired) for protected routes only
     if (
       error.response?.status === 401 &&
       error.response?.data?.message === "Access Token Expired" &&
       !originalRequest._retry
     ) {
       if (isRefreshing) {
-        // ✅ If refresh is already happening, queue this request
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -97,22 +94,18 @@ api.interceptors.response.use(
           const newToken = response.data.accessToken;
           localStorage.setItem("accessToken", newToken);
 
-          // ✅ Update all queued requests
           processQueue(null, newToken);
 
-          // ✅ Retry original request
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
         }
       } catch (refreshError) {
-        // ✅ Refresh failed - clear everything and redirect
         processQueue(refreshError, null);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
 
-        // ✅ Redirect to login only if not already there
         if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
+          window.location.href = "/";
         }
         return Promise.reject(refreshError);
       } finally {
@@ -120,7 +113,6 @@ api.interceptors.response.use(
       }
     }
 
-    // ✅ For other errors (403, 404, 500, etc.), just reject
     return Promise.reject(error);
   }
 );

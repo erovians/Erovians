@@ -400,7 +400,7 @@ export default function ChatWindow({
                     src={msg.fileUrl}
                     alt="uploaded"
                     onClick={() => setPreviewImage(msg.fileUrl)}
-                    className={`rounded-lg max-w-full h-[130px] mb-2 cursor-pointer hover:opacity-80 transition ${
+                    className={`rounded-lg max-w-full h-32.5 mb-2 cursor-pointer hover:opacity-80 transition ${
                       msg.pending ? "opacity-80" : ""
                     }`}
                   />
@@ -466,7 +466,7 @@ export default function ChatWindow({
                     setFile(null);
                     fileInputRef.current.value = "";
                   }}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full px-[4px] py-[1px]"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full px-1 py-px"
                 >
                   ✕
                 </button>

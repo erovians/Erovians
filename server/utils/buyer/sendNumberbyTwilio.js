@@ -42,7 +42,7 @@ export const sendSMS = async (to, message) => {
 };
 
 // Helper function - OTP SMS template
-export const sendOTPSMS = async (phoneNumber, otp) => {
+export const sendOTPSMS = async (mobile, otp) => {
   const message = `Your OTP is: ${otp}. Valid for 30 minutes. Do not share this with anyone.`;
-  return await sendSMS(phoneNumber, message);
+  return await sendSMS(mobile, message);
 };

@@ -1,5 +1,13 @@
-// src/components/common/Sidebar.jsx
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCompanyFilters,
+  clearCompanyFilters,
+  setProductFilters,
+  clearProductFilters,
+  fetchCompanies,
+  fetchCompaniesProduct,
+} from "../../lib/redux/company/companySlice";
 import {
   ChevronDown,
   ChevronUp,
@@ -9,19 +17,37 @@ import {
   Calendar,
   DollarSign,
   Globe,
-  Package,
   Layers,
+  Sparkles,
   Award,
   Palette,
+  MapPinned,
+  TrendingUp,
   Ruler,
   Weight,
-  Sparkles,
-  Tag,
+  ArrowUpDown,
 } from "lucide-react";
+import { Country, State, City } from "country-state-city";
 
-const Sidebar = ({ type = "company" }) => {
+const Sidebar = ({ type = "company", companyId = null }) => {
+  const dispatch = useDispatch();
+  const { companyFilters, productFilters, pagination } = useSelector(
+    (state) => state.company
+  );
+
+  // Select active filters based on type
+  const activeFilters = type === "company" ? companyFilters : productFilters;
+
+  // Local state for debounced inputs
+  const [localFilters, setLocalFilters] = useState({});
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [availableStates, setAvailableStates] = useState([]);
+  const [availableCities, setAvailableCities] = useState([]);
+
   const [expandedSections, setExpandedSections] = useState({
     mainCategory: true,
+    category: true,
     subCategory: false,
     location: false,
     year: false,
@@ -30,34 +56,40 @@ const Sidebar = ({ type = "company" }) => {
     language: false,
     grade: false,
     color: false,
+    origin: false,
+    price: false,
     size: false,
     weight: false,
-    weightUnit: false,
-    priceUnit: false,
+    sortBy: false,
     newArrivals: false,
   });
 
-  const [filters, setFilters] = useState({
-    mainCategory: [],
-    subCategory: [],
-    country: "",
-    state: "",
-    city: "",
-    yearRange: [1990, 2025],
-    paymentMethods: [],
-    currency: [],
-    language: [],
+  // Initialize local filters from Redux
+  useEffect(() => {
+    setLocalFilters(activeFilters);
+  }, [type]);
 
-    grade: [],
-    color: [],
-    length: [0, 300],
-    width: [0, 300],
-    thickness: [0, 10],
-    weightRange: [0, 1000],
-    weightUnit: "kg",
-    priceUnit: [],
-    newArrivals: false,
-  });
+  // Country-State-City handlers
+  useEffect(() => {
+    if (selectedCountry) {
+      const states = State.getStatesOfCountry(selectedCountry);
+      setAvailableStates(states);
+      setAvailableCities([]);
+      setSelectedState("");
+    } else {
+      setAvailableStates([]);
+      setAvailableCities([]);
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (selectedCountry && selectedState) {
+      const cities = City.getCitiesOfState(selectedCountry, selectedState);
+      setAvailableCities(cities);
+    } else {
+      setAvailableCities([]);
+    }
+  }, [selectedCountry, selectedState]);
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
@@ -67,64 +99,142 @@ const Sidebar = ({ type = "company" }) => {
   };
 
   const handleCheckboxChange = (filterKey, value) => {
-    setFilters((prev) => ({
+    const currentValues = activeFilters[filterKey] || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter((v) => v !== value)
+      : [...currentValues, value];
+
+    if (type === "company") {
+      dispatch(setCompanyFilters({ [filterKey]: newValues }));
+      dispatch(
+        fetchCompanies({
+          page: 1,
+          limit: pagination.limit,
+          filters: { ...companyFilters, [filterKey]: newValues },
+        })
+      );
+    } else {
+      dispatch(setProductFilters({ [filterKey]: newValues }));
+      dispatch(
+        fetchCompaniesProduct({
+          companyId,
+          page: 1,
+          limit: pagination.limit,
+          filters: { ...productFilters, [filterKey]: newValues },
+        })
+      );
+    }
+  };
+
+  // Debounced input handler - FIX FOR FOCUS ISSUE
+  const handleInputChange = useCallback((filterKey, value) => {
+    setLocalFilters((prev) => ({
       ...prev,
-      [filterKey]: prev[filterKey].includes(value)
-        ? prev[filterKey].filter((v) => v !== value)
-        : [...prev[filterKey], value],
+      [filterKey]: value,
+    }));
+  }, []);
+
+  // Apply filters after debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const hasChanges = Object.keys(localFilters).some(
+        (key) => localFilters[key] !== activeFilters[key]
+      );
+
+      if (hasChanges) {
+        if (type === "company") {
+          dispatch(setCompanyFilters(localFilters));
+          dispatch(
+            fetchCompanies({
+              page: 1,
+              limit: pagination.limit,
+              filters: { ...companyFilters, ...localFilters },
+            })
+          );
+        } else {
+          dispatch(setProductFilters(localFilters));
+          dispatch(
+            fetchCompaniesProduct({
+              companyId,
+              page: 1,
+              limit: pagination.limit,
+              filters: { ...productFilters, ...localFilters },
+            })
+          );
+        }
+      }
+    }, 800); // 800ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [localFilters]);
+
+  const handleRangeChange = (filterKey, value) => {
+    const parsedValue = parseInt(value);
+    setLocalFilters((prev) => ({
+      ...prev,
+      [filterKey]: parsedValue,
     }));
   };
 
-  const handleRangeChange = (filterKey, index, value) => {
-    setFilters((prev) => {
-      const newRange = [...prev[filterKey]];
-      newRange[index] = parseInt(value);
-      return { ...prev, [filterKey]: newRange };
-    });
+  const applyRangeFilter = () => {
+    if (type === "company") {
+      dispatch(setCompanyFilters(localFilters));
+      dispatch(
+        fetchCompanies({
+          page: 1,
+          limit: pagination.limit,
+          filters: { ...companyFilters, ...localFilters },
+        })
+      );
+    } else {
+      dispatch(setProductFilters(localFilters));
+      dispatch(
+        fetchCompaniesProduct({
+          companyId,
+          page: 1,
+          limit: pagination.limit,
+          filters: { ...productFilters, ...localFilters },
+        })
+      );
+    }
   };
 
   const clearAllFilters = () => {
+    setLocalFilters({});
+    setSelectedCountry("");
+    setSelectedState("");
+
     if (type === "company") {
-      setFilters({
-        mainCategory: [],
-        subCategory: [],
-        country: "",
-        state: "",
-        city: "",
-        yearRange: [1990, 2025],
-        paymentMethods: [],
-        currency: [],
-        language: [],
-      });
+      dispatch(clearCompanyFilters());
+      dispatch(
+        fetchCompanies({ page: 1, limit: pagination.limit, filters: {} })
+      );
     } else {
-      setFilters({
-        mainCategory: [],
-        subCategory: [],
-        grade: [],
-        color: [],
-        length: [0, 300],
-        width: [0, 300],
-        thickness: [0, 10],
-        weightRange: [0, 1000],
-        weightUnit: "kg",
-        priceUnit: [],
-        newArrivals: false,
-      });
+      dispatch(clearProductFilters());
+      dispatch(
+        fetchCompaniesProduct({
+          companyId,
+          page: 1,
+          limit: pagination.limit,
+          filters: {},
+        })
+      );
     }
   };
 
   const getAppliedFiltersCount = () => {
     let count = 0;
-    Object.entries(filters).forEach(([key, value]) => {
+    Object.entries(activeFilters).forEach(([key, value]) => {
       if (Array.isArray(value) && value.length > 0) count += value.length;
       else if (typeof value === "string" && value) count++;
       else if (typeof value === "boolean" && value) count++;
+      else if (typeof value === "number" && value !== null) count++;
     });
     return count;
   };
 
-  // Filter Options
-  const filterOptions = {
+  // Company Filter Options
+  const companyFilterOptions = {
     mainCategories: [
       "Natural Stones",
       "Ceramic & Tiles",
@@ -138,25 +248,53 @@ const Sidebar = ({ type = "company" }) => {
       "Quartzite",
       "Onyx",
       "Travertine",
+      "Ceramic",
+      "Porcelain",
     ],
-    countries: ["India", "China", "Italy", "Turkey", "Brazil"],
     paymentMethods: ["Cash", "Credit Card", "Bank Transfer", "LC", "PayPal"],
     currencies: ["USD", "EUR", "INR", "GBP", "CNY"],
     languages: ["English", "Hindi", "Spanish", "Chinese", "Arabic"],
+  };
+
+  // Product Filter Options
+  const productFilterOptions = {
+    categories: [
+      "Natural Stones",
+      "Ceramic & Tiles",
+      "Alternatives & Finishes",
+    ],
+    subCategories: [
+      "Marble",
+      "Granite",
+      "Limestone",
+      "Sandstone",
+      "Quartzite",
+      "Onyx",
+      "Travertine",
+      "Ceramic",
+      "Porcelain",
+    ],
     grades: ["A", "B", "C"],
     colors: [
-      "White",
-      "Black",
-      "Grey",
-      "Beige",
-      "Brown",
-      "Red",
-      "Green",
-      "Blue",
-      "Yellow",
-      "Pink",
+      { name: "White", hex: "#FFFFFF", border: true },
+      { name: "Black", hex: "#000000" },
+      { name: "Gray", hex: "#808080" },
+      { name: "Beige", hex: "#F5F5DC" },
+      { name: "Brown", hex: "#8B4513" },
+      { name: "Red", hex: "#DC143C" },
+      { name: "Pink", hex: "#FFC0CB" },
+      { name: "Orange", hex: "#FF8C00" },
+      { name: "Yellow", hex: "#FFD700" },
+      { name: "Green", hex: "#228B22" },
+      { name: "Blue", hex: "#4169E1" },
+      { name: "Purple", hex: "#9370DB" },
     ],
-    priceUnits: ["sq.ft", "sq.m", "piece"],
+    sortOptions: [
+      { value: "priceAsc", label: "Price: Low to High" },
+      { value: "priceDesc", label: "Price: High to Low" },
+      { value: "newest", label: "Newest First" },
+      { value: "mostViewed", label: "Most Viewed" },
+    ],
   };
 
   const FilterSection = ({ title, icon: Icon, section, children }) => (
@@ -188,8 +326,12 @@ const Sidebar = ({ type = "company" }) => {
         >
           <input
             type="checkbox"
-            checked={filters[filterKey].includes(option)}
-            onChange={() => handleCheckboxChange(filterKey, option)}
+            checked={(activeFilters[filterKey] || []).includes(
+              option.toLowerCase()
+            )}
+            onChange={() =>
+              handleCheckboxChange(filterKey, option.toLowerCase())
+            }
             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
           />
           <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">
@@ -200,42 +342,371 @@ const Sidebar = ({ type = "company" }) => {
     </div>
   );
 
-  const RangeSlider = ({ label, min, max, value, onChange, unit = "" }) => (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-600">{label}</span>
-        <span className="font-semibold text-gray-700">
-          {value[0]}
-          {unit} - {value[1]}
-          {unit}
-        </span>
+  // Color Picker Component
+  const ColorPicker = () => {
+    const selectedColors = activeFilters.color || [];
+
+    const handleColorToggle = (colorName) => {
+      const lowerColorName = colorName.toLowerCase();
+      const newColors = selectedColors.includes(lowerColorName)
+        ? selectedColors.filter((c) => c !== lowerColorName)
+        : [...selectedColors, lowerColorName];
+
+      dispatch(setProductFilters({ color: newColors }));
+      dispatch(
+        fetchCompaniesProduct({
+          companyId,
+          page: 1,
+          limit: pagination.limit,
+          filters: { ...productFilters, color: newColors },
+        })
+      );
+    };
+
+    return (
+      <div className="grid grid-cols-4 gap-3">
+        {productFilterOptions.colors.map((color) => (
+          <button
+            key={color.name}
+            onClick={() => handleColorToggle(color.name)}
+            className="relative group flex flex-col items-center gap-1.5"
+            title={color.name}
+          >
+            <div
+              className={`w-12 h-12 rounded-full transition-all ${
+                selectedColors.includes(color.name.toLowerCase())
+                  ? "ring-4 ring-blue-500 ring-offset-2 scale-110"
+                  : "ring-2 ring-gray-200 hover:ring-blue-300 hover:scale-105"
+              } ${color.border ? "border-2 border-gray-300" : ""}`}
+              style={{ backgroundColor: color.hex }}
+            >
+              {selectedColors.includes(color.name.toLowerCase()) && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-blue-600 drop-shadow-lg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <span className="text-xs text-gray-600 group-hover:text-blue-600 font-medium text-center">
+              {color.name}
+            </span>
+          </button>
+        ))}
       </div>
-      <div className="space-y-2">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[0]}
-          onChange={(e) => onChange(0, e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-600"
-        />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          value={value[1]}
-          onChange={(e) => onChange(1, e.target.value)}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-600"
-        />
+    );
+  };
+
+  // Modern Location Filter with country-state-city
+  const LocationFilter = () => {
+    const countries = Country.getAllCountries();
+
+    return (
+      <div className="space-y-3">
+        {/* Country Dropdown */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            Country
+          </label>
+          <select
+            value={selectedCountry}
+            onChange={(e) => {
+              const countryCode = e.target.value;
+              setSelectedCountry(countryCode);
+              const country = countries.find((c) => c.isoCode === countryCode);
+              handleInputChange("country", country?.name || "");
+            }}
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+          >
+            <option value="">Select Country</option>
+            {countries.map((country) => (
+              <option key={country.isoCode} value={country.isoCode}>
+                {country.flag} {country.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* State Dropdown */}
+        {selectedCountry && (
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              State/Province
+            </label>
+            <select
+              value={selectedState}
+              onChange={(e) => {
+                const stateCode = e.target.value;
+                setSelectedState(stateCode);
+                const state = availableStates.find(
+                  (s) => s.isoCode === stateCode
+                );
+                handleInputChange("state", state?.name || "");
+              }}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+            >
+              <option value="">Select State</option>
+              {availableStates.map((state) => (
+                <option key={state.isoCode} value={state.isoCode}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* City Dropdown */}
+        {selectedState && (
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              City
+            </label>
+            <select
+              value={localFilters.city || ""}
+              onChange={(e) => handleInputChange("city", e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+            >
+              <option value="">Select City</option>
+              {availableCities.map((city) => (
+                <option key={city.name} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  };
+
+  // Modern Origin Filter with country-state-city
+  const OriginFilter = () => {
+    const countries = Country.getAllCountries();
+    const [originCountry, setOriginCountry] = useState("");
+    const [originState, setOriginState] = useState("");
+    const [originStates, setOriginStates] = useState([]);
+    const [originCities, setOriginCities] = useState([]);
+
+    useEffect(() => {
+      if (originCountry) {
+        const states = State.getStatesOfCountry(originCountry);
+        setOriginStates(states);
+        setOriginCities([]);
+        setOriginState("");
+      } else {
+        setOriginStates([]);
+        setOriginCities([]);
+      }
+    }, [originCountry]);
+
+    useEffect(() => {
+      if (originCountry && originState) {
+        const cities = City.getCitiesOfState(originCountry, originState);
+        setOriginCities(cities);
+      } else {
+        setOriginCities([]);
+      }
+    }, [originCountry, originState]);
+
+    return (
+      <div className="space-y-3">
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            Origin Country
+          </label>
+          <select
+            value={originCountry}
+            onChange={(e) => {
+              const countryCode = e.target.value;
+              setOriginCountry(countryCode);
+              const country = countries.find((c) => c.isoCode === countryCode);
+              handleInputChange("origin", country?.name || "");
+            }}
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+          >
+            <option value="">Select Origin Country</option>
+            {countries.map((country) => (
+              <option key={country.isoCode} value={country.isoCode}>
+                {country.flag} {country.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {originCountry && (
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              Origin State (Optional)
+            </label>
+            <select
+              value={originState}
+              onChange={(e) => {
+                const stateCode = e.target.value;
+                setOriginState(stateCode);
+                const state = originStates.find((s) => s.isoCode === stateCode);
+                if (state) {
+                  handleInputChange("originState", state.name);
+                }
+              }}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+            >
+              <option value="">Select State</option>
+              {originStates.map((state) => (
+                <option key={state.isoCode} value={state.isoCode}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {originState && (
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              Origin City (Optional)
+            </label>
+            <select
+              value={localFilters.originCity || ""}
+              onChange={(e) => handleInputChange("originCity", e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+            >
+              <option value="">Select City</option>
+              {originCities.map((city) => (
+                <option key={city.name} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ✅ FIXED - Modern Range Slider Component with smooth sliding
+  const RangeSlider = ({ min, max, minKey, maxKey, label, unit = "" }) => {
+    const minValue = localFilters[minKey] || min;
+    const maxValue = localFilters[maxKey] || max;
+
+    // ✅ Handle smooth sliding - updates local state immediately
+    const handleSliderChange = (key, value) => {
+      const parsedValue = parseInt(value);
+      setLocalFilters((prev) => ({
+        ...prev,
+        [key]: parsedValue,
+      }));
+    };
+
+    // ✅ Direct input change for text inputs with validation
+    const handleDirectInput = (key, value) => {
+      const parsedValue = parseInt(value) || min;
+      const clampedValue = Math.max(min, Math.min(max, parsedValue));
+
+      setLocalFilters((prev) => ({
+        ...prev,
+        [key]: clampedValue,
+      }));
+    };
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-600">{label}</span>
+          <span className="font-semibold text-blue-600">
+            {unit}
+            {minValue} - {unit}
+            {maxValue}
+          </span>
+        </div>
+
+        <div className="relative pt-1 space-y-3">
+          {/* Min Range Slider - ✅ FIXED with onInput for smooth sliding */}
+          <div>
+            <label className="text-xs text-gray-500 mb-1.5 block">
+              Minimum
+            </label>
+            <input
+              type="range"
+              min={min}
+              max={maxValue} // ✅ Can't exceed max value
+              value={minValue}
+              onInput={(e) => handleSliderChange(minKey, e.target.value)} // ✅ Smooth real-time sliding
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
+              style={{
+                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${
+                  ((minValue - min) / (max - min)) * 100
+                }%, #E5E7EB ${
+                  ((minValue - min) / (max - min)) * 100
+                }%, #E5E7EB 100%)`,
+              }}
+            />
+          </div>
+
+          {/* Max Range Slider - ✅ FIXED with onInput for smooth sliding */}
+          <div>
+            <label className="text-xs text-gray-500 mb-1.5 block">
+              Maximum
+            </label>
+            <input
+              type="range"
+              min={minValue} // ✅ Can't go below min value
+              max={max}
+              value={maxValue}
+              onInput={(e) => handleSliderChange(maxKey, e.target.value)} // ✅ Smooth real-time sliding
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
+              style={{
+                background: `linear-gradient(to right, #E5E7EB 0%, #E5E7EB ${
+                  ((maxValue - min) / (max - min)) * 100
+                }%, #3B82F6 ${
+                  ((maxValue - min) / (max - min)) * 100
+                }%, #3B82F6 100%)`,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Value indicators - ✅ Improved UX with validation */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1">
+            <label className="text-xs text-gray-500 block mb-1">Min:</label>
+            <input
+              type="number"
+              value={minValue}
+              onChange={(e) => handleDirectInput(minKey, e.target.value)}
+              min={min}
+              max={maxValue}
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="text-xs text-gray-500 block mb-1">Max:</label>
+            <input
+              type="number"
+              value={maxValue}
+              onChange={(e) => handleDirectInput(maxKey, e.target.value)}
+              min={minValue}
+              max={max}
+              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="w-70 bg-white border-r border-gray-200 sticky top-20 h-[calc(100vh-80px)] flex flex-col">
+    <div className="w-70 bg-white border-r border-gray-200 sticky top-20 h-[calc(100vh-80px)] flex flex-col sidebar-scrollbar">
       <div className="bg-linear-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
         <div className="flex items-center justify-between p-4">
-          <div className="flex items-center  gap-3 ">
+          <div className="flex items-center gap-3">
             <SlidersHorizontal className="w-6 h-6 text-gray-900" />
             <h2 className="text-lg font-bold text-gray-900">
               {type === "company" ? "Company Filters" : "Product Filters"}
@@ -262,13 +733,14 @@ const Sidebar = ({ type = "company" }) => {
       <div className="flex-1 overflow-y-auto">
         {type === "company" ? (
           <>
+            {/* Company Filters */}
             <FilterSection
               title="Main Category"
               icon={Building2}
               section="mainCategory"
             >
               <CheckboxGroup
-                options={filterOptions.mainCategories}
+                options={companyFilterOptions.mainCategories}
                 filterKey="mainCategory"
               />
             </FilterSection>
@@ -279,46 +751,14 @@ const Sidebar = ({ type = "company" }) => {
               section="subCategory"
             >
               <CheckboxGroup
-                options={filterOptions.subCategories}
+                options={companyFilterOptions.subCategories}
                 filterKey="subCategory"
               />
             </FilterSection>
 
+            {/* UPDATED LOCATION FILTER */}
             <FilterSection title="Location" icon={MapPin} section="location">
-              <div className="space-y-3">
-                <select
-                  value={filters.country}
-                  onChange={(e) =>
-                    setFilters({ ...filters, country: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-                  <option value="">Select Country</option>
-                  {filterOptions.countries.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="State/Province"
-                  value={filters.state}
-                  onChange={(e) =>
-                    setFilters({ ...filters, state: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  value={filters.city}
-                  onChange={(e) =>
-                    setFilters({ ...filters, city: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
+              <LocationFilter />
             </FilterSection>
 
             <FilterSection
@@ -327,13 +767,11 @@ const Sidebar = ({ type = "company" }) => {
               section="year"
             >
               <RangeSlider
-                label="Year Range"
                 min={1990}
                 max={2025}
-                value={filters.yearRange}
-                onChange={(idx, val) =>
-                  handleRangeChange("yearRange", idx, val)
-                }
+                minKey="yearFrom"
+                maxKey="yearTo"
+                label="Year Range"
               />
             </FilterSection>
 
@@ -343,7 +781,7 @@ const Sidebar = ({ type = "company" }) => {
               section="payment"
             >
               <CheckboxGroup
-                options={filterOptions.paymentMethods}
+                options={companyFilterOptions.paymentMethods}
                 filterKey="paymentMethods"
               />
             </FilterSection>
@@ -354,14 +792,14 @@ const Sidebar = ({ type = "company" }) => {
               section="currency"
             >
               <CheckboxGroup
-                options={filterOptions.currencies}
+                options={companyFilterOptions.currencies}
                 filterKey="currency"
               />
             </FilterSection>
 
             <FilterSection title="Language" icon={Globe} section="language">
               <CheckboxGroup
-                options={filterOptions.languages}
+                options={companyFilterOptions.languages}
                 filterKey="language"
               />
             </FilterSection>
@@ -374,18 +812,30 @@ const Sidebar = ({ type = "company" }) => {
               <label className="flex items-center gap-3 cursor-pointer group p-3 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all">
                 <input
                   type="checkbox"
-                  checked={filters.newArrivals}
-                  onChange={(e) =>
-                    setFilters({ ...filters, newArrivals: e.target.checked })
-                  }
+                  checked={companyFilters.newArrivals || false}
+                  onChange={(e) => {
+                    dispatch(
+                      setCompanyFilters({ newArrivals: e.target.checked })
+                    );
+                    dispatch(
+                      fetchCompanies({
+                        page: 1,
+                        limit: pagination.limit,
+                        filters: {
+                          ...companyFilters,
+                          newArrivals: e.target.checked,
+                        },
+                      })
+                    );
+                  }}
                   className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <div className="flex-1">
                   <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                    Show New Company
+                    Show New Companies
                   </span>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    Company added in last 7 days
+                    Companies added in last 7 days
                   </p>
                 </div>
                 <Sparkles className="w-5 h-5 text-gray-900" />
@@ -394,141 +844,132 @@ const Sidebar = ({ type = "company" }) => {
           </>
         ) : (
           <>
-            <FilterSection
-              title="Category"
-              icon={Package}
-              section="mainCategory"
-            >
+            {/* Product Filters */}
+
+            {/* Sort By */}
+            <FilterSection title="Sort By" icon={ArrowUpDown} section="sortBy">
+              <select
+                value={productFilters.sortBy || ""}
+                onChange={(e) => {
+                  dispatch(setProductFilters({ sortBy: e.target.value }));
+                  dispatch(
+                    fetchCompaniesProduct({
+                      companyId,
+                      page: 1,
+                      limit: pagination.limit,
+                      filters: { ...productFilters, sortBy: e.target.value },
+                    })
+                  );
+                }}
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+              >
+                <option value="">Default Sorting</option>
+                {productFilterOptions.sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </FilterSection>
+
+            {/* Category Filter */}
+            <FilterSection title="Category" icon={Layers} section="category">
               <CheckboxGroup
-                options={filterOptions.mainCategories}
-                filterKey="mainCategory"
+                options={productFilterOptions.categories}
+                filterKey="category"
               />
             </FilterSection>
 
+            {/* Sub Category Filter */}
             <FilterSection
               title="Sub Category"
-              icon={Layers}
+              icon={Building2}
               section="subCategory"
             >
               <CheckboxGroup
-                options={filterOptions.subCategories}
+                options={productFilterOptions.subCategories}
                 filterKey="subCategory"
               />
             </FilterSection>
 
+            {/* Grade Filter */}
             <FilterSection title="Grade" icon={Award} section="grade">
-              <CheckboxGroup options={filterOptions.grades} filterKey="grade" />
-            </FilterSection>
-
-            <FilterSection title="Color" icon={Palette} section="color">
-              <div className="space-y-2">
-                {filterOptions.colors.map((color) => (
-                  <label
-                    key={color}
-                    className="flex items-center gap-2 cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={filters.color.includes(color)}
-                      onChange={() => handleCheckboxChange("color", color)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <div
-                      className="w-5 h-5 rounded-full border-2 border-gray-300"
-                      style={{
-                        backgroundColor: color.toLowerCase(),
-                      }}
-                    />
-                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">
-                      {color}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </FilterSection>
-
-            <FilterSection title="Size (cm)" icon={Ruler} section="size">
-              <div className="space-y-4">
-                <RangeSlider
-                  label="Length"
-                  min={0}
-                  max={300}
-                  value={filters.length}
-                  onChange={(idx, val) => handleRangeChange("length", idx, val)}
-                  unit=" cm"
-                />
-                <RangeSlider
-                  label="Width"
-                  min={0}
-                  max={300}
-                  value={filters.width}
-                  onChange={(idx, val) => handleRangeChange("width", idx, val)}
-                  unit=" cm"
-                />
-                <RangeSlider
-                  label="Thickness"
-                  min={0}
-                  max={10}
-                  value={filters.thickness}
-                  onChange={(idx, val) =>
-                    handleRangeChange("thickness", idx, val)
-                  }
-                  unit=" cm"
-                />
-              </div>
-            </FilterSection>
-
-            <FilterSection title="Weight" icon={Weight} section="weight">
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="weightUnit"
-                      value="kg"
-                      checked={filters.weightUnit === "kg"}
-                      onChange={(e) =>
-                        setFilters({ ...filters, weightUnit: e.target.value })
-                      }
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">Kilogram (kg)</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="weightUnit"
-                      value="ton"
-                      checked={filters.weightUnit === "ton"}
-                      onChange={(e) =>
-                        setFilters({ ...filters, weightUnit: e.target.value })
-                      }
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-700">Ton</span>
-                  </label>
-                </div>
-
-                <RangeSlider
-                  label="Weight Range"
-                  min={0}
-                  max={filters.weightUnit === "kg" ? 1000 : 100}
-                  value={filters.weightRange}
-                  onChange={(idx, val) =>
-                    handleRangeChange("weightRange", idx, val)
-                  }
-                  unit={` ${filters.weightUnit}`}
-                />
-              </div>
-            </FilterSection>
-
-            <FilterSection title="Price Unit" icon={Tag} section="priceUnit">
               <CheckboxGroup
-                options={filterOptions.priceUnits}
-                filterKey="priceUnit"
+                options={productFilterOptions.grades}
+                filterKey="grade"
               />
             </FilterSection>
 
+            {/* Color Filter */}
+            <FilterSection title="Color" icon={Palette} section="color">
+              <ColorPicker />
+            </FilterSection>
+
+            {/* UPDATED ORIGIN FILTER */}
+            <FilterSection title="Origin" icon={MapPinned} section="origin">
+              <OriginFilter />
+            </FilterSection>
+
+            {/* UPDATED PRICE RANGE WITH SLIDER */}
+            <FilterSection
+              title="Price Range"
+              icon={TrendingUp}
+              section="price"
+            >
+              <RangeSlider
+                min={0}
+                max={500}
+                minKey="priceMin"
+                maxKey="priceMax"
+                label="Price per Unit"
+                unit="₹"
+              />
+            </FilterSection>
+
+            {/* Size Filter */}
+            <FilterSection title="Size" icon={Ruler} section="size">
+              <div className="space-y-4">
+                {/* Length */}
+                <RangeSlider
+                  min={0}
+                  max={100}
+                  minKey="lengthMin"
+                  maxKey="lengthMax"
+                  label="Length (ft)"
+                />
+
+                {/* Width */}
+                <RangeSlider
+                  min={0}
+                  max={100}
+                  minKey="widthMin"
+                  maxKey="widthMax"
+                  label="Width (ft)"
+                />
+
+                {/* Thickness */}
+                <RangeSlider
+                  min={0}
+                  max={10}
+                  minKey="thicknessMin"
+                  maxKey="thicknessMax"
+                  label="Thickness (inch)"
+                />
+              </div>
+            </FilterSection>
+
+            {/* Weight Filter */}
+            <FilterSection title="Weight" icon={Weight} section="weight">
+              <RangeSlider
+                min={0}
+                max={1000}
+                minKey="weightMin"
+                maxKey="weightMax"
+                label="Weight (kg)"
+              />
+            </FilterSection>
+
+            {/* New Arrivals Filter */}
             <FilterSection
               title="New Arrivals"
               icon={Sparkles}
@@ -537,10 +978,23 @@ const Sidebar = ({ type = "company" }) => {
               <label className="flex items-center gap-3 cursor-pointer group p-3 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all">
                 <input
                   type="checkbox"
-                  checked={filters.newArrivals}
-                  onChange={(e) =>
-                    setFilters({ ...filters, newArrivals: e.target.checked })
-                  }
+                  checked={productFilters.newArrivals || false}
+                  onChange={(e) => {
+                    dispatch(
+                      setProductFilters({ newArrivals: e.target.checked })
+                    );
+                    dispatch(
+                      fetchCompaniesProduct({
+                        companyId,
+                        page: 1,
+                        limit: pagination.limit,
+                        filters: {
+                          ...productFilters,
+                          newArrivals: e.target.checked,
+                        },
+                      })
+                    );
+                  }}
                   className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <div className="flex-1">

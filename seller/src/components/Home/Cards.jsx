@@ -8,14 +8,14 @@ import {
 const Cards = ({ image, step, title, description }) => {
   return (
     <>
-      <div className="w-full h-[350px] mx-auto ">
+      <div className="w-full h-87.5 mx-auto ">
         <ResizablePanelGroup
           direction="horizontal"
           className="rounded-lg border shadow-md bg-white"
         >
           {/* Left Image */}
           <ResizablePanel defaultSize={80}>
-            <div className="flex items-center justify-center  h-[100%]">
+            <div className="flex items-center justify-center h-full">
               <img
                 src={image}
                 alt={title}

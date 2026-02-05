@@ -92,7 +92,6 @@ function App() {
             path="/sellerdashboard"
             element={
               <ProtectedRoute>
-                {" "}
                 <SellerDashboardLayout />
               </ProtectedRoute>
             }

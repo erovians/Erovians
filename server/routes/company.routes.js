@@ -10,12 +10,14 @@ import {
   getCertificates,
   deleteCertificate,
 } from "../controller/certificate.controller.js";
+import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
+import { validateUser } from "../controller/auth.controller.js";
 
 const router = express.Router();
 
 router.post(
   "/register",
-  verifyUser,
+  isAuthenticated,
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
@@ -23,16 +25,16 @@ router.post(
   ]),
   registerCompany
 );
-router.get("/details", verifyUser, getCompanyDetails);
+router.get("/details", isAuthenticated, getCompanyDetails);
 
 router.post(
   "/upload",
-  verifyUser,
+  isAuthenticated,
   allowRoles("seller"),
   upload.single("file"),
   uploadCertificate
 );
-router.get("/certificates", verifyUser, getCertificates);
-router.delete("/certificates/:id", verifyUser, deleteCertificate);
+router.get("/certificates", isAuthenticated, getCertificates);
+router.delete("/certificates/:id", isAuthenticated, deleteCertificate);
 
 export default router;

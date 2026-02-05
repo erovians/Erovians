@@ -5,19 +5,18 @@ import {
   uploadOnCloudinary,
   deleteFromCloudinary,
 } from "../utils/cloudinaryUpload.utils.js";
-import { cache } from "../services/cache.service.js";
+
+// services/company.service.js
 
 export const registerCompanyService = async (data, files, sellerId) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  await cache.clearPattern(`company:*`);
 
   const uploadedFiles = [];
 
   try {
     if (!sellerId) throw new Error("sellerId is required");
 
-    // ✅ Step 1: Check for existing company
     const existingCompany = await CompanyDetails.findOne({ sellerId })
       .session(session)
       .lean();
@@ -25,7 +24,6 @@ export const registerCompanyService = async (data, files, sellerId) => {
     if (existingCompany)
       throw new Error("Company already registered for this seller");
 
-    // ✅ Step 2: Parse and validate input
     const address =
       typeof data.address === "string"
         ? JSON.parse(data.address)
@@ -40,14 +38,6 @@ export const registerCompanyService = async (data, files, sellerId) => {
         ? JSON.parse(data.subCategory)
         : data.subCategory;
 
-    const toNumber = (v) =>
-      v === undefined || v === null || v === "" ? undefined : Number(v);
-
-    const tradeCapabilities =
-      typeof data.tradeCapabilities === "string"
-        ? JSON.parse(data.tradeCapabilities)
-        : data.tradeCapabilities;
-
     const validated = await registerCompanySchema.parseAsync({
       sellerId,
       companyBasicInfo: {
@@ -61,22 +51,6 @@ export const registerCompanyService = async (data, files, sellerId) => {
         acceptedCurrency: data.acceptedCurrency,
         acceptedPaymentType: data.acceptedPaymentType,
         languageSpoken: data.languageSpoken,
-
-        // NEW FIELDS
-        totalEmployees: toNumber(data.totalEmployees),
-        businessType: data.businessType,
-
-        factorySize: data.factorySize,
-        factoryCountryOrRegion: data.factoryCountryOrRegion,
-        contractManufacturing:
-          data.contractManufacturing === "true" ||
-          data.contractManufacturing === true,
-
-        numberOfProductionLines: toNumber(data.numberOfProductionLines),
-        annualOutputValue: data.annualOutputValue,
-
-        rdTeamSize: toNumber(data.rdTeamSize),
-        tradeCapabilities,
       },
       companyIntro: {
         companyDescription: data.companyDescription,
@@ -86,52 +60,72 @@ export const registerCompanyService = async (data, files, sellerId) => {
       },
     });
 
+    // ✅ Upload logo (agar hai to)
     let logoUrl = "";
-
-    if (files?.companyLogo?.[0]) {
-      const logoUpload = await uploadOnCloudinary(
-        files.companyLogo[0].path,
-        files.companyLogo[0].mimetype
+    if (files?.logo && files.logo[0]) {
+      const res = await uploadOnCloudinary(
+        files.logo[0].path,
+        files.logo[0].mimetype
       );
-
-      if (!logoUpload?.secure_url) {
-        throw new Error("Company logo upload failed");
-      }
-
-      logoUrl = logoUpload.secure_url;
-      uploadedFiles.push(logoUpload.public_id);
+      if (!res?.secure_url) throw new Error("Logo upload failed");
+      uploadedFiles.push(res.public_id);
+      logoUrl = res.secure_url;
     }
 
+    // ✅ Upload photos
+    // Upload photos with better error handling
     const photoUrls = await Promise.all(
-      (files?.companyPhotos || []).map(async (file) => {
-        const res = await uploadOnCloudinary(file.path, file.mimetype);
-        if (!res?.secure_url) throw new Error("Photo upload failed");
-        uploadedFiles.push(res.public_id);
-        return res.secure_url;
+      (files?.companyPhotos || []).map(async (file, index) => {
+        try {
+          console.log(`Uploading photo ${index + 1}:`, {
+            path: file.path,
+            mimetype: file.mimetype,
+            size: file.size,
+          });
+
+          const res = await uploadOnCloudinary(file.path, file.mimetype);
+
+          console.log(`Photo ${index + 1} upload result:`, res);
+
+          if (!res?.secure_url) {
+            throw new Error(
+              `Photo ${index + 1} upload failed - no secure_url in response`
+            );
+          }
+
+          uploadedFiles.push(res.public_id);
+          return res.secure_url;
+        } catch (err) {
+          console.error(`Photo ${index + 1} upload error:`, err);
+          throw new Error(`Photo ${index + 1} upload failed: ${err.message}`);
+        }
       })
     );
 
-    const videoUrls = await Promise.all(
-      (files?.companyVideos || []).map(async (file) => {
-        const res = await uploadOnCloudinary(file.path, file.mimetype);
-        if (!res?.secure_url) throw new Error("Video upload failed");
-        uploadedFiles.push(res.public_id);
-        return res.secure_url;
-      })
-    );
+    // ✅ Upload videos (field name: companyVideo, not companyVideos)
+    const videoUrls = [];
+    if (files?.companyVideo && files.companyVideo[0]) {
+      const res = await uploadOnCloudinary(
+        files.companyVideo[0].path,
+        files.companyVideo[0].mimetype
+      );
+      if (!res?.secure_url) throw new Error("Video upload failed");
+      uploadedFiles.push(res.public_id);
+      videoUrls.push(res.secure_url);
+    }
 
-    // ✅ Step 4: Build final object
+    // ✅ Build final object
     validated.companyBasicInfo.companyRegistrationYear = new Date(
       validated.companyBasicInfo.companyRegistrationYear
     );
     validated.companyIntro = {
       ...validated.companyIntro,
-      logo: logoUrl,
+      logo: logoUrl, // ✅ Ab defined hai
       companyPhotos: photoUrls,
       companyVideos: videoUrls,
     };
 
-    // ✅ Step 5: Save inside a transaction
+    // ✅ Save inside a transaction
     const [savedCompany] = await CompanyDetails.create([validated], {
       session,
     });
@@ -141,11 +135,9 @@ export const registerCompanyService = async (data, files, sellerId) => {
 
     return savedCompany;
   } catch (error) {
-    // 🔁 Rollback DB
     await session.abortTransaction();
     session.endSession();
 
-    // 🔁 Rollback Cloudinary uploads
     await Promise.all(
       uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
     );

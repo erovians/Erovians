@@ -1,36 +1,34 @@
-const LocationFilter = ({ filters, onChange }) => {
-  const countries = ["India", "China", "Italy", "Turkey", "Brazil"];
+import { MapPin } from "lucide-react";
 
+const LocationFilter = ({ country, state, city, onChange }) => {
   return (
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Country
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-blue-600" />
+            <span>Country</span>
+          </div>
         </label>
-        <select
-          value={filters.country}
-          onChange={(e) => onChange({ ...filters, country: e.target.value })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Country</option>
-          {countries.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          value={country}
+          onChange={(e) => onChange("country", e.target.value)}
+          placeholder="Enter country"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          State/Province
+          State
         </label>
         <input
           type="text"
+          value={state}
+          onChange={(e) => onChange("state", e.target.value)}
           placeholder="Enter state"
-          value={filters.state}
-          onChange={(e) => onChange({ ...filters, state: e.target.value })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -40,10 +38,10 @@ const LocationFilter = ({ filters, onChange }) => {
         </label>
         <input
           type="text"
+          value={city}
+          onChange={(e) => onChange("city", e.target.value)}
           placeholder="Enter city"
-          value={filters.city}
-          onChange={(e) => onChange({ ...filters, city: e.target.value })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
     </div>

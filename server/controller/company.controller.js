@@ -3,102 +3,43 @@ import {
   getCompanyDetailsService,
 } from "../services/company.service.js";
 import CompanyDetails from "../models/company.model.js";
+import Seller from "../models/sellerSingnup.model.js";
 import { cache } from "../services/cache.service.js";
 
 export const registerCompany = async (req, res) => {
   try {
-    const sellerId = req.user.userId;
-
-    console.log(req.body);
-
-    const company = await registerCompanyService(req.body, req.files, sellerId);
-    await cache.clearPattern(`company:*`);
-    return res.status(201).json({
-      success: true,
-      message: "Company registered successfully.",
-      company,
-    });
+    res.send("done");
   } catch (error) {
     console.error("RegisterCompany Error:", error);
-
-    if (error.name === "ZodError") {
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed.",
-        errors: error.errors,
-      });
-    }
-
-    res.status(400).json({
-      success: false,
-      message: error.message || "Internal server error",
-    });
   }
 };
-
-// export const getCompanyDetails = async (req, res) => {
-//   try {
-//     let sellerId;
-//     let companyId;
-
-//     if (req.user.role === "seller") {
-//       // Seller can only see their own company
-//       sellerId = req.user.userId;
-//       if (!sellerId) {
-//         return res.status(400).json({
-//           success: false,
-//           message: "SellerId is required",
-//         });
-//       }
-//       // ✅ Automatically fetch companyId for this seller
-//       const company = await CompanyDetails.findOne({ sellerId }).select("_id");
-//       if (!company) {
-//         return res.status(404).json({
-//           success: false,
-//           message: "Company not found for this seller",
-//         });
-//       }
-//       companyId = company._id;
-//     } else if (req.user.role === "buyer" || req.user.role === "admin") {
-//       // Buyer/Admin can pass either sellerId or companyId in query
-//       sellerId = req.query.sellerId;
-//       companyId = req.query.companyId;
-
-//       if (!sellerId && !companyId) {
-//         return res.status(400).json({
-//           success: false,
-//           message: "sellerId or companyId is required",
-//         });
-//       }
-//     }
-
-//     const companyData = await getCompanyDetailsService({ sellerId, companyId });
-
-//     return res.status(200).json({
-//       success: true,
-//       company: companyData, // includes all company fields + products array
-//     });
-//   } catch (error) {
-//     return res.status(404).json({
-//       success: false,
-//       message: error.message || "Company not found",
-//     });
-//   }
-// };
 
 export const getCompanyDetails = async (req, res) => {
   try {
     let sellerId;
     let companyId;
 
-    if (req.user.role.includes("seller") === true) {
-      sellerId = req.user.userId;
+    if (req.user.role.includes("seller")) {
+      // ✅ role array check
+      const userId = req.user.id;
+
+      // ✅ User ID se Seller find karo
+      const seller = await Seller.findOne({ userId });
+
+      if (!seller) {
+        return res.status(404).json({
+          success: false,
+          message: "Seller account not found",
+        });
+      }
+
+      sellerId = seller._id.toString();
 
       const company = await CompanyDetails.findOne({ sellerId }).select("_id");
       if (!company) {
         return res.status(404).json({
           success: false,
-          message: "Company not found for this seller ",
+          message: "Company not found for this seller",
         });
       }
 
@@ -120,8 +61,6 @@ export const getCompanyDetails = async (req, res) => {
     const cached = await cache.get(cacheKey);
     if (cached) {
       console.log("🔥 Company Redis HIT:", cacheKey);
-    }
-    if (cached) {
       return res.status(200).json({
         success: true,
         fromCache: true,
@@ -138,7 +77,7 @@ export const getCompanyDetails = async (req, res) => {
       });
     }
 
-    await cache.set(cacheKey, companyData, 200);
+    await cache.set(cacheKey, companyData, 3600);
 
     return res.status(200).json({
       success: true,

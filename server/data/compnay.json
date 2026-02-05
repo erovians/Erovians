@@ -1,0 +1,193 @@
+[
+  {
+    "_id": { "$oid": "507f1f77bcf86cd799439201" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439101" },
+    "companyBasicInfo": {
+      "companyName": "Rajasthan Stone Exports",
+      "company_registration_number": "CIN-U12345MH2020PTC123456",
+      "address": {
+        "street": "45 Stone Market Road",
+        "city": "Jaipur",
+        "stateOrProvince": "Rajasthan",
+        "countryOrRegion": "India",
+        "postalCode": "302001"
+      },
+      "legalowner": "Rajesh Kumar",
+      "locationOfRegistration": "Jaipur, Rajasthan",
+      "companyRegistrationYear": "2020",
+      "registration_documents": [],
+      "mainCategory": ["natural stones"],
+      "subCategory": ["marble", "granite", "sandstone", "limestone"],
+      "acceptedCurrency": ["INR", "USD", "EUR"],
+      "acceptedPaymentType": ["Bank Transfer", "Letter of Credit", "PayPal"],
+      "languageSpoken": ["English", "Hindi", "Rajasthani"],
+      "totalEmployees": 50,
+      "businessType": "manufacturer",
+      "factorySize": "10000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": true,
+      "numberOfProductionLines": 3,
+      "annualOutputValue": "5 Million USD",
+      "rdTeamSize": 5,
+      "tradeCapabilities": ["Export", "Wholesale", "Custom Orders"]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/rajasthan-stone-exports.png",
+      "companyDescription": "Rajasthan Stone Exports is a leading manufacturer and exporter of premium natural stones including marble, granite, sandstone, and limestone. With over 20 years of experience in the stone industry, we pride ourselves on delivering high-quality products to clients worldwide. Our state-of-the-art processing facility ensures precision cutting and finishing for all types of stone requirements.",
+      "companyPhotos": [
+        "https://example.com/company/rajasthan-1.jpg",
+        "https://example.com/company/rajasthan-2.jpg",
+        "https://example.com/company/rajasthan-3.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/rajasthan-factory-tour.mp4"
+      ]
+    },
+    "createdAt": { "$date": "2025-01-15T10:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-15T10:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "507f1f77bcf86cd799439202" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439102" },
+    "companyBasicInfo": {
+      "companyName": "Ceramic World India",
+      "company_registration_number": "CIN-U12345MH2021PTC654321",
+      "address": {
+        "street": "Unit 12, Ceramic Plaza",
+        "city": "Mumbai",
+        "stateOrProvince": "Maharashtra",
+        "countryOrRegion": "India",
+        "postalCode": "400053"
+      },
+      "legalowner": "Priya Sharma",
+      "locationOfRegistration": "Mumbai, Maharashtra",
+      "companyRegistrationYear": "2021",
+      "registration_documents": [],
+      "mainCategory": ["ceramic & tiles"],
+      "subCategory": ["floor tiles", "wall tiles", "vitrified tiles", "porcelain tiles", "mosaic tiles"],
+      "acceptedCurrency": ["INR", "USD"],
+      "acceptedPaymentType": ["Bank Transfer", "Credit Card", "UPI"],
+      "languageSpoken": ["English", "Hindi", "Marathi"],
+      "totalEmployees": 80,
+      "businessType": "trading company",
+      "factorySize": "15000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": false,
+      "numberOfProductionLines": 5,
+      "annualOutputValue": "8 Million USD",
+      "rdTeamSize": 8,
+      "tradeCapabilities": ["Import", "Export", "Distribution", "Retail"]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/ceramic-world-india.png",
+      "companyDescription": "Ceramic World India specializes in importing and distributing premium ceramic tiles from leading manufacturers worldwide. We offer an extensive range of floor tiles, wall tiles, vitrified tiles, and designer mosaic tiles for residential and commercial projects. Our showroom showcases the latest trends in tile design and technology, ensuring our customers have access to cutting-edge products.",
+      "companyPhotos": [
+        "https://example.com/company/ceramic-world-1.jpg",
+        "https://example.com/company/ceramic-world-2.jpg",
+        "https://example.com/company/ceramic-world-3.jpg",
+        "https://example.com/company/ceramic-world-4.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/ceramic-showroom-tour.mp4"
+      ]
+    },
+    "createdAt": { "$date": "2025-01-20T11:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-20T11:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "507f1f77bcf86cd799439203" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439103" },
+    "companyBasicInfo": {
+      "companyName": "Gujarat Granite Hub",
+      "company_registration_number": "CIN-U12345GJ2022PTC789456",
+      "address": {
+        "street": "Plot 23, Industrial Area Phase 2",
+        "city": "Ahmedabad",
+        "stateOrProvince": "Gujarat",
+        "countryOrRegion": "India",
+        "postalCode": "382330"
+      },
+      "legalowner": "Amit Patel",
+      "locationOfRegistration": "Ahmedabad, Gujarat",
+      "companyRegistrationYear": "2022",
+      "registration_documents": [],
+      "mainCategory": ["natural stones", "alternatives & finishes"],
+      "subCategory": ["granite", "quartzite", "quartz", "engineered stone"],
+      "acceptedCurrency": ["INR", "USD", "GBP"],
+      "acceptedPaymentType": ["Bank Transfer", "Letter of Credit"],
+      "languageSpoken": ["English", "Hindi", "Gujarati"],
+      "totalEmployees": 65,
+      "businessType": "exporter",
+      "factorySize": "12000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": true,
+      "numberOfProductionLines": 4,
+      "annualOutputValue": "6.5 Million USD",
+      "rdTeamSize": 6,
+      "tradeCapabilities": ["Export", "Custom Manufacturing", "Wholesale"]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/gujarat-granite-hub.png",
+      "companyDescription": "Gujarat Granite Hub is a premier exporter of natural granite and engineered stone products. We source the finest granite from quarries across India and process them using advanced machinery to meet international quality standards. Our product range includes granite slabs, tiles, and custom-cut pieces for countertops, flooring, and architectural applications. We also specialize in quartz and engineered stone solutions for modern construction projects.",
+      "companyPhotos": [
+        "https://example.com/company/granite-hub-1.jpg",
+        "https://example.com/company/granite-hub-2.jpg",
+        "https://example.com/company/granite-hub-3.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/granite-processing.mp4"
+      ]
+    },
+    "createdAt": { "$date": "2025-01-25T12:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-25T12:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "507f1f77bcf86cd799439204" },
+    "sellerId": { "$oid": "507f1f77bcf86cd799439104" },
+    "companyBasicInfo": {
+      "companyName": "Marble Art Studio",
+      "company_registration_number": "PROP-TG-2023-456789",
+      "address": {
+        "street": "Studio 7, Marble Avenue",
+        "city": "Hyderabad",
+        "stateOrProvince": "Telangana",
+        "countryOrRegion": "India",
+        "postalCode": "500034"
+      },
+      "legalowner": "Sneha Reddy",
+      "locationOfRegistration": "Hyderabad, Telangana",
+      "companyRegistrationYear": "2023",
+      "registration_documents": [],
+      "mainCategory": ["natural stones", "alternatives & finishes"],
+      "subCategory": ["marble", "travertine", "terrazzo", "resin"],
+      "acceptedCurrency": ["INR"],
+      "acceptedPaymentType": ["Bank Transfer", "UPI", "Cash"],
+      "languageSpoken": ["English", "Hindi", "Telugu"],
+      "totalEmployees": 15,
+      "businessType": "service provider",
+      "factorySize": "2000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": false,
+      "numberOfProductionLines": 1,
+      "annualOutputValue": "500 Thousand USD",
+      "rdTeamSize": 2,
+      "tradeCapabilities": ["Custom Design", "Installation", "Retail"]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/marble-art-studio.png",
+      "companyDescription": "Marble Art Studio is a boutique design studio specializing in artistic marble work and custom stone installations. Founded by award-winning designer Sneha Reddy, we create bespoke marble pieces for luxury homes, hotels, and commercial spaces. Our expertise includes marble flooring, wall cladding, custom furniture, and decorative art pieces. We work with premium Italian marble, Indian marble, and modern alternatives like terrazzo and resin to bring our clients' visions to life.",
+      "companyPhotos": [
+        "https://example.com/company/marble-art-1.jpg",
+        "https://example.com/company/marble-art-2.jpg",
+        "https://example.com/company/marble-art-3.jpg"
+      ],
+      "companyVideos": []
+    },
+    "createdAt": { "$date": "2025-01-28T13:00:00.000Z" },
+    "updatedAt": { "$date": "2025-01-28T13:00:00.000Z" },
+    "__v": 0
+  }
+]

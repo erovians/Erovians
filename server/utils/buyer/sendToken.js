@@ -33,7 +33,6 @@ const sendToken = (user, statusCode, res, message = "Success") => {
   });
 
   // Set cookies
-  res.cookie("accessToken", accessToken, accessTokenOptions);
   res.cookie("refreshToken", refreshToken, refreshTokenOptions);
 
   // Send response
@@ -42,7 +41,6 @@ const sendToken = (user, statusCode, res, message = "Success") => {
     message,
     data: user.toSafeObject(),
     accessToken, // Also send in response body for mobile apps
-    refreshToken, // Also send in response body for mobile apps
   });
 };
 
