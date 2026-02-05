@@ -1,84 +1,109 @@
-import axios from "axios";
-import qs from "qs";
-import Seller from "../models/sellerSingnup.model.js";
 import User from "../models/user.model.js";
-import twilio from "twilio";
-import { cache } from "../services/cache.service.js";
+import asyncHandler from "../middleware/buyer/asyncHandler.js";
+import AppError from "../utils/buyer/AppError.js";
+import { generateOTP, getOTPExpiry } from "../utils/buyer/otpUtils.js";
+import { sendOTPSMS } from "../utils/buyer/sendNumberbyTwilio.js";
+import logger from "../config/winston.js";
 
-// const TWILIO_ACCOUNT_SID = "AC793e6f9bc8293350935d4b935abea51b";
-const TWILIO_ACCOUNT_SID = "AC793e6f9bc8293350935d4b935abea51b";
-const TWILIO_AUTH_TOKEN = "3855865237d79e521089f200c6780866";
-const TWILIO_FROM_NUMBER = "+17756444776";
-
-const TWILIO_API_URL = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
-
-const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-
-function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-export const sendOtp = async (req, res) => {
+// ======================== SEND OTP ========================
+export const sendOtp = asyncHandler(async (req, res, next) => {
   const { mobile } = req.body;
-  if (!mobile)
-    return res.status(400).json({ message: "Mobile number is required" });
+  console.log("this is mobile ", req.body);
+  // Validation
 
-  try {
-    const seller = await User.findOne({ mobile });
-    if (seller) {
-      return res.status(409).json({ message: "Mobile already exists" });
-    } else {
-      const otp = generateOTP();
+  // ✅ Check if user exists
+  let user = await User.findByMobile(mobile);
 
-      const data = {
-        To: `+91${mobile}`,
-        From: TWILIO_FROM_NUMBER,
-        Body: `Your OTP is ${otp}`,
-      };
-
-      const response = await axios.post(TWILIO_API_URL, qs.stringify(data), {
-        auth: {
-          username: TWILIO_ACCOUNT_SID,
-          password: TWILIO_AUTH_TOKEN,
-        },
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
-
-      // store OTP temporarily (better: use Redis or DB)
-      global.otpStore = global.otpStore || {};
-      global.otpStore[mobile] = otp;
-
-      return res
-        .status(200)
-        .json({ success: true, message: "OTP sent successfully" });
-    }
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to send OTP" });
+  // ✅ If user exists and already has seller role → error
+  if (user && user.hasRole("seller")) {
+    return next(new AppError("Mobile already registered as seller", 409));
   }
-};
 
-export const verifyOtp = async (req, res) => {
+  // ✅ Generate OTP
+  const otp = generateOTP();
+  const otpExpires = getOTPExpiry();
+
+  // ✅ If user doesn't exist, create temporary user
+  if (!user) {
+    user = await User.create({
+      mobile,
+      otp,
+      otpExpires,
+      isMobileVerified: false,
+      role: ["user"], // Default role
+    });
+
+    logger.info("Temporary user created for OTP", {
+      userId: user._id,
+      mobile,
+    });
+  } else {
+    // ✅ Update existing user with new OTP
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    logger.info("OTP updated for existing user", {
+      userId: user._id,
+      mobile,
+    });
+  }
+
+  // ✅ Send OTP via SMS
+  const smsResult = await sendOTPSMS(mobile, otp);
+
+  if (!smsResult.success) {
+    return next(new AppError("Failed to send OTP. Please try again", 500));
+  }
+
+  logger.info("OTP sent successfully", { mobile, userId: user._id });
+
+  res.status(200).json({
+    success: true,
+    message: "OTP sent successfully",
+  });
+});
+
+// ======================== VERIFY OTP ========================
+export const verifyOtp = asyncHandler(async (req, res, next) => {
   const { mobile, otp } = req.body;
-  if (!mobile || !otp)
-    return res.status(400).json({ message: "Mobile and OTP are required" });
+  console.log(req.body);
 
-  global.otpStore = global.otpStore || {};
-
-  if (global.otpStore[mobile] && global.otpStore[mobile] === otp) {
-    delete global.otpStore[mobile];
-
-    global.verifiedMobiles = global.verifiedMobiles || {};
-    global.verifiedMobiles[mobile] = true;
-
-    return res
-      .status(200)
-      .json({ success: true, message: "OTP verified successfully" });
+  if (!mobile || !otp) {
+    return next(new AppError("Mobile and OTP are required", 400));
   }
 
-  return res
-    .status(400)
-    .json({ success: false, message: "Invalid or expired OTP" });
-};
+  // ✅ Find user with OTP fields
+  const user = await User.findOne({ mobile }).select("+otp +otpExpires");
+
+  if (!user) {
+    return next(new AppError("User not found. Please send OTP first", 404));
+  }
+
+  // ✅ Verify OTP using user method
+  const verification = user.verifyOtp(otp);
+
+  if (!verification.valid) {
+    logger.warn("OTP verification failed", {
+      mobile,
+      reason: verification.message,
+    });
+    return next(new AppError(verification.message, 400));
+  }
+
+  // ✅ Mark mobile as verified
+  user.isMobileVerified = true;
+  await user.clearOtp(); // Clear OTP fields
+  await user.save();
+
+  logger.info("Mobile verified successfully", {
+    mobile,
+    userId: user._id,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Mobile verified successfully",
+    userId: user._id, // ✅ Return for reference
+  });
+});

@@ -10,14 +10,21 @@ import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { registerCompany, clearCompanyState } from "@/redux/slice/companySlice";
+import {
+  registerCompany,
+  updateCompany,
+  clearCompanyState,
+  getCompany,
+  clearError,
+  clearSuccess,
+} from "@/redux/slice/companySlice";
 import { toast } from "sonner";
-import api from "@/utils/axios.utils";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
     id: 1,
-    title: "Comapny Basic Details",
+    title: "Company Basic Details",
     component: StepOne,
     schema: stepOneSchema,
   },
@@ -31,22 +38,29 @@ const steps = [
 ];
 
 export default function CompanyProfileForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem("currentStep");
     return savedStep ? Number(savedStep) : 1;
   });
 
-  const dispatch = useDispatch();
-
-  const { loading, error, success, message } = useSelector(
+  const { company, loading, error, success, message } = useSelector(
     (state) => state.company
   );
+  const { seller, loading: sellerLoading } = useSelector(
+    (state) => state.seller
+  );
+  console.log("this is seller", seller);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("companyFormData");
     return savedData
       ? JSON.parse(savedData)
       : {
+          // Basic Info
           companyName: "",
           legalowner: "",
           locationOfRegistration: "",
@@ -63,7 +77,16 @@ export default function CompanyProfileForm() {
           acceptedCurrency: [],
           acceptedPaymentType: [],
           languageSpoken: [],
-          // Step 2
+          totalEmployees: "",
+          businessType: "",
+          factorySize: "",
+          factoryCountryOrRegion: "",
+          contractManufacturing: false,
+          numberOfProductionLines: "",
+          annualOutputValue: "",
+          rdTeamSize: "",
+          tradeCapabilities: [],
+          // Company Intro
           companyDescription: "",
           logo: null,
           companyPhotos: [],
@@ -74,66 +97,102 @@ export default function CompanyProfileForm() {
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
 
-  // fetch all the data of the company associated with the current loggedin seller
+  // ✅ Fetch company data on mount
   useEffect(() => {
-    async function loadProfile() {
-      try {
-        const res = await api.get("/company/details");
+    dispatch(getCompany());
+  }, [dispatch]);
 
-        if (!res.data.company) {
-          setLoadingProfile(false);
-          return;
+  // ✅ Populate form when company data arrives
+  useEffect(() => {
+    if (company) {
+      setIsEditMode(true);
+      const c = company;
+
+      // Helper to split comma-separated strings
+      const splitString = (str) => {
+        if (!str) return [];
+        if (Array.isArray(str)) {
+          return str.flatMap((item) =>
+            typeof item === "string"
+              ? item.split(",").map((s) => s.trim())
+              : item
+          );
         }
+        return str.split(",").map((s) => s.trim());
+      };
 
-        const c = res.data.company;
-
-        setFormData((prev) => ({
-          ...prev,
-
-          companyName: c.companyBasicInfo?.companyName || "",
-          legalowner: c.companyBasicInfo?.legalowner || "",
-          locationOfRegistration:
-            c.companyBasicInfo?.locationOfRegistration || "",
-          companyRegistrationYear:
-            c.companyBasicInfo?.companyRegistrationYear || "",
-
-          address: {
-            ...prev.address,
-            ...c.companyBasicInfo?.address,
-          },
-
-          mainCategory: c.companyBasicInfo?.mainCategory || [],
-          mainProduct: c.companyBasicInfo?.subCategory || [],
-          acceptedCurrency: c.companyBasicInfo?.acceptedCurrency || [],
-          acceptedPaymentType: c.companyBasicInfo?.acceptedPaymentType || [],
-          languageSpoken: c.companyBasicInfo?.languageSpoken || [],
-
-          companyDescription: c.companyIntro?.companyDescription || "",
-
-          logoUrl: c.companyIntro?.logo || "",
-          companyPhotosUrl: c.companyIntro?.companyPhotos || [],
-          companyVideosUrl: c.companyIntro?.companyVideos || [],
-        }));
-
-        setLoadingProfile(false);
-      } catch (err) {
-        console.error("Error loading profile", err);
-        setLoadingProfile(false);
-      }
+      setFormData({
+        // Basic Info
+        companyName: c.companyBasicInfo?.companyName || "",
+        legalowner: c.companyBasicInfo?.legalowner || "",
+        locationOfRegistration:
+          c.companyBasicInfo?.locationOfRegistration || "",
+        companyRegistrationYear:
+          c.companyBasicInfo?.companyRegistrationYear || "",
+        address: {
+          street: c.companyBasicInfo?.address?.street || "",
+          city: c.companyBasicInfo?.address?.city || "",
+          stateOrProvince: c.companyBasicInfo?.address?.stateOrProvince || "",
+          countryOrRegion: c.companyBasicInfo?.address?.countryOrRegion || "",
+          postalCode: c.companyBasicInfo?.address?.postalCode || "",
+        },
+        mainCategory: c.companyBasicInfo?.mainCategory || [],
+        mainProduct: c.companyBasicInfo?.subCategory || [],
+        acceptedCurrency: splitString(c.companyBasicInfo?.acceptedCurrency),
+        acceptedPaymentType: splitString(
+          c.companyBasicInfo?.acceptedPaymentType
+        ),
+        languageSpoken: splitString(c.companyBasicInfo?.languageSpoken),
+        totalEmployees: c.companyBasicInfo?.totalEmployees?.toString() || "",
+        businessType: c.companyBasicInfo?.businessType || "",
+        factorySize: c.companyBasicInfo?.factorySize || "",
+        factoryCountryOrRegion:
+          c.companyBasicInfo?.factoryCountryOrRegion || "",
+        contractManufacturing:
+          c.companyBasicInfo?.contractManufacturing || false,
+        numberOfProductionLines:
+          c.companyBasicInfo?.numberOfProductionLines?.toString() || "",
+        annualOutputValue: c.companyBasicInfo?.annualOutputValue || "",
+        rdTeamSize: c.companyBasicInfo?.rdTeamSize?.toString() || "",
+        tradeCapabilities: c.companyBasicInfo?.tradeCapabilities || [],
+        // Company Intro
+        companyDescription: c.companyIntro?.companyDescription || "",
+        logoUrl: c.companyIntro?.logo || "",
+        companyPhotosUrl: c.companyIntro?.companyPhotos || [],
+        companyVideosUrl: c.companyIntro?.companyVideos || [],
+      });
     }
+  }, [company]);
 
-    loadProfile();
-  }, []);
-
+  // ✅ Save to localStorage
   useEffect(() => {
     const { logo, companyPhotos, companyVideos, ...safeData } = formData;
     localStorage.setItem("companyFormData", JSON.stringify(safeData));
   }, [formData]);
 
+  // ✅ Update progress
   useEffect(() => {
     localStorage.setItem("currentStep", currentStep);
     setProgress(Math.round(((currentStep - 1) / (steps.length - 1)) * 100));
   }, [currentStep]);
+
+  // ✅ Handle success/error
+  useEffect(() => {
+    if (success && message) {
+      toast.success(message);
+      setTimeout(() => {
+        localStorage.removeItem("companyFormData");
+        localStorage.removeItem("currentStep");
+        dispatch(clearSuccess());
+        navigate("/sellerdashboard");
+      }, 1500);
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [success, error, message, dispatch, navigate]);
 
   const CurrentComponent = steps[currentStep - 1].component;
 
@@ -149,7 +208,6 @@ export default function CompanyProfileForm() {
         }
       });
     }
-    console.log("Validation errors:", formatted);
     return formatted;
   };
 
@@ -166,6 +224,7 @@ export default function CompanyProfileForm() {
     } catch (err) {
       const formatted = mapZodErrors(err);
       setErrors(formatted);
+      toast.error("Please fix the errors before proceeding");
     }
   };
 
@@ -174,100 +233,17 @@ export default function CompanyProfileForm() {
     setCurrentStep((s) => Math.max(1, s - 1));
   };
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     console.log("Submitting form data...");
-  //     await stepOneSchema.parseAsync(formData);
-  //     await stepTwoSchema.parseAsync(formData);
-  //     setErrors({});
-  //     setIsSubmitting(true);
-
-  //     const form = new FormData();
-
-  //     // Append primitive fields
-  //     form.append("companyName", formData.companyName);
-  //     form.append("legalowner", formData.legalowner);
-  //     form.append("locationOfRegistration", formData.locationOfRegistration);
-  //     form.append("companyRegistrationYear", formData.companyRegistrationYear);
-  //     form.append("address", JSON.stringify(formData.address));
-  //     form.append("mainCategory", formData.mainCategory);
-  //     form.append("subCategory", formData.mainProduct.join(","));
-  //     form.append("acceptedCurrency", formData.acceptedCurrency.join(","));
-  //     form.append(
-  //       "acceptedPaymentType",
-  //       formData.acceptedPaymentType.join(",")
-  //     );
-  //     form.append("languageSpoken", formData.languageSpoken.join(","));
-  //     form.append("companyDescription", formData.companyDescription);
-
-  //     // Append optional files safely
-  //     if (formData.logo instanceof File) {
-  //       form.append("logo", formData.logo);
-  //     }
-
-  //     if (Array.isArray(formData.companyPhotos)) {
-  //       formData.companyPhotos.forEach((photo, idx) => {
-  //         if (photo instanceof File) form.append("companyPhotos", photo);
-  //       });
-  //     }
-
-  //     if (Array.isArray(formData.companyVideos)) {
-  //       formData.companyVideos.forEach((video, idx) => {
-  //         if (video instanceof File) form.append("companyVideo", video);
-  //       });
-  //     }
-
-  //     console.log("Files appended successfully ✅");
-
-  //     // Send request
-  //     const res = await api.post("/company/register", form ,{
-  //        headers: { "Content-Type": undefined },
-  //     });
-  //     console.log("Response:", res);
-
-  //     if (!res.data.success) {
-  //       throw new Error(res.data.message || "Something went wrong");
-  //     }
-
-  //     if (res.status === 201) {
-  //       alert("Company registered successfully");
-  //       localStorage.removeItem("companyFormData");
-  //       localStorage.removeItem("currentStep");
-  //     }
-  //   } catch (err) {
-  //     console.error("Submit error:", err);
-  //     const formatted = mapZodErrors(err);
-  //     setErrors(formatted);
-
-  //     // Jump to the step where error occurred
-  //     if (
-  //       formatted["companyName"] ||
-  //       formatted["address.street"] ||
-  //       formatted["acceptedCurrency"]
-  //     ) {
-  //       setCurrentStep(1);
-  //     } else if (
-  //       formatted["companyDescription"] ||
-  //       formatted["logo"] ||
-  //       formatted["companyPhotos"]
-  //     ) {
-  //       setCurrentStep(2);
-  //     }
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     try {
-      console.log("Submitting form data...");
+      // Validate all steps
       await stepOneSchema.parseAsync(formData);
       await stepTwoSchema.parseAsync(formData);
       setErrors({});
 
+      // Create FormData
       const form = new FormData();
 
-      // Append primitive fields
+      // Basic Info
       form.append("companyName", formData.companyName);
       form.append("legalowner", formData.legalowner);
       form.append("locationOfRegistration", formData.locationOfRegistration);
@@ -281,36 +257,43 @@ export default function CompanyProfileForm() {
         formData.acceptedPaymentType.join(",")
       );
       form.append("languageSpoken", formData.languageSpoken.join(","));
+
+      // Optional fields
+      if (formData.totalEmployees) {
+        form.append("totalEmployees", formData.totalEmployees);
+      }
+      if (formData.businessType) {
+        form.append("businessType", formData.businessType);
+      }
+      if (formData.factorySize) {
+        form.append("factorySize", formData.factorySize);
+      }
+      if (formData.factoryCountryOrRegion) {
+        form.append("factoryCountryOrRegion", formData.factoryCountryOrRegion);
+      }
+      if (formData.contractManufacturing !== undefined) {
+        form.append("contractManufacturing", formData.contractManufacturing);
+      }
+      if (formData.numberOfProductionLines) {
+        form.append(
+          "numberOfProductionLines",
+          formData.numberOfProductionLines
+        );
+      }
+      if (formData.annualOutputValue) {
+        form.append("annualOutputValue", formData.annualOutputValue);
+      }
+      if (formData.rdTeamSize) {
+        form.append("rdTeamSize", formData.rdTeamSize);
+      }
+      if (formData.tradeCapabilities?.length > 0) {
+        form.append("tradeCapabilities", formData.tradeCapabilities.join(","));
+      }
+
+      // Company Intro
       form.append("companyDescription", formData.companyDescription);
 
-      // ================= NEW FIELDS =================
-      form.append("totalEmployees", formData.totalEmployees || "");
-      form.append("businessType", formData.businessType || "");
-      form.append("factorySize", formData.factorySize || "");
-      form.append(
-        "factoryCountryOrRegion",
-        formData.factoryCountryOrRegion || ""
-      );
-
-      form.append(
-        "contractManufacturing",
-        String(formData.contractManufacturing)
-      );
-
-      form.append(
-        "numberOfProductionLines",
-        formData.numberOfProductionLines || ""
-      );
-
-      form.append("annualOutputValue", formData.annualOutputValue || "");
-      form.append("rdTeamSize", formData.rdTeamSize || "");
-
-      form.append(
-        "tradeCapabilities",
-        JSON.stringify(formData.tradeCapabilities || [])
-      );
-
-      // Append optional files safely
+      // Files
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
       }
@@ -321,7 +304,6 @@ export default function CompanyProfileForm() {
         });
       }
 
-      // Only append first video to match multer maxCount = 1
       if (
         Array.isArray(formData.companyVideos) &&
         formData.companyVideos[0] instanceof File
@@ -329,33 +311,36 @@ export default function CompanyProfileForm() {
         form.append("companyVideo", formData.companyVideos[0]);
       }
 
-      console.log("Files appended successfully ✅");
-
-      const result = await dispatch(registerCompany(form)).unwrap(); // redux disptach
-      // alert(result.message);
-      toast.success(result.message);
-      localStorage.removeItem("companyFormData");
-      localStorage.removeItem("currentStep");
-      dispatch(clearCompanyState());
+      // Dispatch appropriate action
+      if (isEditMode) {
+        await dispatch(updateCompany(form)).unwrap();
+      } else {
+        await dispatch(registerCompany(form)).unwrap();
+      }
     } catch (err) {
       console.error("Submit error:", err);
-      const formatted = mapZodErrors(err);
-      setErrors(formatted);
 
-      // Jump to the step where error occurred
-      if (
-        formatted["companyName"] ||
-        formatted["address.street"] ||
-        formatted["acceptedCurrency"]
-      ) {
-        setCurrentStep(1);
-      } else if (
-        formatted["companyDescription"] ||
-        formatted["logo"] ||
-        formatted["companyPhotos"]
-      ) {
-        setCurrentStep(2);
+      // Handle validation errors
+      if (err.issues) {
+        const formatted = mapZodErrors(err);
+        setErrors(formatted);
+
+        // Navigate to the step with errors
+        if (
+          formatted["companyName"] ||
+          formatted["address.street"] ||
+          formatted["acceptedCurrency"]
+        ) {
+          setCurrentStep(1);
+        } else if (
+          formatted["companyDescription"] ||
+          formatted["logo"] ||
+          formatted["companyPhotos"]
+        ) {
+          setCurrentStep(2);
+        }
       }
+
       toast.error(err.message || "Something went wrong");
     }
   };
@@ -363,6 +348,7 @@ export default function CompanyProfileForm() {
   return (
     <div className="max-w-7xl mx-auto rounded bg-white">
       <div className="p-2 md:p-4">
+        {/* Progress Bar */}
         <div className="flex justify-between mb-2">
           <span className="font-medium">Progress</span>
           <span className="text-sm">{progress}%</span>
@@ -374,7 +360,7 @@ export default function CompanyProfileForm() {
           />
         </div>
 
-        {/* Step indicators */}
+        {/* Step Indicators */}
         <div className="flex justify-between mt-6">
           {steps.map((step) => {
             const isActive = currentStep === step.id;
@@ -401,7 +387,6 @@ export default function CompanyProfileForm() {
                   {step.title}
                 </p>
 
-                {/* Connector line between steps */}
                 {step.id < steps.length && (
                   <div
                     className={`absolute top-4 left-1/2 w-full h-0.5 -translate-y-1/2 z-[-1]
@@ -414,39 +399,52 @@ export default function CompanyProfileForm() {
         </div>
       </div>
 
-      <div className="p-6 ">
-        <CurrentComponent
-          formData={formData}
-          setFormData={setFormData}
-          errors={errors}
-        />
-
-        <div className="mt-6 flex gap-2 justify-between items-center">
-          <div>
-            {currentStep > 1 && (
-              <Button onClick={prevStep} variant="secondary">
-                Back
-              </Button>
-            )}
+      <div className="pt-6 md:p-6">
+        {loading && currentStep === 1 ? (
+          <div className="flex justify-center items-center h-64">
+            <Spinner />
+            <span className="ml-2">Loading company details...</span>
           </div>
+        ) : (
+          <>
+            <CurrentComponent
+              formData={formData}
+              setFormData={setFormData}
+              errors={errors}
+            />
 
-          <div className="flex flex-col items-center gap-2">
-            {currentStep < steps.length ? (
-              <Button onClick={nextStep} variant="secondary">
-                Next <MoveRight size={20} />
-              </Button>
-            ) : (
-              <Button
-                onClick={handleSubmit}
-                variant={"formButton"}
-                disabled={loading}
-              >
-                {loading && <Spinner />}
-                {loading ? "Submitting" : "Submit"}
-              </Button>
-            )}
-          </div>
-        </div>
+            <div className="mt-6 flex gap-2 justify-between items-center">
+              <div>
+                {currentStep > 1 && (
+                  <Button onClick={prevStep} variant="secondary">
+                    Back
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                {currentStep < steps.length ? (
+                  <Button onClick={nextStep} variant="secondary">
+                    Next <MoveRight size={20} />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    variant={"formButton"}
+                    disabled={loading}
+                  >
+                    {loading && <Spinner />}
+                    {loading
+                      ? "Submitting"
+                      : isEditMode
+                      ? "Update Company"
+                      : "Submit"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

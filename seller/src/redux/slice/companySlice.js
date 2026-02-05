@@ -1,50 +1,75 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/utils/axios.utils";
 
-// Async thunk: Register company
+// ======================== REGISTER COMPANY ========================
 export const registerCompany = createAsyncThunk(
   "company/registerCompany",
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await api.post("/company/register", formData);
+      const res = await api.post("/company/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Registration failed"
+        err.response?.data || { message: "Registration failed" }
       );
     }
   }
 );
 
-// Async thunk: Edit company (optional)
-export const editCompany = createAsyncThunk(
-  "company/editCompany",
-  async ({ companyId, formData }, { rejectWithValue }) => {
-    try {
-      const res = await api.patch(`/company/${companyId}/edit`, formData);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Update failed");
-    }
-  }
-);
-
-// GET company details
+// ======================== GET COMPANY DETAILS ========================
 export const getCompany = createAsyncThunk(
   "company/getCompany",
-  async (params = {}, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/company/details`, { params });
-      console.log(res.data);
-      return res.data; // { company: {...} }
+      const res = await api.get("/company/details");
+      return res.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch company details"
+        err.response?.data || { message: "Failed to fetch company details" }
       );
     }
   }
 );
 
+// ======================== UPDATE COMPANY ========================
+export const updateCompany = createAsyncThunk(
+  "company/updateCompany",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await api.patch("/company/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Update failed" }
+      );
+    }
+  }
+);
+
+// ======================== DELETE COMPANY ========================
+export const deleteCompany = createAsyncThunk(
+  "company/deleteCompany",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.delete("/company/delete");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Delete failed" }
+      );
+    }
+  }
+);
+
+// ======================== SLICE ========================
 const companySlice = createSlice({
   name: "company",
   initialState: {
@@ -62,10 +87,17 @@ const companySlice = createSlice({
       state.success = false;
       state.message = "";
     },
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearSuccess: (state) => {
+      state.success = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
-      // Register Company
+      // ========== REGISTER COMPANY ==========
       .addCase(registerCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -80,44 +112,64 @@ const companySlice = createSlice({
       })
       .addCase(registerCompany.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message || "Registration failed";
         state.success = false;
       })
 
-      // Edit Company
-      .addCase(editCompany.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(editCompany.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.company = action.payload.company;
-        state.message =
-          action.payload.message || "Company updated successfully";
-      })
-      .addCase(editCompany.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.success = false;
-      })
-
-      // GET Company
+      // ========== GET COMPANY ==========
       .addCase(getCompany.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(getCompany.fulfilled, (state, action) => {
         state.loading = false;
-        state.company = action.payload.company;
+        state.company = action.payload.company || null;
       })
       .addCase(getCompany.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message || "Failed to fetch company";
+      })
+
+      // ========== UPDATE COMPANY ==========
+      .addCase(updateCompany.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(updateCompany.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.company = action.payload.company;
+        state.message =
+          action.payload.message || "Company updated successfully";
+      })
+      .addCase(updateCompany.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Update failed";
+        state.success = false;
+      })
+
+      // ========== DELETE COMPANY ==========
+      .addCase(deleteCompany.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(deleteCompany.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.company = null;
+        state.message =
+          action.payload.message || "Company deleted successfully";
+      })
+      .addCase(deleteCompany.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Delete failed";
+        state.success = false;
       });
   },
 });
 
-export const { clearCompanyState } = companySlice.actions;
+export const { clearCompanyState, clearError, clearSuccess } =
+  companySlice.actions;
 export default companySlice.reducer;

@@ -3,15 +3,21 @@ import {
   createWorkOrder,
   getWorkOrders,
   updateWorkOrderStatus,
-  deleteWorkOrder,
 } from "../controller/workorder.controller.js";
-import { verifyUser, allowRoles } from "../middleware/auth.middleware.js";
+import {
+  isAuthenticated,
+  authorizeRoles,
+} from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", verifyUser, allowRoles("seller"), getWorkOrders);
-router.post("/add", verifyUser, allowRoles("seller"), createWorkOrder);
-router.put("/:id", verifyUser, allowRoles("seller"), updateWorkOrderStatus);
-router.delete("/:id", verifyUser, allowRoles("seller"), deleteWorkOrder);
+router.get("/", isAuthenticated, authorizeRoles("seller"), getWorkOrders);
+router.post("/add", isAuthenticated, authorizeRoles("seller"), createWorkOrder);
+router.put(
+  "/:id",
+  isAuthenticated,
+  authorizeRoles("seller"),
+  updateWorkOrderStatus
+);
 
 export default router;

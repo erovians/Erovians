@@ -1,4 +1,3 @@
-// ✅ Email validation
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) return "Email is required.";
@@ -6,7 +5,6 @@ export const validateEmail = (email) => {
   return "";
 };
 
-// ✅ Mobile validation
 export const validateMobile = (mobile) => {
   const mobileRegex = /^[0-9]{10}$/;
   if (!mobile) return "Mobile number is required.";

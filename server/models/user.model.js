@@ -34,6 +34,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    pendingEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      select: false, // ✅ Hidden by default
+      validate: {
+        validator: function (v) {
+          return !v || validator.isEmail(v);
+        },
+        message: "Please provide a valid email address",
+      },
+    },
     mobile: {
       type: String,
       unique: true,
@@ -50,71 +62,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    address: {
-      name: {
-        type: String,
-        trim: true,
-        maxlength: [100, "Address name cannot exceed 100 characters"],
-      },
-      mobile: {
-        type: String,
-        validate: {
-          validator: function (v) {
-            return !v || validator.isMobilePhone(v.toString(), "any");
-          },
-          message: "Please provide a valid mobile number in address",
-        },
-      },
-      city: {
-        type: String,
-        trim: true,
-        maxlength: [50, "City name cannot exceed 50 characters"],
-      },
-      state: {
-        type: String,
-        trim: true,
-        maxlength: [50, "State name cannot exceed 50 characters"],
-      },
-      country: {
-        type: String,
-        trim: true,
-        maxlength: [50, "Country name cannot exceed 50 characters"],
-      },
-      alternateMobile: {
-        type: String,
-        validate: {
-          validator: function (v) {
-            return !v || validator.isMobilePhone(v.toString(), "any");
-          },
-          message: "Please provide a valid alternate mobile number",
-        },
-      },
-      landmark: {
-        type: String,
-        trim: true,
-        maxlength: [200, "Landmark cannot exceed 200 characters"],
-      },
-      pincode: {
-        type: String,
-        trim: true,
-        validate: {
-          validator: function (v) {
-            return !v || /^\d{6}$/.test(v);
-          },
-          message: "Please provide a valid 6-digit pincode",
-        },
-      },
-    },
-    idProof: {
-      type: String,
-      enum: ["aadhar", "pan", "passport", "driving_license", "voter_id"],
-    },
-    gender: {
-      type: String,
+    role: {
+      type: [String],
       enum: {
-        values: ["male", "female", "others"],
-        message: "{VALUE} is not a valid gender",
+        values: ["admin", "seller", "member", "user", "buyer"],
+        message: "{VALUE} is not a valid role",
       },
+      default: ["user"],
     },
     password: {
       type: String,
@@ -128,26 +82,6 @@ const userSchema = new mongoose.Schema(
         },
         message: "Password must contain at least one letter and one number",
       },
-    },
-    hasPassword: {
-      type: Boolean,
-      default: false,
-    },
-    role: {
-      type: [String], // Array of roles - user can have multiple roles
-      enum: {
-        values: ["admin", "seller", "member", "user"],
-        message: "{VALUE} is not a valid role",
-      },
-      default: ["user"], // Default array with "user"
-    },
-    status: {
-      type: String,
-      enum: {
-        values: ["active", "suspended", "pending"],
-        message: "{VALUE} is not a valid status",
-      },
-      default: "active",
     },
     profileURL: {
       url: {
@@ -164,6 +98,170 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null,
       },
+    },
+
+    buyer_data: {
+      buyer_status: {
+        type: String,
+        enum: ["individual", "business", "professional end-client"],
+      },
+      buyer_country: {
+        type: String,
+        trim: true,
+        maxlength: [50, "Country name cannot exceed 50 characters"],
+      },
+      buyer_vat_eori: {
+        type: String,
+      },
+      buyer_kyc_hash: {
+        type: Map,
+        of: String,
+        default: new Map(),
+      },
+      buyer_signature: {
+        url: {
+          type: String,
+          default: null,
+        },
+        publicId: {
+          type: String,
+          default: null,
+        },
+      },
+      billing_address: [
+        {
+          name: {
+            type: String,
+            trim: true,
+            maxlength: [100, "Address name cannot exceed 100 characters"],
+          },
+          mobile: {
+            type: String,
+            validate: {
+              validator: function (v) {
+                return !v || validator.isMobilePhone(v.toString(), "any");
+              },
+              message: "Please provide a valid mobile number in address",
+            },
+          },
+          city: {
+            type: String,
+            trim: true,
+            maxlength: [50, "City name cannot exceed 50 characters"],
+          },
+          state: {
+            type: String,
+            trim: true,
+            maxlength: [50, "State name cannot exceed 50 characters"],
+          },
+          country: {
+            type: String,
+            trim: true,
+            maxlength: [50, "Country name cannot exceed 50 characters"],
+          },
+          alternateMobile: {
+            type: String,
+            validate: {
+              validator: function (v) {
+                return !v || validator.isMobilePhone(v.toString(), "any");
+              },
+              message: "Please provide a valid alternate mobile number",
+            },
+          },
+          landmark: {
+            type: String,
+            trim: true,
+            maxlength: [200, "Landmark cannot exceed 200 characters"],
+          },
+          pincode: {
+            type: String,
+            trim: true,
+            validate: {
+              validator: function (v) {
+                return !v || /^\d{6}$/.test(v);
+              },
+              message: "Please provide a valid 6-digit pincode",
+            },
+          },
+        },
+      ],
+      shipping_address: [
+        {
+          name: {
+            type: String,
+            trim: true,
+            maxlength: [100, "Address name cannot exceed 100 characters"],
+          },
+          mobile: {
+            type: String,
+            validate: {
+              validator: function (v) {
+                return !v || validator.isMobilePhone(v.toString(), "any");
+              },
+              message: "Please provide a valid mobile number in address",
+            },
+          },
+          city: {
+            type: String,
+            trim: true,
+            maxlength: [50, "City name cannot exceed 50 characters"],
+          },
+          state: {
+            type: String,
+            trim: true,
+            maxlength: [50, "State name cannot exceed 50 characters"],
+          },
+          country: {
+            type: String,
+            trim: true,
+            maxlength: [50, "Country name cannot exceed 50 characters"],
+          },
+          alternateMobile: {
+            type: String,
+            validate: {
+              validator: function (v) {
+                return !v || validator.isMobilePhone(v.toString(), "any");
+              },
+              message: "Please provide a valid alternate mobile number",
+            },
+          },
+          landmark: {
+            type: String,
+            trim: true,
+            maxlength: [200, "Landmark cannot exceed 200 characters"],
+          },
+          pincode: {
+            type: String,
+            trim: true,
+            validate: {
+              validator: function (v) {
+                return !v || /^\d{6}$/.test(v);
+              },
+              message: "Please provide a valid 6-digit pincode",
+            },
+          },
+        },
+      ],
+    },
+
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female", "others"],
+        message: "{VALUE} is not a valid gender",
+      },
+    },
+    hasPassword: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ["active", "suspended", "pending"],
+        message: "{VALUE} is not a valid status",
+      },
+      default: "active",
     },
     otp: {
       type: String,
@@ -310,7 +408,7 @@ userSchema.methods.getAccessToken = function () {
   return jwt.sign(
     {
       id: this._id,
-      role: this.role, // Array of roles
+      role: this.role,
     },
     process.env.JWT_ACCESS_SECRET,
     {
@@ -326,7 +424,7 @@ userSchema.methods.getRefreshToken = function () {
   return jwt.sign(
     {
       id: this._id,
-      role: this.role, // Array of roles
+      role: this.role,
     },
     process.env.JWT_REFRESH_SECRET,
     {
@@ -347,19 +445,16 @@ userSchema.methods.toSafeObject = function () {
   return userObj;
 };
 
-// Helper method to check if user has specific role
 userSchema.methods.hasRole = function (roleName) {
   return this.role.includes(roleName);
 };
 
-// Helper method to add a role
 userSchema.methods.addRole = function (roleName) {
   if (!this.role.includes(roleName)) {
     return this.updateOne({ $addToSet: { role: roleName } });
   }
 };
 
-// Helper method to remove a role
 userSchema.methods.removeRole = function (roleName) {
   return this.updateOne({ $pull: { role: roleName } });
 };
@@ -372,7 +467,7 @@ userSchema.virtual("profile").get(function () {
     email: this.email,
     mobile: this.mobile,
     photoURL: this.profileURL?.url || null,
-    role: this.role, // Array of roles
+    role: this.role,
     isEmailVerified: this.isEmailVerified,
     isMobileVerified: this.isMobileVerified,
     status: this.status,
@@ -435,7 +530,6 @@ userSchema.statics.findByIdentifierWithAuth = function (identifier) {
   );
 };
 
-// Legacy support
 userSchema.statics.findByEmailWithPassword = function (email) {
   return this.findByEmailWithAuth(email);
 };

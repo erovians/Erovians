@@ -52,15 +52,32 @@ const AppliedFilters = ({
       filters.language?.forEach((lang) => {
         applied.push({ type: "language", value: lang, label: lang });
       });
+
+      if (filters.newArrivals) {
+        applied.push({
+          type: "newArrivals",
+          value: true,
+          label: "New Arrivals",
+        });
+      }
     } else {
       // Product-specific filters
       filters.grade?.forEach((g) => {
         applied.push({ type: "grade", value: g, label: `Grade ${g}` });
       });
 
-      filters.color?.forEach((c) => {
-        applied.push({ type: "color", value: c, label: c });
-      });
+      // Fix: Check if color is array or string
+      if (Array.isArray(filters.color)) {
+        filters.color.forEach((c) => {
+          applied.push({ type: "color", value: c, label: c });
+        });
+      } else if (filters.color) {
+        applied.push({
+          type: "color",
+          value: filters.color,
+          label: filters.color,
+        });
+      }
 
       filters.priceUnit?.forEach((u) => {
         applied.push({ type: "priceUnit", value: u, label: u });

@@ -1,13 +1,17 @@
 import express from "express";
-import { createTaskandProject, getAllTasksAndProjects ,updateTaskAndProject,deleteTaskAndProject } from "../controller/taskandprojects.controller.js";
-import { verifyUser } from "../middleware/auth.middleware.js";
+import {
+  createTaskandProject,
+  getAllTasksAndProjects,
+  updateTaskAndProject,
+  deleteTaskAndProject,
+} from "../controller/taskandprojects.controller.js";
+import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/",verifyUser,getAllTasksAndProjects);
-router.post("/create",verifyUser,createTaskandProject);
-router.put("/:id",verifyUser,updateTaskAndProject);
-router.delete("/:id",verifyUser,deleteTaskAndProject);
-
+router.get("/", isAuthenticated, getAllTasksAndProjects);
+router.post("/create", isAuthenticated, createTaskandProject);
+router.put("/:id", isAuthenticated, updateTaskAndProject);
+router.delete("/:id", isAuthenticated, deleteTaskAndProject);
 
 export default router;

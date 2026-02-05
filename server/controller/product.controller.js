@@ -12,22 +12,37 @@ import {
 import CompanyDetails from "../models/company.model.js";
 import { addProductSchema } from "../zodSchemas/Product/addProduct.schema.js";
 import Product from "../models/product.model.js";
-import { cache } from "../services/cache.service.js";
+import Seller from "../models/sellerSingnup.model.js";
 
 // ✅ Add Product
+// product.controller.js - addProduct function
+
 export const addProduct = async (req, res) => {
   try {
-    const sellerId = req.user.userId;
+    const userId = req.user.id; // ✅ Token se User ID
+    console.log(req.body);
 
-    if (!sellerId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "sellerId is required" });
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
     }
+
+    // ✅ User ID se Seller find karo
+    const seller = await Seller.findOne({ userId });
+
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller account not found. Please register as a seller first.",
+      });
+    }
+
+    const sellerId = seller._id.toString();
 
     // 1️⃣ Validate text fields
     if (req.body.size && typeof req.body.size === "string") {
-      //validate the size field
       try {
         req.body.size = JSON.parse(req.body.size);
       } catch (err) {
@@ -65,25 +80,25 @@ export const addProduct = async (req, res) => {
       });
     }
 
+    // ✅ Seller ID se Company find karo
     const company = await CompanyDetails.findOne({ sellerId }).select("_id");
 
-    const companyId = company?._id;
-    if (!companyId) {
+    if (!company) {
       return res.status(400).json({
         success: false,
         message:
           "Company not found for this seller. Please register a company first.",
       });
     }
+
+    const companyId = company._id.toString();
+
     const savedProduct = await addProductService(
-      parsedBody.data, //passing the validated data from zod schema
+      parsedBody.data,
       req.files,
       sellerId,
       companyId
     );
-
-    await cache.del(`products:seller:${sellerId}`);
-    await cache.clearPattern("products:list:*");
 
     res.status(201).json({
       success: true,
@@ -100,49 +115,14 @@ export const addProduct = async (req, res) => {
 };
 
 // ✅ List All Products
-// export const listAllProducts = async (req, res) => {
-//   try {
-//     console.log(req.user);
-//     const products = await listAllProductsService(req.query, req.user);
-
-//     res.status(200).json({
-//       success: true,
-//       data: products,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching products:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: error.message || "Error fetching products",
-//     });
-//   }
-// };
 export const listAllProducts = async (req, res) => {
   try {
-    const user = req.user;
-    const queryKey = JSON.stringify(req.query);
-    const cacheKey = `products:list:${user.role}:${
-      user.userId || "user"
-    }:${queryKey}`;
-
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT listAllProducts:", cacheKey);
-      return res.status(200).json({
-        success: true,
-        data: cached,
-        fromCache: true,
-      });
-    }
-
-    const products = await listAllProductsService(req.query, user);
-
-    await cache.set(cacheKey, products, 300);
+    console.log(req.user);
+    const products = await listAllProductsService(req.query, req.user);
 
     res.status(200).json({
       success: true,
       data: products,
-      fromCache: false,
     });
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -203,112 +183,65 @@ export const listAllProducts = async (req, res) => {
 // };
 
 //best approch because handling everything in this role base access and just to add View Count Logic (Conditional and Debounced)
-// export const getProductById = async (req, res) => {
-//   try {
-//     const productId = req.params.productId;
-//     const userRole = req.user.role; // Access the role set by your middleware
-//     const userId = req.user.userId;
-//     console.log(userId);
-
-//     let findFilter = { _id: productId };
-//     let updateViews = false;
-
-//     // --- Authorization Logic ---
-//     if (userRole === "seller") {
-//       // Seller can only view their own product
-//       findFilter.sellerId = userId;
-//     } else if (userRole === "buyer" || userRole === "public") {
-//       // Public/Buyer view: only show published products and increment views
-//       findFilter.status = "active";
-//       updateViews = true;
-//     } else if (userRole === "admin") {
-//       // Admin can view any product, published or not. No extra filter needed.
-//     }
-
-//     // 1. Fetch the product using the role-specific filter
-//     const product = await Product.findOne(findFilter);
-
-//     if (!product) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found or unauthorized access",
-//       });
-//     }
-
-//     // 2. View Count Logic (Conditional and Debounced)
-//     if (updateViews) {
-//       // IMPORTANT: Call a separate, debounced service here to increment views
-//       // This keeps the primary request fast and prevents inflation.
-//       // Example: productViewService.logView(productId, req.ip || req.sessionID);
-//     }
-
-//     res.status(200).json({
-//       success: true,
-//       data: product,
-//     });
-//   } catch (error) {
-//     console.error(`Fetch Error:`, error);
-//     res.status(500).json({
-//       success: false,
-//       message: "An internal server error occurred.",
-//     });
-//   }
-// };
-
-// ✅ Update Product Status
-
 export const getProductById = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const { role, userId } = req.user;
+    const productId = req.params.productId;
+    const userRole = req.user.role; // Access the role set by your middleware
+    const userId = req.user.userId;
+    console.log(userId);
 
     let findFilter = { _id: productId };
-    let cacheKey = null;
+    let updateViews = false;
 
-    if (role === "seller") {
+    // --- Authorization Logic ---
+    if (userRole === "seller") {
+      // Seller can only view their own product
       findFilter.sellerId = userId;
-    } else if (role === "buyer" || role === "public") {
+    } else if (userRole === "buyer" || userRole === "public") {
+      // Public/Buyer view: only show published products and increment views
       findFilter.status = "active";
-      cacheKey = `product:view:${productId}:active`;
+      updateViews = true;
+    } else if (userRole === "admin") {
+      // Admin can view any product, published or not. No extra filter needed.
     }
 
-    // 🔥 Redis check (only public/buyer)
-    if (cacheKey) {
-      const cached = await cache.get(cacheKey);
-      if (cached) {
-        console.log("🔥 Redis HIT getProductById:", cacheKey);
-        return res.json({ success: true, data: cached, fromCache: true });
-      }
-    }
-
+    // 1. Fetch the product using the role-specific filter
     const product = await Product.findOne(findFilter);
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found or unauthorized",
+        message: "Product not found or unauthorized access",
       });
     }
 
-    // 🔥 Store in Redis
-    if (cacheKey) {
-      await cache.set(cacheKey, product, 600);
+    // 2. View Count Logic (Conditional and Debounced)
+    if (updateViews) {
+      // IMPORTANT: Call a separate, debounced service here to increment views
+      // This keeps the primary request fast and prevents inflation.
+      // Example: productViewService.logView(productId, req.ip || req.sessionID);
     }
 
-    res.json({ success: true, data: product, fromCache: false });
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
   } catch (error) {
-    console.error("Fetch Error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error(`Fetch Error:`, error);
+    res.status(500).json({
+      success: false,
+      message: "An internal server error occurred.",
+    });
   }
 };
 
+// ✅ Update Product Status
 export const updateProductStatus = async (req, res) => {
   try {
     const updatedProduct = await updateProductStatusService(
       req.params.productId,
       req.body.status
     );
-
     res.status(200).json({
       success: true,
       message: "Status updated successfully",
@@ -326,19 +259,7 @@ export const updateProductStatus = async (req, res) => {
 // ✅ Delete Product
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.productId);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
     await deleteProductService(req.params.productId);
-    await cache.del(`product:view:${product._id}`);
-    await cache.del(`products:seller:${product.sellerId}`);
-    await cache.clearPattern("products:list:*");
     res.status(200).json({
       success: true,
       message: "Product deleted successfully",
@@ -377,13 +298,6 @@ export const updateProductData = async (req, res) => {
 export const bulkActivateProducts = async (req, res) => {
   try {
     await bulkActivateProductsService(req.body.productIds);
-
-    for (const id of req.body.productIds) {
-      await cache.del(`product:view:${id}:active`);
-    }
-    await cache.clearPattern("products:seller:*");
-    await cache.clearPattern("products:list:*");
-
     res.json({ success: true, message: "Products activated successfully" });
   } catch (error) {
     console.error("Error activating products:", error);
@@ -396,13 +310,6 @@ export const bulkActivateProducts = async (req, res) => {
 export const bulkDeactivateProducts = async (req, res) => {
   try {
     await bulkDeactivateProductsService(req.body.productIds);
-
-    for (const id of req.body.productIds) {
-      await cache.del(`product:view:${id}`);
-    }
-    await cache.clearPattern("products:seller:*");
-    await cache.clearPattern("products:list:*");
-
     res.json({ success: true, message: "Products deactivated successfully" });
   } catch (error) {
     console.error("Error deactivating products:", error);
@@ -416,13 +323,6 @@ export const bulkDeactivateProducts = async (req, res) => {
 export const bulkDeleteProducts = async (req, res) => {
   try {
     await bulkDeleteProductsService(req.body.productIds);
-
-    for (const id of req.body.productIds) {
-      await cache.del(`product:view:${id}`);
-    }
-    await cache.delPattern("products:seller:*");
-    await cache.delPattern("products:list:*");
-
     res.json({ success: true, message: "Products deleted successfully" });
   } catch (error) {
     console.error("Error deleting products:", error);
@@ -432,46 +332,15 @@ export const bulkDeleteProducts = async (req, res) => {
   }
 };
 
-// export const getMyProducts = async (req, res) => {
-//   try {
-//     const sellerId = req.user.userId;
-
-//     const products = await Product.find({ sellerId }).lean();
-
-//     res.json({
-//       success: true,
-//       data: products,
-//     });
-//   } catch (error) {
-//     console.log("Error fetching seller products:", error);
-//     res
-//       .status(500)
-//       .json({ success: false, message: "Failed to fetch products" });
-//   }
-// };
 export const getMyProducts = async (req, res) => {
   try {
     const sellerId = req.user.userId;
-    const cacheKey = `products:seller:${sellerId}`;
-
-    const cached = await cache.get(cacheKey);
-    if (cached) {
-      console.log("🔥 Redis HIT getMyProducts:", cacheKey);
-      return res.json({
-        success: true,
-        data: cached,
-        fromCache: true,
-      });
-    }
 
     const products = await Product.find({ sellerId }).lean();
-
-    await cache.set(cacheKey, products, 300);
 
     res.json({
       success: true,
       data: products,
-      fromCache: false,
     });
   } catch (error) {
     console.log("Error fetching seller products:", error);

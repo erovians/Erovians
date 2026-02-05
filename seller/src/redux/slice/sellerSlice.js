@@ -1,70 +1,56 @@
-// import api from "@/utils/axios.utils";
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-
-// export const registerSeller = createAsyncThunk(
-//   "seller/registerSeller",
-//   async (sellerData, { rejectWithValue }) => {
-//     try {
-//       const response = await api.post("/seller/register", sellerData);
-//       console.log(response.data);
-//       return response.data;
-//     } catch (error) {
-//       if (error.response && error.response.data) {
-//         return rejectWithValue(error.response.data);
-//       } else {
-//         return rejectWithValue({ message: "Server error" });
-//       }
-//     }
-//   }
-// );
-
-// const sellerSlice = createSlice({
-//   name: "seller",
-//   initialState: {
-//     seller: null,
-//     token: null,
-//     loading: false,
-//     error: null,
-//     successMessage: null,
-//   },
-//   reducers: {
-//     clearSellerState: (state) => {
-//       state.seller = null;
-//       state.token = null;
-//       state.loading = false;
-//       state.error = null;
-//       state.successMessage = null;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(registerSeller.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//         state.successMessage = null;
-//       })
-//       .addCase(registerSeller.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.seller = action.payload.seller;
-//         state.token = action.payload.token;
-//         state.successMessage = action.payload.message;
-//       })
-//       .addCase(registerSeller.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload.message || "Something went wrong";
-//       });
-//   },
-// });
-
-// export const { clearSellerState } = sellerSlice.actions;
-// export default sellerSlice.reducer;
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/utils/axios.utils";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-/* =====================================================
-   REGISTER SELLER (EXISTING)
-===================================================== */
+// ======================== SEND OTP ========================
+export const sendOtp = createAsyncThunk(
+  "seller/sendOtp",
+  async (mobile, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/seller/send-otp", { mobile });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to send OTP" }
+      );
+    }
+  }
+);
+
+// ======================== VERIFY OTP ========================
+export const verifyOtp = createAsyncThunk(
+  "seller/verifyOtp",
+  async ({ mobile, otp }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/seller/verify-otp", { mobile, otp });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to verify OTP" }
+      );
+    }
+  }
+);
+
+// ======================== CHECK UNIQUENESS ========================
+export const checkUnique = createAsyncThunk(
+  "seller/checkUnique",
+  async ({ email, businessId, mobile }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/seller/check-unique", {
+        email,
+        businessId,
+        mobile,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Validation failed" }
+      );
+    }
+  }
+);
+
+// ======================== REGISTER SELLER ========================
 export const registerSeller = createAsyncThunk(
   "seller/registerSeller",
   async (sellerData, { rejectWithValue }) => {
@@ -73,121 +59,156 @@ export const registerSeller = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Server error" }
+        error.response?.data || { message: "Registration failed" }
       );
     }
   }
 );
 
-/* =====================================================
-   FETCH SELLER PROFILE
-===================================================== */
-export const fetchSellerProfile = createAsyncThunk(
-  "seller/fetchProfile",
+// ======================== LOAD SELLER ========================
+export const loadSeller = createAsyncThunk(
+  "seller/loadSeller",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/seller/profile");
-      return res.data.seller;
+      const response = await api.get("/seller/me");
+      return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch seller"
+        error.response?.data || { message: "Failed to load seller" }
       );
     }
   }
 );
 
-/* =====================================================
-   UPDATE SELLER PROFILE (FORMDATA + PHOTO)
-===================================================== */
-export const updateSellerProfile = createAsyncThunk(
-  "seller/updateProfile",
-  async (formData, { rejectWithValue }) => {
-    try {
-      const res = await api.put("/seller/profileupdate", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return res.data.seller;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Profile update failed"
-      );
-    }
-  }
-);
-
-/* =====================================================
-   SLICE
-===================================================== */
+// ======================== SLICE ========================
 const sellerSlice = createSlice({
   name: "seller",
   initialState: {
     seller: null,
     token: null,
-    loading: false, // for register & fetch
-    updating: false, // for profile update
+    loading: false,
     error: null,
     successMessage: null,
+    otpStatus: "idle",
+    isMobileVerified: false,
+    isUniquenessChecked: false,
   },
   reducers: {
+    setSeller: (state, action) => {
+      state.seller = action.payload;
+    },
     clearSellerState: (state) => {
       state.seller = null;
       state.token = null;
       state.loading = false;
-      state.updating = false;
       state.error = null;
       state.successMessage = null;
+      state.otpStatus = "idle";
+      state.isMobileVerified = false;
+      state.isUniquenessChecked = false;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearSuccess: (state) => {
+      state.successMessage = null;
+    },
+    resetOtpStatus: (state) => {
+      state.otpStatus = "idle";
     },
   },
   extraReducers: (builder) => {
     builder
+      // ========== SEND OTP ==========
+      .addCase(sendOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.otpStatus = "sending";
+      })
+      .addCase(sendOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.otpStatus = "sent";
+        state.successMessage =
+          action.payload.message || "OTP sent successfully";
+      })
+      .addCase(sendOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.otpStatus = "idle";
+        state.error = action.payload?.message || "Failed to send OTP";
+      })
 
-      /* ================= REGISTER ================= */
+      // ========== VERIFY OTP ==========
+      .addCase(verifyOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.otpStatus = "verified";
+        state.isMobileVerified = true;
+        state.successMessage =
+          action.payload.message || "Mobile verified successfully";
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Invalid or expired OTP";
+      })
+
+      // ========== CHECK UNIQUENESS ==========
+      .addCase(checkUnique.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isUniquenessChecked = false;
+      })
+      .addCase(checkUnique.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isUniquenessChecked = true;
+        state.successMessage =
+          action.payload.message || "Validation successful";
+      })
+      .addCase(checkUnique.rejected, (state, action) => {
+        state.loading = false;
+        state.isUniquenessChecked = false;
+        state.error = action.payload?.message || "Validation failed";
+      })
+
+      // ========== REGISTER SELLER ==========
       .addCase(registerSeller.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.successMessage = null;
       })
       .addCase(registerSeller.fulfilled, (state, action) => {
         state.loading = false;
-        state.seller = action.payload.seller;
-        state.token = action.payload.token;
-        state.successMessage = action.payload.message;
+        state.seller = action.payload.data;
+        state.successMessage =
+          action.payload.message || "Registration successful";
       })
       .addCase(registerSeller.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Something went wrong";
+        state.error = action.payload?.message || "Registration failed";
       })
 
-      /* ================= FETCH PROFILE ================= */
-      .addCase(fetchSellerProfile.pending, (state) => {
+      // ========== LOAD SELLER ==========
+      .addCase(loadSeller.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchSellerProfile.fulfilled, (state, action) => {
+      .addCase(loadSeller.fulfilled, (state, action) => {
         state.loading = false;
-        state.seller = action.payload;
+        state.seller = action.payload.data;
       })
-      .addCase(fetchSellerProfile.rejected, (state, action) => {
+      .addCase(loadSeller.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      })
-
-      /* ================= UPDATE PROFILE ================= */
-      .addCase(updateSellerProfile.pending, (state) => {
-        state.updating = true;
-        state.error = null;
-      })
-      .addCase(updateSellerProfile.fulfilled, (state, action) => {
-        state.updating = false;
-        state.seller = action.payload;
-        state.successMessage = "Profile updated successfully";
-      })
-      .addCase(updateSellerProfile.rejected, (state, action) => {
-        state.updating = false;
-        state.error = action.payload;
+        state.error = action.payload?.message || "Failed to load seller";
       });
   },
 });
 
-export const { clearSellerState } = sellerSlice.actions;
+export const {
+  clearSellerState,
+  clearError,
+  setSeller,
+  clearSuccess,
+  resetOtpStatus,
+} = sellerSlice.actions;
 export default sellerSlice.reducer;

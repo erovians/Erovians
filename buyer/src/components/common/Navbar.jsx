@@ -35,13 +35,13 @@ import LanguageCurrencyModal from "./LanguageCurrencyModal";
 import CategoriesMenu from "./CategoriesMenu";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  logout,
+  logoutUser,
   clearError,
   clearSuccess,
 } from "../../lib/redux/auth/authSlice";
 
 const sidebarMainItems = [
-  { icon: FileText, label: "Post RFQ", path: "/post-rfq", requiresAuth: true },
+  { icon: FileText, label: "Post RFQ", path: "/rfqs", requiresAuth: true },
   { icon: Package, label: "My Orders", path: "/orders", requiresAuth: true },
   {
     icon: MessageSquare,
@@ -83,7 +83,6 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux state
   const {
     user: logedUser,
     isAuthenticated,
@@ -92,7 +91,6 @@ export default function Header() {
     success,
   } = useSelector((state) => state.auth);
 
-  // Clear success message after 3 seconds
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
@@ -102,7 +100,6 @@ export default function Header() {
     }
   }, [success, dispatch]);
 
-  // Clear error on component unmount or when user navigates
   useEffect(() => {
     return () => {
       if (error) {
@@ -119,11 +116,9 @@ export default function Header() {
     }
   }, [isSidebarOpen]);
 
-  // Check if user is seller (role array includes "seller")
   const isSeller = logedUser?.role?.includes("seller") || false;
 
-  // Mock unread count - replace with actual logic
-  const unreadCount = isAuthenticated ? 3 : 0;
+  const unreadCount = isAuthenticated ? 0 : 0;
 
   const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -132,14 +127,13 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/");
     closeSidebar();
   };
 
   return (
     <>
-      {/* Top Bar - Navy Blue */}
       <div className="bg-navyblue text-white text-sm hidden md:block">
         <div className="max-w-full mx-auto px-6">
           <div className="flex items-center justify-between h-10">
@@ -179,15 +173,6 @@ export default function Header() {
                 >
                   <Store size={14} />
                   Seller Dashboard
-                </Link>
-              )}
-
-              {!isAuthenticated && (
-                <Link
-                  to="/seller-registration"
-                  className="text-yellow-300 hover:text-yellow-100 font-medium transition-colors"
-                >
-                  Sell on Erovians →
                 </Link>
               )}
             </div>

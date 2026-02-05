@@ -14,8 +14,12 @@ import contractRoutes from "./routes/contracts.routes.js";
 import taskAndProjectRoutes from "./routes/taskandprojects.routes.js";
 import workOrders from "./routes/workorder.routes.js";
 import estimateRoutes from "./routes/estimate.routes.js";
-import globalErrorHandler from "./middleware/users/globalErrorHandler.js";
-import userAuthRoutes from "./routes/user/auth.route.js";
+import globalErrorHandler from "./middleware/buyer/globalErrorHandler.js";
+import userAuthRoutes from "./routes/buyer/auth.route.js";
+import companyBuyerRoutes from "./routes/buyer/company.route.js";
+import categoryRoutes from "./routes/buyer/category.route.js";
+import { seedDatabase } from "./controller/seed.controller.js";
+import quotationRoutes from "./routes/buyer/quotation.route.js";
 // user router import start from here
 
 const app = express();
@@ -30,6 +34,8 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "http://192.168.29.142:5173",
+      "http://192.168.29.80:5173",
+      "http://192.168.29.80:5174",
     ],
     credentials: true,
   })
@@ -83,6 +89,21 @@ app.use("/api/transport", estimateRoutes);
 // user routes implement here
 
 app.use("/api/v2/auth", userAuthRoutes);
+app.use("/api/v2/company", companyBuyerRoutes);
+app.use("/api/v2/category", categoryRoutes);
+app.use("/api/v2/quotation", quotationRoutes);
+
+app.post("/seed-database", async (req, res) => {
+  try {
+    await seedDatabase(req, res);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error seeding database",
+      error: error.message,
+    });
+  }
+});
 
 app.use(globalErrorHandler);
 export { app };
