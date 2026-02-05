@@ -17,8 +17,12 @@ import TermsOfService from "./pages/TermsOfService";
 import CategoriesPage from "./pages/CategoriesPage";
 import CategoryProductsPage from "./pages/CategoryProductsPage";
 import SubCategoryProductsPage from "./pages/SubCategoryProductsPage";
+import RefundPolicy from "./pages/RefundPolicy";
 import RFQPage from "./pages/RFQPage";
 import { Toaster } from "sonner";
+import BecomeSeller from "./pages/BecomeSeller";
+import NewsCenter from "./pages/NewsCenter";
+import SellerVerification from "./pages/SellerVerification";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,18 +46,15 @@ const App = () => {
     <>
       <Toaster position="top-right" richColors closeButton duration={3000} />
       <Routes>
-        <Route path="/" element={<Companies />} />
-        <Route path="/profile" element={<Profile />} />
+        {/* //authentication route  */}
         <Route path="/login" element={<Auth />} />
+        {/* company routes  */}
+        <Route path="/" element={<Companies />} />
         <Route path="/company/:companyId" element={<CompanyProduct />} />
         <Route path="/product/:productId" element={<ProductDetail />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/settings" element={<Setting />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/help" element={<HelpCenter />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/how-to-pay" element={<HowToPay />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
+        {/* profile page  */}
+        <Route path="/profile" element={<Profile />} />
+        {/* //categories page okay  */}
         <Route path="/categories" element={<CategoriesPage />} />
         <Route
           path="/categories/:categorySlug"
@@ -63,7 +64,26 @@ const App = () => {
           path="/categories/:categorySlug/:subCategorySlug"
           element={<SubCategoryProductsPage />}
         />
+        <Route path="/settings" element={<Setting />} />
+        {/* //footer links  */}
+        {/* Get Support  */}
+        <Route path="/help" element={<HelpCenter />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        {/* Payments & Protections  */}
+        <Route path="/how-to-pay" element={<HowToPay />} />
+        {/* Get to Know Us */}
+        <Route path="/about" element={<About />} />
+        <Route path="/news" element={<NewsCenter />} />
+        <Route path="/contact" element={<Contact />} />
+        {/* Source on Erovians */}
         <Route path="/rfqs" element={<RFQPage />} />
+
+        {/* Sell on Erovians  */}
+        <Route path="/become-seller" element={<BecomeSeller />} />
+        <Route path="/seller-verification" element={<SellerVerification />} />
+        {/* // top header */}
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
       </Routes>
     </>
   );
