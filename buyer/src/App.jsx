@@ -23,6 +23,11 @@ import { Toaster } from "sonner";
 import BecomeSeller from "./pages/BecomeSeller";
 import NewsCenter from "./pages/NewsCenter";
 import SellerVerification from "./pages/SellerVerification";
+import MyOrders from "./pages/MyOrders";
+import MyRFQ from "./pages/MyRFQ";
+import Messages from "./pages/Messages";
+import MyFavourite from "./pages/Favourite";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -54,6 +59,10 @@ const App = () => {
         <Route path="/product/:productId" element={<ProductDetail />} />
         {/* profile page  */}
         <Route path="/profile" element={<Profile />} />
+        <Route path="/orders" element={<MyOrders />} />
+        <Route path="/my-rfqs" element={<MyRFQ />} />
+        <Route path="messages" element={<Messages />} />
+        <Route path="/favorites" element={<MyFavourite />} />
         {/* //categories page okay  */}
         <Route path="/categories" element={<CategoriesPage />} />
         <Route
@@ -84,6 +93,8 @@ const App = () => {
         {/* // top header */}
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
+
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </>
   );

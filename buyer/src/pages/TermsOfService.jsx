@@ -1,7 +1,8 @@
 import React from "react";
+import UnderConstruction from "../pages/UnderConstruction";
 
 const TermsOfService = () => {
-  return <h1>Terms of services</h1>;
+  return <UnderConstruction />;
 };
 
 export default TermsOfService;

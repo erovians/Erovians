@@ -337,7 +337,7 @@ export default function Header() {
                       )}
                     </div>
 
-                    <DropdownMenuItem>
+                    {/* <DropdownMenuItem>
                       <Link
                         to="/dashboard"
                         className="flex items-center gap-3 w-full py-1"
@@ -345,7 +345,7 @@ export default function Header() {
                         <LayoutDashboard className="h-4 w-4" />
                         <span>My Dashboard</span>
                       </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
 
                     <DropdownMenuItem>
                       <Link
@@ -369,7 +369,7 @@ export default function Header() {
 
                     <DropdownMenuItem>
                       <Link
-                        to="/rfqs"
+                        to="/my-rfqs"
                         className="flex items-center gap-3 w-full py-1"
                       >
                         <FileText className="h-4 w-4" />

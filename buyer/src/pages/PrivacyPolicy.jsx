@@ -1,8 +1,8 @@
 import React from "react";
 import UnderConstruction from "./UnderConstruction";
 
-const Setting = () => {
+const PrivacyPolicy = () => {
   return <UnderConstruction />;
 };
 
-export default Setting;
+export default PrivacyPolicy;
