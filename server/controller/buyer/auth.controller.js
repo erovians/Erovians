@@ -425,6 +425,7 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
 // ========================================
 export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
+  console.log("this is id of buyer side", userId);
 
   logger.info("User profile requested", { userId });
 

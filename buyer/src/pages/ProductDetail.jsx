@@ -9,6 +9,7 @@ import SellerInfo from "../components/product/SellerInfo";
 import ComplianceSection from "../components/product/ComplianceSection";
 import WarrantySection from "../components/product/WarrantySection";
 import ShippingInfoSection from "../components/product/ShippingInfoSection";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 import { ChevronRight, AlertCircle, FileText, Package } from "lucide-react";
 
 const ProductDetail = () => {
@@ -26,6 +27,12 @@ const ProductDetail = () => {
   const { product, company, seller } = productDetail || {};
   const images = product?.productImages || [];
 
+  // ✅ Loading State with LoadingOverlay
+  if (loading) {
+    return <LoadingOverlay message="Loading product details..." />;
+  }
+
+  // ✅ Error State
   if (error || !productDetail || !product) {
     return (
       <Layout>

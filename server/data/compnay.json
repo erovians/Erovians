@@ -189,5 +189,322 @@
     "createdAt": { "$date": "2025-01-28T13:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-28T13:00:00.000Z" },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439205"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "companyBasicInfo": {
+      "companyName": "Udaipur Marble Palace",
+      "company_registration_number": "CIN-U12345RJ2023PTC456789",
+      "address": {
+        "street": "Building 12, Marble Park",
+        "city": "Udaipur",
+        "stateOrProvince": "Rajasthan",
+        "countryOrRegion": "India",
+        "postalCode": "313001"
+      },
+      "legalowner": "Vikram Singh",
+      "locationOfRegistration": "Udaipur, Rajasthan",
+      "companyRegistrationYear": "2023",
+      "registration_documents": [],
+      "mainCategory": [
+        "natural stones"
+      ],
+      "subCategory": [
+        "marble",
+        "limestone",
+        "travertine",
+        "slate"
+      ],
+      "acceptedCurrency": [
+        "INR",
+        "USD",
+        "EUR"
+      ],
+      "acceptedPaymentType": [
+        "Bank Transfer",
+        "Letter of Credit"
+      ],
+      "languageSpoken": [
+        "English",
+        "Hindi",
+        "Rajasthani"
+      ],
+      "totalEmployees": 35,
+      "businessType": "manufacturer",
+      "factorySize": "8000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": true,
+      "numberOfProductionLines": 2,
+      "annualOutputValue": "3.5 Million USD",
+      "rdTeamSize": 4,
+      "tradeCapabilities": [
+        "Export",
+        "Wholesale",
+        "Custom Orders"
+      ]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/udaipur-marble-palace.png",
+      "companyDescription": "Udaipur Marble Palace is a premium marble and natural stone supplier based in the heart of Rajasthan. We specialize in high-quality marble, limestone, travertine, and slate sourced from the finest quarries in India. Our commitment to quality and customer satisfaction has made us a trusted name in the natural stone industry for over a decade.",
+      "companyPhotos": [
+        "https://example.com/company/udaipur-marble-1.jpg",
+        "https://example.com/company/udaipur-marble-2.jpg",
+        "https://example.com/company/udaipur-marble-3.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/udaipur-marble-tour.mp4"
+      ]
+    },
+    "createdAt": {
+      "$date": "2025-02-01T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439206"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "companyBasicInfo": {
+      "companyName": "Pune Ceramic Solutions",
+      "company_registration_number": "CIN-U12345MH2023PTC987654",
+      "address": {
+        "street": "Shop 45, Tile Hub",
+        "city": "Pune",
+        "stateOrProvince": "Maharashtra",
+        "countryOrRegion": "India",
+        "postalCode": "411001"
+      },
+      "legalowner": "Meera Joshi",
+      "locationOfRegistration": "Pune, Maharashtra",
+      "companyRegistrationYear": "2023",
+      "registration_documents": [],
+      "mainCategory": [
+        "ceramic & tiles"
+      ],
+      "subCategory": [
+        "glazed tiles",
+        "floor tiles",
+        "wall tiles",
+        "porcelain tiles"
+      ],
+      "acceptedCurrency": [
+        "INR",
+        "USD"
+      ],
+      "acceptedPaymentType": [
+        "Bank Transfer",
+        "Credit Card",
+        "UPI"
+      ],
+      "languageSpoken": [
+        "English",
+        "Hindi",
+        "Marathi"
+      ],
+      "totalEmployees": 45,
+      "businessType": "distributor",
+      "factorySize": "6000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": false,
+      "numberOfProductionLines": 3,
+      "annualOutputValue": "4 Million USD",
+      "rdTeamSize": 5,
+      "tradeCapabilities": [
+        "Distribution",
+        "Wholesale",
+        "Retail"
+      ]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/pune-ceramic-solutions.png",
+      "companyDescription": "Pune Ceramic Solutions is a leading distributor of premium ceramic and porcelain tiles in Western India. We offer a comprehensive range of glazed tiles, floor tiles, wall tiles, and designer porcelain tiles for residential and commercial projects. Our extensive product catalog and commitment to quality service have made us the preferred choice for architects and builders across Maharashtra.",
+      "companyPhotos": [
+        "https://example.com/company/pune-ceramic-1.jpg",
+        "https://example.com/company/pune-ceramic-2.jpg",
+        "https://example.com/company/pune-ceramic-3.jpg",
+        "https://example.com/company/pune-ceramic-4.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/pune-ceramic-showroom.mp4"
+      ]
+    },
+    "createdAt": {
+      "$date": "2025-02-01T11:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T11:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "companyBasicInfo": {
+      "companyName": "Surat Stone Industries",
+      "company_registration_number": "CIN-U12345GJ2024PTC111222",
+      "address": {
+        "street": "Plot 88, Industrial Estate",
+        "city": "Surat",
+        "stateOrProvince": "Gujarat",
+        "countryOrRegion": "India",
+        "postalCode": "394230"
+      },
+      "legalowner": "Arjun Mehta",
+      "locationOfRegistration": "Surat, Gujarat",
+      "companyRegistrationYear": "2024",
+      "registration_documents": [],
+      "mainCategory": [
+        "natural stones",
+        "alternatives & finishes"
+      ],
+      "subCategory": [
+        "sandstone",
+        "quartzite",
+        "engineered stone",
+        "metal finishes"
+      ],
+      "acceptedCurrency": [
+        "INR",
+        "USD",
+        "GBP"
+      ],
+      "acceptedPaymentType": [
+        "Bank Transfer",
+        "Letter of Credit",
+        "PayPal"
+      ],
+      "languageSpoken": [
+        "English",
+        "Hindi",
+        "Gujarati"
+      ],
+      "totalEmployees": 55,
+      "businessType": "manufacturer",
+      "factorySize": "11000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": true,
+      "numberOfProductionLines": 4,
+      "annualOutputValue": "5.5 Million USD",
+      "rdTeamSize": 7,
+      "tradeCapabilities": [
+        "Export",
+        "Custom Manufacturing",
+        "Wholesale"
+      ]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/surat-stone-industries.png",
+      "companyDescription": "Surat Stone Industries is a modern manufacturing facility specializing in natural stones and engineered surfaces. We produce premium sandstone, quartzite, and engineered stone products, along with innovative metal finishes for contemporary architecture. Our state-of-the-art processing units and skilled craftsmen ensure precision cutting and finishing for all types of stone requirements. We serve both domestic and international markets with a focus on quality and timely delivery.",
+      "companyPhotos": [
+        "https://example.com/company/surat-stone-1.jpg",
+        "https://example.com/company/surat-stone-2.jpg",
+        "https://example.com/company/surat-stone-3.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/surat-stone-factory.mp4"
+      ]
+    },
+    "createdAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439208"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "companyBasicInfo": {
+      "companyName": "Bangalore Engineered Surfaces",
+      "company_registration_number": "CIN-U12345KA2024PTC333444",
+      "address": {
+        "street": "Unit 22, Stone World Complex",
+        "city": "Bangalore",
+        "stateOrProvince": "Karnataka",
+        "countryOrRegion": "India",
+        "postalCode": "560100"
+      },
+      "legalowner": "Rohan Kapoor",
+      "locationOfRegistration": "Bangalore, Karnataka",
+      "companyRegistrationYear": "2024",
+      "registration_documents": [],
+      "mainCategory": [
+        "alternatives & finishes"
+      ],
+      "subCategory": [
+        "quartz",
+        "engineered stone",
+        "concrete",
+        "resin"
+      ],
+      "acceptedCurrency": [
+        "INR",
+        "USD"
+      ],
+      "acceptedPaymentType": [
+        "Bank Transfer",
+        "Credit Card",
+        "UPI"
+      ],
+      "languageSpoken": [
+        "English",
+        "Hindi",
+        "Kannada"
+      ],
+      "totalEmployees": 70,
+      "businessType": "manufacturer",
+      "factorySize": "14000 sqm",
+      "factoryCountryOrRegion": "India",
+      "contractManufacturing": true,
+      "numberOfProductionLines": 5,
+      "annualOutputValue": "7 Million USD",
+      "rdTeamSize": 10,
+      "tradeCapabilities": [
+        "Manufacturing",
+        "Export",
+        "Custom Solutions",
+        "R&D"
+      ]
+    },
+    "companyIntro": {
+      "logo": "https://example.com/logos/bangalore-engineered.png",
+      "companyDescription": "Bangalore Engineered Surfaces is a cutting-edge manufacturer of engineered stone surfaces and alternative materials. We specialize in quartz surfaces, engineered stone slabs, decorative concrete, and premium resin products for modern construction and interior design. Our in-house R&D team continuously develops innovative surface solutions that combine aesthetics with functionality. We cater to architects, designers, and contractors seeking high-performance, sustainable surface materials.",
+      "companyPhotos": [
+        "https://example.com/company/bangalore-engineered-1.jpg",
+        "https://example.com/company/bangalore-engineered-2.jpg",
+        "https://example.com/company/bangalore-engineered-3.jpg",
+        "https://example.com/company/bangalore-engineered-4.jpg"
+      ],
+      "companyVideos": [
+        "https://example.com/videos/bangalore-engineered-tech.mp4"
+      ]
+    },
+    "createdAt": {
+      "$date": "2025-02-01T14:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-01T14:00:00.000Z"
+    },
+    "__v": 0
   }
 ]

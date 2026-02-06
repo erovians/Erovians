@@ -20,6 +20,7 @@ import {
 import Layout from "../components/common/Layout";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import AddressManager from "../components/profile/AddressManager";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -34,11 +35,7 @@ const Profile = () => {
   const { user, loading, error } = useSelector((state) => state.auth);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <LoadingOverlay message="Loading Profile..." />;
   }
 
   if (error || !user) {

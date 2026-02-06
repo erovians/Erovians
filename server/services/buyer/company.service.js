@@ -60,10 +60,12 @@ export const getCompaniesListService = async ({ filters, page, limit }) => {
     const result = companies.map((company) => ({
       _id: company._id,
       companyBasicInfo: company.companyBasicInfo,
-      companyIntro: {
-        logo: company.companyIntro.logo,
-        companyPhotos: company.companyIntro.companyPhotos,
-      },
+      companyIntro: company.companyIntro
+        ? {
+            logo: company.companyIntro.logo || null,
+            companyPhotos: company.companyIntro.companyPhotos || [],
+          }
+        : { logo: null, companyPhotos: [] }, // ✅ Default value agar companyIntro hi nahi hai
       seller: sellerMap[company.sellerId.toString()] || null,
     }));
 

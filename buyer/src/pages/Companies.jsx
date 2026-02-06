@@ -21,6 +21,7 @@ import PaymentFilter from "../components/filters/filters/PaymentFilter";
 import CurrencyFilter from "../components/filters/filters/CurrencyFilter";
 import LanguageFilter from "../components/filters/filters/LanguageFilter";
 import NewArrivalsFilter from "../components/filters/filters/NewArrivalsFilter";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 import { Loader2 } from "lucide-react";
 
 const Companies = () => {
@@ -220,16 +221,7 @@ const Companies = () => {
               onClearAll={handleClearAll}
             />
 
-            {loading && (
-              <div className="flex items-center justify-center h-96">
-                <div className="flex flex-col items-center gap-4">
-                  <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-                  <p className="text-gray-600 font-medium">
-                    Loading companies...
-                  </p>
-                </div>
-              </div>
-            )}
+            {loading && <LoadingOverlay message="Loading companies..." />}
 
             {error && !loading && (
               <div className="flex items-center justify-center h-96">

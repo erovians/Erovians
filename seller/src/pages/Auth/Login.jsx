@@ -1,22 +1,22 @@
-import api from "@/utils/axios.utils";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { assets } from "@/assets/assets";
-import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import { loginSeller } from "@/redux/slice/sellerSlice";
+import LoadingOverlay from "@/common/LoadingOverlay";
 
 export default function Login() {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loginType, setLoginType] = useState("mobile");
-  const [loading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoadingLogin, error } = useSelector((state) => state.seller);
 
   // handle input change
   const handleChange = (e) => {
@@ -27,33 +27,32 @@ export default function Login() {
   // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
-    try {
-      setIsLoading(true);
+    const result = await dispatch(
+      loginSeller({
+        identifier: formData.identifier,
+        password: formData.password,
+      })
+    );
 
-      const res = await api.post("/seller/login", formData);
-      toast.success(`${res.data.message} Redirecting...`, {
+    if (loginSeller.fulfilled.match(result)) {
+      toast.success("Login successful! Redirecting...", {
         duration: 2000,
       });
-      console.log("this is data", res.data);
-      if (res.data.accessToken) {
-        localStorage.setItem("accessToken", res.data.accessToken);
-      }
 
       setTimeout(() => {
         navigate("/sellerdashboard");
       }, 2000);
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-    } finally {
-      setIsLoading(false);
+    } else {
+      toast.error(error || "Login failed");
     }
   };
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
+      {/* Loading Overlay */}
+      {isLoadingLogin && <LoadingOverlay message="Logging in..." />}
+
       {/* Header */}
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
         <Link to={"/"}>
@@ -111,16 +110,6 @@ export default function Login() {
               </label>
             </div>
 
-            {/* Error / Success Messages */}
-            {error && (
-              <p className="text-red-500 text-center text-sm mb-2">{error}</p>
-            )}
-            {success && (
-              <p className="text-green-600 text-center text-sm mb-2">
-                {success}
-              </p>
-            )}
-
             {/* Form */}
             <form onSubmit={handleSubmit}>
               {/* Identifier */}
@@ -138,6 +127,7 @@ export default function Login() {
                     }
                     placeholder="Enter Mobile Number"
                     className="phone-input-custom"
+                    disabled={isLoadingLogin}
                   />
                 </div>
               ) : (
@@ -148,6 +138,7 @@ export default function Login() {
                   onChange={handleChange}
                   placeholder="Email ID"
                   className="w-full border border-gray-300 rounded-lg py-3 px-4 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue mt-4"
+                  disabled={isLoadingLogin}
                   required
                 />
               )}
@@ -161,12 +152,14 @@ export default function Login() {
                   onChange={handleChange}
                   placeholder="Password"
                   className="w-full border border-gray-300 rounded-lg py-3 px-4 pr-10 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-navyblue"
+                  disabled={isLoadingLogin}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  disabled={isLoadingLogin}
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -179,10 +172,17 @@ export default function Login() {
               {/* Proceed Button */}
               <button
                 type="submit"
-                className="w-full mt-5 border border-navyblue bg-navyblue text-white py-3 rounded-md font-semibold text-sm hover:bg-white hover:text-navyblue transition flex items-center justify-center gap-3"
+                disabled={isLoadingLogin}
+                className={`w-full mt-5 border py-3 rounded-md font-semibold text-sm transition flex items-center justify-center gap-3 ${
+                  isLoadingLogin
+                    ? "bg-gray-400 text-white border-gray-400 cursor-not-allowed"
+                    : "border-navyblue bg-navyblue text-white hover:bg-white hover:text-navyblue"
+                }`}
               >
-                {loading && <Spinner />}
-                {loading ? "Proceeding..." : "Proceed"}
+                {isLoadingLogin && (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                )}
+                {isLoadingLogin ? "Logging in..." : "Proceed"}
               </button>
             </form>
 

@@ -74,5 +74,165 @@
     "createdAt": { "$date": "2025-01-28T12:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-29T13:00:00.000Z" },
     "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "seller_name": "Vikram Singh",
+    "seller_status": "professional",
+    "seller_company_number": "CIN-U12345RJ2023PTC456789",
+    "seller_address": "Building 12, Marble Park, Udaipur",
+    "seller_country": "India",
+    "seller_email": "vikram.singh@example.com",
+    "seller_phone": "+919876543250",
+    "seller_dispute_contact": "+919876543253",
+    "seller_kyc_hash": "kyc_hash_vikram_singh_45678",
+    "seller_profile_url": "https://example.com/sellers/vikram-singh",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T09:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "seller_name": "Meera Joshi",
+    "seller_status": "professional",
+    "seller_company_number": "CIN-U12345MH2023PTC987654",
+    "seller_address": "Shop 45, Tile Hub, Pune",
+    "seller_country": "India",
+    "seller_email": "meera.joshi@example.com",
+    "seller_phone": "+919876543260",
+    "seller_dispute_contact": "+919876543263",
+    "seller_kyc_hash": "kyc_hash_meera_joshi_98765",
+    "seller_profile_url": "https://example.com/sellers/meera-joshi",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T11:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "seller_name": "Arjun Mehta",
+    "seller_status": "professional",
+    "seller_company_number": "CIN-U12345GJ2024PTC111222",
+    "seller_address": "Plot 88, Industrial Estate, Surat",
+    "seller_country": "India",
+    "seller_email": "arjun.mehta@example.com",
+    "seller_phone": "+919876543270",
+    "seller_dispute_contact": "+919876543273",
+    "seller_kyc_hash": "kyc_hash_arjun_mehta_11122",
+    "seller_profile_url": "https://example.com/sellers/arjun-mehta",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T11:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439108"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439018"
+    },
+    "seller_name": "Kavya Nair",
+    "seller_status": "individual",
+    "seller_address": "Studio 3B, Marine Drive, Kochi",
+    "seller_country": "India",
+    "seller_email": "kavya.nair@example.com",
+    "seller_phone": "+919876543280",
+    "seller_dispute_contact": "+919876543283",
+    "seller_kyc_hash": "kyc_hash_kavya_nair_22233",
+    "seller_profile_url": "https://example.com/sellers/kavya-nair",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T13:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "seller_name": "Rohan Kapoor",
+    "seller_status": "professional",
+    "seller_company_number": "CIN-U12345KA2024PTC333444",
+    "seller_address": "Unit 22, Stone World Complex, Bangalore",
+    "seller_country": "India",
+    "seller_email": "rohan.kapoor@example.com",
+    "seller_phone": "+919876543290",
+    "seller_dispute_contact": "+919876543293",
+    "seller_kyc_hash": "kyc_hash_rohan_kapoor_33344",
+    "seller_profile_url": "https://example.com/sellers/rohan-kapoor",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T13:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T14:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439110"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439020"
+    },
+    "seller_name": "Ananya Desai",
+    "seller_status": "individual",
+    "seller_address": "Shop 17, T Nagar Market, Chennai",
+    "seller_country": "India",
+    "seller_email": "ananya.desai@example.com",
+    "seller_phone": "+919876543300",
+    "seller_dispute_contact": "+919876543303",
+    "seller_kyc_hash": "kyc_hash_ananya_desai_44455",
+    "seller_profile_url": "https://example.com/sellers/ananya-desai",
+    "varificationStatus": "Approved",
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-01T14:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-02-02T15:00:00.000Z"
+    },
+    "__v": 0
   }
 ]

@@ -3,6 +3,7 @@ import {
   getAllCategories,
   getProductsByCategory,
   getProductsBySubCategory,
+  universalSearchController,
 } from "../../controller/buyer/category.controller.js";
 
 const router = express.Router();
@@ -15,5 +16,7 @@ router.get(
   "/:categorySlug/:subCategorySlug/products",
   getProductsBySubCategory
 );
+
+router.post("/search", universalSearchController);
 
 export default router;

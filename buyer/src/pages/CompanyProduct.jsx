@@ -22,6 +22,7 @@ import {
   setProductFilters,
   clearProductFilters,
 } from "../lib/redux/company/companySlice";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 
 const CompanyProduct = () => {
   const { companyId } = useParams();
@@ -309,11 +310,7 @@ const CompanyProduct = () => {
             <div className="px-4 sm:px-6 py-3 sm:py-2 mt-15 sm:mt-2">
               <div className="max-w-7xl mx-auto">
                 {/* Loading State */}
-                {loading && (
-                  <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                  </div>
-                )}
+                {loading && <LoadingOverlay message="Loading companies..." />}
 
                 {/* Error State */}
                 {error && (

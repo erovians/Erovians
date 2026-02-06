@@ -149,10 +149,11 @@ export const seedDatabase = async (req, res) => {
     }));
 
     // ── 4. PRODUCTS ──
+    // ── 4. PRODUCTS ──
     const products = productsData.map((p) => ({
       ...p,
       _id: toId(p._id),
-      companyId: toId(p.companyId),
+      companyId: p.companyId ? toId(p.companyId) : null, // ✅ null handle karo
       sellerId: toId(p.sellerId),
       userId: p.userId ? toId(p.userId) : undefined,
       createdAt: toDate(p.createdAt),

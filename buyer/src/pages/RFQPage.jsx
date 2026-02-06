@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../components/common/Layout";
 import { FileText, ChevronRight, ChevronLeft, Check, Send } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { createQuotationRequest } from "../lib/redux/quotation/quotationSlice";
+import {
+  createQuotationRequest,
+  clearSuccess,
+  clearError,
+} from "../lib/redux/quotation/quotationSlice";
 import CategoryStep from "../components/rfq/CategoryStep";
 import RequirementsStep from "../components/rfq/RequirementsStep";
 import DetailsReviewStep from "../components/rfq/DetailsReviewStep";
@@ -16,7 +20,9 @@ const RFQPage = () => {
     loading,
   } = useSelector((state) => state.auth);
 
+  const quotationState = useSelector((state) => state.quotation);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -30,28 +36,38 @@ const RFQPage = () => {
     budgetMin: "",
     budgetMax: "",
     timeline: "",
-    // Location — only used when not logged in OR logged in but no shipping address
     country: "",
     state: "",
     city: "",
-    // Shipping address — only used when logged in and has addresses
     selectedShippingAddress: logedUser?.shipping_address?.[0] || null,
-    // Contact
     contactEmail: isAuthenticated ? logedUser?.email || "" : "",
     contactPhone: isAuthenticated ? logedUser?.mobile || "" : "",
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [errors, setErrors] = useState({});
 
-  const navigate = useNavigate();
-
   const totalSteps = 4;
 
-  // Check if logged in user has shipping addresses
   const hasShippingAddress =
     isAuthenticated &&
     logedUser?.shipping_address &&
     logedUser.shipping_address.length > 0;
+
+  // Handle success/error
+  useEffect(() => {
+    if (quotationState.success) {
+      toast.success(
+        `✅ ${quotationState.successMessage}\n${quotationState.sellersNotified} seller(s) notified`
+      );
+      dispatch(clearSuccess());
+      setTimeout(() => navigate("/"), 1500);
+    }
+
+    if (quotationState.error) {
+      toast.error(`❌ ${quotationState.error}`);
+      dispatch(clearError());
+    }
+  }, [quotationState.success, quotationState.error, dispatch, navigate]);
 
   // Validation
   const validateStep = (step) => {
@@ -72,7 +88,6 @@ const RFQPage = () => {
       if (!formData.quantity) newErrors.quantity = "Please enter quantity";
       if (!formData.timeline) newErrors.timeline = "Please select timeline";
 
-      // Location validation
       if (hasShippingAddress) {
         if (!formData.selectedShippingAddress)
           newErrors.location = "Please select a shipping address";
@@ -87,7 +102,6 @@ const RFQPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Navigation
   const handleNext = () => {
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
@@ -98,7 +112,6 @@ const RFQPage = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // Submit
   const handleSubmit = () => {
     let location = "";
 
@@ -106,8 +119,6 @@ const RFQPage = () => {
       const addr = formData.selectedShippingAddress;
       location = `${addr.city}, ${addr.state}, ${addr.country}`;
     } else {
-      // Manual selection — need to convert codes to names
-      // Country/State/City names will be built in DetailsReviewStep and passed via formData
       location = formData.location || "";
     }
 
@@ -131,15 +142,12 @@ const RFQPage = () => {
       })),
     };
 
-    // Contact info — only if not logged in
     if (!isAuthenticated) {
       finalData.contactEmail = formData.contactEmail;
       finalData.contactPhone = formData.contactPhone;
     }
 
     dispatch(createQuotationRequest(finalData));
-
-    navigate("/");
   };
 
   return (
@@ -161,7 +169,6 @@ const RFQPage = () => {
               </div>
             </div>
 
-            {/* Progress Bar */}
             <div className="mt-5 px-1 sm:px-2">
               <div className="relative">
                 <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200"></div>
@@ -236,7 +243,6 @@ const RFQPage = () => {
             </div>
           </div>
 
-          {/* Step Content */}
           <div className="bg-white rounded-lg shadow-sm p-5">
             {currentStep === 1 && (
               <CategoryStep
@@ -272,7 +278,6 @@ const RFQPage = () => {
             )}
           </div>
 
-          {/* Navigation Buttons */}
           <div className="flex gap-3 mt-4">
             {currentStep > 1 && (
               <button
@@ -295,10 +300,17 @@ const RFQPage = () => {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-yellow-500 text-navyblue rounded-lg font-semibold hover:bg-yellow-400 transition-colors shadow-sm text-sm"
+                disabled={quotationState.createLoading}
+                className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-yellow-500 text-navyblue rounded-lg font-semibold hover:bg-yellow-400 transition-colors shadow-sm text-sm disabled:opacity-50 disabled:cursor-not-wait"
               >
-                <Send size={18} />
-                Submit RFQ
+                {quotationState.createLoading ? (
+                  <>Loading...</>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    Submit RFQ
+                  </>
+                )}
               </button>
             )}
           </div>

@@ -3,7 +3,7 @@ import React from "react";
 const Step3 = ({
   formData,
   errors,
-  loading,
+  isLoadingRegister,
   onFormChange,
   onFileUpload,
   onBack,
@@ -19,6 +19,7 @@ const Step3 = ({
           name="seller_status"
           value={formData.seller_status}
           onChange={onFormChange}
+          disabled={isLoadingRegister}
           className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
         >
           <option value="">Select Seller Type *</option>
@@ -37,6 +38,7 @@ const Step3 = ({
           placeholder="Your Business/Seller Address *"
           value={formData.seller_address}
           onChange={onFormChange}
+          disabled={isLoadingRegister}
           className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
           rows={3}
         />
@@ -53,6 +55,7 @@ const Step3 = ({
           placeholder="Country *"
           value={formData.seller_country}
           onChange={onFormChange}
+          disabled={isLoadingRegister}
           className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
         />
         {errors.seller_country && (
@@ -71,6 +74,7 @@ const Step3 = ({
               placeholder="Company/Business Name *"
               value={formData.businessName}
               onChange={onFormChange}
+              disabled={isLoadingRegister}
               className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
             />
             {errors.businessName && (
@@ -86,6 +90,7 @@ const Step3 = ({
               placeholder="Company Registration Location *"
               value={formData.companyregstartionlocation}
               onChange={onFormChange}
+              disabled={isLoadingRegister}
               className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
             />
             {errors.companyregstartionlocation && (
@@ -104,6 +109,7 @@ const Step3 = ({
               type="file"
               accept="image/jpeg,image/png,application/pdf"
               onChange={onFileUpload}
+              disabled={isLoadingRegister}
               className="w-full px-4 py-3 border rounded-md text-sm"
             />
             {errors.documentFile && (
@@ -133,20 +139,26 @@ const Step3 = ({
         <button
           type="button"
           onClick={onBack}
-          className="text-gray-500 font-semibold hover:text-gray-700"
+          disabled={isLoadingRegister}
+          className={`text-gray-500 font-semibold hover:text-gray-700 ${
+            isLoadingRegister ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           ← Back
         </button>
         <button
           type="submit"
-          disabled={loading}
-          className={`px-6 py-2 rounded-md font-bold transition ${
-            loading
+          disabled={isLoadingRegister}
+          className={`px-6 py-2 rounded-md font-bold transition flex items-center justify-center gap-2 ${
+            isLoadingRegister
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-[#0c2c43] hover:bg-[#1a4361]"
           } text-white`}
         >
-          {loading ? "Submitting..." : "Submit & Register"}
+          {isLoadingRegister && (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          )}
+          {isLoadingRegister ? "Submitting..." : "Submit & Register"}
         </button>
       </div>
     </form>

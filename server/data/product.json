@@ -1397,5 +1397,1563 @@
       "$date": "2026-02-02T17:00:00.000Z"
     },
     "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439321"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439205"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Classic Kota Limestone Flooring",
+    "product_sku": "LMS-KOT-401",
+    "description": "Premium quality Kota limestone with distinctive beige-brown color and fine grain texture. This durable limestone is perfect for both interior and exterior flooring applications. Features excellent resistance to weathering and minimal maintenance requirements. The natural matte finish provides superior slip resistance, making it ideal for high-traffic areas, commercial spaces, and outdoor installations. Known for its longevity and timeless appeal.",
+    "productImages": [
+      "https://example.com/products/kota-limestone-1.jpg",
+      "https://example.com/products/kota-limestone-2.jpg",
+      "https://example.com/products/kota-limestone-3.jpg"
+    ],
+    "size": {
+      "length": 600,
+      "lengthMeasurement": "mm",
+      "width": 600,
+      "widthMeasurement": "mm",
+      "thickness": 18,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 31,
+    "weightMeasurement": "kg",
+    "product_material": "Kota Blue Limestone",
+    "origin": "Kota, Rajasthan, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "ASTM C568",
+      "technical_sheets": [
+        "https://example.com/specs/kota-limestone-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 1200,
+    "expected_shipping_time": 7,
+    "batch_number": "LMS-2026-401",
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "limestone"
+    ],
+    "grade": "A",
+    "color": "Beige Brown",
+    "pricePerUnit": 22,
+    "priceUnit": "sq.ft",
+    "views": 780,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T08:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439322"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439205"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Silver Grey Travertine - Cross Cut",
+    "product_sku": "TRV-SLV-402",
+    "description": "Elegant silver grey travertine with cross-cut finishing that showcases beautiful linear patterns. This premium natural stone features characteristic voids and pitting that add authentic character. Perfect for luxury bathroom walls, feature walls, outdoor cladding, and pool surrounds. Available in filled and unfilled options. The cool grey tones complement both modern and traditional design schemes. Naturally frost-resistant and durable.",
+    "productImages": [
+      "https://example.com/products/silver-travertine-1.jpg",
+      "https://example.com/products/silver-travertine-2.jpg",
+      "https://example.com/products/silver-travertine-3.jpg",
+      "https://example.com/products/silver-travertine-4.jpg"
+    ],
+    "size": {
+      "length": 610,
+      "lengthMeasurement": "mm",
+      "width": 406,
+      "widthMeasurement": "mm",
+      "thickness": 20,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 19,
+    "weightMeasurement": "kg",
+    "product_material": "Silver Grey Travertine",
+    "origin": "Iran",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ASTM C1527",
+      "technical_sheets": [
+        "https://example.com/specs/silver-travertine-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/silver-travertine-cert.pdf"
+      ]
+    },
+    "available_stock": 650,
+    "expected_shipping_time": 14,
+    "batch_number": "TRV-2026-402",
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "travertine"
+    ],
+    "grade": "A",
+    "color": "Silver Grey",
+    "pricePerUnit": 48,
+    "priceUnit": "sq.ft",
+    "views": 950,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T09:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T09:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439323"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439205"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "product_type": "made-to-order",
+    "productName": "Custom Cut Marble Slabs - Premium Selection",
+    "product_sku": "MBL-CUS-403",
+    "description": "Bespoke marble cutting service offering custom sizes and edge profiles for your specific project needs. Choose from our extensive selection of premium marbles including Makrana White, Italian Carrara, and Indian Green varieties. We provide precision cutting, edge profiling (beveled, bullnose, ogee), and surface finishing (polished, honed, leathered). Perfect for custom countertops, vanity tops, and unique architectural elements. Minimum order quantity applies.",
+    "productImages": [
+      "https://example.com/products/custom-marble-1.jpg",
+      "https://example.com/products/custom-marble-2.jpg",
+      "https://example.com/products/custom-marble-3.jpg"
+    ],
+    "size": {
+      "length": 2000,
+      "lengthMeasurement": "mm",
+      "width": 1000,
+      "widthMeasurement": "mm",
+      "thickness": 30,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 150,
+    "weightMeasurement": "kg",
+    "product_material": "Various Premium Marbles",
+    "origin": "India/Italy",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ASTM C503",
+      "technical_sheets": [
+        "https://example.com/specs/custom-marble-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 0,
+    "expected_shipping_time": 21,
+    "batch_number": "MBL-2026-403",
+    "custom_parameters": {
+      "length": 2000,
+      "width": 1000,
+      "thickness": 30,
+      "tolerances": "+/- 2mm",
+      "finish_types": [
+        "polished",
+        "honed",
+        "leathered"
+      ],
+      "chamfers": "Custom edge profiles available"
+    },
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "Various",
+    "pricePerUnit": 110,
+    "priceUnit": "sq.ft",
+    "views": 620,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439324"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439205"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439105"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Multicolor Slate Tiles - Natural Cleft",
+    "product_sku": "SLT-MLT-404",
+    "description": "Beautiful multicolor slate tiles featuring natural variations of rust, gold, green, and grey tones. The riven surface texture provides authentic rustic character and excellent anti-slip properties. Ideal for outdoor patios, pathways, pool decks, and interior feature walls. Each tile is unique with natural color variations. Highly durable and weather-resistant. Suitable for both traditional and contemporary landscaping designs.",
+    "productImages": [
+      "https://example.com/products/multicolor-slate-1.jpg",
+      "https://example.com/products/multicolor-slate-2.jpg",
+      "https://example.com/products/multicolor-slate-3.jpg"
+    ],
+    "size": {
+      "length": 300,
+      "lengthMeasurement": "mm",
+      "width": 300,
+      "widthMeasurement": "mm",
+      "thickness": 12,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 8,
+    "weightMeasurement": "kg",
+    "product_material": "Multicolor Slate",
+    "origin": "Rajasthan, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "EN 12326",
+      "technical_sheets": [
+        "https://example.com/specs/multicolor-slate-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 2200,
+    "expected_shipping_time": 5,
+    "batch_number": "SLT-2026-404",
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "slate"
+    ],
+    "grade": "B",
+    "color": "Multicolor",
+    "pricePerUnit": 16,
+    "priceUnit": "sq.ft",
+    "views": 1120,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T11:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T11:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439325"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439206"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Premium Glazed Floor Tiles 600x600mm",
+    "product_sku": "GLZ-FLR-501",
+    "description": "High-quality glazed ceramic floor tiles with glossy finish and elegant marble-look design. The glazed surface provides excellent stain resistance and easy maintenance. Suitable for residential living rooms, bedrooms, and light commercial applications. Features consistent color and pattern throughout the batch. Water absorption less than 10%. Available in coordinating wall tile formats for complete design solutions.",
+    "productImages": [
+      "https://example.com/products/glazed-floor-1.jpg",
+      "https://example.com/products/glazed-floor-2.jpg",
+      "https://example.com/products/glazed-floor-3.jpg",
+      "https://example.com/products/glazed-floor-4.jpg"
+    ],
+    "size": {
+      "length": 600,
+      "lengthMeasurement": "mm",
+      "width": 600,
+      "widthMeasurement": "mm",
+      "thickness": 10,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 13,
+    "weightMeasurement": "kg",
+    "product_material": "Glazed Ceramic",
+    "origin": "Morbi, Gujarat, India",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ISO 10545-3",
+      "technical_sheets": [
+        "https://example.com/specs/glazed-floor-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/glazed-floor-cert.pdf"
+      ]
+    },
+    "available_stock": 3500,
+    "expected_shipping_time": 5,
+    "batch_number": "GLZ-2026-501",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "glazed tiles"
+    ],
+    "grade": "A",
+    "color": "Ivory Cream",
+    "pricePerUnit": 24,
+    "priceUnit": "sq.ft",
+    "views": 1850,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439326"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439206"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Designer Glazed Wall Tiles - 3D Pattern",
+    "product_sku": "GLZ-WAL-502",
+    "description": "Contemporary 3D textured glazed wall tiles that create stunning visual depth and shadow play. The raised geometric pattern adds dimension to any wall surface. Perfect for feature walls, bathroom accents, and modern kitchen backsplashes. Glossy glazed finish enhances light reflection. Easy to clean and maintain. Available in multiple color options to suit various design schemes. Creates a luxurious aesthetic at an affordable price point.",
+    "productImages": [
+      "https://example.com/products/3d-glazed-1.jpg",
+      "https://example.com/products/3d-glazed-2.jpg",
+      "https://example.com/products/3d-glazed-3.jpg"
+    ],
+    "size": {
+      "length": 300,
+      "lengthMeasurement": "mm",
+      "width": 450,
+      "widthMeasurement": "mm",
+      "thickness": 9,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 4,
+    "weightMeasurement": "kg",
+    "product_material": "Glazed Ceramic",
+    "origin": "Spain",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ISO 10545",
+      "technical_sheets": [
+        "https://example.com/specs/3d-glazed-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/3d-glazed-cert.pdf"
+      ]
+    },
+    "available_stock": 2800,
+    "expected_shipping_time": 10,
+    "batch_number": "GLZ-2026-502",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "glazed tiles"
+    ],
+    "grade": "A",
+    "color": "White Matte",
+    "pricePerUnit": 35,
+    "priceUnit": "sq.ft",
+    "views": 2150,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T13:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T13:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439327"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439206"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Large Format Porcelain Tiles 1200x600mm",
+    "product_sku": "POR-LRG-503",
+    "description": "Extra-large format porcelain tiles perfect for creating seamless modern interiors with minimal grout lines. Full-body porcelain construction ensures color consistency throughout the tile thickness. Suitable for both floor and wall applications in residential and commercial projects. Features ultra-low water absorption and exceptional durability. Rectified edges allow for narrow grout joints. Available in contemporary concrete-look finish.",
+    "productImages": [
+      "https://example.com/products/large-porcelain-1.jpg",
+      "https://example.com/products/large-porcelain-2.jpg",
+      "https://example.com/products/large-porcelain-3.jpg",
+      "https://example.com/products/large-porcelain-4.jpg"
+    ],
+    "size": {
+      "length": 1200,
+      "lengthMeasurement": "mm",
+      "width": 600,
+      "widthMeasurement": "mm",
+      "thickness": 10,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 20,
+    "weightMeasurement": "kg",
+    "product_material": "Porcelain Ceramic",
+    "origin": "Italy",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ISO 13006 BIa",
+      "technical_sheets": [
+        "https://example.com/specs/large-porcelain-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/large-porcelain-cert.pdf"
+      ]
+    },
+    "available_stock": 1500,
+    "expected_shipping_time": 14,
+    "batch_number": "POR-2026-503",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "porcelain tiles"
+    ],
+    "grade": "A",
+    "color": "Concrete Grey",
+    "pricePerUnit": 52,
+    "priceUnit": "sq.ft",
+    "views": 1980,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T14:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T14:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439328"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439206"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439106"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Decorative Floor Tiles - Encaustic Pattern",
+    "product_sku": "FLR-ENC-504",
+    "description": "Charming encaustic-style floor tiles featuring traditional geometric patterns and vibrant colors. Perfect for creating vintage-inspired or Mediterranean-style interiors. Each tile combines multiple colors in intricate patterns. Ideal for entryways, kitchens, bathrooms, and commercial spaces seeking a unique aesthetic. Durable ceramic construction with through-body pattern. Easy to maintain and clean. Mix and match with solid color tiles for custom layouts.",
+    "productImages": [
+      "https://example.com/products/encaustic-floor-1.jpg",
+      "https://example.com/products/encaustic-floor-2.jpg",
+      "https://example.com/products/encaustic-floor-3.jpg"
+    ],
+    "size": {
+      "length": 200,
+      "lengthMeasurement": "mm",
+      "width": 200,
+      "widthMeasurement": "mm",
+      "thickness": 8,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 3,
+    "weightMeasurement": "kg",
+    "product_material": "Ceramic",
+    "origin": "Morocco",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ISO 10545",
+      "technical_sheets": [
+        "https://example.com/specs/encaustic-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/encaustic-cert.pdf"
+      ]
+    },
+    "available_stock": 4500,
+    "expected_shipping_time": 12,
+    "batch_number": "FLR-2026-504",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "floor tiles"
+    ],
+    "grade": "A",
+    "color": "Multicolor Pattern",
+    "pricePerUnit": 28,
+    "priceUnit": "sq.ft",
+    "views": 2350,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T15:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T15:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439329"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Mint Green Sandstone - Sawn Finish",
+    "product_sku": "SDS-MNT-601",
+    "description": "Unique mint green sandstone with sawn smooth finish for contemporary applications. This rare colored sandstone offers a fresh, modern aesthetic while maintaining natural stone authenticity. Perfect for feature walls, outdoor paving, and architectural cladding. The subtle green hue pairs beautifully with neutral tones and natural materials. Durable and weather-resistant. Suitable for both residential and commercial landscaping projects.",
+    "productImages": [
+      "https://example.com/products/mint-sandstone-1.jpg",
+      "https://example.com/products/mint-sandstone-2.jpg",
+      "https://example.com/products/mint-sandstone-3.jpg",
+      "https://example.com/products/mint-sandstone-4.jpg"
+    ],
+    "size": {
+      "length": 600,
+      "lengthMeasurement": "mm",
+      "width": 400,
+      "widthMeasurement": "mm",
+      "thickness": 22,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 26,
+    "weightMeasurement": "kg",
+    "product_material": "Mint Green Sandstone",
+    "origin": "Rajasthan, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "ASTM C616",
+      "technical_sheets": [
+        "https://example.com/specs/mint-sandstone-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 850,
+    "expected_shipping_time": 10,
+    "batch_number": "SDS-2026-601",
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "sandstone"
+    ],
+    "grade": "B",
+    "color": "Mint Green",
+    "pricePerUnit": 32,
+    "priceUnit": "sq.ft",
+    "views": 680,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T16:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T16:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439330"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Azul Macaubas Quartzite - Premium Blue",
+    "product_sku": "QTZ-AZL-602",
+    "description": "Stunning Azul Macaubas quartzite featuring vibrant blue tones with white and grey veining. This exotic natural stone is one of the most sought-after quartzites for luxury projects. Perfect for statement countertops, feature walls, and high-end architectural applications. Exceptionally hard and durable with superior scratch and heat resistance. The vivid blue color is UV stable and won't fade. Each slab is unique with natural variation.",
+    "productImages": [
+      "https://example.com/products/azul-quartzite-1.jpg",
+      "https://example.com/products/azul-quartzite-2.jpg",
+      "https://example.com/products/azul-quartzite-3.jpg"
+    ],
+    "size": {
+      "length": 3000,
+      "lengthMeasurement": "mm",
+      "width": 1600,
+      "widthMeasurement": "mm",
+      "thickness": 30,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 360,
+    "weightMeasurement": "kg",
+    "product_material": "Azul Macaubas Quartzite",
+    "origin": "Brazil",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ASTM C616",
+      "technical_sheets": [
+        "https://example.com/specs/azul-quartzite-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/azul-quartzite-cert.pdf"
+      ]
+    },
+    "available_stock": 85,
+    "expected_shipping_time": 28,
+    "batch_number": "QTZ-2026-602",
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "quartzite"
+    ],
+    "grade": "A",
+    "color": "Azul Blue",
+    "pricePerUnit": 185,
+    "priceUnit": "sq.ft",
+    "views": 1450,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-02T17:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T17:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439331"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Engineered Stone - Stellar White",
+    "product_sku": "ENG-STL-603",
+    "description": "Premium engineered stone surface with bright white base and fine glitter sparkle effect. Composed of 94% natural quartz with polymer resin for exceptional durability. Non-porous surface is highly resistant to stains, scratches, and bacteria. Perfect for modern kitchen countertops, bathroom vanities, and commercial applications. Requires no sealing and is easy to maintain. The subtle sparkle adds elegance without being overpowering. Consistent color and pattern throughout.",
+    "productImages": [
+      "https://example.com/products/stellar-white-1.jpg",
+      "https://example.com/products/stellar-white-2.jpg",
+      "https://example.com/products/stellar-white-3.jpg",
+      "https://example.com/products/stellar-white-4.jpg"
+    ],
+    "size": {
+      "length": 3000,
+      "lengthMeasurement": "mm",
+      "width": 1400,
+      "widthMeasurement": "mm",
+      "thickness": 20,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 126,
+    "weightMeasurement": "kg",
+    "product_material": "Engineered Quartz Stone",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "NSF/ANSI 51",
+      "technical_sheets": [
+        "https://example.com/specs/stellar-white-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/stellar-white-cert.pdf"
+      ]
+    },
+    "available_stock": 550,
+    "expected_shipping_time": 7,
+    "batch_number": "ENG-2026-603",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "engineered stone"
+    ],
+    "grade": "A",
+    "color": "Stellar White",
+    "pricePerUnit": 75,
+    "priceUnit": "sq.ft",
+    "views": 1680,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T08:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439332"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "product_type": "stone-cutting",
+    "productName": "Precision Stone Cutting Service - Any Material",
+    "product_sku": "CUT-SRV-604",
+    "description": "Professional stone cutting and fabrication service for natural stones, engineered surfaces, and alternative materials. We offer precision cutting to your exact specifications using state-of-the-art CNC and waterjet technology. Services include straight cuts, curved cuts, sink cutouts, edge profiling, and surface finishing. Perfect for custom countertops, vanity tops, and architectural elements. Bring your own material or choose from our inventory. Fast turnaround time with accurate results.",
+    "productImages": [
+      "https://example.com/products/stone-cutting-1.jpg",
+      "https://example.com/products/stone-cutting-2.jpg",
+      "https://example.com/products/stone-cutting-3.jpg"
+    ],
+    "size": {
+      "length": 3000,
+      "lengthMeasurement": "mm",
+      "width": 1500,
+      "widthMeasurement": "mm",
+      "thickness": 30,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 337,
+    "weightMeasurement": "kg",
+    "product_material": "Various Stone Types",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "Custom",
+      "technical_sheets": [
+        "https://example.com/specs/cutting-service-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 0,
+    "expected_shipping_time": 7,
+    "batch_number": "CUT-2026-604",
+    "technical_file": {
+      "url": "https://example.com/technical/cutting-template.dxf",
+      "hash": "cut789xyz012",
+      "archive_path": "/archive/cutting-designs/",
+      "upload_timestamp": {
+        "$date": "2025-02-03T09:00:00.000Z"
+      }
+    },
+    "custom_parameters": {
+      "length": 3000,
+      "width": 1500,
+      "thickness": 30,
+      "tolerances": "+/- 0.3mm",
+      "finish_types": [
+        "polished",
+        "honed",
+        "leathered",
+        "flamed"
+      ],
+      "chamfers": "Custom edge profiles as per drawing"
+    },
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Various",
+    "pricePerUnit": 15,
+    "priceUnit": "sq.ft",
+    "views": 520,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T09:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T09:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439333"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439207"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439107"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Brushed Brass Metal Finish Panels",
+    "product_sku": "MTL-BRS-605",
+    "description": "Luxury brushed brass metal finish panels for contemporary architectural applications. These metal surface panels combine the warmth of brass with a sophisticated brushed texture. Perfect for feature walls, elevator cladding, furniture accents, and high-end commercial interiors. Lacquer-coated to prevent tarnishing and maintain the golden luster. Easy to clean and maintain. Available in custom sizes upon request. Creates a statement in modern luxury spaces.",
+    "productImages": [
+      "https://example.com/products/brass-metal-1.jpg",
+      "https://example.com/products/brass-metal-2.jpg",
+      "https://example.com/products/brass-metal-3.jpg",
+      "https://example.com/products/brass-metal-4.jpg"
+    ],
+    "size": {
+      "length": 2440,
+      "lengthMeasurement": "mm",
+      "width": 1220,
+      "widthMeasurement": "mm",
+      "thickness": 3,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 22,
+    "weightMeasurement": "kg",
+    "product_material": "Brushed Brass",
+    "origin": "Italy",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "EN 1652",
+      "technical_sheets": [
+        "https://example.com/specs/brass-metal-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/brass-metal-cert.pdf"
+      ]
+    },
+    "available_stock": 180,
+    "expected_shipping_time": 21,
+    "batch_number": "MTL-2026-605",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "metal finishes"
+    ],
+    "grade": "A",
+    "color": "Brushed Brass Gold",
+    "pricePerUnit": 145,
+    "priceUnit": "sq.ft",
+    "views": 890,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T10:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439334"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439108"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439018"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Handcrafted Mosaic Art Panels",
+    "product_sku": "MOS-ART-701",
+    "description": "Beautiful handcrafted mosaic art panels created by skilled artisans using natural stone pieces. Each panel is a unique work of art featuring intricate patterns and designs. Perfect for luxury residential spaces, boutique hotels, and upscale restaurants. Available in custom designs and sizes. The mosaic technique combines marble, granite, and semi-precious stones to create stunning visual effects. Made to order with attention to detail. Durable and suitable for both indoor and outdoor installations.",
+    "productImages": [
+      "https://example.com/products/mosaic-art-1.jpg",
+      "https://example.com/products/mosaic-art-2.jpg",
+      "https://example.com/products/mosaic-art-3.jpg"
+    ],
+    "size": {
+      "length": 1200,
+      "lengthMeasurement": "mm",
+      "width": 1200,
+      "widthMeasurement": "mm",
+      "thickness": 15,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 45,
+    "weightMeasurement": "kg",
+    "product_material": "Mixed Natural Stones",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "Custom Artisan",
+      "technical_sheets": [],
+      "certificates": []
+    },
+    "available_stock": 12,
+    "expected_shipping_time": 30,
+    "batch_number": "MOS-2026-701",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "mosaic tiles"
+    ],
+    "grade": "A",
+    "color": "Multicolor Custom",
+    "pricePerUnit": 220,
+    "priceUnit": "piece",
+    "views": 450,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T11:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T11:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439335"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439108"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439018"
+    },
+    "product_type": "made-to-order",
+    "productName": "Custom Granite Kitchen Countertop",
+    "product_sku": "GRN-KIT-702",
+    "description": "Bespoke granite kitchen countertop fabrication service with professional installation. Choose from our selection of premium granites including Absolute Black, Tan Brown, Kashmir White, and Imperial Red. We provide complete countertop solutions including measurement, templating, cutting, edge profiling, and installation. Includes sink cutout and backsplash if required. Our experienced team ensures perfect fit and finish. Minimum 20 sq.ft order.",
+    "productImages": [
+      "https://example.com/products/granite-countertop-1.jpg",
+      "https://example.com/products/granite-countertop-2.jpg",
+      "https://example.com/products/granite-countertop-3.jpg",
+      "https://example.com/products/granite-countertop-4.jpg"
+    ],
+    "size": {
+      "length": 2500,
+      "lengthMeasurement": "mm",
+      "width": 600,
+      "widthMeasurement": "mm",
+      "thickness": 30,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 112,
+    "weightMeasurement": "kg",
+    "product_material": "Premium Granite Selection",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "ASTM C615",
+      "technical_sheets": [
+        "https://example.com/specs/granite-countertop-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 0,
+    "expected_shipping_time": 14,
+    "batch_number": "GRN-2026-702",
+    "custom_parameters": {
+      "length": 2500,
+      "width": 600,
+      "thickness": 30,
+      "tolerances": "+/- 1mm",
+      "finish_types": [
+        "polished",
+        "leathered"
+      ],
+      "chamfers": "Bullnose, beveled, or ogee edge available"
+    },
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "granite"
+    ],
+    "grade": "A",
+    "color": "Various Options",
+    "pricePerUnit": 68,
+    "priceUnit": "sq.ft",
+    "views": 920,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T12:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439336"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439108"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439018"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Vintage Pattern Wall Tiles - Heritage Collection",
+    "product_sku": "WAL-VNT-703",
+    "description": "Charming vintage pattern wall tiles inspired by traditional Indian heritage designs. These ceramic tiles feature intricate floral and geometric patterns in soft pastel colors. Perfect for adding character to bathrooms, kitchens, and accent walls. Each tile is carefully crafted to recreate authentic vintage aesthetics. Easy to install and maintain. Pairs beautifully with modern fixtures for an eclectic look. Available in coordinating border tiles.",
+    "productImages": [
+      "https://example.com/products/vintage-wall-1.jpg",
+      "https://example.com/products/vintage-wall-2.jpg",
+      "https://example.com/products/vintage-wall-3.jpg"
+    ],
+    "size": {
+      "length": 150,
+      "lengthMeasurement": "mm",
+      "width": 150,
+      "widthMeasurement": "mm",
+      "thickness": 7,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 2,
+    "weightMeasurement": "kg",
+    "product_material": "Ceramic",
+    "origin": "Jaipur, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "ISO 10545",
+      "technical_sheets": [],
+      "certificates": []
+    },
+    "available_stock": 3200,
+    "expected_shipping_time": 7,
+    "batch_number": "WAL-2026-703",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "wall tiles"
+    ],
+    "grade": "B",
+    "color": "Pastel Multicolor",
+    "pricePerUnit": 18,
+    "priceUnit": "sq.ft",
+    "views": 1580,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T13:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T13:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439337"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439208"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Ultra Black Quartz - Midnight Series",
+    "product_sku": "QRZ-BLK-801",
+    "description": "Premium ultra-black engineered quartz surface with deep, consistent black color throughout. Part of our exclusive Midnight Series, this quartz offers unmatched darkness and uniformity. Composed of 93% natural quartz with advanced polymer technology. Non-porous surface provides superior stain and scratch resistance. Perfect for dramatic modern kitchens, luxury bathrooms, and commercial counters. Heat resistant up to 150°C. Maintenance-free with a polished finish that never requires sealing.",
+    "productImages": [
+      "https://example.com/products/ultra-black-quartz-1.jpg",
+      "https://example.com/products/ultra-black-quartz-2.jpg",
+      "https://example.com/products/ultra-black-quartz-3.jpg",
+      "https://example.com/products/ultra-black-quartz-4.jpg"
+    ],
+    "size": {
+      "length": 3000,
+      "lengthMeasurement": "mm",
+      "width": 1400,
+      "widthMeasurement": "mm",
+      "thickness": 20,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 126,
+    "weightMeasurement": "kg",
+    "product_material": "Engineered Quartz",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "NSF/ANSI 51",
+      "technical_sheets": [
+        "https://example.com/specs/ultra-black-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/ultra-black-cert.pdf"
+      ]
+    },
+    "available_stock": 420,
+    "expected_shipping_time": 5,
+    "batch_number": "QRZ-2026-801",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "quartz"
+    ],
+    "grade": "A",
+    "color": "Ultra Black",
+    "pricePerUnit": 82,
+    "priceUnit": "sq.ft",
+    "views": 2150,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T14:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T14:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439338"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439208"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Engineered Stone - Carrara Veined",
+    "product_sku": "ENG-CAR-802",
+    "description": "Sophisticated engineered stone surface mimicking classic Carrara marble veining. Features white base with elegant grey veins throughout. Superior to natural marble with enhanced durability and zero maintenance. Non-porous surface resists staining and bacterial growth. Perfect for kitchen islands, bathroom vanities, and commercial applications. Consistent pattern ensures easy slab matching for large installations. Available in polished and honed finishes.",
+    "productImages": [
+      "https://example.com/products/carrara-engineered-1.jpg",
+      "https://example.com/products/carrara-engineered-2.jpg",
+      "https://example.com/products/carrara-engineered-3.jpg"
+    ],
+    "size": {
+      "length": 3000,
+      "lengthMeasurement": "mm",
+      "width": 1400,
+      "widthMeasurement": "mm",
+      "thickness": 30,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 189,
+    "weightMeasurement": "kg",
+    "product_material": "Engineered Quartz Stone",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "NSF/ANSI 51",
+      "technical_sheets": [
+        "https://example.com/specs/carrara-engineered-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/carrara-engineered-cert.pdf"
+      ]
+    },
+    "available_stock": 380,
+    "expected_shipping_time": 7,
+    "batch_number": "ENG-2026-802",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "engineered stone"
+    ],
+    "grade": "A",
+    "color": "Carrara White",
+    "pricePerUnit": 92,
+    "priceUnit": "sq.ft",
+    "views": 1980,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T15:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T15:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439339"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439208"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Polished Concrete Panels - Industrial Chic",
+    "product_sku": "CON-POL-803",
+    "description": "Modern polished concrete panels for industrial-chic interior designs. These pre-cast concrete panels feature a smooth, polished surface with natural concrete color variations. Perfect for feature walls, retail displays, and contemporary residential spaces. Sealed surface protects against moisture and staining. Lightweight compared to traditional concrete. Easy to install with mounting system. Creates authentic industrial aesthetic without the cost of poured-in-place concrete.",
+    "productImages": [
+      "https://example.com/products/polished-concrete-1.jpg",
+      "https://example.com/products/polished-concrete-2.jpg",
+      "https://example.com/products/polished-concrete-3.jpg",
+      "https://example.com/products/polished-concrete-4.jpg"
+    ],
+    "size": {
+      "length": 2400,
+      "lengthMeasurement": "mm",
+      "width": 1200,
+      "widthMeasurement": "mm",
+      "thickness": 20,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 115,
+    "weightMeasurement": "kg",
+    "product_material": "Polished Concrete",
+    "origin": "India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "ASTM C1364",
+      "technical_sheets": [
+        "https://example.com/specs/polished-concrete-tech.pdf"
+      ],
+      "certificates": []
+    },
+    "available_stock": 250,
+    "expected_shipping_time": 14,
+    "batch_number": "CON-2026-803",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "concrete"
+    ],
+    "grade": "A",
+    "color": "Natural Grey",
+    "pricePerUnit": 65,
+    "priceUnit": "sq.ft",
+    "views": 1120,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T16:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T16:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439340"
+    },
+    "companyId": {
+      "$oid": "507f1f77bcf86cd799439208"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439109"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Translucent Resin Panels - Backlit Compatible",
+    "product_sku": "RSN-TRN-804",
+    "description": "Innovative translucent resin panels designed for backlit installations. These panels allow light to pass through, creating stunning glowing effects. Perfect for feature walls, partitions, countertops, and artistic installations in hospitality and retail spaces. Can be customized with embedded materials like flowers, leaves, or metallic flakes. Durable acrylic resin construction with UV protection. Available in various colors and thicknesses. Creates dramatic ambiance with integrated LED lighting.",
+    "productImages": [
+      "https://example.com/products/translucent-resin-1.jpg",
+      "https://example.com/products/translucent-resin-2.jpg",
+      "https://example.com/products/translucent-resin-3.jpg"
+    ],
+    "size": {
+      "length": 2440,
+      "lengthMeasurement": "mm",
+      "width": 1220,
+      "widthMeasurement": "mm",
+      "thickness": 12,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 36,
+    "weightMeasurement": "kg",
+    "product_material": "Translucent Acrylic Resin",
+    "origin": "Germany",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ICPA SS-1",
+      "technical_sheets": [
+        "https://example.com/specs/translucent-resin-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/translucent-resin-cert.pdf"
+      ]
+    },
+    "available_stock": 320,
+    "expected_shipping_time": 21,
+    "batch_number": "RSN-2026-804",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "resin"
+    ],
+    "grade": "A",
+    "color": "Clear/Amber Tint",
+    "pricePerUnit": 125,
+    "priceUnit": "sq.ft",
+    "views": 780,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T17:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T17:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439341"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439110"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439020"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Handmade Terracotta Floor Tiles",
+    "product_sku": "FLR-TER-901",
+    "description": "Authentic handmade terracotta floor tiles crafted using traditional methods. Each tile has unique color variations and natural imperfections that add rustic charm. Perfect for Mediterranean, Spanish, and farmhouse-style interiors. Suitable for indoor flooring, outdoor patios, and garden pathways. Porous material ages beautifully with use. Requires sealing for protection. Available in natural terracotta color and various sizes. Creates warm, inviting spaces with timeless appeal.",
+    "productImages": [
+      "https://example.com/products/terracotta-floor-1.jpg",
+      "https://example.com/products/terracotta-floor-2.jpg",
+      "https://example.com/products/terracotta-floor-3.jpg"
+    ],
+    "size": {
+      "length": 300,
+      "lengthMeasurement": "mm",
+      "width": 300,
+      "widthMeasurement": "mm",
+      "thickness": 15,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 6,
+    "weightMeasurement": "kg",
+    "product_material": "Handmade Terracotta Clay",
+    "origin": "Tamil Nadu, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "Traditional Handmade",
+      "technical_sheets": [],
+      "certificates": []
+    },
+    "available_stock": 1800,
+    "expected_shipping_time": 10,
+    "batch_number": "FLR-2026-901",
+    "category": [
+      "ceramic & tiles"
+    ],
+    "subCategory": [
+      "floor tiles"
+    ],
+    "grade": "B",
+    "color": "Natural Terracotta",
+    "pricePerUnit": 12,
+    "priceUnit": "sq.ft",
+    "views": 950,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T18:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T18:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439342"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439110"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439020"
+    },
+    "product_type": "made-to-order",
+    "productName": "Custom Marble Inlay Work - Traditional Art",
+    "product_sku": "MBL-INL-902",
+    "description": "Exquisite custom marble inlay work using traditional Pietra Dura technique. Our skilled artisans create intricate designs using semi-precious stones and colored marbles inlaid into white marble base. Perfect for tabletops, floor medallions, wall murals, and decorative panels. Each piece is handcrafted with precision and attention to detail. Choose from traditional floral patterns or custom designs. Suitable for luxury residences, palaces, and high-end commercial spaces.",
+    "productImages": [
+      "https://example.com/products/marble-inlay-1.jpg",
+      "https://example.com/products/marble-inlay-2.jpg",
+      "https://example.com/products/marble-inlay-3.jpg",
+      "https://example.com/products/marble-inlay-4.jpg"
+    ],
+    "size": {
+      "length": 900,
+      "lengthMeasurement": "mm",
+      "width": 900,
+      "widthMeasurement": "mm",
+      "thickness": 20,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 40,
+    "weightMeasurement": "kg",
+    "product_material": "White Marble with Stone Inlay",
+    "origin": "Agra, India",
+    "compliance_standards": {
+      "ce_marking": false,
+      "material_standard": "Traditional Artisan",
+      "technical_sheets": [],
+      "certificates": []
+    },
+    "available_stock": 0,
+    "expected_shipping_time": 60,
+    "batch_number": "MBL-2026-902",
+    "custom_parameters": {
+      "length": 900,
+      "width": 900,
+      "thickness": 20,
+      "tolerances": "+/- 2mm",
+      "finish_types": [
+        "polished"
+      ],
+      "chamfers": "Hand-finished edges"
+    },
+    "category": [
+      "natural stones"
+    ],
+    "subCategory": [
+      "marble"
+    ],
+    "grade": "A",
+    "color": "White with Multicolor Inlay",
+    "pricePerUnit": 320,
+    "priceUnit": "sq.ft",
+    "views": 580,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T19:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T19:00:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439343"
+    },
+    "sellerId": {
+      "$oid": "507f1f77bcf86cd799439110"
+    },
+    "userId": {
+      "$oid": "507f1f77bcf86cd799439020"
+    },
+    "product_type": "ready-to-go",
+    "productName": "Stainless Steel Tile Trim - Brushed Finish",
+    "product_sku": "MTL-TRM-903",
+    "description": "Premium stainless steel tile trim profiles for professional finishing of tile installations. Brushed finish provides contemporary aesthetic and hides fingerprints. Available in various profiles including L-trim, square edge, and round edge. Perfect for protecting tile edges, creating clean transitions, and adding modern detailing. Corrosion-resistant 304-grade stainless steel. Suitable for both residential and commercial applications. Easy to install and maintain.",
+    "productImages": [
+      "https://example.com/products/steel-trim-1.jpg",
+      "https://example.com/products/steel-trim-2.jpg",
+      "https://example.com/products/steel-trim-3.jpg"
+    ],
+    "size": {
+      "length": 2500,
+      "lengthMeasurement": "mm",
+      "width": 10,
+      "widthMeasurement": "mm",
+      "thickness": 1,
+      "thicknessMeasurement": "mm"
+    },
+    "weight": 0.5,
+    "weightMeasurement": "kg",
+    "product_material": "304 Stainless Steel",
+    "origin": "China",
+    "compliance_standards": {
+      "ce_marking": true,
+      "material_standard": "ASTM A240",
+      "technical_sheets": [
+        "https://example.com/specs/steel-trim-tech.pdf"
+      ],
+      "certificates": [
+        "https://example.com/certs/steel-trim-cert.pdf"
+      ]
+    },
+    "available_stock": 5000,
+    "expected_shipping_time": 7,
+    "batch_number": "MTL-2026-903",
+    "category": [
+      "alternatives & finishes"
+    ],
+    "subCategory": [
+      "metal finishes"
+    ],
+    "grade": "A",
+    "color": "Brushed Stainless Steel",
+    "pricePerUnit": 8,
+    "priceUnit": "piece",
+    "views": 720,
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-02-03T20:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T20:00:00.000Z"
+    },
+    "__v": 0
   }
 ]

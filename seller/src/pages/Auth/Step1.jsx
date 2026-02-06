@@ -16,6 +16,8 @@ const Step1 = ({
   otpStatus,
   isMobileVerified,
   showOtpField,
+  isLoadingOtp,
+  isLoadingVerify,
   onFormChange,
   onOtpChange,
   onSendOtp,
@@ -42,21 +44,21 @@ const Step1 = ({
             <button
               type="button"
               onClick={onSendOtp}
-              disabled={otpStatus === "sending" || otpStatus === "verified"}
+              disabled={isLoadingOtp || isMobileVerified}
               className={`px-4 py-2 sm:py-0 font-semibold text-sm text-white border-t sm:border-t-0 sm:border-l border-gray-200 
                 ${
-                  otpStatus === "verified"
+                  isMobileVerified
                     ? "bg-green-600"
-                    : otpStatus === "sending"
+                    : isLoadingOtp
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-navyblue hover:bg-[#1a4361]"
                 }`}
             >
-              {otpStatus === "sending"
+              {isLoadingOtp
                 ? "Sending..."
                 : otpStatus === "sent"
                 ? "Resend OTP"
-                : otpStatus === "verified"
+                : isMobileVerified
                 ? "✓ Verified"
                 : "Send OTP"}
             </button>
@@ -81,6 +83,7 @@ const Step1 = ({
               value={otp}
               onChange={onOtpChange}
               className="flex-1 justify-center"
+              disabled={isLoadingVerify}
             >
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
@@ -100,14 +103,14 @@ const Step1 = ({
             <button
               type="button"
               onClick={onVerifyOtp}
-              disabled={otp.length !== 6}
+              disabled={otp.length !== 6 || isLoadingVerify}
               className={`w-full sm:w-auto px-5 py-2 rounded-md font-semibold transition ${
-                otp.length === 6
+                otp.length === 6 && !isLoadingVerify
                   ? "bg-[#0c2c43] text-white hover:bg-[#1a4361]"
                   : "bg-gray-200 text-gray-500 cursor-not-allowed"
               }`}
             >
-              Verify OTP
+              {isLoadingVerify ? "Verifying..." : "Verify OTP"}
             </button>
           </div>
           {errors.otp && (
