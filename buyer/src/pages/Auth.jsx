@@ -22,6 +22,7 @@ import {
   clearError,
   clearSuccess,
 } from "../lib/redux/auth/authSlice";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 
 export default function Auth() {
   const dispatch = useDispatch();
@@ -33,13 +34,10 @@ export default function Auth() {
     success,
     message,
     step,
-    isNewUser,
     identifier,
     loginMethod,
     authMode,
     loginType,
-    hasPassword,
-    otpSent,
     isAuthenticated,
     nextRoute,
   } = useSelector((state) => state.auth);
@@ -219,6 +217,7 @@ export default function Auth() {
 
   return (
     <Layout hideFooter={true}>
+      {loading && <LoadingOverlay />}
       <div className="bg-[#f8f9fa] flex items-center justify-center px-4 py-8 md:py-12">
         <div className="w-full max-w-5xl bg-white shadow-2xl rounded-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">

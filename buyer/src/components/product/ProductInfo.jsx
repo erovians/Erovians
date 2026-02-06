@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Star,
   CheckCircle,
@@ -21,12 +21,20 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Country, State, City } from "country-state-city";
-import { createQuotationRequest } from "../../lib/redux/quotation/quotationSlice";
+import {
+  createQuotationRequest,
+  clearSuccess,
+  clearError,
+} from "../../lib/redux/quotation/quotationSlice";
+
+import { toast } from "sonner";
 
 const ProductInfo = ({ product, seller }) => {
   const { user: logedUser, isAuthenticated } = useSelector(
     (state) => state.auth
   );
+
+  const quotationState = useSelector((state) => state.quotation);
   const dispatch = useDispatch();
 
   const [quantity, setQuantity] = useState(1);
@@ -56,6 +64,21 @@ const ProductInfo = ({ product, seller }) => {
     selectedShippingAddress: logedUser?.shipping_address?.[0] || null,
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  // Component ke andar, useState ke baad:
+  useEffect(() => {
+    if (quotationState.success) {
+      toast.success(
+        `✅ ${quotationState.successMessage}\n${quotationState.sellersNotified} seller(s) notified`
+      );
+      dispatch(clearSuccess());
+    }
+
+    if (quotationState.error) {
+      toast.error(`❌ ${quotationState.error}`);
+      dispatch(clearError());
+    }
+  }, [quotationState.success, quotationState.error]);
 
   // ========== SHIPPING ADDRESS CHANGE (Logged in) ==========
   const handleShippingAddressChange = (e) => {

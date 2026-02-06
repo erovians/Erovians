@@ -7,6 +7,8 @@ const initialState = {
 
   // Products from category/subcategory
   products: [],
+  search: [],
+  searchLoading: false,
 
   // Pagination
   pagination: {
@@ -170,6 +172,23 @@ export const fetchSubCategoryProducts = createAsyncThunk(
         error?.response?.data || {
           success: false,
           message: "Failed to fetch subcategory products",
+        }
+      );
+    }
+  }
+);
+
+export const universalSearch = createAsyncThunk(
+  "category/universalSearch",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/category/search");
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || {
+          success: false,
+          message: "Failed to fetch categories",
         }
       );
     }

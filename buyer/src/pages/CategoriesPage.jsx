@@ -14,12 +14,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { assets } from "../assets/assets";
+import LoadingOverlay from "../components/common/LoadingOverlay";
 
 const CategoriesPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { categories, loading, error } = useSelector((state) => state.category);
+  console.log("this is categories fetchallcategories", categories);
 
   useEffect(() => {
     dispatch(fetchAllCategories());
@@ -116,12 +118,7 @@ const CategoriesPage = () => {
         <div className="py-8 sm:py-12 md:py-16 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {/* Loading State */}
-            {loading && (
-              <div className="flex flex-col justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navyblue mb-4"></div>
-                <p className="text-gray-600">Loading categories...</p>
-              </div>
-            )}
+            {loading && <LoadingOverlay message="Loading companies..." />}
 
             {/* Error State */}
             {error && (

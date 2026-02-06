@@ -24,6 +24,7 @@ import Step1 from "@/pages/Auth/Step1";
 import Step2 from "@/pages/Auth/Step2";
 import Step3 from "@/pages/Auth/Step3";
 import Modal from "@/pages/Auth/Modal";
+import LoadingOverlay from "@/common/LoadingOverlay";
 
 const SellerSignUp = () => {
   const [step, setStep] = useState(1);
@@ -64,8 +65,16 @@ const SellerSignUp = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, successMessage, otpStatus, isMobileVerified } =
-    useSelector((state) => state.seller);
+  const {
+    isLoadingOtp,
+    isLoadingVerify,
+    isLoadingCheck,
+    isLoadingRegister,
+    error,
+    successMessage,
+    otpStatus,
+    isMobileVerified,
+  } = useSelector((state) => state.seller);
 
   // ======================== HANDLE FORM CHANGE ========================
   const handleChange = (e) => {
@@ -139,6 +148,7 @@ const SellerSignUp = () => {
         email: formData.email,
         businessId: formData.businessId,
         mobile: formData.mobile,
+        seller_status: "professional", // Assuming GSTIN means professional
       })
     );
 
@@ -318,6 +328,10 @@ const SellerSignUp = () => {
   // ======================== RENDER ========================
   return (
     <div className="min-h-screen bg-white font-sans">
+      {/* Loading Overlays */}
+      {isLoadingCheck && <LoadingOverlay message="Validating details..." />}
+      {isLoadingRegister && <LoadingOverlay message="Creating account..." />}
+
       {/* Header */}
       <header className="w-full shadow-md h-14 sm:h-16 md:h-20 flex items-center px-4 sm:px-6">
         <Link to={"/"}>
@@ -338,6 +352,8 @@ const SellerSignUp = () => {
               otpStatus={otpStatus}
               isMobileVerified={isMobileVerified}
               showOtpField={showOtpField}
+              isLoadingOtp={isLoadingOtp}
+              isLoadingVerify={isLoadingVerify}
               onFormChange={handleChange}
               onOtpChange={setOtp}
               onSendOtp={handleSendOtp}
@@ -360,7 +376,7 @@ const SellerSignUp = () => {
             <Step3
               formData={formData}
               errors={errors}
-              loading={loading}
+              isLoadingRegister={isLoadingRegister}
               onFormChange={handleChange}
               onFileUpload={handleFileUpload}
               onBack={() => setStep(2)}

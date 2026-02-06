@@ -7,6 +7,13 @@ import {
   getProductsBySubCategoryService,
 } from "../../services/buyer/category.service.js";
 
+// ✅ SLUG TO CATEGORY NAME MAPPING (at top level)
+const SLUG_TO_CATEGORY_MAP = {
+  "natural-stones": "natural stones",
+  "ceramic-tiles": "ceramic & tiles",
+  "alternatives-finishes": "alternatives & finishes",
+};
+
 export const getAllCategories = asyncHandler(async (req, res, next) => {
   try {
     const result = await getAllCategoriesService();
@@ -53,24 +60,13 @@ export const getProductsByCategory = asyncHandler(async (req, res, next) => {
     newArrivals,
   } = req.query;
 
-  // Validate categorySlug
-  if (!categorySlug) {
-    return next(new AppError("Category slug is required", 400));
-  }
-
-  // Convert slug to category name (kebab-case to lowercase with spaces)
-  const categoryName = categorySlug.replace(/-/g, " ").toLowerCase();
-
-  // Validate against allowed categories
-  const allowedCategories = [
-    "natural stones",
-    "ceramic & tiles",
-    "alternatives & finishes",
-  ];
-
-  if (!allowedCategories.includes(categoryName)) {
+  // ✅ Validate categorySlug using mapping
+  if (!categorySlug || !SLUG_TO_CATEGORY_MAP[categorySlug]) {
     return next(new AppError("Invalid category", 400));
   }
+
+  // ✅ Convert slug to category name using mapping
+  const categoryName = SLUG_TO_CATEGORY_MAP[categorySlug];
 
   // Build filters object
   const filters = { category: categoryName };
@@ -189,27 +185,21 @@ export const getProductsBySubCategory = asyncHandler(async (req, res, next) => {
     newArrivals,
   } = req.query;
 
-  // Validate params
+  // ✅ Validate params
   if (!categorySlug || !subCategorySlug) {
     return next(
       new AppError("Category and subcategory slugs are required", 400)
     );
   }
 
-  // Convert slugs to names
-  const categoryName = categorySlug.replace(/-/g, " ").toLowerCase();
-  const subCategoryName = subCategorySlug.replace(/-/g, " ").toLowerCase();
-
-  // Validate category
-  const allowedCategories = [
-    "natural stones",
-    "ceramic & tiles",
-    "alternatives & finishes",
-  ];
-
-  if (!allowedCategories.includes(categoryName)) {
+  // ✅ Validate category using mapping
+  if (!SLUG_TO_CATEGORY_MAP[categorySlug]) {
     return next(new AppError("Invalid category", 400));
   }
+
+  // ✅ Convert slugs to names
+  const categoryName = SLUG_TO_CATEGORY_MAP[categorySlug];
+  const subCategoryName = subCategorySlug.replace(/-/g, " ").toLowerCase();
 
   // Build filters object
   const filters = {
@@ -300,3 +290,10 @@ export const getProductsBySubCategory = asyncHandler(async (req, res, next) => {
     return next(new AppError("Failed to fetch subcategory products", 500));
   }
 });
+
+export const universalSearchController = asyncHandler(
+  async (req, res, next) => {
+    console.log("this is req.body", req.body);
+    res.send("done");
+  }
+);

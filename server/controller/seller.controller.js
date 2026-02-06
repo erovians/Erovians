@@ -24,45 +24,37 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
     return next(new AppError("Mobile number is required", 400));
   }
 
-  // ✅ Check if user exists
   let user = await User.findByMobile(mobile);
 
-  // ✅ If user exists and already has seller role → Block registration
   if (user && user.hasRole("seller")) {
     return next(new AppError("Mobile already registered as seller", 409));
   }
 
-  // ✅ Generate OTP
   const otp = generateOTP();
   const otpExpires = getOTPExpiry();
 
-  // ✅ If user doesn't exist, create temporary user
   if (!user) {
     user = await User.create({
       mobile,
       otp,
       otpExpires,
       isMobileVerified: false,
-      role: ["user"], // Default role
+      role: ["user"],
     });
-
     logger.info("Temporary user created for seller OTP", {
       userId: user._id,
       mobile,
     });
   } else {
-    // ✅ Update existing user with new OTP
     user.otp = otp;
     user.otpExpires = otpExpires;
     await user.save();
-
     logger.info("OTP updated for existing user (seller registration)", {
       userId: user._id,
       mobile,
     });
   }
 
-  // ✅ Send OTP via SMS
   const smsResult = await sendOTPSMS(mobile, otp);
 
   if (!smsResult.success) {
@@ -88,14 +80,12 @@ export const verifyOtp = asyncHandler(async (req, res, next) => {
     return next(new AppError("Mobile and OTP are required", 400));
   }
 
-  // ✅ Find user with OTP fields
   const user = await User.findOne({ mobile }).select("+otp +otpExpires");
 
   if (!user) {
     return next(new AppError("User not found. Please send OTP first", 404));
   }
 
-  // ✅ Verify OTP using user method
   const verification = user.verifyOtp(otp);
 
   if (!verification.valid) {
@@ -106,9 +96,8 @@ export const verifyOtp = asyncHandler(async (req, res, next) => {
     return next(new AppError(verification.message, 400));
   }
 
-  // ✅ Mark mobile as verified
   user.isMobileVerified = true;
-  await user.clearOtp(); // Clear OTP fields
+  await user.clearOtp();
   await user.save();
 
   logger.info("Mobile verified successfully for seller registration", {
@@ -127,12 +116,10 @@ export const verifyOtp = asyncHandler(async (req, res, next) => {
 export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
   const { email, mobile, businessId, seller_status } = req.body;
 
-  // Validation
   if (email && !isValidEmail(email)) {
     return next(new AppError("Invalid email format", 400));
   }
 
-  // ✅ Only validate GSTIN if professional seller
   if (seller_status === "professional") {
     if (!businessId) {
       return next(
@@ -144,7 +131,6 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // ✅ Find user by mobile (must exist & be verified)
   const user = await User.findByMobile(mobile);
 
   if (!user) {
@@ -155,12 +141,10 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
     return next(new AppError("Mobile not verified. Please verify OTP", 400));
   }
 
-  // ✅ Check if already seller
   if (user.hasRole("seller")) {
     return next(new AppError("Already registered as seller", 409));
   }
 
-  // ✅ Check email uniqueness (if email is different from user's current email)
   if (email && email !== user.email) {
     const existingEmail = await User.findByEmail(email);
     if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
@@ -168,7 +152,6 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // ✅ Check businessId in Seller collection (only for professional)
   if (seller_status === "professional" && businessId) {
     const existingSeller = await Seller.findOne({
       seller_company_number: businessId,
@@ -201,7 +184,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     seller_country,
   } = req.body;
 
-  // ========== COMMON VALIDATIONS ==========
+  // Validations
   if (!email || !isValidEmail(email)) {
     return next(new AppError("Valid email is required", 400));
   }
@@ -239,25 +222,21 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     return next(new AppError("Seller country is required", 400));
   }
 
-  // ========== PROFESSIONAL SELLER VALIDATIONS ==========
   const isProfessional = seller_status.toLowerCase() === "professional";
 
   if (isProfessional) {
-    // Validate businessId (GSTIN)
     if (!businessId || !isValidGSTIN(businessId)) {
       return next(
         new AppError("Valid GSTIN is required for professional sellers", 400)
       );
     }
 
-    // Validate businessName
     if (!businessName || businessName.trim().length < 2) {
       return next(
         new AppError("Business name is required for professional sellers", 400)
       );
     }
 
-    // Validate company registration location
     if (
       !companyregstartionlocation ||
       companyregstartionlocation.trim().length < 2
@@ -270,8 +249,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
       );
     }
 
-    // Validate document upload
-    const file = req.file;
+    const file = req.files?.file?.[0];
     if (!file) {
       return next(
         new AppError("GSTIN document is required for professional sellers", 400)
@@ -285,32 +263,28 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
       );
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return next(new AppError("File size exceeds 5MB", 400));
     }
   }
 
-  // ========== FIND USER BY MOBILE ==========
   const user = await User.findByMobile(mobile);
 
   if (!user) {
     return next(new AppError("Mobile not found. Please verify OTP first", 400));
   }
 
-  // ========== CHECK IF MOBILE VERIFIED ==========
   if (!user.isMobileVerified) {
     return next(
       new AppError("Mobile not verified. Please verify OTP first", 400)
     );
   }
 
-  // ========== CHECK IF ALREADY SELLER ==========
   if (user.hasRole("seller")) {
     return next(new AppError("Already registered as seller", 400));
   }
 
-  // ========== CHECK EMAIL UNIQUE (if different from existing) ==========
   if (email && email !== user.email) {
     const existingEmail = await User.findByEmail(email);
     if (existingEmail && existingEmail._id.toString() !== user._id.toString()) {
@@ -318,7 +292,6 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // ========== CHECK GSTIN UNIQUE (only for professional) ==========
   if (isProfessional) {
     const existingSeller = await Seller.findOne({
       seller_company_number: businessId,
@@ -328,10 +301,12 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // ========== UPLOAD DOCUMENT (only for professional) ==========
+  // Upload documents
   let documentUrl = null;
+  let profileUrl = null;
+
   if (isProfessional) {
-    const file = req.file;
+    const file = req.files?.file?.[0];
     const uploadResult = await uploadOnCloudinary(file.path);
     documentUrl = uploadResult?.secure_url;
     if (!documentUrl) {
@@ -339,43 +314,43 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // ========== UPDATE USER ROLES ==========
+  if (req.files?.seller_profile?.[0]) {
+    const profileFile = req.files.seller_profile[0];
+    const profileUpload = await uploadOnCloudinary(profileFile.path);
+    profileUrl = profileUpload?.secure_url;
+  }
+
+  // Update user roles
   const hasBuyerRole = user.hasRole("buyer");
 
   if (!hasBuyerRole) {
-    // Direct seller registration → Give both buyer + seller role
     user.role = [...new Set([...user.role, "buyer", "seller"])];
     logger.info("User registered as seller (with auto buyer role)", {
       userId: user._id,
-      previousRoles: user.role,
     });
   } else {
-    // Already buyer → Just add seller role
     user.role = [...new Set([...user.role, "seller"])];
-    logger.info("Existing buyer upgraded to seller", {
-      userId: user._id,
-      previousRoles: user.role,
-    });
+    logger.info("Existing buyer upgraded to seller", { userId: user._id });
   }
 
-  // ========== UPDATE USER WITH COMPLETE DETAILS ==========
   user.email = email;
-  user.password = password; // Will be hashed by pre-save hook
+  user.password = password;
   user.name = sellername;
   await user.save();
 
   logger.info("User updated with seller details", { userId: user._id });
 
-  // ========== CREATE SELLER DOCUMENT ==========
+  // Create seller
   const seller = await Seller.create({
     userId: user._id,
     seller_name: sellername,
     seller_status: seller_status.toLowerCase(),
-    seller_company_number: isProfessional ? businessId : null, // ✅ NULL for individual
+    seller_company_number: isProfessional ? businessId : null,
     seller_address,
     seller_country: seller_country || "India",
     seller_email: email,
     seller_phone: mobile,
+    seller_profile_url: profileUrl,
     varificationStatus: "Pending",
     status: "active",
   });
@@ -387,11 +362,9 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     roles: user.role,
   });
 
-  // ========== CREATE COMPANY (only for professional) ==========
+  // Create company (only for professional)
   let company = null;
   if (isProfessional) {
-    // Parse address from seller_address (basic parsing)
-
     company = await CompanyDetails.create({
       sellerId: seller._id,
       companyBasicInfo: {
@@ -408,7 +381,6 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     });
   }
 
-  // ========== SEND RESPONSE ==========
   res.status(201).json({
     success: true,
     message: isProfessional
@@ -429,7 +401,6 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
 export const loginSeller = asyncHandler(async (req, res, next) => {
   const { identifier, password } = req.body;
 
-  // Validations
   if (!identifier) {
     return next(new AppError("Email or Mobile is required", 400));
   }
@@ -437,25 +408,21 @@ export const loginSeller = asyncHandler(async (req, res, next) => {
     return next(new AppError("Password is required", 400));
   }
 
-  // ========== FIND USER (not Seller!) ==========
   const user = await User.findByIdentifierWithAuth(identifier);
 
   if (!user) {
     return next(new AppError("Invalid credentials", 401));
   }
 
-  // ========== CHECK IF USER HAS SELLER ROLE ==========
   if (!user.hasRole("seller")) {
     return next(new AppError("Not a seller account", 403));
   }
 
-  // ========== VERIFY PASSWORD ==========
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
     return next(new AppError("Invalid credentials", 401));
   }
 
-  // ========== CHECK IF ACCOUNT IS LOCKED ==========
   if (user.isLocked()) {
     return next(new AppError("Account is temporarily locked", 423));
   }
@@ -465,76 +432,97 @@ export const loginSeller = asyncHandler(async (req, res, next) => {
     email: user.email,
   });
 
-  // ========== SEND TOKEN ==========
   sendToken(user, 200, res, "Login successful");
 });
 
-// ======================== GET SELLER PROFILE ========================
-export const getSellerProfile = asyncHandler(async (req, res, next) => {
-  const userId = req.user._id; // From auth middleware
+// ======================== LOAD SELLER (FIXED) ========================
+export const loadSeller = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  console.log("this is load seller of id", userId);
 
-  // ✅ Find seller by userId
-  const seller = await Seller.findOne({ userId }).populate(
-    "userId",
-    "name email mobile role isMobileVerified isEmailVerified"
-  );
+  console.log("Finding seller for userId:", userId, typeof userId);
+  const seller = await Seller.findOne({ userId }).lean();
+  console.log("Found seller:", seller);
 
   if (!seller) {
-    return next(new AppError("Seller not found", 404));
+    return next(
+      new AppError(
+        "Seller profile not found. Please complete registration",
+        404
+      )
+    );
   }
 
-  // ✅ If professional, fetch company details
-  let company = null;
-  if (seller.seller_status === "professional") {
-    company = await CompanyDetails.findOne({ sellerId: seller._id });
+  // Check seller status
+  if (seller.status === "suspended") {
+    return next(new AppError("Your seller account has been suspended", 403));
   }
 
-  logger.info("Seller profile retrieved", { userId, sellerId: seller._id });
+  if (seller.status === "inactive") {
+    return next(new AppError("Your seller account is inactive", 403));
+  }
+
+  // Get user data separately
+  const user = await User.findById(userId).select(
+    "name email mobile role isEmailVerified isMobileVerified status hasPassword lastLogin"
+  );
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  // Update last login
+  await user.updateLastLogin();
+
+  // Build response
+  const responseData = {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
+      role: user.role,
+      isEmailVerified: user.isEmailVerified,
+      isMobileVerified: user.isMobileVerified,
+      status: user.status,
+      hasPassword: user.hasPassword,
+      lastLogin: user.lastLogin,
+    },
+    seller: {
+      id: seller._id,
+      seller_name: seller.seller_name,
+      seller_status: seller.seller_status,
+      seller_company_number: seller.seller_company_number,
+      seller_address: seller.seller_address,
+      seller_country: seller.seller_country,
+      seller_email: seller.seller_email,
+      seller_phone: seller.seller_phone,
+      seller_profile_url: seller.seller_profile_url,
+      varificationStatus: seller.varificationStatus,
+      status: seller.status,
+      createdAt: seller.createdAt,
+      updatedAt: seller.updatedAt,
+    },
+    permissions: {
+      canCreateProduct: seller.varificationStatus === "Approved",
+      canManageOrders: seller.varificationStatus === "Approved",
+      needsVerification: seller.varificationStatus === "Pending",
+      isRejected: seller.varificationStatus === "Rejected",
+      isProfessional: seller.seller_status === "professional",
+      isIndividual: seller.seller_status === "individual",
+    },
+  };
+
+  logger.info("Seller loaded successfully", {
+    userId: user._id,
+    sellerId: seller._id,
+  });
 
   res.status(200).json({
     success: true,
-    data: {
-      seller,
-      company,
-    },
+    message: "Seller loaded successfully",
+    data: responseData,
   });
-});
-
-// ======================== REFRESH TOKEN ========================
-export const refreshTokenController = asyncHandler(async (req, res, next) => {
-  const { refreshToken } = req.cookies;
-
-  if (!refreshToken) {
-    return next(new AppError("No refresh token provided", 401));
-  }
-
-  try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return next(new AppError("User not found", 404));
-    }
-
-    const newAccessToken = user.getAccessToken();
-
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 minutes
-    });
-
-    logger.info("Access token refreshed", { userId: user._id });
-
-    res.status(200).json({
-      success: true,
-      message: "Access token refreshed",
-      accessToken: newAccessToken,
-    });
-  } catch (error) {
-    return next(new AppError("Invalid or expired refresh token", 403));
-  }
 });
 
 // ======================== LOGOUT SELLER ========================
@@ -559,4 +547,9 @@ export const logoutSeller = asyncHandler(async (req, res, next) => {
     success: true,
     message: "Logout successful",
   });
+});
+
+// ======================== UPDATE SELLER PROFILE ========================
+export const updateSellerProfile = asyncHandler(async (req, res, next) => {
+  // TODO: Implement update logic
 });

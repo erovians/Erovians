@@ -8,7 +8,6 @@ import { cache } from "../services/cache.service.js";
 
 export const registerCompany = async (req, res) => {
   try {
-    res.send("done");
   } catch (error) {
     console.error("RegisterCompany Error:", error);
   }

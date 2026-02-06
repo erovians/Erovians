@@ -238,5 +238,462 @@
     "createdAt": { "$date": "2025-01-28T11:00:00.000Z" },
     "updatedAt": { "$date": "2026-02-01T18:15:00.000Z" },
     "__v": 0
+  },
+
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439015"
+    },
+    "name": "Vikram Singh",
+    "email": "vikram.singh@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543250",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/vikram.jpg",
+      "publicId": "profiles/vikram_singh"
+    },
+    "buyer_data": {
+      "buyer_status": "business",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND321654987",
+      "buyer_kyc_hash": {
+        "aadhaar": "e5f6g7h8i9j0",
+        "pan": "t5u6v7w8x9y0"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/vikram.png",
+        "publicId": "signatures/vikram_singh"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439029"
+          },
+          "name": "Vikram Singh",
+          "mobile": "09876543250",
+          "city": "Udaipur",
+          "state": "Rajasthan",
+          "country": "India",
+          "alternateMobile": "09876543251",
+          "landmark": "Near City Palace",
+          "pincode": "313001"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439030"
+          },
+          "name": "Vikram Singh Warehouse",
+          "mobile": "09876543250",
+          "city": "Udaipur",
+          "state": "Rajasthan",
+          "country": "India",
+          "alternateMobile": "09876543252",
+          "landmark": "Hiran Magri Sector",
+          "pincode": "313002"
+        }
+      ]
+    },
+    "gender": "male",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T08:30:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T08:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T08:30:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439016"
+    },
+    "name": "Meera Joshi",
+    "email": "meera.joshi@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543260",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/meera.jpg",
+      "publicId": "profiles/meera_joshi"
+    },
+    "buyer_data": {
+      "buyer_status": "professional end-client",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND654987321",
+      "buyer_kyc_hash": {
+        "aadhaar": "f6g7h8i9j0k1",
+        "pan": "u6v7w8x9y0z1"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/meera.png",
+        "publicId": "signatures/meera_joshi"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439031"
+          },
+          "name": "Meera Joshi",
+          "mobile": "09876543260",
+          "city": "Pune",
+          "state": "Maharashtra",
+          "country": "India",
+          "alternateMobile": "09876543261",
+          "landmark": "Koregaon Park",
+          "pincode": "411001"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439032"
+          },
+          "name": "Meera Joshi Studio",
+          "mobile": "09876543260",
+          "city": "Pune",
+          "state": "Maharashtra",
+          "country": "India",
+          "alternateMobile": "09876543262",
+          "landmark": "Viman Nagar",
+          "pincode": "411014"
+        }
+      ]
+    },
+    "gender": "female",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T10:15:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T09:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T10:15:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439017"
+    },
+    "name": "Arjun Mehta",
+    "email": "arjun.mehta@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543270",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/arjun.jpg",
+      "publicId": "profiles/arjun_mehta"
+    },
+    "buyer_data": {
+      "buyer_status": "business",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND987321654",
+      "buyer_kyc_hash": {
+        "aadhaar": "g7h8i9j0k1l2",
+        "pan": "v7w8x9y0z1a2"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/arjun.png",
+        "publicId": "signatures/arjun_mehta"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439033"
+          },
+          "name": "Arjun Mehta",
+          "mobile": "09876543270",
+          "city": "Surat",
+          "state": "Gujarat",
+          "country": "India",
+          "alternateMobile": "09876543271",
+          "landmark": "Vesu Area",
+          "pincode": "395007"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439034"
+          },
+          "name": "Arjun Mehta Warehouse",
+          "mobile": "09876543270",
+          "city": "Surat",
+          "state": "Gujarat",
+          "country": "India",
+          "alternateMobile": "09876543272",
+          "landmark": "Sachin GIDC",
+          "pincode": "394230"
+        }
+      ]
+    },
+    "gender": "male",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T12:45:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T10:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T12:45:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439018"
+    },
+    "name": "Kavya Nair",
+    "email": "kavya.nair@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543280",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/kavya.jpg",
+      "publicId": "profiles/kavya_nair"
+    },
+    "buyer_data": {
+      "buyer_status": "individual",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND147258369",
+      "buyer_kyc_hash": {
+        "aadhaar": "h8i9j0k1l2m3",
+        "pan": "w8x9y0z1a2b3"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/kavya.png",
+        "publicId": "signatures/kavya_nair"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439035"
+          },
+          "name": "Kavya Nair",
+          "mobile": "09876543280",
+          "city": "Kochi",
+          "state": "Kerala",
+          "country": "India",
+          "alternateMobile": "09876543281",
+          "landmark": "Marine Drive",
+          "pincode": "682031"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439036"
+          },
+          "name": "Kavya Nair",
+          "mobile": "09876543280",
+          "city": "Kochi",
+          "state": "Kerala",
+          "country": "India",
+          "alternateMobile": "09876543282",
+          "landmark": "Kaloor",
+          "pincode": "682017"
+        }
+      ]
+    },
+    "gender": "female",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T14:20:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T11:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T14:20:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439019"
+    },
+    "name": "Rohan Kapoor",
+    "email": "rohan.kapoor@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543290",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/rohan.jpg",
+      "publicId": "profiles/rohan_kapoor"
+    },
+    "buyer_data": {
+      "buyer_status": "business",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND258369147",
+      "buyer_kyc_hash": {
+        "aadhaar": "i9j0k1l2m3n4",
+        "pan": "x9y0z1a2b3c4"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/rohan.png",
+        "publicId": "signatures/rohan_kapoor"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439037"
+          },
+          "name": "Rohan Kapoor",
+          "mobile": "09876543290",
+          "city": "Bangalore",
+          "state": "Karnataka",
+          "country": "India",
+          "alternateMobile": "09876543291",
+          "landmark": "Indiranagar",
+          "pincode": "560038"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439038"
+          },
+          "name": "Rohan Kapoor Office",
+          "mobile": "09876543290",
+          "city": "Bangalore",
+          "state": "Karnataka",
+          "country": "India",
+          "alternateMobile": "09876543292",
+          "landmark": "Electronic City",
+          "pincode": "560100"
+        }
+      ]
+    },
+    "gender": "male",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T16:50:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T12:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T16:50:00.000Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439020"
+    },
+    "name": "Ananya Desai",
+    "email": "ananya.desai@example.com",
+    "isEmailVerified": true,
+    "mobile": "+919876543300",
+    "isMobileVerified": true,
+    "role": [
+      "user",
+      "buyer",
+      "seller"
+    ],
+    "profileURL": {
+      "url": "https://example.com/profiles/ananya.jpg",
+      "publicId": "profiles/ananya_desai"
+    },
+    "buyer_data": {
+      "buyer_status": "individual",
+      "buyer_country": "India",
+      "buyer_vat_eori": "IND369147258",
+      "buyer_kyc_hash": {
+        "aadhaar": "j0k1l2m3n4o5",
+        "pan": "y0z1a2b3c4d5"
+      },
+      "buyer_signature": {
+        "url": "https://example.com/signatures/ananya.png",
+        "publicId": "signatures/ananya_desai"
+      },
+      "billing_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439039"
+          },
+          "name": "Ananya Desai",
+          "mobile": "09876543300",
+          "city": "Chennai",
+          "state": "Tamil Nadu",
+          "country": "India",
+          "alternateMobile": "09876543301",
+          "landmark": "T Nagar",
+          "pincode": "600017"
+        }
+      ],
+      "shipping_address": [
+        {
+          "_id": {
+            "$oid": "607f1f77bcf86cd799439040"
+          },
+          "name": "Ananya Desai",
+          "mobile": "09876543300",
+          "city": "Chennai",
+          "state": "Tamil Nadu",
+          "country": "India",
+          "alternateMobile": "09876543302",
+          "landmark": "Adyar",
+          "pincode": "600020"
+        }
+      ]
+    },
+    "gender": "female",
+    "hasPassword": true,
+    "status": "active",
+    "lastLogin": {
+      "$date": "2026-02-02T18:30:00.000Z"
+    },
+    "loginAttempts": 0,
+    "createdAt": {
+      "$date": "2025-02-01T13:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T18:30:00.000Z"
+    },
+    "__v": 0
   }
 ]

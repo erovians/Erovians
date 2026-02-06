@@ -39,6 +39,7 @@ import {
   clearError,
   clearSuccess,
 } from "../../lib/redux/auth/authSlice";
+import { universalSearch } from "../../lib/redux/category/categorySlice";
 
 const sidebarMainItems = [
   { icon: FileText, label: "Post RFQ", path: "/rfqs", requiresAuth: true },
@@ -131,7 +132,9 @@ export default function Header() {
     navigate("/");
     closeSidebar();
   };
-
+  useEffect(() => {
+    dispatch(universalSearch(searchQuery));
+  }, []);
   return (
     <>
       <div className="bg-navyblue text-white text-sm hidden md:block">

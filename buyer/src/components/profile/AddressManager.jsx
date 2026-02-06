@@ -9,6 +9,7 @@ import { MapPin, Edit2, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Country, State, City } from "country-state-city";
 import * as Dialog from "@radix-ui/react-dialog";
+import LoadingOverlay from "../common/LoadingOverlay";
 
 const AddressManager = ({ user }) => {
   const dispatch = useDispatch();
@@ -236,9 +237,7 @@ const AddressManager = ({ user }) => {
 
         {/* ✅ Show loading ONLY for address section */}
         {addressLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-          </div>
+          <LoadingOverlay message="loading address..." />
         ) : addresses.length > 0 ? (
           <div className="space-y-3 md:space-y-4">
             {addresses.map((address, index) => (
