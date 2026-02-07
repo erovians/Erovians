@@ -265,12 +265,23 @@ export const completeRegistration = asyncHandler(async (req, res, next) => {
 
   // Update user with name
   user.name = name.trim();
+
+  // ✅ ADD BUYER ROLE
+  if (!user.hasRole("buyer")) {
+    user.role = [...new Set([...user.role, "buyer"])];
+    logger.info("Buyer role added to user", {
+      userId: user._id,
+      roles: user.role,
+    });
+  }
+
   await user.save();
 
   logger.info("Registration completed", {
     userId: user._id,
     name: user.name,
     identifier,
+    roles: user.role, // ✅ Log roles
   });
 
   // Send tokens and login
