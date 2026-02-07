@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Search,
@@ -79,7 +79,12 @@ const sidebarFooterItems = [
 export default function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+
+  // Refs for click outside detection
+  const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -91,6 +96,8 @@ export default function Header() {
     error,
     success,
   } = useSelector((state) => state.auth);
+
+  const { search } = useSelector((state) => state.category);
 
   useEffect(() => {
     if (success) {
@@ -117,8 +124,52 @@ export default function Header() {
     }
   }, [isSidebarOpen]);
 
-  const isSeller = logedUser?.role?.includes("seller") || false;
+  // Debounced search
+  useEffect(() => {
+    if (searchQuery.length < 2) {
+      setShowDropdown(false);
+      return;
+    }
 
+    const timer = setTimeout(() => {
+      dispatch(universalSearch(searchQuery));
+      setShowDropdown(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, dispatch]);
+
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        setShowDropdown(false);
+        setSearchQuery("");
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  const isSeller = logedUser?.role?.includes("seller") || false;
   const unreadCount = isAuthenticated ? 0 : 0;
 
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -132,9 +183,24 @@ export default function Header() {
     navigate("/");
     closeSidebar();
   };
-  useEffect(() => {
-    dispatch(universalSearch(searchQuery));
-  }, []);
+
+  // ✅ Handle suggestion click with mouseDown instead of click
+  const handleSuggestionClick = (type, id) => {
+    console.log("Clicked:", type, id); // Debug log
+    setShowDropdown(false);
+    setSearchQuery("");
+
+    if (type === "product") {
+      navigate(`/product/${id}`);
+    } else if (type === "company") {
+      navigate(`/company/${id}`);
+    }
+  };
+
+  const hasResults =
+    search.products?.length > 0 || search.companies?.length > 0;
+  const shouldShowDropdown = showDropdown && searchQuery.length >= 2;
+
   return (
     <>
       <div className="bg-navyblue text-white text-sm hidden md:block">
@@ -211,12 +277,15 @@ export default function Header() {
               <CategoriesMenu />
             </div>
 
-            {/* Search Bar - Flexible width */}
-            <div className="hidden md:flex flex-1 max-w-2xl">
+            {/* Search Bar - Desktop */}
+            <div
+              className="hidden md:flex flex-1 max-w-2xl relative"
+              ref={searchRef}
+            >
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search Products, Suppliers, Companies..."
+                  placeholder="Search Products, Companies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-sm focus:outline-none focus:border-navyblue focus:ring-2 focus:ring-navyblue/20 text-sm transition-all"
@@ -225,6 +294,96 @@ export default function Header() {
                   <Search className="h-5 w-5 text-white" />
                 </button>
               </div>
+
+              {/* Search Dropdown */}
+              {shouldShowDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50"
+                >
+                  {search.loading ? (
+                    <div className="p-4 text-center text-gray-500">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-navyblue mx-auto"></div>
+                      <p className="mt-2 text-sm">Searching...</p>
+                    </div>
+                  ) : !hasResults ? (
+                    <div className="p-4 text-center text-gray-500">
+                      <p className="text-sm">
+                        No results found for "{searchQuery}"
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Products Section */}
+                      {search.products && search.products.length > 0 && (
+                        <div className="p-2 border-b">
+                          <p className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">
+                            📦 Products ({search.products.length})
+                          </p>
+                          {search.products.map((product) => (
+                            <div
+                              key={product._id}
+                              onMouseDown={() =>
+                                handleSuggestionClick("product", product._id)
+                              }
+                              className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
+                            >
+                              <img
+                                src={product.productImage || "/placeholder.png"}
+                                alt={product.productName}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1 text-left">
+                                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                  {product.productName}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  ₹{product.price}/{product.priceUnit}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Companies Section */}
+                      {search.companies && search.companies.length > 0 && (
+                        <div className="p-2">
+                          <p className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">
+                            🏢 Companies ({search.companies.length})
+                          </p>
+                          {search.companies.map((company) => (
+                            <div
+                              key={company._id}
+                              onMouseDown={() =>
+                                handleSuggestionClick("company", company._id)
+                              }
+                              className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
+                            >
+                              <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded">
+                                {company.logo ? (
+                                  <img
+                                    src={company.logo}
+                                    alt={company.companyName}
+                                    className="w-full h-full object-cover rounded"
+                                  />
+                                ) : (
+                                  <Building2 className="w-6 h-6 text-gray-400" />
+                                )}
+                              </div>
+                              <div className="flex-1 text-left">
+                                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                  {company.companyName}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Right Side Icons and Buttons */}
@@ -336,16 +495,6 @@ export default function Header() {
                         </p>
                       )}
                     </div>
-
-                    {/* <DropdownMenuItem>
-                      <Link
-                        to="/dashboard"
-                        className="flex items-center gap-3 w-full py-1"
-                      >
-                        <LayoutDashboard className="h-4 w-4" />
-                        <span>My Dashboard</span>
-                      </Link>
-                    </DropdownMenuItem> */}
 
                     <DropdownMenuItem>
                       <Link
@@ -503,10 +652,10 @@ export default function Header() {
 
           {/* Mobile Search Bar */}
           <div className="md:hidden pb-4">
-            <div className="relative">
+            <div className="relative" ref={searchRef}>
               <input
                 type="text"
-                placeholder="Search Products, Suppliers..."
+                placeholder="Search Products, Companies..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-sm focus:outline-none focus:border-navyblue text-sm"
@@ -514,6 +663,96 @@ export default function Header() {
               <button className="absolute right-0 top-0 h-full px-4 bg-navyblue">
                 <Search className="h-5 w-5 text-white" />
               </button>
+
+              {/* Mobile Search Dropdown */}
+              {shouldShowDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50"
+                >
+                  {search.loading ? (
+                    <div className="p-4 text-center text-gray-500">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-navyblue mx-auto"></div>
+                      <p className="mt-2 text-sm">Searching...</p>
+                    </div>
+                  ) : !hasResults ? (
+                    <div className="p-4 text-center text-gray-500">
+                      <p className="text-sm">
+                        No results found for "{searchQuery}"
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Products Section */}
+                      {search.products && search.products.length > 0 && (
+                        <div className="p-2 border-b">
+                          <p className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">
+                            📦 Products ({search.products.length})
+                          </p>
+                          {search.products.map((product) => (
+                            <div
+                              key={product._id}
+                              onMouseDown={() =>
+                                handleSuggestionClick("product", product._id)
+                              }
+                              className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
+                            >
+                              <img
+                                src={product.productImage || "/placeholder.png"}
+                                alt={product.productName}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1 text-left">
+                                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                  {product.productName}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  ₹{product.price}/{product.priceUnit}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Companies Section */}
+                      {search.companies && search.companies.length > 0 && (
+                        <div className="p-2">
+                          <p className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">
+                            🏢 Companies ({search.companies.length})
+                          </p>
+                          {search.companies.map((company) => (
+                            <div
+                              key={company._id}
+                              onMouseDown={() =>
+                                handleSuggestionClick("company", company._id)
+                              }
+                              className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors rounded-lg cursor-pointer"
+                            >
+                              <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded">
+                                {company.logo ? (
+                                  <img
+                                    src={company.logo}
+                                    alt={company.companyName}
+                                    className="w-full h-full object-cover rounded"
+                                  />
+                                ) : (
+                                  <Building2 className="w-6 h-6 text-gray-400" />
+                                )}
+                              </div>
+                              <div className="flex-1 text-left">
+                                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                                  {company.companyName}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -527,7 +766,7 @@ export default function Header() {
         />
       )}
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar - Rest of the code remains same */}
       <div
         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-70 transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"

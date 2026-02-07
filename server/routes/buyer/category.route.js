@@ -17,6 +17,6 @@ router.get(
   getProductsBySubCategory
 );
 
-router.post("/search", universalSearchController);
+router.get("/search", universalSearchController);
 
 export default router;

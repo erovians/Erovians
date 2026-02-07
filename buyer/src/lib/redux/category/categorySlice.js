@@ -7,7 +7,12 @@ const initialState = {
 
   // Products from category/subcategory
   products: [],
-  search: [],
+  search: {
+    products: [],
+    companies: [],
+    loading: false,
+    error: null,
+  },
   searchLoading: false,
 
   // Pagination
@@ -180,15 +185,15 @@ export const fetchSubCategoryProducts = createAsyncThunk(
 
 export const universalSearch = createAsyncThunk(
   "category/universalSearch",
-  async (_, { rejectWithValue }) => {
+  async (searchQuery, { rejectWithValue }) => {
     try {
-      const response = await api.post("/category/search");
+      const response = await api.get(`/category/search?q=${searchQuery}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data || {
           success: false,
-          message: "Failed to fetch categories",
+          message: "Search failed",
         }
       );
     }
@@ -291,6 +296,20 @@ const categorySlice = createSlice({
         state.loading = false;
         state.error =
           action.payload?.message || "Failed to fetch subcategory products";
+      })
+      .addCase(universalSearch.pending, (state) => {
+        state.search.loading = true;
+        state.search.error = null;
+      })
+      .addCase(universalSearch.fulfilled, (state, action) => {
+        state.search.loading = false;
+        state.search.products = action.payload.products || [];
+        state.search.companies = action.payload.companies || [];
+        state.search.error = null;
+      })
+      .addCase(universalSearch.rejected, (state, action) => {
+        state.search.loading = false;
+        state.search.error = action.payload?.message || "Search failed";
       });
   },
 });
