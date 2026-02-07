@@ -36,6 +36,7 @@ app.use(
       "http://192.168.29.142:5173",
       "http://192.168.29.80:5173",
       "http://192.168.29.80:5174",
+      "https://erovians.vercel.app",
     ],
     credentials: true,
   })

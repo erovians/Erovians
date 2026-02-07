@@ -2,9 +2,7 @@ import { createClient } from "redis";
 import logger from "../config/winston.js";
 
 const client = createClient({
-  url: `redis://${process.env.REDIS_HOST || "127.0.0.1"}:${
-    process.env.REDIS_PORT || 6379
-  }`,
+  url: process.env.REDIS_URL,
 });
 
 client.connect();
