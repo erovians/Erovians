@@ -6,7 +6,8 @@ import {
   getProductsByCategoryService,
   getProductsBySubCategoryService,
 } from "../../services/buyer/category.service.js";
-
+import Product from "../../models/product.model.js";
+import CompanyDetails from "../../models/company.model.js";
 // ✅ SLUG TO CATEGORY NAME MAPPING (at top level)
 const SLUG_TO_CATEGORY_MAP = {
   "natural-stones": "natural stones",
@@ -293,7 +294,117 @@ export const getProductsBySubCategory = asyncHandler(async (req, res, next) => {
 
 export const universalSearchController = asyncHandler(
   async (req, res, next) => {
-    console.log("this is req.body", req.body);
-    res.send("done");
+    const { q } = req.query;
+
+    // Validation
+    if (!q || q.trim().length < 2) {
+      return next(
+        new AppError("Search query must be at least 2 characters", 400)
+      );
+    }
+
+    const searchQuery = q.trim();
+
+    try {
+      // Create regex for case-insensitive partial matching
+      const searchRegex = new RegExp(searchQuery, "i");
+
+      // Parallel search - Products & Companies with filters
+      const [products, companies] = await Promise.all([
+        // ✅ Search Products with seller verification check
+        Product.find({
+          $or: [
+            { productName: searchRegex },
+            { description: searchRegex },
+            { category: searchRegex },
+            { subCategory: searchRegex },
+          ],
+          status: "active", // ✅ Only active products
+        })
+          .populate({
+            path: "sellerId",
+            select: "varificationStatus status",
+            match: {
+              varificationStatus: "Approved", // ✅ Only approved sellers
+              status: "active", // ✅ Only active sellers
+            },
+          })
+          .select(
+            "productName productImages pricePerUnit priceUnit category subCategory sellerId"
+          )
+          .limit(10) // Fetch more to filter out null sellers
+          .lean(),
+
+        // ✅ Search Companies with seller verification check
+        CompanyDetails.find({
+          $or: [
+            { "companyBasicInfo.companyName": searchRegex },
+            { "companyIntro.companyDescription": searchRegex },
+          ],
+        })
+          .populate({
+            path: "sellerId",
+            select: "varificationStatus status",
+            match: {
+              varificationStatus: "Approved", // ✅ Only approved sellers
+              status: "active", // ✅ Only active sellers
+            },
+          })
+          .select("companyBasicInfo.companyName companyIntro.logo sellerId")
+          .limit(10) // Fetch more to filter out null sellers
+          .lean(),
+      ]);
+
+      // ✅ Filter out products where seller is null (not approved/active)
+      const validProducts = products
+        .filter((p) => p.sellerId !== null)
+        .slice(0, 3); // Take only 3 after filtering
+
+      // ✅ Filter out companies where seller is null (not approved/active)
+      const validCompanies = companies
+        .filter((c) => c.sellerId !== null)
+        .slice(0, 3); // Take only 3 after filtering
+
+      // Format response (remove seller details from response)
+      const formattedProducts = validProducts.map((p) => ({
+        _id: p._id,
+        productName: p.productName,
+        productImage: p.productImages?.[0] || null,
+        price: p.pricePerUnit,
+        priceUnit: p.priceUnit,
+        category: p.category,
+        subCategory: p.subCategory,
+        type: "product",
+      }));
+
+      const formattedCompanies = validCompanies.map((c) => ({
+        _id: c._id,
+        companyName: c.companyBasicInfo?.companyName,
+        logo: c.companyIntro?.logo || null,
+        type: "company",
+      }));
+
+      logger.info("Universal search completed", {
+        query: searchQuery,
+        productsFound: formattedProducts.length,
+        companiesFound: formattedCompanies.length,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: {
+          products: formattedProducts,
+          companies: formattedCompanies,
+        },
+      });
+    } catch (error) {
+      console.log("EXACT ERROR:", error);
+      logger.error("Universal search error", {
+        query: searchQuery,
+        error: error.message,
+        stack: error.stack,
+      });
+      return next(new AppError("Search failed", 500));
+    }
   }
 );
