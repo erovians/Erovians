@@ -18,6 +18,8 @@ const Step1 = ({
   showOtpField,
   isLoadingOtp,
   isLoadingVerify,
+  detectedCountry, // ✅ NEW
+  businessIdConfig, // ✅ NEW
   onFormChange,
   onOtpChange,
   onSendOtp,
@@ -31,7 +33,7 @@ const Step1 = ({
         <div className="flex rounded-md overflow-hidden flex-col sm:flex-row">
           <PhoneInput
             international
-            defaultCountry="IN"
+            defaultCountry={detectedCountry || "IN"} // ✅ UPDATED: Dynamic country
             value={formData.mobile}
             onChange={(value) =>
               onFormChange({ target: { name: "mobile", value: value || "" } })
@@ -134,18 +136,23 @@ const Step1 = ({
         )}
       </div>
 
-      {/* GSTIN */}
+      {/* ✅ UPDATED: Dynamic Business ID Field */}
       <div>
         <input
           type="text"
           name="businessId"
-          placeholder="GSTIN (Business ID) *"
+          placeholder={businessIdConfig?.placeholder || "Business ID *"}
           value={formData.businessId}
           onChange={onFormChange}
           className={`w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43] ${
             errors.businessId ? "border-red-500" : "border-gray-300"
           }`}
         />
+        {/* ✅ Show label dynamically */}
+        <p className="text-xs text-gray-500 mt-1">
+          {businessIdConfig?.label || "Business ID"} - Example:{" "}
+          {businessIdConfig?.example || "N/A"}
+        </p>
         {errors.businessId && (
           <p className="text-red-500 text-sm mt-1">{errors.businessId}</p>
         )}

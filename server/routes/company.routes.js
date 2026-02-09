@@ -1,36 +1,56 @@
 import express from "express";
 import {
   registerCompany,
+  updateCompany,
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { allowRoles, verifyUser } from "../middleware/auth.middleware.js";
 import {
   uploadCertificate,
   getCertificates,
   deleteCertificate,
 } from "../controller/certificate.controller.js";
-import { isAuthenticated } from "../middleware/buyer/auth.middleware.js";
-import { validateUser } from "../controller/auth.controller.js";
+import {
+  isAuthenticated,
+  authorizeRoles,
+} from "../middleware/buyer/auth.middleware.js";
 
 const router = express.Router();
 
+// Company routes
 router.post(
   "/register",
   isAuthenticated,
+  authorizeRoles("seller"),
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
     { name: "companyVideo", maxCount: 1 },
+    { name: "registration_documents", maxCount: 5 }, // ✅ NEW
   ]),
   registerCompany
 );
+
+router.patch(
+  "/update",
+  isAuthenticated,
+  authorizeRoles("seller"),
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "companyPhotos", maxCount: 10 },
+    { name: "companyVideo", maxCount: 1 },
+    { name: "registration_documents", maxCount: 5 }, // ✅ NEW
+  ]),
+  updateCompany
+);
+
 router.get("/details", isAuthenticated, getCompanyDetails);
 
+// Certificate routes
 router.post(
   "/upload",
   isAuthenticated,
-  allowRoles("seller"),
+  authorizeRoles("seller"),
   upload.single("file"),
   uploadCertificate
 );

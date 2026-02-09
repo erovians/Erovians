@@ -1,4 +1,7 @@
 import "./App.css";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { detectCountry } from "@/redux/slice/countrySlice";
 import Navbar from "./common/Navbar";
 import Footer from "@/common/Footer";
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -33,7 +36,6 @@ import ReviewSection from "./pages/SellerDashboard/common/SellerReviews";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Inquiry from "./pages/SellerDashboard/components/Messages/Inquiry/Inquiry";
-// import Inquries from "./pages/SellerDashboard/components/Messages/Inquries";
 import InquiryDetail from "./pages/SellerDashboard/components/Messages/InquiryDetail";
 import ChatApp from "./pages/chat/ChatApp";
 import Teams from "./pages/SellerDashboard/components/Teams/Teams";
@@ -54,6 +56,12 @@ function NotFound() {
 
 function App() {
   const location = useLocation();
+  const dispatch = useDispatch(); // ✅ NEW
+
+  // ✅ NEW: Detect country on app load
+  useEffect(() => {
+    dispatch(detectCountry());
+  }, [dispatch]);
 
   // Public site routes where Navbar/Footer may be hidden
   const hideNavbarRoutes = ["/login", "/start-selling"];
@@ -105,7 +113,6 @@ function App() {
             <Route path="products/add" element={<AddProducts />} />
             <Route path="products/list" element={<ListProducts />} />
             <Route path="product/:id" element={<ProductDetails />} />
-            {/* /sellerdashboard/products/categories */}
             <Route path="products/categories" element={<Categories />} />
 
             {/* messages */}

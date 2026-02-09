@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Info } from "lucide-react";
+import { Info, FileText, Upload } from "lucide-react";
 
 const InfoTooltip = ({ text }) => (
   <div className="relative flex items-center group">
@@ -15,6 +15,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
   const logoInputRef = useRef(null);
   const photosInputRef = useRef(null);
   const videoInputRef = useRef(null);
+  const docsInputRef = useRef(null); // ✅ NEW
   const MAX_DESC_LENGTH = 4000;
 
   useEffect(() => {
@@ -37,7 +38,11 @@ export default function StepTwo({ formData, setFormData, errors }) {
     if (name === "logo") {
       const file = files[0];
       setFormData((prev) => ({ ...prev, logo: file }));
-    } else if (name === "companyPhotos" || name === "companyVideos") {
+    } else if (
+      name === "companyPhotos" ||
+      name === "companyVideos" ||
+      name === "registration_documents" // ✅ NEW
+    ) {
       const arr = Array.from(files);
       setFormData((prev) => ({
         ...prev,
@@ -62,18 +67,23 @@ export default function StepTwo({ formData, setFormData, errors }) {
     setFormData((prev) => ({ ...prev, companyPhotos: [] }));
   };
 
+  const removeAllDocs = () => {
+    setFormData((prev) => ({ ...prev, registration_documents: [] }));
+  };
+
   const removeLogo = () => {
     setFormData((prev) => ({ ...prev, logo: null }));
     if (logoInputRef.current) logoInputRef.current.value = "";
   };
 
-  const formRowClass = "flex flex-col sm:flex-row items-start py-4 border-b";
+  const formRowClass =
+    "flex flex-col sm:flex-row items-start py-4 border-b last:border-b-0";
   const labelClass =
     "w-full sm:w-1/4 text-sm font-medium text-gray-600 sm:text-right pr-4 mb-2 sm:mb-0";
   const controlClass = "w-full sm:w-3/4 flex flex-col";
 
   return (
-    <div>
+    <div className="space-y-0">
       {/* Company Logo */}
       <div className={formRowClass}>
         <label className={`${labelClass} pt-1`}>
@@ -85,14 +95,14 @@ export default function StepTwo({ formData, setFormData, errors }) {
               <img
                 src={logoPreview}
                 alt="Logo Preview"
-                className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 object-cover border border-gray-500 rounded-md"
+                className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 object-cover border border-gray-500 rounded-md"
               />
             )}
             <div className="flex flex-col items-start gap-2">
               <button
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
-                className="px-4 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit"
+                className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit transition-colors"
               >
                 Browse
               </button>
@@ -100,7 +110,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
                 ref={logoInputRef}
                 type="file"
                 name="logo"
-                accept="image/jpeg, image/png"
+                accept="image/jpeg, image/png, image/jpg"
                 onChange={handleFileChange}
                 className="hidden"
               />
@@ -112,7 +122,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
                 <button
                   type="button"
                   onClick={removeLogo}
-                  className="text-blue-400 text-xs "
+                  className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
                 >
                   Remove
                 </button>
@@ -137,12 +147,12 @@ export default function StepTwo({ formData, setFormData, errors }) {
             value={formData.companyDescription || ""}
             onChange={handleInputChange}
             name="companyDescription"
-            className={`w-full h-40 px-3 py-2 text-sm border rounded-md focus:outline-none focus:border-navyblue ${
+            className={`w-full h-32 sm:h-40 px-3 py-2 text-sm border rounded-md focus:outline-none focus:border-navyblue transition-colors ${
               errors.companyDescription ? "border-red-500" : "border-gray-300"
             }`}
           />
           <p className="text-xs text-gray-500 mt-1 text-right">
-            Remaining:
+            Remaining:{" "}
             {MAX_DESC_LENGTH - (formData.companyDescription?.length || 0)}
           </p>
           {errors.companyDescription && (
@@ -163,7 +173,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
             <button
               type="button"
               onClick={() => photosInputRef.current?.click()}
-              className="px-4 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50"
+              className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
             >
               Browse
             </button>
@@ -172,14 +182,14 @@ export default function StepTwo({ formData, setFormData, errors }) {
               type="file"
               multiple
               name="companyPhotos"
-              accept="image/jpeg, image/png"
+              accept="image/jpeg, image/png, image/jpg"
               onChange={handleFileChange}
               className="hidden"
             />
             <button
               type="button"
               onClick={removeAllPhotos}
-              className="text-blue-400 text-xs"
+              className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
             >
               Remove All
             </button>
@@ -206,7 +216,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
                       <button
                         type="button"
                         onClick={() => removeFile("companyPhotos", index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         ×
                       </button>
@@ -228,7 +238,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
           <button
             type="button"
             onClick={() => videoInputRef.current?.click()}
-            className="px-4 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit"
+            className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit transition-colors"
           >
             Upload Video
           </button>
@@ -262,7 +272,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
                       <button
                         type="button"
                         onClick={() => removeFile("companyVideos", index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         ×
                       </button>
@@ -274,40 +284,82 @@ export default function StepTwo({ formData, setFormData, errors }) {
         </div>
       </div>
 
-      {/* Trade Shows */}
-      <div className={formRowClass} style={{ borderBottom: "none" }}>
+      {/* ✅ NEW: Registration Documents */}
+      <div className={formRowClass}>
         <label className={`${labelClass} pt-1`}>
-          <span className="text-red-500">*</span> Have you attended or planned
-          to attend any trade shows?
+          <span className="text-red-500">*</span> Registration Documents:
         </label>
         <div className={controlClass}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="attendedTradeShows"
-                value="YES"
-                checked={formData.attendedTradeShows === "YES"}
-                onChange={handleInputChange}
-                className="form-radio"
-              />
-              <span className="text-sm">YES</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="attendedTradeShows"
-                value="NO"
-                checked={formData.attendedTradeShows === "NO"}
-                onChange={handleInputChange}
-                className="form-radio"
-              />
-              <span className="text-sm">NO</span>
-            </label>
+          <div className="flex flex-wrap gap-2 items-center">
+            <button
+              type="button"
+              onClick={() => docsInputRef.current?.click()}
+              className="px-4 py-2 text-sm bg-navyblue text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Upload size={16} />
+              Upload Documents
+            </button>
+            <input
+              ref={docsInputRef}
+              type="file"
+              multiple
+              name="registration_documents"
+              accept="application/pdf, image/jpeg, image/png, image/jpg"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            {formData.registration_documents?.length > 0 && (
+              <button
+                type="button"
+                onClick={removeAllDocs}
+                className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
+              >
+                Remove All
+              </button>
+            )}
           </div>
-          {errors.attendedTradeShows && (
-            <p className="text-red-500 text-sm mt-2">
-              {errors.attendedTradeShows}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 mt-2 text-xs text-gray-500">
+            <span>5MB max per file. PDF, JPEG, PNG format.</span>
+            <InfoTooltip text="Upload your company registration certificate, VAT certificate, or other official documents." />
+          </div>
+
+          {/* Document List */}
+          {Array.isArray(formData.registration_documents) &&
+            formData.registration_documents.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {formData.registration_documents.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg group hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <FileText className="text-navyblue shrink-0" size={20} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-700 truncate">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {(file.size / 1024).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        removeFile("registration_documents", index)
+                      }
+                      className="ml-2 text-red-500 hover:text-red-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          {errors.registration_documents && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.registration_documents}
             </p>
           )}
         </div>

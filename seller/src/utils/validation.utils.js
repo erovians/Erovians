@@ -1,3 +1,5 @@
+import { validateBusinessIdByCountry } from "./country.utils"; // ✅ NEW
+
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) return "Email is required.";
@@ -13,12 +15,9 @@ export const validateMobile = (mobile) => {
   return "";
 };
 
-// ✅ GSTIN validation (basic format check)
-export const validatebusinessId = (businessId) => {
-  const gstinRegex = /^[0-9A-Z]{15}$/;
-  if (!businessId) return "GSTIN is required.";
-  if (!gstinRegex.test(businessId)) return "Please enter a valid GSTIN.";
-  return "";
+// ✅ UPDATED: Now accepts country parameter
+export const validatebusinessId = (businessId, country = "IN") => {
+  return validateBusinessIdByCountry(businessId, country);
 };
 
 // ✅ Password validation

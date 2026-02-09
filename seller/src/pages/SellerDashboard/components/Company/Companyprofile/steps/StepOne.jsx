@@ -11,6 +11,7 @@ import {
   DollarSign,
   CreditCard,
   Globe,
+  FileText,
 } from "lucide-react";
 import {
   Select,
@@ -41,9 +42,6 @@ const TRADE_CAPABILITIES = [
   "Dropshipping",
 ];
 
-// ============================================================================
-// CONSTANTS - Extract for maintainability and reusability
-// ============================================================================
 const CURRENCIES = [
   "USD",
   "EUR",
@@ -94,6 +92,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 const DEFAULT_FORM_DATA = {
   companyName: "",
+  company_registration_number: "", // ✅ NEW
   legalowner: "",
   locationOfRegistration: "",
   companyRegistrationYear: "",
@@ -109,24 +108,17 @@ const DEFAULT_FORM_DATA = {
   acceptedCurrency: [],
   acceptedPaymentType: [],
   languageSpoken: [],
-
-  // 🔥 NEW FIELDS
   totalEmployees: "",
   businessType: "",
-
   factorySize: "",
   factoryCountryOrRegion: "",
   contractManufacturing: false,
   numberOfProductionLines: "",
   annualOutputValue: "",
-
   rdTeamSize: "",
   tradeCapabilities: [],
 };
 
-// ============================================================================
-// UTILITY FUNCTIONS - Pure functions for better testability
-// ============================================================================
 const generateYearOptions = (range, currentYear) => {
   return Array.from({ length: range }, (_, i) => currentYear - i);
 };
@@ -147,24 +139,6 @@ const extractFieldErrors = (errors, prefix) => {
   return fieldErrors;
 };
 
-// ============================================================================
-// SUB-COMPONENTS - Better separation of concerns
-// ============================================================================
-
-/**
- * Reusable form field with icon, label, and error handling
- * @param {Object} props
- * @param {string} props.name - Field name
- * @param {string} props.value - Field value
- * @param {Function} props.onChange - Change handler
- * @param {string} props.label - Field label
- * @param {React.Component} props.icon - Icon component
- * @param {string} [props.error] - Error message
- * @param {string} [props.hint] - Helper text
- * @param {boolean} [props.required=false] - Is field required
- * @param {string} [props.type="text"] - Input type
- * @param {string} [props.placeholder=""] - Placeholder text
- */
 const FormField = ({
   name,
   value,
@@ -222,18 +196,6 @@ const FormField = ({
   </div>
 );
 
-/**
- * Checkbox group with multi-select functionality
- * @param {Object} props
- * @param {string[]} props.options - Available options
- * @param {string[]} props.selected - Selected values
- * @param {Function} props.onChange - Change handler
- * @param {string} props.label - Group label
- * @param {React.Component} props.icon - Icon component
- * @param {string} [props.hint] - Helper text
- * @param {string} [props.error] - Error message
- * @param {string} [props.gridCols] - Grid column classes
- */
 const CheckboxGroup = ({
   options,
   selected,
@@ -242,7 +204,7 @@ const CheckboxGroup = ({
   icon: Icon,
   hint,
   error,
-  gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
+  gridCols = "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
 }) => (
   <div className="mb-6">
     <label className="font-medium text-gray-700 mb-3 flex items-center gap-2">
@@ -288,19 +250,6 @@ const CheckboxGroup = ({
   </div>
 );
 
-/**
- * Dynamic array field for adding/removing items
- * @param {Object} props
- * @param {string[]} props.items - Array items
- * @param {Function} props.onChange - Change handler
- * @param {string} props.label - Field label
- * @param {React.Component} props.icon - Icon component
- * @param {string} [props.hint] - Helper text
- * @param {string} [props.error] - General error message
- * @param {Object} [props.errors] - Per-item errors
- * @param {string} [props.placeholder] - Placeholder text
- * @param {"input"|"select"} [props.type="input"] - Field type
- */
 const DynamicArrayField = ({
   items,
   onChange,
@@ -438,23 +387,11 @@ const DynamicArrayField = ({
   );
 };
 
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
-
-/**
- * Step One of company registration form
- * @param {Object} props
- * @param {Object} props.formData - Form data object
- * @param {Function} props.setFormData - State setter function
- * @param {Object} props.errors - Validation errors
- */
 const StepOne = ({
   formData = DEFAULT_FORM_DATA,
   setFormData = () => {},
   errors = {},
 }) => {
-  // Merge with defaults to prevent undefined errors
   const safeFormData = useMemo(
     () => ({
       ...DEFAULT_FORM_DATA,
@@ -463,7 +400,6 @@ const StepOne = ({
         ...DEFAULT_FORM_DATA.address,
         ...(formData?.address || {}),
       },
-      // Ensure arrays are never empty
       mainCategory:
         formData?.mainCategory?.length > 0 ? formData.mainCategory : [""],
       mainProduct:
@@ -472,15 +408,10 @@ const StepOne = ({
     [formData]
   );
 
-  // Memoize year options for performance
   const yearOptions = useMemo(
     () => generateYearOptions(YEAR_RANGE, CURRENT_YEAR),
     []
   );
-
-  // ============================================================================
-  // EVENT HANDLERS - All memoized to prevent unnecessary re-renders
-  // ============================================================================
 
   const handleChange = useCallback(
     (e) => {
@@ -521,7 +452,6 @@ const StepOne = ({
     [setFormData]
   );
 
-  // Process errors for dynamic fields
   const categoryErrors = useMemo(
     () => extractFieldErrors(errors, "mainCategory."),
     [errors]
@@ -532,27 +462,23 @@ const StepOne = ({
     [errors]
   );
 
-  // ============================================================================
-  // RENDER
-  // ============================================================================
-
   return (
     <div className="max-w-full mx-auto rounded-2xl">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6 md:gap-8">
         {/* Basic Information Card */}
         <section
-          className="bg-white rounded-xl p-2 md:p-6 shadow-sm"
+          className="bg-white rounded-xl p-4 md:p-6 shadow-sm"
           aria-labelledby="basic-info-heading"
         >
           <h3
             id="basic-info-heading"
-            className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2"
+            className="text-base md:text-lg font-semibold text-gray-800 mb-4 md:mb-5 flex items-center gap-2"
           >
             <Building className="text-navyblue" size={22} aria-hidden="true" />
             Basic Information
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <FormField
               name="companyName"
               value={safeFormData.companyName}
@@ -561,6 +487,18 @@ const StepOne = ({
               icon={User}
               error={errors.companyName}
               hint="Enter your registered business or trading name."
+              required
+            />
+
+            {/* ✅ NEW: Company Registration Number */}
+            <FormField
+              name="company_registration_number"
+              value={safeFormData.company_registration_number}
+              onChange={handleChange}
+              label="Company Registration Number"
+              icon={FileText}
+              error={errors.company_registration_number}
+              hint="Enter your VAT, SIRET, BCE, or RC number."
               required
             />
 
@@ -647,12 +585,12 @@ const StepOne = ({
 
         {/* Address Card */}
         <section
-          className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+          className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100"
           aria-labelledby="address-heading"
         >
           <h3
             id="address-heading"
-            className="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2"
+            className="text-base md:text-lg font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2"
           >
             <MapPin className="text-navyblue" size={22} aria-hidden="true" />
             Company Operational Address{" "}
@@ -661,7 +599,7 @@ const StepOne = ({
             </span>
           </h3>
 
-          <div className="mb-6">
+          <div className="mb-4 md:mb-6">
             <CountryStateSelect
               formData={safeFormData}
               setFormData={setFormData}
@@ -669,7 +607,7 @@ const StepOne = ({
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <FormField
               name="street"
               value={safeFormData.address.street || ""}
@@ -710,12 +648,12 @@ const StepOne = ({
 
         {/* Products Card */}
         <section
-          className="bg-white rounded-xl p-6 shadow-sm"
+          className="bg-white rounded-xl p-4 md:p-6 shadow-sm"
           aria-labelledby="products-heading"
         >
           <h3
             id="products-heading"
-            className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2"
+            className="text-base md:text-lg font-semibold text-gray-800 mb-4 md:mb-5 flex items-center gap-2"
           >
             <Layers className="text-navyblue" size={22} aria-hidden="true" />
             Products & Categories
@@ -737,7 +675,7 @@ const StepOne = ({
             onChange={(items) => handleArrayFieldChange("mainProduct", items)}
             label="Main Products"
             icon={Building}
-            hint="Enter your top-selling or key products relevant to your category. eg( natural stone - marble, ceramic & tiels - cermaic)."
+            hint="Enter your top-selling or key products relevant to your category. eg( natural stone - marble, ceramic & tiles - ceramic)."
             error={errors.mainProduct}
             errors={productErrors}
             placeholder="Product"
@@ -745,14 +683,14 @@ const StepOne = ({
           />
         </section>
 
-        {/* ********************************************************************************* */}
-        <section className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+        {/* Company Overview */}
+        <section className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+          <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-5 flex items-center gap-2">
             <Building className="text-navyblue" size={22} />
             Company Overview
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <FormField
               name="totalEmployees"
               value={safeFormData.totalEmployees}
@@ -789,13 +727,14 @@ const StepOne = ({
           </div>
         </section>
 
-        <section className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+        {/* Production Capacity */}
+        <section className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+          <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-5 flex items-center gap-2">
             <Layers className="text-navyblue" size={22} />
             Production Capacity
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <FormField
               name="factorySize"
               value={safeFormData.factorySize}
@@ -832,7 +771,7 @@ const StepOne = ({
             />
           </div>
 
-          <label className="flex items-center gap-3 mt-4">
+          <label className="flex items-center gap-3 mt-4 cursor-pointer">
             <input
               type="checkbox"
               checked={safeFormData.contractManufacturing}
@@ -842,6 +781,7 @@ const StepOne = ({
                   contractManufacturing: e.target.checked,
                 }))
               }
+              className="w-4 h-4"
             />
             <span className="text-sm text-gray-700">
               Contract Manufacturing Available
@@ -849,8 +789,9 @@ const StepOne = ({
           </label>
         </section>
 
-        <section className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+        {/* R&D */}
+        <section className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+          <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-5 flex items-center gap-2">
             <User className="text-navyblue" size={22} />
             Research & Development
           </h3>
@@ -865,8 +806,9 @@ const StepOne = ({
           />
         </section>
 
-        <section className="bg-white rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+        {/* Trade Capabilities */}
+        <section className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+          <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-5 flex items-center gap-2">
             <Globe className="text-navyblue" size={22} />
             Trade Capabilities
           </h3>
@@ -883,16 +825,14 @@ const StepOne = ({
           />
         </section>
 
-        {/* ********************************************************************************* */}
-
-        {/* Payment & Languages */}
+        {/* Payment & Communication */}
         <section
-          className="bg-white rounded-xl p-6 shadow-sm"
+          className="bg-white rounded-xl p-4 md:p-6 shadow-sm"
           aria-labelledby="payment-heading"
         >
           <h3
             id="payment-heading"
-            className="text-lg font-semibold text-gray-800 mb-5 flex items-center gap-2"
+            className="text-base md:text-lg font-semibold text-gray-800 mb-4 md:mb-5 flex items-center gap-2"
           >
             <CreditCard
               className="text-navyblue"

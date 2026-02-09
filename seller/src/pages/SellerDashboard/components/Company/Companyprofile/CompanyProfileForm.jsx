@@ -49,10 +49,8 @@ export default function CompanyProfileForm() {
   const { company, loading, error, success, message } = useSelector(
     (state) => state.company
   );
-  const { seller, loading: sellerLoading } = useSelector(
-    (state) => state.seller
-  );
-  console.log("this is seller", seller);
+  const { seller } = useSelector((state) => state.seller);
+
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [formData, setFormData] = useState(() => {
@@ -62,6 +60,7 @@ export default function CompanyProfileForm() {
       : {
           // Basic Info
           companyName: "",
+          company_registration_number: "", // ✅ NEW
           legalowner: "",
           locationOfRegistration: "",
           companyRegistrationYear: "",
@@ -91,6 +90,7 @@ export default function CompanyProfileForm() {
           logo: null,
           companyPhotos: [],
           companyVideos: [],
+          registration_documents: [], // ✅ NEW
         };
   });
 
@@ -124,6 +124,8 @@ export default function CompanyProfileForm() {
       setFormData({
         // Basic Info
         companyName: c.companyBasicInfo?.companyName || "",
+        company_registration_number:
+          c.companyBasicInfo?.company_registration_number || "", // ✅ NEW
         legalowner: c.companyBasicInfo?.legalowner || "",
         locationOfRegistration:
           c.companyBasicInfo?.locationOfRegistration || "",
@@ -160,13 +162,20 @@ export default function CompanyProfileForm() {
         logoUrl: c.companyIntro?.logo || "",
         companyPhotosUrl: c.companyIntro?.companyPhotos || [],
         companyVideosUrl: c.companyIntro?.companyVideos || [],
+        registrationDocsUrl: c.companyBasicInfo?.registration_documents || [], // ✅ NEW
       });
     }
   }, [company]);
 
   // ✅ Save to localStorage
   useEffect(() => {
-    const { logo, companyPhotos, companyVideos, ...safeData } = formData;
+    const {
+      logo,
+      companyPhotos,
+      companyVideos,
+      registration_documents,
+      ...safeData
+    } = formData;
     localStorage.setItem("companyFormData", JSON.stringify(safeData));
   }, [formData]);
 
@@ -245,6 +254,10 @@ export default function CompanyProfileForm() {
 
       // Basic Info
       form.append("companyName", formData.companyName);
+      form.append(
+        "company_registration_number",
+        formData.company_registration_number
+      ); // ✅ NEW
       form.append("legalowner", formData.legalowner);
       form.append("locationOfRegistration", formData.locationOfRegistration);
       form.append("companyRegistrationYear", formData.companyRegistrationYear);
@@ -293,22 +306,31 @@ export default function CompanyProfileForm() {
       // Company Intro
       form.append("companyDescription", formData.companyDescription);
 
-      // Files
+      // Files - Logo
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
       }
 
+      // Files - Photos
       if (Array.isArray(formData.companyPhotos)) {
         formData.companyPhotos.forEach((photo) => {
           if (photo instanceof File) form.append("companyPhotos", photo);
         });
       }
 
+      // Files - Video
       if (
         Array.isArray(formData.companyVideos) &&
         formData.companyVideos[0] instanceof File
       ) {
         form.append("companyVideo", formData.companyVideos[0]);
+      }
+
+      // ✅ NEW: Files - Registration Documents
+      if (Array.isArray(formData.registration_documents)) {
+        formData.registration_documents.forEach((doc) => {
+          if (doc instanceof File) form.append("registration_documents", doc);
+        });
       }
 
       // Dispatch appropriate action
@@ -328,6 +350,7 @@ export default function CompanyProfileForm() {
         // Navigate to the step with errors
         if (
           formatted["companyName"] ||
+          formatted["company_registration_number"] ||
           formatted["address.street"] ||
           formatted["acceptedCurrency"]
         ) {

@@ -58,13 +58,15 @@ const SellerSignUp = () => {
   const [modalType, setModalType] = useState("info");
 
   const steps = [
-    { id: 1, title: "EMAIL & GST" },
+    { id: 1, title: "EMAIL & BUSINESS ID" },
     { id: 2, title: "PASSWORD" },
     { id: 3, title: "DETAILS" },
   ];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // ✅ Seller state
   const {
     isLoadingOtp,
     isLoadingVerify,
@@ -75,6 +77,18 @@ const SellerSignUp = () => {
     otpStatus,
     isMobileVerified,
   } = useSelector((state) => state.seller);
+
+  // ✅ NEW: Country state
+  const { detectedCountry, businessIdConfig } = useSelector(
+    (state) => state.country
+  );
+
+  // ✅ NEW: Set country in formData when detected
+  useEffect(() => {
+    if (detectedCountry && !formData.seller_country) {
+      setFormData((prev) => ({ ...prev, seller_country: detectedCountry }));
+    }
+  }, [detectedCountry]);
 
   // ======================== HANDLE FORM CHANGE ========================
   const handleChange = (e) => {
@@ -131,7 +145,11 @@ const SellerSignUp = () => {
       newErrors.mobile = "Mobile number is required";
     }
 
-    const businessIdError = validatebusinessId(formData.businessId);
+    // ✅ UPDATED: Validate with country
+    const businessIdError = validatebusinessId(
+      formData.businessId,
+      formData.seller_country || detectedCountry || "IN"
+    );
     if (businessIdError) newErrors.businessId = businessIdError;
 
     if (!isMobileVerified) {
@@ -143,12 +161,14 @@ const SellerSignUp = () => {
       return;
     }
 
+    // ✅ UPDATED: Pass seller_country to backend
     const result = await dispatch(
       checkUnique({
         email: formData.email,
         businessId: formData.businessId,
         mobile: formData.mobile,
-        seller_status: "professional", // Assuming GSTIN means professional
+        seller_status: "professional",
+        seller_country: formData.seller_country || detectedCountry || "IN", // ✅ NEW
       })
     );
 
@@ -272,7 +292,7 @@ const SellerSignUp = () => {
     finalData.append("sellername", formData.sellername.trim());
     finalData.append("seller_status", formData.seller_status);
     finalData.append("seller_address", formData.seller_address.trim());
-    finalData.append("seller_country", formData.seller_country.trim());
+    finalData.append("seller_country", formData.seller_country.trim()); // ✅ Correct country
 
     // Professional-specific fields
     if (formData.seller_status === "professional") {
@@ -354,6 +374,8 @@ const SellerSignUp = () => {
               showOtpField={showOtpField}
               isLoadingOtp={isLoadingOtp}
               isLoadingVerify={isLoadingVerify}
+              detectedCountry={detectedCountry} // ✅ NEW
+              businessIdConfig={businessIdConfig} // ✅ NEW
               onFormChange={handleChange}
               onOtpChange={setOtp}
               onSendOtp={handleSendOtp}

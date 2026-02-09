@@ -14,7 +14,7 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
     });
 
-    logger.info("MongoDB Connected"); // ✅ Winston use karo
+    logger.info("MongoDB Connected", conn); // ✅ Winston use karo
   } catch (error) {
     logger.error(`MongoDB Connection Failed: ${error.message}`); // ✅ Winston use karo
     process.exit(1);

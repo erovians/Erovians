@@ -1,28 +1,137 @@
 import {
   registerCompanyService,
+  updateCompanyService,
   getCompanyDetailsService,
 } from "../services/company.service.js";
 import CompanyDetails from "../models/company.model.js";
 import Seller from "../models/sellerSingnup.model.js";
 import { cache } from "../services/cache.service.js";
 
+// ======================== REGISTER COMPANY ========================
 export const registerCompany = async (req, res) => {
   try {
+    const userId = req.user.id;
+
+    // 1. Find seller
+    const seller = await Seller.findOne({ userId });
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller account not found",
+      });
+    }
+
+    // 2. Check if company already exists
+    const existingCompany = await CompanyDetails.findOne({
+      sellerId: seller._id,
+    });
+    if (existingCompany) {
+      return res.status(409).json({
+        success: false,
+        message: "Company already exists. Use update endpoint.",
+      });
+    }
+
+    // 3. Register company
+    const company = await registerCompanyService(
+      req.body,
+      req.files,
+      seller._id
+    );
+
+    // 4. Update seller status to professional (if individual)
+    if (seller.seller_status === "individual") {
+      seller.seller_status = "professional";
+      seller.seller_company_number = req.body.company_registration_number;
+      await seller.save();
+    }
+
+    // 5. Cache company data
+    await cache.set(`company:${company._id}`, company, 3600);
+
+    res.status(201).json({
+      success: true,
+      message: "Company registered successfully",
+      company,
+    });
   } catch (error) {
     console.error("RegisterCompany Error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to register company",
+    });
   }
 };
 
+// ======================== UPDATE COMPANY ========================
+export const updateCompany = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 1. Find seller
+    const seller = await Seller.findOne({ userId });
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller account not found",
+      });
+    }
+
+    // 2. Check if company exists
+    const existingCompany = await CompanyDetails.findOne({
+      sellerId: seller._id,
+    });
+    if (!existingCompany) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found. Please register first.",
+      });
+    }
+
+    // 3. Update company
+    const updatedCompany = await updateCompanyService(
+      req.body,
+      req.files,
+      seller._id
+    );
+
+    // 4. Update seller status if needed
+    if (seller.seller_status === "individual") {
+      seller.seller_status = "professional";
+      if (req.body.company_registration_number) {
+        seller.seller_company_number = req.body.company_registration_number;
+      }
+      await seller.save();
+    }
+
+    // 5. Clear and update cache
+    await cache.del(`company:${updatedCompany._id}`);
+    await cache.set(`company:${updatedCompany._id}`, updatedCompany, 3600);
+
+    res.status(200).json({
+      success: true,
+      message: "Company updated successfully",
+      company: updatedCompany,
+    });
+  } catch (error) {
+    console.error("UpdateCompany Error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update company",
+    });
+  }
+};
+
+// ======================== GET COMPANY ========================
 export const getCompanyDetails = async (req, res) => {
   try {
     let sellerId;
     let companyId;
 
     if (req.user.role.includes("seller")) {
-      // ✅ role array check
       const userId = req.user.id;
 
-      // ✅ User ID se Seller find karo
+      // Find seller by userId
       const seller = await Seller.findOne({ userId });
 
       if (!seller) {
@@ -57,6 +166,7 @@ export const getCompanyDetails = async (req, res) => {
 
     const cacheKey = `company:${companyId}`;
 
+    // Check cache
     const cached = await cache.get(cacheKey);
     if (cached) {
       console.log("🔥 Company Redis HIT:", cacheKey);
@@ -67,6 +177,7 @@ export const getCompanyDetails = async (req, res) => {
       });
     }
 
+    // Fetch from DB
     const companyData = await getCompanyDetailsService({ sellerId, companyId });
 
     if (!companyData) {
@@ -76,6 +187,7 @@ export const getCompanyDetails = async (req, res) => {
       });
     }
 
+    // Set cache
     await cache.set(cacheKey, companyData, 3600);
 
     return res.status(200).json({
