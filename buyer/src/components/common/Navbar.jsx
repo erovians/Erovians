@@ -81,8 +81,9 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("EN");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
-  // Refs for click outside detection
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -124,7 +125,13 @@ export default function Header() {
     }
   }, [isSidebarOpen]);
 
-  // Debounced search
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language") || "EN";
+    const savedCurrency = localStorage.getItem("currency") || "USD";
+    setSelectedLanguage(savedLanguage.toUpperCase());
+    setSelectedCurrency(savedCurrency.toUpperCase());
+  }, []);
+
   useEffect(() => {
     if (searchQuery.length < 2) {
       setShowDropdown(false);
@@ -139,7 +146,6 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, [searchQuery, dispatch]);
 
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -156,7 +162,6 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ESC key handler
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
@@ -184,9 +189,7 @@ export default function Header() {
     closeSidebar();
   };
 
-  // ✅ Handle suggestion click with mouseDown instead of click
   const handleSuggestionClick = (type, id) => {
-    console.log("Clicked:", type, id); // Debug log
     setShowDropdown(false);
     setSearchQuery("");
 
@@ -203,9 +206,11 @@ export default function Header() {
 
   return (
     <>
+      {/* Top Bar - Desktop Only */}
       <div className="bg-navyblue text-white text-sm hidden md:block">
         <div className="max-w-full mx-auto px-6">
           <div className="flex items-center justify-between h-10">
+            {/* Left Side */}
             <div className="flex items-center gap-6">
               <Link
                 to="/how-it-works"
@@ -222,7 +227,31 @@ export default function Header() {
               </Link>
             </div>
 
+            {/* Right Side */}
             <div className="flex items-center gap-6">
+              {/* Language & Currency Selector */}
+              <button
+                onClick={() => setIsLanguageModalOpen(true)}
+                className="hover:text-gray-300 transition-colors flex items-center gap-2"
+              >
+                <Globe size={14} />
+                <span className="font-medium">
+                  {selectedLanguage} | {selectedCurrency}
+                </span>
+              </button>
+
+              {/* Not Logged In - Become A Seller */}
+              {!isAuthenticated && (
+                <Link
+                  to="/seller-registration"
+                  className="bg-yellow-500 text-navyblue px-4 py-1 rounded-sm font-semibold hover:bg-yellow-400 transition-colors flex items-center gap-1"
+                >
+                  <Store size={14} />
+                  Become A Seller
+                </Link>
+              )}
+
+              {/* Logged In - Not Seller */}
               {isAuthenticated && !isSeller && (
                 <Link
                   to="/become-seller"
@@ -233,6 +262,7 @@ export default function Header() {
                 </Link>
               )}
 
+              {/* Logged In - Seller */}
               {isAuthenticated && isSeller && (
                 <Link
                   to="https://seller.erovians.com"
@@ -252,17 +282,24 @@ export default function Header() {
       {/* Main Navbar */}
       <nav className="bg-white shadow-sm border-b sticky top-0 left-0 z-50 w-full">
         <div className="max-w-full mx-auto px-6">
-          <div className="flex items-center justify-between h-20 gap-6">
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <Menu size={28} />
-            </button>
+          <div className="flex items-center justify-between h-20 gap-3 md:gap-6">
+            {/* Mobile Menu Button + Logo Container */}
+            <div className="flex items-center gap-3 md:hidden">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
+              >
+                <Menu size={24} />
+              </button>
 
-            {/* Logo */}
-            <div className="flex items-center shrink-0">
+              {/* Mobile Logo - Centered */}
+              <Link to="/" className="flex-1 flex justify-center">
+                <img src={assets.logo} alt="Logo" className="h-8 w-auto" />
+              </Link>
+            </div>
+
+            {/* Desktop Logo */}
+            <div className="hidden md:flex items-center shrink-0">
               <Link to="/">
                 <img
                   src={assets.logo}
@@ -626,8 +663,8 @@ export default function Header() {
               )}
             </div>
 
-            {/* Mobile Icons */}
-            <div className="flex md:hidden items-center gap-2">
+            {/* Mobile Icons - Fixed width for balance */}
+            <div className="flex md:hidden items-center gap-2 w-18 justify-end">
               {isAuthenticated && (
                 <>
                   <Link to="/messages">
@@ -766,7 +803,7 @@ export default function Header() {
         />
       )}
 
-      {/* Mobile Sidebar - Rest of the code remains same */}
+      {/* Mobile Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-70 transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"

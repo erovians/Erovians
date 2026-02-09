@@ -12,7 +12,7 @@
     "seller_dispute_contact": "+919876543213",
     "seller_kyc_hash": "kyc_hash_rajesh_kumar_12345",
     "seller_profile_url": "https://example.com/sellers/rajesh-kumar",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": { "$date": "2025-01-15T09:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-16T10:00:00.000Z" },
@@ -31,7 +31,7 @@
     "seller_dispute_contact": "+919876543223",
     "seller_kyc_hash": "kyc_hash_priya_sharma_54321",
     "seller_profile_url": "https://example.com/sellers/priya-sharma",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": { "$date": "2025-01-20T10:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-21T11:00:00.000Z" },
@@ -50,7 +50,7 @@
     "seller_dispute_contact": "+919876543233",
     "seller_kyc_hash": "kyc_hash_amit_patel_78945",
     "seller_profile_url": "https://example.com/sellers/amit-patel",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": { "$date": "2025-01-25T11:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-26T12:00:00.000Z" },
@@ -69,7 +69,7 @@
     "seller_dispute_contact": "+919876543243",
     "seller_kyc_hash": "kyc_hash_sneha_reddy_45678",
     "seller_profile_url": "https://example.com/sellers/sneha-reddy",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": { "$date": "2025-01-28T12:00:00.000Z" },
     "updatedAt": { "$date": "2025-01-29T13:00:00.000Z" },
@@ -92,7 +92,7 @@
     "seller_dispute_contact": "+919876543253",
     "seller_kyc_hash": "kyc_hash_vikram_singh_45678",
     "seller_profile_url": "https://example.com/sellers/vikram-singh",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": {
       "$date": "2025-02-01T09:00:00.000Z"
@@ -119,7 +119,7 @@
     "seller_dispute_contact": "+919876543263",
     "seller_kyc_hash": "kyc_hash_meera_joshi_98765",
     "seller_profile_url": "https://example.com/sellers/meera-joshi",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": {
       "$date": "2025-02-01T10:00:00.000Z"
@@ -146,7 +146,7 @@
     "seller_dispute_contact": "+919876543273",
     "seller_kyc_hash": "kyc_hash_arjun_mehta_11122",
     "seller_profile_url": "https://example.com/sellers/arjun-mehta",
-    "varificationStatus": "Approved",
+    "varificationStatus": "Pending",
     "status": "active",
     "createdAt": {
       "$date": "2025-02-01T11:00:00.000Z"

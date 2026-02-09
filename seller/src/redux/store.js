@@ -5,7 +5,7 @@ import productReducer from "./slice/productSlice";
 import companyReducer from "./slice/companySlice";
 import certificatesReducer from "./slice/certificatesSlice";
 import inquiryReducer from "./slice/inquirySlice";
-
+import countryReducer from "./slice/countrySlice";
 export const store = configureStore({
   reducer: {
     seller: sellerReducer,
@@ -14,6 +14,7 @@ export const store = configureStore({
     company: companyReducer,
     certificates: certificatesReducer,
     inquiries: inquiryReducer,
+    country: countryReducer,
   },
 });
 

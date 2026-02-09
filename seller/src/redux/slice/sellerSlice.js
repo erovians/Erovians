@@ -34,13 +34,17 @@ export const verifyOtp = createAsyncThunk(
 // ======================== CHECK UNIQUENESS ========================
 export const checkUnique = createAsyncThunk(
   "seller/checkUnique",
-  async ({ email, businessId, mobile, seller_status }, { rejectWithValue }) => {
+  async (
+    { email, businessId, mobile, seller_status, seller_country }, // ✅ ADDED seller_country
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.post("/seller/check-unique", {
         email,
         businessId,
         mobile,
         seller_status,
+        seller_country, // ✅ NEW
       });
       return response.data;
     } catch (error) {

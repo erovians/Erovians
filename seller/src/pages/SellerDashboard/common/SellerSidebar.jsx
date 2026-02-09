@@ -17,19 +17,22 @@ import {
   FileBoxIcon,
   Target,
   Ambulance,
+  Building2,
 } from "lucide-react";
 
 const SellerSidebar = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.sidebar.isOpen);
   const { seller } = useSelector((state) => state.seller);
-  console.log(seller);
 
   const [openMenus, setOpenMenus] = useState({});
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
   };
+
+  // Check if seller is professional or individual
+  const isProfessional = seller?.seller_status === "professional";
 
   // MENU DATA
   const menuItems = [
@@ -64,8 +67,8 @@ const SellerSidebar = () => {
     },
     {
       key: "company Profile",
-      icon: <Store size={20} />,
-      label: "Company Profile",
+      icon: isProfessional ? <Store size={20} /> : <Building2 size={20} />,
+      label: isProfessional ? "Company Profile" : "Setup Company",
       to: "/sellerdashboard/company/profile",
     },
     {
@@ -148,7 +151,7 @@ const SellerSidebar = () => {
     ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* Close button */}
-        <div className="flex items-center justify-end px-4 pt-4 pb-2 border-b border-gray-200">
+        <div className="flex items-center justify-end px-4 pt-4 pb-2 border-gray-200">
           <button
             onClick={() => dispatch(closeSidebar())}
             className="text-gray-600 hover:text-gray-800 focus:outline-none"

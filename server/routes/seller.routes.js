@@ -14,16 +14,18 @@ import {
   authorizeRoles,
   refreshToken,
 } from "../middleware/buyer/auth.middleware.js";
+import { detectCountryFromIP } from "../middleware/buyer/geoip.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
 // ========== PUBLIC ROUTES ==========
-router.post("/send-otp", sendOtp);
+router.post("/send-otp", detectCountryFromIP, sendOtp); // ✅ ADDED middleware
 router.post("/verify-otp", verifyOtp);
-router.post("/check-unique", checkUniqueSeller);
+router.post("/check-unique", detectCountryFromIP, checkUniqueSeller); // ✅ ADDED middleware
 router.post(
   "/register",
+  detectCountryFromIP, // ✅ ADDED middleware
   upload.fields([
     { name: "file", maxCount: 1 },
     { name: "seller_profile", maxCount: 1 },

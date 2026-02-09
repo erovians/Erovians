@@ -1,4 +1,5 @@
 import React from "react";
+import ReactCountryFlag from "react-country-flag"; // ✅ Install: npm install react-country-flag
 
 const Step3 = ({
   formData,
@@ -47,17 +48,35 @@ const Step3 = ({
         )}
       </div>
 
-      {/* Seller Country - COMMON */}
+      {/* ✅ UPDATED: Seller Country - DISABLED with FLAG */}
       <div>
-        <input
-          type="text"
-          name="seller_country"
-          placeholder="Country *"
-          value={formData.seller_country}
-          onChange={onFormChange}
-          disabled={isLoadingRegister}
-          className="w-full px-4 py-3 border rounded-md text-sm outline-none focus:border-[#0c2c43] focus:ring-1 focus:ring-[#0c2c43]"
-        />
+        <label className="block text-xs font-medium text-gray-600 mb-1">
+          Country (Based on verified mobile number)
+        </label>
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+            <ReactCountryFlag
+              countryCode={formData.seller_country || "IN"}
+              svg
+              style={{
+                width: "1.5em",
+                height: "1.5em",
+              }}
+              title={formData.seller_country || "IN"}
+            />
+          </div>
+          <input
+            type="text"
+            name="seller_country"
+            placeholder="Country *"
+            value={formData.seller_country}
+            disabled={true} // ✅ ALWAYS DISABLED
+            className="w-full pl-12 pr-4 py-3 border rounded-md text-sm outline-none bg-gray-50 text-gray-700 cursor-not-allowed"
+          />
+        </div>
+        <p className="text-xs text-gray-500 mt-1">
+          ℹ️ Country is locked based on your verified mobile number
+        </p>
         {errors.seller_country && (
           <p className="text-red-500 text-sm mt-1">{errors.seller_country}</p>
         )}

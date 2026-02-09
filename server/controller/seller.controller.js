@@ -9,12 +9,13 @@ import { generateOTP, getOTPExpiry } from "../utils/buyer/otpUtils.js";
 import { sendOTPSMS } from "../utils/buyer/sendNumberbyTwilio.js";
 import logger from "../config/winston.js";
 import jwt from "jsonwebtoken";
+import { validateBusinessIdByCountry } from "../utils/buyer/country.utils.js";
 
 // ======================== VALIDATORS ========================
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const isValidMobile = (mobile) => /^[+]?[1-9]\d{1,14}$/.test(mobile);
-const isValidGSTIN = (businessId) =>
-  /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(businessId);
+
+// ❌ REMOVED: isValidGSTIN (replaced with country-specific validation)
 
 // ======================== SEND OTP ========================
 export const sendOtp = asyncHandler(async (req, res, next) => {
@@ -114,11 +115,14 @@ export const verifyOtp = asyncHandler(async (req, res, next) => {
 
 // ======================== CHECK UNIQUE SELLER ========================
 export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
-  const { email, mobile, businessId, seller_status } = req.body;
+  const { email, mobile, businessId, seller_status, seller_country } = req.body; // ✅ ADDED seller_country
 
   if (email && !isValidEmail(email)) {
     return next(new AppError("Invalid email format", 400));
   }
+
+  // ✅ NEW: Get country from body OR detected IP (fallback chain)
+  const country = seller_country || req.detectedCountry || "IN";
 
   if (seller_status === "professional") {
     if (!businessId) {
@@ -126,8 +130,11 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
         new AppError("Business ID is required for professional sellers", 400)
       );
     }
-    if (!isValidGSTIN(businessId)) {
-      return next(new AppError("Invalid GSTIN format", 400));
+
+    // ✅ UPDATED: Use country-specific validation
+    const validation = validateBusinessIdByCountry(businessId, country);
+    if (!validation.isValid) {
+      return next(new AppError(validation.message, 400));
     }
   }
 
@@ -157,11 +164,16 @@ export const checkUniqueSeller = asyncHandler(async (req, res, next) => {
       seller_company_number: businessId,
     });
     if (existingSeller) {
-      return next(new AppError("GSTIN already registered", 409));
+      return next(new AppError("Business ID already registered", 409));
     }
   }
 
-  logger.info("Seller uniqueness check passed", { email, mobile, businessId });
+  logger.info("Seller uniqueness check passed", {
+    email,
+    mobile,
+    businessId,
+    country, // ✅ Log country
+  });
 
   res.status(200).json({
     success: true,
@@ -181,7 +193,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     companyregstartionlocation,
     seller_status,
     seller_address,
-    seller_country,
+    seller_country, // ✅ ADDED
   } = req.body;
 
   // Validations
@@ -218,17 +230,20 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if (!seller_country || seller_country.trim().length < 2) {
+  // ✅ NEW: Get country with fallback chain
+  const country = seller_country || req.detectedCountry || "IN";
+
+  if (!country || country.trim().length < 2) {
     return next(new AppError("Seller country is required", 400));
   }
 
   const isProfessional = seller_status.toLowerCase() === "professional";
 
   if (isProfessional) {
-    if (!businessId || !isValidGSTIN(businessId)) {
-      return next(
-        new AppError("Valid GSTIN is required for professional sellers", 400)
-      );
+    // ✅ UPDATED: Use country-specific validation
+    const validation = validateBusinessIdByCountry(businessId, country);
+    if (!validation.isValid) {
+      return next(new AppError(validation.message, 400));
     }
 
     if (!businessName || businessName.trim().length < 2) {
@@ -252,7 +267,10 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     const file = req.files?.file?.[0];
     if (!file) {
       return next(
-        new AppError("GSTIN document is required for professional sellers", 400)
+        new AppError(
+          "Business document is required for professional sellers",
+          400
+        )
       );
     }
 
@@ -297,7 +315,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
       seller_company_number: businessId,
     });
     if (existingSeller) {
-      return next(new AppError("GSTIN already registered", 409));
+      return next(new AppError("Business ID already registered", 409));
     }
   }
 
@@ -347,7 +365,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     seller_status: seller_status.toLowerCase(),
     seller_company_number: isProfessional ? businessId : null,
     seller_address,
-    seller_country: seller_country || "India",
+    seller_country: country, // ✅ Use detected/provided country
     seller_email: email,
     seller_phone: mobile,
     seller_profile_url: profileUrl,
@@ -359,6 +377,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
     userId: user._id,
     sellerId: seller._id,
     seller_status: seller.seller_status,
+    seller_country: seller.seller_country, // ✅ Log country
     roles: user.role,
   });
 
@@ -391,6 +410,7 @@ export const registerSeller = asyncHandler(async (req, res, next) => {
       sellerId: seller._id,
       companyId: company?._id || null,
       seller_status: seller.seller_status,
+      seller_country: seller.seller_country, // ✅ Return country
       roles: user.role,
     },
     nextRoute: "/login",
@@ -431,18 +451,15 @@ export const loginSeller = asyncHandler(async (req, res, next) => {
     userId: user._id,
     email: user.email,
   });
-
+  console.log("this is user", user);
   sendToken(user, 200, res, "Login successful");
 });
 
-// ======================== LOAD SELLER (FIXED) ========================
+// ======================== LOAD SELLER ========================
 export const loadSeller = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
-  console.log("this is load seller of id", userId);
 
-  console.log("Finding seller for userId:", userId, typeof userId);
   const seller = await Seller.findOne({ userId }).lean();
-  console.log("Found seller:", seller);
 
   if (!seller) {
     return next(
@@ -550,6 +567,4 @@ export const logoutSeller = asyncHandler(async (req, res, next) => {
 });
 
 // ======================== UPDATE SELLER PROFILE ========================
-export const updateSellerProfile = asyncHandler(async (req, res, next) => {
-  // TODO: Implement update logic
-});
+export const updateSellerProfile = asyncHandler(async (req, res, next) => {});
