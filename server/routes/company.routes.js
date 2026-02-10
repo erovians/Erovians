@@ -1,15 +1,9 @@
 import express from "express";
 import {
-  registerCompany,
-  updateCompany,
+  saveCompany, // ✅ NEW - Single action
   getCompanyDetails,
 } from "../controller/company.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import {
-  uploadCertificate,
-  getCertificates,
-  deleteCertificate,
-} from "../controller/certificate.controller.js";
 import {
   isAuthenticated,
   authorizeRoles,
@@ -17,44 +11,26 @@ import {
 
 const router = express.Router();
 
-// Company routes
+// ✅ 1. GET Company Details
+router.get(
+  "/details",
+  isAuthenticated,
+  authorizeRoles("seller"),
+  getCompanyDetails
+);
+
+// ✅ 2. SAVE Company (CREATE + UPDATE both)
 router.post(
-  "/register",
+  "/save",
   isAuthenticated,
   authorizeRoles("seller"),
   upload.fields([
     { name: "logo", maxCount: 1 },
     { name: "companyPhotos", maxCount: 10 },
     { name: "companyVideo", maxCount: 1 },
-    { name: "registration_documents", maxCount: 5 }, // ✅ NEW
+    { name: "registration_documents", maxCount: 5 },
   ]),
-  registerCompany
+  saveCompany
 );
-
-router.patch(
-  "/update",
-  isAuthenticated,
-  authorizeRoles("seller"),
-  upload.fields([
-    { name: "logo", maxCount: 1 },
-    { name: "companyPhotos", maxCount: 10 },
-    { name: "companyVideo", maxCount: 1 },
-    { name: "registration_documents", maxCount: 5 }, // ✅ NEW
-  ]),
-  updateCompany
-);
-
-router.get("/details", isAuthenticated, getCompanyDetails);
-
-// Certificate routes
-router.post(
-  "/upload",
-  isAuthenticated,
-  authorizeRoles("seller"),
-  upload.single("file"),
-  uploadCertificate
-);
-router.get("/certificates", isAuthenticated, getCertificates);
-router.delete("/certificates/:id", isAuthenticated, deleteCertificate);
 
 export default router;

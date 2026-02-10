@@ -18,12 +18,13 @@ const Step1 = ({
   showOtpField,
   isLoadingOtp,
   isLoadingVerify,
-  detectedCountry, // ✅ NEW
-  businessIdConfig, // ✅ NEW
+  detectedCountry,
+  businessIdConfig,
   onFormChange,
   onOtpChange,
   onSendOtp,
   onVerifyOtp,
+  onCountryChange, // ✅ NEW PROP
   onSubmit,
 }) => {
   return (
@@ -33,11 +34,12 @@ const Step1 = ({
         <div className="flex rounded-md overflow-hidden flex-col sm:flex-row">
           <PhoneInput
             international
-            defaultCountry={detectedCountry || "IN"} // ✅ UPDATED: Dynamic country
+            defaultCountry={detectedCountry || "IN"}
             value={formData.mobile}
             onChange={(value) =>
               onFormChange({ target: { name: "mobile", value: value || "" } })
             }
+            onCountryChange={onCountryChange} // ✅ COUNTRY CHANGE HANDLER
             placeholder="Enter Mobile Number *"
             disabled={isMobileVerified}
             className="flex-1 phone-input-custom"
@@ -136,7 +138,7 @@ const Step1 = ({
         )}
       </div>
 
-      {/* ✅ UPDATED: Dynamic Business ID Field */}
+      {/* ✅ Dynamic Business ID Field */}
       <div>
         <input
           type="text"
@@ -148,7 +150,7 @@ const Step1 = ({
             errors.businessId ? "border-red-500" : "border-gray-300"
           }`}
         />
-        {/* ✅ Show label dynamically */}
+        {/* ✅ Dynamic label & example */}
         <p className="text-xs text-gray-500 mt-1">
           {businessIdConfig?.label || "Business ID"} - Example:{" "}
           {businessIdConfig?.example || "N/A"}
