@@ -346,6 +346,23 @@ export const updateCompanyService = async (data, files, sellerId) => {
   const uploadedFiles = [];
 
   try {
+    console.log("\n🔄 ========== UPDATE COMPANY SERVICE START ==========");
+    console.log("📦 sellerId:", sellerId);
+    console.log("📂 Files received:", {
+      logo: files?.logo?.length || 0,
+      photos: files?.companyPhotos?.length || 0,
+      video: files?.companyVideo?.length || 0,
+      docs: files?.registration_documents?.length || 0,
+    });
+    console.log("📋 Data received:", {
+      companyName: data.companyName,
+      company_registration_number: data.company_registration_number,
+      legalowner: data.legalowner,
+      mainCategory: data.mainCategory,
+      subCategory: data.subCategory,
+      companyDescription: data.companyDescription,
+    });
+
     if (!sellerId) throw new Error("sellerId is required");
 
     const existingCompany = await CompanyDetails.findOne({ sellerId }).session(
@@ -353,125 +370,200 @@ export const updateCompanyService = async (data, files, sellerId) => {
     );
 
     if (!existingCompany) {
+      console.log("❌ Company not found for sellerId:", sellerId);
       throw new Error("Company not found for this seller");
     }
 
+    console.log("✅ Existing company found:", existingCompany._id);
+    console.log("📊 Existing company data:", {
+      companyName: existingCompany.companyBasicInfo?.companyName,
+      hasLogo: !!existingCompany.companyIntro?.logo,
+      photosCount: existingCompany.companyIntro?.companyPhotos?.length || 0,
+      videosCount: existingCompany.companyIntro?.companyVideos?.length || 0,
+      docsCount:
+        existingCompany.companyBasicInfo?.registration_documents?.length || 0,
+    });
+
     // Parse JSON fields
+    console.log("\n📝 === Parsing JSON Fields ===");
     const address =
       typeof data.address === "string"
         ? JSON.parse(data.address)
         : data.address;
+    console.log("✅ Address parsed:", address);
 
     const mainCategory =
       typeof data.mainCategory === "string"
         ? JSON.parse(data.mainCategory)
         : data.mainCategory;
+    console.log("✅ mainCategory parsed:", mainCategory);
 
     const subCategory =
       typeof data.subCategory === "string"
         ? JSON.parse(data.subCategory)
         : data.subCategory;
+    console.log("✅ subCategory parsed:", subCategory);
 
-    // ✅ Handle logo update
+    // ========== 1. HANDLE LOGO UPDATE ==========
+    console.log("\n🎨 === STEP 1: Logo Update ===");
     let logoUrl = existingCompany.companyIntro?.logo || "";
+    console.log("📌 Current logo:", logoUrl);
+
     if (files?.logo && files.logo[0]) {
+      console.log("📤 New logo received:", files.logo[0].originalname);
+
       // Delete old logo
       if (existingCompany.companyIntro?.logo) {
+        console.log("🗑️ Deleting old logo...");
         const oldPublicId = existingCompany.companyIntro.logo
           .split("/")
           .pop()
           .split(".")[0];
-        await deleteFromCloudinary(oldPublicId).catch(() => {});
+        await deleteFromCloudinary(oldPublicId).catch((err) => {
+          console.log("⚠️ Old logo delete failed (non-critical):", err.message);
+        });
       }
 
+      console.log("📤 Uploading new logo...");
       const res = await uploadOnCloudinary(
         files.logo[0].path,
         files.logo[0].mimetype
       );
-      if (!res?.secure_url) throw new Error("Logo upload failed");
+
+      if (!res?.secure_url) {
+        console.error("❌ Logo upload failed - no URL returned");
+        throw new Error("Logo upload failed");
+      }
+
       uploadedFiles.push(res.public_id);
       logoUrl = res.secure_url;
+      console.log("✅ New logo uploaded:", logoUrl);
+    } else {
+      console.log("ℹ️ No new logo provided, keeping existing");
     }
 
-    // ✅ Handle photos update (APPEND)
+    // ========== 2. HANDLE PHOTOS UPDATE (APPEND) ==========
+    console.log("\n📷 === STEP 2: Photos Update (APPEND) ===");
     let photoUrls = existingCompany.companyIntro?.companyPhotos || [];
+    console.log("📌 Existing photos count:", photoUrls.length);
+
     if (files?.companyPhotos && files.companyPhotos.length > 0) {
-      console.log(`📷 Uploading ${files.companyPhotos.length} photos...`);
+      console.log(`📤 Uploading ${files.companyPhotos.length} new photos...`);
 
       for (let i = 0; i < files.companyPhotos.length; i++) {
         const file = files.companyPhotos[i];
+        console.log(`\n📤 Photo ${i + 1}/${files.companyPhotos.length}:`);
+        console.log(`  ├─ Original name: ${file.originalname}`);
+        console.log(`  ├─ File path: ${file.path}`);
+        console.log(`  ├─ File exists: ${fs.existsSync(file.path)}`);
 
         if (!fs.existsSync(file.path)) {
+          console.error(`  ❌ File not found at path: ${file.path}`);
           throw new Error(
             `Photo ${i + 1} file not found: ${file.originalname}`
           );
         }
 
-        const res = await uploadOnCloudinary(file.path, file.mimetype);
+        try {
+          const res = await uploadOnCloudinary(file.path, file.mimetype);
 
-        if (!res || !res.secure_url) {
-          throw new Error(`Photo ${i + 1} upload failed: ${file.originalname}`);
+          if (!res || !res.secure_url) {
+            console.error(`  ❌ Upload failed for photo ${i + 1}`);
+            throw new Error(
+              `Photo ${i + 1} upload failed: ${file.originalname}`
+            );
+          }
+
+          uploadedFiles.push(res.public_id);
+          photoUrls.push(res.secure_url);
+          console.log(`  ✅ Photo ${i + 1} uploaded: ${res.secure_url}`);
+        } catch (uploadError) {
+          console.error(`  ❌ Photo ${i + 1} upload error:`, uploadError);
+          throw uploadError;
         }
-
-        uploadedFiles.push(res.public_id);
-        photoUrls.push(res.secure_url);
       }
+      console.log(`✅ Total photos now: ${photoUrls.length}`);
+    } else {
+      console.log("ℹ️ No new photos provided");
     }
 
-    // ✅ Handle video update (REPLACE)
+    // ========== 3. HANDLE VIDEO UPDATE (REPLACE) ==========
+    console.log("\n🎥 === STEP 3: Video Update (REPLACE) ===");
     let videoUrls = existingCompany.companyIntro?.companyVideos || [];
+    console.log("📌 Existing videos count:", videoUrls.length);
+
     if (files?.companyVideo && files.companyVideo[0]) {
+      console.log("📤 New video received:", files.companyVideo[0].originalname);
+
       // Delete old videos
       if (existingCompany.companyIntro?.companyVideos?.length > 0) {
+        console.log(
+          `🗑️ Deleting ${existingCompany.companyIntro.companyVideos.length} old videos...`
+        );
         await Promise.all(
           existingCompany.companyIntro.companyVideos.map((url) => {
             const publicId = url.split("/").pop().split(".")[0];
-            return deleteFromCloudinary(publicId).catch(() => {});
+            return deleteFromCloudinary(publicId).catch((err) => {
+              console.log(
+                "⚠️ Old video delete failed (non-critical):",
+                err.message
+              );
+            });
           })
         );
       }
 
+      console.log("📤 Uploading new video...");
       const res = await uploadOnCloudinary(
         files.companyVideo[0].path,
         files.companyVideo[0].mimetype
       );
-      if (!res?.secure_url) throw new Error("Video upload failed");
+
+      if (!res?.secure_url) {
+        console.error("❌ Video upload failed - no URL returned");
+        throw new Error("Video upload failed");
+      }
+
       uploadedFiles.push(res.public_id);
       videoUrls = [res.secure_url];
+      console.log("✅ New video uploaded:", res.secure_url);
+    } else {
+      console.log("ℹ️ No new video provided, keeping existing");
     }
 
-    // ✅ Handle registration documents (APPEND) - SEQUENTIAL UPLOAD
+    // ========== 4. HANDLE REGISTRATION DOCUMENTS (APPEND) ==========
+    console.log("\n📄 === STEP 4: Registration Documents (APPEND) ===");
     let docUrls =
       existingCompany.companyBasicInfo?.registration_documents || [];
+    console.log("📌 Existing docs count:", docUrls.length);
 
     if (
       files?.registration_documents &&
       files.registration_documents.length > 0
     ) {
       console.log(
-        `📄 Uploading ${files.registration_documents.length} registration documents...`
+        `📤 Uploading ${files.registration_documents.length} new documents...`
       );
 
       for (let i = 0; i < files.registration_documents.length; i++) {
         const file = files.registration_documents[i];
+        console.log(
+          `\n📤 Document ${i + 1}/${files.registration_documents.length}:`
+        );
+        console.log(`  ├─ Original name: ${file.originalname}`);
+        console.log(`  ├─ File path: ${file.path}`);
+        console.log(`  ├─ File exists: ${fs.existsSync(file.path)}`);
 
         try {
-          console.log(
-            `📤 Uploading document ${i + 1}/${
-              files.registration_documents.length
-            }: ${file.originalname}`
-          );
-          console.log(`📂 File path: ${file.path}`);
-          console.log(`📋 File exists: ${fs.existsSync(file.path)}`);
-
-          // ✅ Verify file exists
           if (!fs.existsSync(file.path)) {
+            console.error(`  ❌ File not found at path: ${file.path}`);
             throw new Error(`File not found at path: ${file.path}`);
           }
 
           const res = await uploadOnCloudinary(file.path, file.mimetype);
 
           if (!res || !res.secure_url) {
+            console.error(`  ❌ Cloudinary returned no URL`);
             throw new Error(
               `Cloudinary returned no URL for ${file.originalname}`
             );
@@ -479,12 +571,9 @@ export const updateCompanyService = async (data, files, sellerId) => {
 
           uploadedFiles.push(res.public_id);
           docUrls.push(res.secure_url);
-
-          console.log(
-            `✅ Document ${i + 1} uploaded successfully: ${res.secure_url}`
-          );
+          console.log(`  ✅ Document ${i + 1} uploaded: ${res.secure_url}`);
         } catch (uploadError) {
-          console.error(`❌ Error uploading document ${i + 1}:`, uploadError);
+          console.error(`  ❌ Document ${i + 1} upload error:`, uploadError);
           throw new Error(
             `Document ${i + 1} (${file.originalname}) upload failed: ${
               uploadError.message
@@ -492,99 +581,171 @@ export const updateCompanyService = async (data, files, sellerId) => {
           );
         }
       }
-
-      console.log(`✅ All ${docUrls.length} documents uploaded successfully`);
+      console.log(`✅ Total docs now: ${docUrls.length}`);
+    } else {
+      console.log("ℹ️ No new documents provided");
     }
 
-    // ✅ Build update object
+    // ========== 5. BUILD UPDATE OBJECT ==========
+    console.log("\n🏗️ === STEP 5: Building Update Object ===");
+
     const updateData = {
       companyBasicInfo: {
-        ...existingCompany.companyBasicInfo,
-        ...(data.companyName && { companyName: data.companyName }),
-        ...(data.company_registration_number && {
-          company_registration_number: data.company_registration_number,
-        }),
-        ...(address && { address }),
-        ...(data.legalowner && { legalowner: data.legalowner }),
-        ...(data.locationOfRegistration && {
-          locationOfRegistration: data.locationOfRegistration,
-        }),
-        ...(data.companyRegistrationYear && {
-          companyRegistrationYear: data.companyRegistrationYear,
-        }),
-        ...(mainCategory && { mainCategory }),
-        ...(subCategory && { subCategory }),
-        ...(data.acceptedCurrency && {
-          acceptedCurrency: data.acceptedCurrency.split(","),
-        }),
-        ...(data.acceptedPaymentType && {
-          acceptedPaymentType: data.acceptedPaymentType.split(","),
-        }),
-        ...(data.languageSpoken && {
-          languageSpoken: data.languageSpoken.split(","),
-        }),
+        // ✅ REQUIRED FIELDS - Direct assign
+        companyName:
+          data.companyName || existingCompany.companyBasicInfo?.companyName,
+        company_registration_number:
+          data.company_registration_number ||
+          existingCompany.companyBasicInfo?.company_registration_number,
+        legalowner:
+          data.legalowner || existingCompany.companyBasicInfo?.legalowner,
+        locationOfRegistration:
+          data.locationOfRegistration ||
+          existingCompany.companyBasicInfo?.locationOfRegistration,
+        companyRegistrationYear:
+          data.companyRegistrationYear ||
+          existingCompany.companyBasicInfo?.companyRegistrationYear,
+        address: address || existingCompany.companyBasicInfo?.address,
+
+        // ✅ ARRAYS - Direct assign (override)
+        mainCategory:
+          mainCategory || existingCompany.companyBasicInfo?.mainCategory || [],
+        subCategory:
+          subCategory || existingCompany.companyBasicInfo?.subCategory || [],
+        acceptedCurrency: data.acceptedCurrency
+          ? data.acceptedCurrency.split(",").map((c) => c.trim())
+          : existingCompany.companyBasicInfo?.acceptedCurrency || [],
+        acceptedPaymentType: data.acceptedPaymentType
+          ? data.acceptedPaymentType.split(",").map((p) => p.trim())
+          : existingCompany.companyBasicInfo?.acceptedPaymentType || [],
+        languageSpoken: data.languageSpoken
+          ? data.languageSpoken.split(",").map((l) => l.trim())
+          : existingCompany.companyBasicInfo?.languageSpoken || ["English"],
+
+        // ✅ DOCUMENTS - Already prepared (append)
         registration_documents: docUrls,
 
-        // Optional fields
-        ...(data.totalEmployees && {
-          totalEmployees: parseInt(data.totalEmployees),
-        }),
-        ...(data.businessType && { businessType: data.businessType }),
-        ...(data.factorySize && { factorySize: data.factorySize }),
-        ...(data.factoryCountryOrRegion && {
-          factoryCountryOrRegion: data.factoryCountryOrRegion,
-        }),
-        ...(data.contractManufacturing !== undefined && {
-          contractManufacturing:
-            data.contractManufacturing === "true" ||
-            data.contractManufacturing === true,
-        }),
-        ...(data.numberOfProductionLines && {
-          numberOfProductionLines: parseInt(data.numberOfProductionLines),
-        }),
-        ...(data.annualOutputValue && {
-          annualOutputValue: data.annualOutputValue,
-        }),
-        ...(data.rdTeamSize && { rdTeamSize: parseInt(data.rdTeamSize) }),
-        ...(data.tradeCapabilities && {
-          tradeCapabilities: data.tradeCapabilities.split(","),
-        }),
+        // ✅ OPTIONAL FIELDS - Use existing if not provided
+        totalEmployees: data.totalEmployees
+          ? parseInt(data.totalEmployees)
+          : existingCompany.companyBasicInfo?.totalEmployees,
+        businessType:
+          data.businessType || existingCompany.companyBasicInfo?.businessType,
+        factorySize:
+          data.factorySize || existingCompany.companyBasicInfo?.factorySize,
+        factoryCountryOrRegion:
+          data.factoryCountryOrRegion ||
+          existingCompany.companyBasicInfo?.factoryCountryOrRegion,
+        contractManufacturing:
+          data.contractManufacturing !== undefined
+            ? data.contractManufacturing === "true" ||
+              data.contractManufacturing === true
+            : existingCompany.companyBasicInfo?.contractManufacturing || false,
+        numberOfProductionLines: data.numberOfProductionLines
+          ? parseInt(data.numberOfProductionLines)
+          : existingCompany.companyBasicInfo?.numberOfProductionLines,
+        annualOutputValue:
+          data.annualOutputValue ||
+          existingCompany.companyBasicInfo?.annualOutputValue,
+        rdTeamSize: data.rdTeamSize
+          ? parseInt(data.rdTeamSize)
+          : existingCompany.companyBasicInfo?.rdTeamSize,
+        tradeCapabilities: data.tradeCapabilities
+          ? data.tradeCapabilities.split(",").map((t) => t.trim())
+          : existingCompany.companyBasicInfo?.tradeCapabilities || [],
       },
       companyIntro: {
-        ...(data.companyDescription && {
-          companyDescription: data.companyDescription,
-        }),
+        companyDescription:
+          data.companyDescription ||
+          existingCompany.companyIntro?.companyDescription,
         logo: logoUrl,
         companyPhotos: photoUrls,
         companyVideos: videoUrls,
       },
     };
 
-    // ✅ Update
+    console.log("📋 Update object built:");
+    console.log("  ├─ companyName:", updateData.companyBasicInfo.companyName);
+    console.log("  ├─ mainCategory:", updateData.companyBasicInfo.mainCategory);
+    console.log("  ├─ subCategory:", updateData.companyBasicInfo.subCategory);
+    console.log(
+      "  ├─ acceptedCurrency:",
+      updateData.companyBasicInfo.acceptedCurrency
+    );
+    console.log(
+      "  ├─ acceptedPaymentType:",
+      updateData.companyBasicInfo.acceptedPaymentType
+    );
+    console.log(
+      "  ├─ languageSpoken:",
+      updateData.companyBasicInfo.languageSpoken
+    );
+    console.log("  ├─ logo:", !!updateData.companyIntro.logo);
+    console.log(
+      "  ├─ photos count:",
+      updateData.companyIntro.companyPhotos.length
+    );
+    console.log(
+      "  ├─ videos count:",
+      updateData.companyIntro.companyVideos.length
+    );
+    console.log(
+      "  └─ docs count:",
+      updateData.companyBasicInfo.registration_documents.length
+    );
+
+    // ========== 6. UPDATE DATABASE ==========
+    console.log("\n💾 === STEP 6: Updating Database ===");
     const updatedCompany = await CompanyDetails.findOneAndUpdate(
       { sellerId },
       { $set: updateData },
       { new: true, session, runValidators: true }
     );
 
+    if (!updatedCompany) {
+      console.error("❌ Database update returned null");
+      throw new Error("Failed to update company in database");
+    }
+
+    console.log("✅ Database updated successfully");
+    console.log("📊 Updated company ID:", updatedCompany._id);
+
     await session.commitTransaction();
     session.endSession();
 
+    console.log("✅ Transaction committed");
+    console.log("✅ ========== UPDATE COMPANY SERVICE SUCCESS ==========\n");
+
     return updatedCompany;
   } catch (error) {
+    console.error("\n❌ ========== UPDATE COMPANY SERVICE FAILED ==========");
+    console.error("❌ Error message:", error.message);
+    console.error("❌ Error stack:", error.stack);
+
     await session.abortTransaction();
     session.endSession();
+    console.log("🔄 Transaction aborted");
 
     // Cleanup newly uploaded files
-    console.log("🗑️ Rolling back - deleting uploaded files...");
+    console.log("\n🗑️ === Rolling Back Uploaded Files ===");
+    console.log(`🗑️ Files to delete: ${uploadedFiles.length}`);
+
     await Promise.all(
-      uploadedFiles.map((id) => deleteFromCloudinary(id).catch(() => {}))
+      uploadedFiles.map((id, index) => {
+        console.log(
+          `  🗑️ Deleting ${index + 1}/${uploadedFiles.length}: ${id}`
+        );
+        return deleteFromCloudinary(id).catch((err) => {
+          console.error(`  ❌ Failed to delete ${id}:`, err.message);
+        });
+      })
     );
+
+    console.log("❌ ========== ROLLBACK COMPLETE ==========\n");
 
     throw error;
   }
 };
-
 // ======================== GET COMPANY ========================
 export const getCompanyDetailsService = async ({ sellerId, companyId }) => {
   try {

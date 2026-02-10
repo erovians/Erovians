@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import api from "../services/api";
 import toast from "react-hot-toast";
-import { Country } from 'country-state-city';
+import { Country } from "country-state-city";
 
 import SellerSignupform from "../assets/SellerSignupform.svg";
 import seller_logo from "../assets/seller_logo.png";
@@ -12,16 +12,16 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [loginType, setLoginType] = useState("mobile");
-  
+
   // Get all countries
   const allCountries = Country.getAllCountries();
-  
+
   const [selectedCountry, setSelectedCountry] = useState(
-    allCountries.find(c => c.isoCode === 'IN') || allCountries[0]
+    allCountries.find((c) => c.isoCode === "IN") || allCountries[0]
   );
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [searchCountry, setSearchCountry] = useState("");
-  
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -29,9 +29,10 @@ const Login = () => {
   });
 
   // Filter countries based on search
-  const filteredCountries = allCountries.filter(country =>
-    country.name.toLowerCase().includes(searchCountry.toLowerCase()) ||
-    country.phonecode.includes(searchCountry)
+  const filteredCountries = allCountries.filter(
+    (country) =>
+      country.name.toLowerCase().includes(searchCountry.toLowerCase()) ||
+      country.phonecode.includes(searchCountry)
   );
 
   const handleChange = (e) =>
@@ -52,7 +53,10 @@ const Login = () => {
 
     try {
       const res = await api.post("/admin/login", {
-        identifier: loginType === "mobile" ? `+${selectedCountry.phonecode}${form.phone}` : form.email,
+        identifier:
+          loginType === "mobile"
+            ? `+${selectedCountry.phonecode}${form.phone}`
+            : form.email,
         password: form.password,
       });
 
@@ -72,9 +76,8 @@ const Login = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="w-full h-screen bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-          
           {/* ================= LEFT IMAGE ================= */}
-          <div className="hidden lg:flex items-center justify-center p-8 bg-gradient-to-br from-blue-50 to-gray-100">
+          <div className="hidden lg:flex items-center justify-center p-8 bg-linear-to-br from-blue-50 to-gray-100">
             <img
               src={SellerSignupform}
               alt="login"
@@ -85,12 +88,11 @@ const Login = () => {
           {/* ================= RIGHT FORM ================= */}
           <div className="p-6 md:p-8 flex flex-col justify-center">
             <div className="w-full max-w-md mx-auto">
-              
               {/* EROVIANS Logo */}
               <div className="mb-8">
-                <img 
-                  src={seller_logo} 
-                  alt="EROVIANS" 
+                <img
+                  src={seller_logo}
+                  alt="EROVIANS"
                   className="h-16 w-auto object-contain"
                 />
               </div>
@@ -111,13 +113,23 @@ const Login = () => {
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
                     </svg>
                     <span>Mobile</span>
                   </div>
                 </button>
-                
+
                 <button
                   onClick={() => setLoginType("email")}
                   className={`flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all text-sm ${
@@ -127,8 +139,18 @@ const Login = () => {
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                     <span>Email</span>
                   </div>
@@ -137,7 +159,6 @@ const Login = () => {
 
               {/* ================= FORM ================= */}
               <form onSubmit={handleSubmit} className="space-y-5">
-                
                 {/* Mobile/Email Input */}
                 {loginType === "mobile" ? (
                   <div className="flex gap-3 relative">
@@ -145,13 +166,27 @@ const Login = () => {
                     <div className="relative">
                       <button
                         type="button"
-                        onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                        onClick={() =>
+                          setShowCountryDropdown(!showCountryDropdown)
+                        }
                         className="w-32 h-12 border-2 border-gray-300 rounded-lg flex items-center justify-between gap-2 px-3 bg-white hover:border-gray-400 transition-colors"
                       >
                         <span className="text-xl">{selectedCountry.flag}</span>
-                        <span className="text-sm font-medium text-gray-700">+{selectedCountry.phonecode}</span>
-                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <span className="text-sm font-medium text-gray-700">
+                          +{selectedCountry.phonecode}
+                        </span>
+                        <svg
+                          className="w-4 h-4 text-gray-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
                         </svg>
                       </button>
 
@@ -178,12 +213,20 @@ const Login = () => {
                                   type="button"
                                   onClick={() => handleCountrySelect(country)}
                                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-100 transition-colors text-left ${
-                                    selectedCountry.isoCode === country.isoCode ? 'bg-gray-100' : ''
+                                    selectedCountry.isoCode === country.isoCode
+                                      ? "bg-gray-100"
+                                      : ""
                                   }`}
                                 >
-                                  <span className="text-xl">{country.flag}</span>
-                                  <span className="text-sm flex-1">{country.name}</span>
-                                  <span className="text-sm font-medium text-gray-600">+{country.phonecode}</span>
+                                  <span className="text-xl">
+                                    {country.flag}
+                                  </span>
+                                  <span className="text-sm flex-1">
+                                    {country.name}
+                                  </span>
+                                  <span className="text-sm font-medium text-gray-600">
+                                    +{country.phonecode}
+                                  </span>
                                 </button>
                               ))
                             ) : (
@@ -230,11 +273,17 @@ const Login = () => {
                 {/* Terms and Policy */}
                 <p className="text-xs text-gray-600">
                   By continuing, you agree to our{" "}
-                  <a href="#" className="text-gray-900 font-medium hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-900 font-medium hover:underline"
+                  >
                     Terms of Use
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-gray-900 font-medium hover:underline">
+                  <a
+                    href="#"
+                    className="text-gray-900 font-medium hover:underline"
+                  >
                     Privacy Policy
                   </a>
                   .
@@ -250,9 +299,7 @@ const Login = () => {
                 </button>
 
                 {/* Sign Up Link */}
-                
               </form>
-
             </div>
           </div>
         </div>

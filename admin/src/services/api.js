@@ -3,16 +3,13 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "http://localhost:9000/api",
   withCredentials: true,
-  timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-  }
+  timeout: 10000,
 });
 
 // Request interceptor - Add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -34,31 +31,30 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('adminRefreshToken');
-        
+        const refreshToken = localStorage.getItem("refreshToken");
+
         if (!refreshToken) {
-          throw new Error('No refresh token available');
+          throw new Error("No refresh token available");
         }
 
         const response = await axios.post(
-          'http://localhost:9000/api/admin/refresh-token',
+          "http://localhost:9000/api/v2/auth/refresh-token",
           { refreshToken },
           { withCredentials: true }
         );
 
         const { token } = response.data;
-        localStorage.setItem('adminToken', token);
+        localStorage.setItem("accessToken", token);
 
         // Retry original request with new token
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
-        
       } catch (refreshError) {
         // Refresh failed, logout user
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminRefreshToken');
-        localStorage.removeItem('adminUser');
-        window.location.href = '/login';
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
@@ -67,8 +63,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api
-
-
-
-
+export default api;

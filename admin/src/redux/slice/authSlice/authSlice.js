@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../api/axios";
+import api from "../../../services/api";
 
 const initialState = {
   isAuthenticated: false,
@@ -9,17 +9,17 @@ const initialState = {
   error: null,
   message: null,
   success: false,
-  
+
   // Admin specific
   adminType: null, // 'super-admin' | 'admin' | 'sub-admin'
   department: null,
-  
+
   // 2FA Flow
   step: "login", // 'login' | '2fa'
   require2FA: false,
   sessionId: null,
   otpExpiresAt: null,
-  
+
   // Remember me
   rememberMe: false,
 };
@@ -240,18 +240,18 @@ const adminAuthSlice = createSlice({
       state.error = null;
       state.message = null;
     },
-    
+
     // Clear success
     clearSuccess: (state) => {
       state.success = false;
       state.message = null;
     },
-    
+
     // Set step (login/2fa)
     setStep: (state, action) => {
       state.step = action.payload;
     },
-    
+
     // Reset auth flow
     resetAuthFlow: (state) => {
       state.step = "login";
@@ -262,7 +262,7 @@ const adminAuthSlice = createSlice({
       state.message = null;
       state.success = false;
     },
-    
+
     // Manual logout (clear tokens)
     clearAuth: (state) => {
       localStorage.removeItem("adminToken");
@@ -271,7 +271,7 @@ const adminAuthSlice = createSlice({
       return { ...initialState };
     },
   },
-  
+
   extraReducers: (builder) => {
     builder
       // ========================================
@@ -291,8 +291,8 @@ const adminAuthSlice = createSlice({
 
         // Check if user has admin role
         const userRoles = action.payload?.user?.role || [];
-        const isAdmin = userRoles.some(role => 
-          ['super-admin', 'admin', 'sub-admin'].includes(role)
+        const isAdmin = userRoles.some((role) =>
+          ["super-admin", "admin", "sub-admin"].includes(role)
         );
 
         if (!isAdmin) {
@@ -312,8 +312,8 @@ const adminAuthSlice = createSlice({
           // Direct login
           state.isAuthenticated = true;
           state.user = action.payload?.user;
-          state.adminType = action.payload?.user?.role?.find(r => 
-            ['super-admin', 'admin', 'sub-admin'].includes(r)
+          state.adminType = action.payload?.user?.role?.find((r) =>
+            ["super-admin", "admin", "sub-admin"].includes(r)
           );
           state.step = "login";
 
@@ -322,10 +322,16 @@ const adminAuthSlice = createSlice({
             localStorage.setItem("adminToken", action.payload.token);
           }
           if (action.payload?.refreshToken) {
-            localStorage.setItem("adminRefreshToken", action.payload.refreshToken);
+            localStorage.setItem(
+              "adminRefreshToken",
+              action.payload.refreshToken
+            );
           }
           if (action.payload?.user) {
-            localStorage.setItem("adminUser", JSON.stringify(action.payload.user));
+            localStorage.setItem(
+              "adminUser",
+              JSON.stringify(action.payload.user)
+            );
           }
         }
       })
@@ -351,8 +357,8 @@ const adminAuthSlice = createSlice({
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.user;
-        state.adminType = action.payload?.user?.role?.find(r => 
-          ['super-admin', 'admin', 'sub-admin'].includes(r)
+        state.adminType = action.payload?.user?.role?.find((r) =>
+          ["super-admin", "admin", "sub-admin"].includes(r)
         );
         state.require2FA = false;
         state.step = "login";
@@ -365,10 +371,16 @@ const adminAuthSlice = createSlice({
           localStorage.setItem("adminToken", action.payload.token);
         }
         if (action.payload?.refreshToken) {
-          localStorage.setItem("adminRefreshToken", action.payload.refreshToken);
+          localStorage.setItem(
+            "adminRefreshToken",
+            action.payload.refreshToken
+          );
         }
         if (action.payload?.user) {
-          localStorage.setItem("adminUser", JSON.stringify(action.payload.user));
+          localStorage.setItem(
+            "adminUser",
+            JSON.stringify(action.payload.user)
+          );
         }
       })
       .addCase(verify2FA.rejected, (state, action) => {
@@ -413,8 +425,8 @@ const adminAuthSlice = createSlice({
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data;
-        state.adminType = action.payload?.data?.role?.find(r => 
-          ['super-admin', 'admin', 'sub-admin'].includes(r)
+        state.adminType = action.payload?.data?.role?.find((r) =>
+          ["super-admin", "admin", "sub-admin"].includes(r)
         );
       })
       .addCase(loadAdminUser.rejected, (state, action) => {
@@ -457,11 +469,15 @@ const adminAuthSlice = createSlice({
         state.error = null;
         state.success = true;
         state.user = action.payload?.data;
-        state.message = action.payload?.message || "Profile updated successfully";
-        
+        state.message =
+          action.payload?.message || "Profile updated successfully";
+
         // Update localStorage
         if (action.payload?.data) {
-          localStorage.setItem("adminUser", JSON.stringify(action.payload.data));
+          localStorage.setItem(
+            "adminUser",
+            JSON.stringify(action.payload.data)
+          );
         }
       })
       .addCase(updateAdminProfile.rejected, (state, action) => {
@@ -483,7 +499,8 @@ const adminAuthSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.success = true;
-        state.message = action.payload?.message || "Password changed successfully";
+        state.message =
+          action.payload?.message || "Password changed successfully";
       })
       .addCase(changeAdminPassword.rejected, (state, action) => {
         state.loading = false;
@@ -522,7 +539,7 @@ const adminAuthSlice = createSlice({
       .addCase(refreshAdminToken.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        
+
         if (action.payload?.token) {
           localStorage.setItem("adminToken", action.payload.token);
         }
@@ -532,7 +549,7 @@ const adminAuthSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = action.payload?.message || "Session expired";
-        
+
         // Clear all tokens
         localStorage.removeItem("adminToken");
         localStorage.removeItem("adminRefreshToken");
@@ -561,27 +578,22 @@ const adminAuthSlice = createSlice({
       .addCase(logoutAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Logout failed";
-        
+
         // Force logout even if API fails
         localStorage.removeItem("adminToken");
         localStorage.removeItem("adminRefreshToken");
         localStorage.removeItem("adminUser");
-        
-        return { 
-          ...initialState, 
+
+        return {
+          ...initialState,
           error: state.error,
-          message: state.error 
+          message: state.error,
         };
       });
   },
 });
 
-export const {
-  clearError,
-  clearSuccess,
-  setStep,
-  resetAuthFlow,
-  clearAuth,
-} = adminAuthSlice.actions;
+export const { clearError, clearSuccess, setStep, resetAuthFlow, clearAuth } =
+  adminAuthSlice.actions;
 
 export default adminAuthSlice.reducer;

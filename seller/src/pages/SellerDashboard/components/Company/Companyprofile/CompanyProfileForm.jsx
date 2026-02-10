@@ -14,6 +14,7 @@ import {
 } from "@/redux/slice/companySlice";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { loadSeller } from "@/redux/slice/sellerSlice";
 
 const steps = [
   {
@@ -169,6 +170,7 @@ export default function CompanyProfileForm() {
       });
       setTimeout(() => {
         dispatch(clearSuccess());
+        dispatch(loadSeller());
         navigate("/sellerdashboard");
       }, 1500);
     }
