@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import ReviewStep from "./steps/ReviewStep";
-import {
-  stepOneSchema,
-  stepTwoSchema,
-} from "../../../schema/companyRegistrationForm.schema";
 import { Check, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  registerCompany,
-  updateCompany,
-  clearCompanyState,
+  saveCompany, // ✅ Single action
   getCompany,
   clearError,
   clearSuccess,
@@ -26,72 +20,61 @@ const steps = [
     id: 1,
     title: "Company Basic Details",
     component: StepOne,
-    schema: stepOneSchema,
   },
   {
     id: 2,
     title: "Company Introduction",
     component: StepTwo,
-    schema: stepTwoSchema,
   },
-  { id: 3, title: "Review & Submit", component: ReviewStep, schema: null },
+  { id: 3, title: "Review & Submit", component: ReviewStep },
 ];
 
 export default function CompanyProfileForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [currentStep, setCurrentStep] = useState(() => {
-    const savedStep = localStorage.getItem("currentStep");
-    return savedStep ? Number(savedStep) : 1;
-  });
+  const [currentStep, setCurrentStep] = useState(1);
 
-  const { company, loading, error, success, message } = useSelector(
-    (state) => state.company
-  );
+  const { company, loading, error, success, message, seller_status } =
+    useSelector((state) => state.company);
   const { seller } = useSelector((state) => state.seller);
+  console.log("this is seller", seller);
+  console.log("here is compnay details", company);
 
-  const [isEditMode, setIsEditMode] = useState(false);
-
-  const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem("companyFormData");
-    return savedData
-      ? JSON.parse(savedData)
-      : {
-          // Basic Info
-          companyName: "",
-          company_registration_number: "", // ✅ NEW
-          legalowner: "",
-          locationOfRegistration: "",
-          companyRegistrationYear: "",
-          address: {
-            street: "",
-            city: "",
-            stateOrProvince: "",
-            countryOrRegion: "",
-            postalCode: "",
-          },
-          mainCategory: [],
-          mainProduct: [],
-          acceptedCurrency: [],
-          acceptedPaymentType: [],
-          languageSpoken: [],
-          totalEmployees: "",
-          businessType: "",
-          factorySize: "",
-          factoryCountryOrRegion: "",
-          contractManufacturing: false,
-          numberOfProductionLines: "",
-          annualOutputValue: "",
-          rdTeamSize: "",
-          tradeCapabilities: [],
-          // Company Intro
-          companyDescription: "",
-          logo: null,
-          companyPhotos: [],
-          companyVideos: [],
-          registration_documents: [], // ✅ NEW
-        };
+  const [formData, setFormData] = useState({
+    // Basic Info
+    companyName: "",
+    company_registration_number: "",
+    legalowner: "",
+    locationOfRegistration: "",
+    companyRegistrationYear: "",
+    address: {
+      street: "",
+      city: "",
+      stateOrProvince: "",
+      countryOrRegion: "",
+      postalCode: "",
+    },
+    mainCategory: [],
+    mainProduct: [],
+    acceptedCurrency: [],
+    acceptedPaymentType: [],
+    languageSpoken: [],
+    totalEmployees: "",
+    businessType: "",
+    factorySize: "",
+    factoryCountryOrRegion: "",
+    contractManufacturing: false,
+    numberOfProductionLines: "",
+    annualOutputValue: "",
+    rdTeamSize: "",
+    tradeCapabilities: [],
+    // Company Intro
+    companyDescription: "",
+    logo: null,
+    companyPhotos: [],
+    companyVideos: [],
+    registration_documents: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -104,8 +87,11 @@ export default function CompanyProfileForm() {
 
   // ✅ Populate form when company data arrives
   useEffect(() => {
-    if (company) {
-      setIsEditMode(true);
+    if (company === null) {
+      // Individual seller - CREATE mode
+      toast.info("No company profile found. Let's create one! 🚀");
+    } else if (company) {
+      // Professional seller - UPDATE mode
       const c = company;
 
       // Helper to split comma-separated strings
@@ -125,7 +111,7 @@ export default function CompanyProfileForm() {
         // Basic Info
         companyName: c.companyBasicInfo?.companyName || "",
         company_registration_number:
-          c.companyBasicInfo?.company_registration_number || "", // ✅ NEW
+          c.companyBasicInfo?.company_registration_number || "",
         legalowner: c.companyBasicInfo?.legalowner || "",
         locationOfRegistration:
           c.companyBasicInfo?.locationOfRegistration || "",
@@ -162,79 +148,143 @@ export default function CompanyProfileForm() {
         logoUrl: c.companyIntro?.logo || "",
         companyPhotosUrl: c.companyIntro?.companyPhotos || [],
         companyVideosUrl: c.companyIntro?.companyVideos || [],
-        registrationDocsUrl: c.companyBasicInfo?.registration_documents || [], // ✅ NEW
+        registrationDocsUrl: c.companyBasicInfo?.registration_documents || [],
       });
+
+      toast.success("Company data loaded! You can update it now. ✏️");
     }
   }, [company]);
 
-  // ✅ Save to localStorage
-  useEffect(() => {
-    const {
-      logo,
-      companyPhotos,
-      companyVideos,
-      registration_documents,
-      ...safeData
-    } = formData;
-    localStorage.setItem("companyFormData", JSON.stringify(safeData));
-  }, [formData]);
-
   // ✅ Update progress
   useEffect(() => {
-    localStorage.setItem("currentStep", currentStep);
     setProgress(Math.round(((currentStep - 1) / (steps.length - 1)) * 100));
   }, [currentStep]);
 
   // ✅ Handle success/error
   useEffect(() => {
     if (success && message) {
-      toast.success(message);
+      toast.success(message, {
+        duration: 3000,
+        position: "top-center",
+      });
       setTimeout(() => {
-        localStorage.removeItem("companyFormData");
-        localStorage.removeItem("currentStep");
         dispatch(clearSuccess());
         navigate("/sellerdashboard");
       }, 1500);
     }
 
     if (error) {
-      toast.error(error);
+      toast.error(error, {
+        duration: 4000,
+        position: "top-center",
+      });
       dispatch(clearError());
     }
   }, [success, error, message, dispatch, navigate]);
 
   const CurrentComponent = steps[currentStep - 1].component;
 
-  const mapZodErrors = (zErr) => {
-    const formatted = {};
-    if (zErr?.issues && Array.isArray(zErr.issues)) {
-      zErr.issues.forEach((e) => {
-        const path = Array.isArray(e.path)
-          ? e.path.join(".")
-          : String(e.path || "");
-        if (!formatted[path]) {
-          formatted[path] = e.message;
-        }
-      });
+  const validateStep = (step) => {
+    const newErrors = {};
+
+    if (step === 1) {
+      // ✅ REQUIRED FIELDS - Step 1
+      if (!formData.companyName?.trim()) {
+        newErrors.companyName = "Company name is required";
+      }
+      if (!formData.company_registration_number?.trim()) {
+        newErrors.company_registration_number =
+          "Registration number is required";
+      }
+      if (!formData.legalowner?.trim()) {
+        newErrors.legalowner = "Legal owner is required";
+      }
+      if (!formData.locationOfRegistration?.trim()) {
+        newErrors.locationOfRegistration = "Location is required";
+      }
+      if (!formData.companyRegistrationYear) {
+        newErrors.companyRegistrationYear = "Registration year is required";
+      }
+      if (!formData.address.street?.trim()) {
+        newErrors["address.street"] = "Street is required";
+      }
+      if (!formData.address.city?.trim()) {
+        newErrors["address.city"] = "City is required";
+      }
+      if (!formData.address.stateOrProvince?.trim()) {
+        newErrors["address.stateOrProvince"] = "State/Province is required";
+      }
+      if (!formData.address.countryOrRegion?.trim()) {
+        newErrors["address.countryOrRegion"] = "Country is required";
+      }
+      if (!formData.address.postalCode?.trim()) {
+        newErrors["address.postalCode"] = "Postal code is required";
+      }
+      if (formData.mainCategory.length === 0) {
+        newErrors.mainCategory = "At least one category is required";
+      }
+      if (formData.mainProduct.length === 0) {
+        newErrors.mainProduct = "At least one product is required";
+      }
+      if (formData.acceptedCurrency.length === 0) {
+        newErrors.acceptedCurrency = "Select at least one currency";
+      }
+      if (formData.acceptedPaymentType.length === 0) {
+        newErrors.acceptedPaymentType = "Select at least one payment type";
+      }
+      if (formData.languageSpoken.length === 0) {
+        newErrors.languageSpoken = "Select at least one language";
+      }
     }
-    return formatted;
+
+    if (step === 2) {
+      // ✅ REQUIRED FIELDS - Step 2
+      if (!formData.companyDescription?.trim()) {
+        newErrors.companyDescription = "Company description is required";
+      } else if (formData.companyDescription.length < 50) {
+        newErrors.companyDescription = "Minimum 50 characters required";
+      }
+
+      // Logo validation (only for new company)
+      if (!company && !formData.logo) {
+        newErrors.logo = "Company logo is required";
+      }
+
+      // Photos validation (only for new company)
+      if (
+        !company &&
+        (!formData.companyPhotos || formData.companyPhotos.length === 0)
+      ) {
+        newErrors.companyPhotos = "At least one photo is required";
+      }
+
+      // Registration documents validation (only for new company)
+      if (
+        !company &&
+        (!formData.registration_documents ||
+          formData.registration_documents.length === 0)
+      ) {
+        newErrors.registration_documents =
+          "At least one registration document is required";
+      }
+    }
+
+    return newErrors;
   };
 
-  const nextStep = async () => {
-    const schema = steps[currentStep - 1].schema;
-    if (!schema) {
-      setCurrentStep((s) => s + 1);
+  const nextStep = () => {
+    const stepErrors = validateStep(currentStep);
+
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      toast.error("Please fill all required fields", {
+        position: "top-center",
+      });
       return;
     }
-    try {
-      await schema.parseAsync(formData);
-      setErrors({});
-      setCurrentStep((s) => s + 1);
-    } catch (err) {
-      const formatted = mapZodErrors(err);
-      setErrors(formatted);
-      toast.error("Please fix the errors before proceeding");
-    }
+
+    setErrors({});
+    setCurrentStep((s) => s + 1);
   };
 
   const prevStep = () => {
@@ -244,9 +294,25 @@ export default function CompanyProfileForm() {
 
   const handleSubmit = async () => {
     try {
-      // Validate all steps
-      await stepOneSchema.parseAsync(formData);
-      await stepTwoSchema.parseAsync(formData);
+      // Final validation
+      const step1Errors = validateStep(1);
+      const step2Errors = validateStep(2);
+      const allErrors = { ...step1Errors, ...step2Errors };
+
+      if (Object.keys(allErrors).length > 0) {
+        setErrors(allErrors);
+        // Navigate to first error step
+        if (Object.keys(step1Errors).length > 0) {
+          setCurrentStep(1);
+        } else if (Object.keys(step2Errors).length > 0) {
+          setCurrentStep(2);
+        }
+        toast.error("Please fix all errors before submitting", {
+          position: "top-center",
+        });
+        return;
+      }
+
       setErrors({});
 
       // Create FormData
@@ -257,7 +323,7 @@ export default function CompanyProfileForm() {
       form.append(
         "company_registration_number",
         formData.company_registration_number
-      ); // ✅ NEW
+      );
       form.append("legalowner", formData.legalowner);
       form.append("locationOfRegistration", formData.locationOfRegistration);
       form.append("companyRegistrationYear", formData.companyRegistrationYear);
@@ -326,45 +392,20 @@ export default function CompanyProfileForm() {
         form.append("companyVideo", formData.companyVideos[0]);
       }
 
-      // ✅ NEW: Files - Registration Documents
+      // Files - Registration Documents
       if (Array.isArray(formData.registration_documents)) {
         formData.registration_documents.forEach((doc) => {
           if (doc instanceof File) form.append("registration_documents", doc);
         });
       }
 
-      // Dispatch appropriate action
-      if (isEditMode) {
-        await dispatch(updateCompany(form)).unwrap();
-      } else {
-        await dispatch(registerCompany(form)).unwrap();
-      }
+      // ✅ Single action - Backend will decide CREATE or UPDATE
+      await dispatch(saveCompany(form)).unwrap();
     } catch (err) {
       console.error("Submit error:", err);
-
-      // Handle validation errors
-      if (err.issues) {
-        const formatted = mapZodErrors(err);
-        setErrors(formatted);
-
-        // Navigate to the step with errors
-        if (
-          formatted["companyName"] ||
-          formatted["company_registration_number"] ||
-          formatted["address.street"] ||
-          formatted["acceptedCurrency"]
-        ) {
-          setCurrentStep(1);
-        } else if (
-          formatted["companyDescription"] ||
-          formatted["logo"] ||
-          formatted["companyPhotos"]
-        ) {
-          setCurrentStep(2);
-        }
-      }
-
-      toast.error(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong", {
+        position: "top-center",
+      });
     }
   };
 
@@ -458,10 +499,10 @@ export default function CompanyProfileForm() {
                   >
                     {loading && <Spinner />}
                     {loading
-                      ? "Submitting"
-                      : isEditMode
+                      ? "Saving..."
+                      : company
                       ? "Update Company"
-                      : "Submit"}
+                      : "Create Company"}
                   </Button>
                 )}
               </div>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Country } from "country-state-city"; // ✅ IMPORT ADDED
 
 // ======================== COUNTRY CONFIGS ========================
 const BUSINESS_ID_CONFIGS = {
@@ -142,4 +143,12 @@ export const getSupportedCountries = () => {
 // ======================== IS COUNTRY SUPPORTED ========================
 export const isCountrySupported = (countryCode) => {
   return BUSINESS_ID_CONFIGS.hasOwnProperty(countryCode);
+};
+
+// ======================== ✅ GET COUNTRY FULL NAME ========================
+export const getCountryFullName = (countryCode) => {
+  if (!countryCode) return "";
+
+  const country = Country.getCountryByCode(countryCode);
+  return country ? country.name : countryCode;
 };

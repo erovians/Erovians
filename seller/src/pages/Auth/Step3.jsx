@@ -1,5 +1,6 @@
 import React from "react";
-import ReactCountryFlag from "react-country-flag"; // ✅ Install: npm install react-country-flag
+import ReactCountryFlag from "react-country-flag";
+import { getCountryFullName } from "@/utils/country.utils"; // ✅ IMPORT ADDED
 
 const Step3 = ({
   formData,
@@ -48,7 +49,7 @@ const Step3 = ({
         )}
       </div>
 
-      {/* ✅ UPDATED: Seller Country - DISABLED with FLAG */}
+      {/* ✅ UPDATED: Seller Country - DISABLED with FLAG + FULL NAME */}
       <div>
         <label className="block text-xs font-medium text-gray-600 mb-1">
           Country (Based on verified mobile number)
@@ -69,8 +70,8 @@ const Step3 = ({
             type="text"
             name="seller_country"
             placeholder="Country *"
-            value={formData.seller_country}
-            disabled={true} // ✅ ALWAYS DISABLED
+            value={getCountryFullName(formData.seller_country)} // ✅ FULL NAME
+            disabled={true}
             className="w-full pl-12 pr-4 py-3 border rounded-md text-sm outline-none bg-gray-50 text-gray-700 cursor-not-allowed"
           />
         </div>

@@ -231,22 +231,6 @@ CompanyDataSchema.set("toJSON", {
   },
 });
 
-// ========== PRE-SAVE VALIDATION ==========
-CompanyDataSchema.pre("save", async function (next) {
-  // Verify seller is professional
-  const Seller = mongoose.model("Seller");
-  const seller = await Seller.findById(this.sellerId);
-
-  if (!seller) {
-    return next(new Error("Seller not found"));
-  }
-
-  if (seller.seller_status !== "professional") {
-    return next(new Error("Only professional sellers can create company"));
-  }
-
-  next();
-});
 const CompanyDetails = mongoose.model("Company", CompanyDataSchema);
 
 export default CompanyDetails;
