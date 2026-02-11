@@ -1,12 +1,13 @@
 import axios from "axios";
-import { Country } from "country-state-city"; // ✅ IMPORT ADDED
+import { Country } from "country-state-city";
 
 // ======================== COUNTRY CONFIGS ========================
 const BUSINESS_ID_CONFIGS = {
   IN: {
     label: "GSTIN",
     placeholder: "00AAAAA0000A0Z0 (15 characters)",
-    pattern: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+    // ✅ STRING FORMAT (Redux serializable)
+    pattern: "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$",
     errorMessage:
       "Invalid GSTIN format. Must be 15 characters (e.g., 27AAPFU0939F1ZV)",
     example: "27AAPFU0939F1ZV",
@@ -14,14 +15,14 @@ const BUSINESS_ID_CONFIGS = {
   US: {
     label: "EIN (Employer Identification Number)",
     placeholder: "XX-XXXXXXX (9 digits)",
-    pattern: /^\d{2}-?\d{7}$/,
+    pattern: "^\\d{2}-?\\d{7}$", // ✅ Note: double backslash in string
     errorMessage: "Invalid EIN format. Must be XX-XXXXXXX (e.g., 12-3456789)",
     example: "12-3456789",
   },
   GB: {
     label: "VAT Number",
     placeholder: "GB000000000 (9-12 digits)",
-    pattern: /^GB\d{9,12}$/,
+    pattern: "^GB\\d{9,12}$",
     errorMessage:
       "Invalid UK VAT format. Must be GB + 9-12 digits (e.g., GB123456789)",
     example: "GB123456789",
@@ -29,7 +30,7 @@ const BUSINESS_ID_CONFIGS = {
   DE: {
     label: "VAT Number (Umsatzsteuer-ID)",
     placeholder: "DE000000000 (9 digits)",
-    pattern: /^DE\d{9}$/,
+    pattern: "^DE\\d{9}$",
     errorMessage:
       "Invalid German VAT format. Must be DE + 9 digits (e.g., DE123456789)",
     example: "DE123456789",
@@ -37,7 +38,7 @@ const BUSINESS_ID_CONFIGS = {
   FR: {
     label: "SIRET Number",
     placeholder: "00000000000000 (14 digits)",
-    pattern: /^\d{14}$/,
+    pattern: "^\\d{14}$",
     errorMessage:
       "Invalid SIRET format. Must be 14 digits (e.g., 12345678901234)",
     example: "12345678901234",
@@ -45,7 +46,7 @@ const BUSINESS_ID_CONFIGS = {
   AE: {
     label: "TRN (Tax Registration Number)",
     placeholder: "000000000000000 (15 digits)",
-    pattern: /^\d{15}$/,
+    pattern: "^\\d{15}$",
     errorMessage:
       "Invalid TRN format. Must be 15 digits (e.g., 123456789012345)",
     example: "123456789012345",
@@ -53,14 +54,14 @@ const BUSINESS_ID_CONFIGS = {
   AU: {
     label: "ABN (Australian Business Number)",
     placeholder: "00000000000 (11 digits)",
-    pattern: /^\d{11}$/,
+    pattern: "^\\d{11}$",
     errorMessage: "Invalid ABN format. Must be 11 digits (e.g., 12345678901)",
     example: "12345678901",
   },
   CA: {
     label: "BN (Business Number)",
     placeholder: "000000000 (9 digits)",
-    pattern: /^\d{9}$/,
+    pattern: "^\\d{9}$",
     errorMessage: "Invalid BN format. Must be 9 digits (e.g., 123456789)",
     example: "123456789",
   },
@@ -69,7 +70,6 @@ const BUSINESS_ID_CONFIGS = {
 // ======================== DETECT USER COUNTRY ========================
 export const detectUserCountry = async () => {
   try {
-    // Check localStorage cache (24hr validity)
     const cached = localStorage.getItem("detectedCountry");
     const cachedTime = localStorage.getItem("detectedCountryTime");
 
@@ -81,22 +81,18 @@ export const detectUserCountry = async () => {
       }
     }
 
-    // Fetch from ipapi.co
     const response = await axios.get("https://ipapi.co/json/", {
       timeout: 5000,
     });
 
     const countryCode = response.data.country_code || "IN";
 
-    // Cache for 24 hours
     localStorage.setItem("detectedCountry", countryCode);
     localStorage.setItem("detectedCountryTime", Date.now().toString());
 
     return countryCode;
   } catch (error) {
     console.error("Country detection failed:", error);
-
-    // Fallback: Check cached even if expired
     const fallback = localStorage.getItem("detectedCountry") || "IN";
     return fallback;
   }
@@ -107,11 +103,10 @@ export const getBusinessIdConfig = (countryCode) => {
   const config = BUSINESS_ID_CONFIGS[countryCode];
 
   if (!config) {
-    // Default config for unsupported countries
     return {
       label: "Business Registration Number",
       placeholder: "Enter your business registration number",
-      pattern: /^.{5,20}$/,
+      pattern: "^.{5,20}$", // ✅ STRING
       errorMessage: "Business ID must be between 5-20 characters",
       example: "ABC123456",
     };
@@ -128,7 +123,10 @@ export const validateBusinessIdByCountry = (value, countryCode) => {
 
   const config = getBusinessIdConfig(countryCode);
 
-  if (!config.pattern.test(value)) {
+  // ✅ Convert string pattern to RegEx for validation
+  const regex = new RegExp(config.pattern);
+
+  if (!regex.test(value)) {
     return config.errorMessage;
   }
 
@@ -145,7 +143,7 @@ export const isCountrySupported = (countryCode) => {
   return BUSINESS_ID_CONFIGS.hasOwnProperty(countryCode);
 };
 
-// ======================== ✅ GET COUNTRY FULL NAME ========================
+// ======================== GET COUNTRY FULL NAME ========================
 export const getCountryFullName = (countryCode) => {
   if (!countryCode) return "";
 

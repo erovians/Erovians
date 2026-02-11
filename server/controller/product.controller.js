@@ -13,106 +13,16 @@ import CompanyDetails from "../models/company.model.js";
 import { addProductSchema } from "../zodSchemas/Product/addProduct.schema.js";
 import Product from "../models/product.model.js";
 import Seller from "../models/sellerSingnup.model.js";
+import asyncHandler from "../middleware/buyer/asyncHandler.js";
+import AppError from "../utils/buyer/AppError.js";
 
 // ✅ Add Product
 // product.controller.js - addProduct function
 
-export const addProduct = async (req, res) => {
-  try {
-    const userId = req.user.id; // ✅ Token se User ID
-    console.log(req.body);
-
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
-    }
-
-    // ✅ User ID se Seller find karo
-    const seller = await Seller.findOne({ userId });
-
-    if (!seller) {
-      return res.status(404).json({
-        success: false,
-        message: "Seller account not found. Please register as a seller first.",
-      });
-    }
-
-    const sellerId = seller._id.toString();
-
-    // 1️⃣ Validate text fields
-    if (req.body.size && typeof req.body.size === "string") {
-      try {
-        req.body.size = JSON.parse(req.body.size);
-      } catch (err) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid JSON format in size field",
-        });
-      }
-    }
-
-    const parsedBody = addProductSchema.safeParse(req.body);
-
-    if (!parsedBody.success) {
-      const formatErrors = (issues, parent = "") => {
-        const messages = [];
-        for (const key in issues) {
-          if (key === "_errors") {
-            if (issues[key].length > 0 && parent)
-              messages.push(`${parent}: ${issues[key].join(", ")}`);
-            continue;
-          }
-          messages.push(
-            ...formatErrors(issues[key], parent ? `${parent}.${key}` : key)
-          );
-        }
-        return messages;
-      };
-
-      const zodErrors = parsedBody.error.format();
-      const messages = formatErrors(zodErrors);
-
-      return res.status(400).json({
-        success: false,
-        message: messages.join("; "),
-      });
-    }
-
-    // ✅ Seller ID se Company find karo
-    const company = await CompanyDetails.findOne({ sellerId }).select("_id");
-
-    if (!company) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Company not found for this seller. Please register a company first.",
-      });
-    }
-
-    const companyId = company._id.toString();
-
-    const savedProduct = await addProductService(
-      parsedBody.data,
-      req.files,
-      sellerId,
-      companyId
-    );
-
-    res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      data: savedProduct,
-    });
-  } catch (error) {
-    console.error("Error adding product:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message || "Something went wrong while adding the product",
-    });
-  }
-};
+export const addProduct = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
+  res.send("done");
+});
 
 // ✅ List All Products
 export const listAllProducts = async (req, res) => {

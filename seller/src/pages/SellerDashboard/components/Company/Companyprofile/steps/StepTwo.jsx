@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Info, FileText, Upload } from "lucide-react";
+import { Info, FileText, Upload, X, Image } from "lucide-react";
 
 const InfoTooltip = ({ text }) => (
   <div className="relative flex items-center group">
@@ -15,21 +15,24 @@ export default function StepTwo({ formData, setFormData, errors }) {
   const logoInputRef = useRef(null);
   const photosInputRef = useRef(null);
   const videoInputRef = useRef(null);
-  const docsInputRef = useRef(null); // ✅ NEW
+  const docsInputRef = useRef(null);
   const MAX_DESC_LENGTH = 4000;
 
+  // ✅ Set logo preview from either new file or existing URL
   useEffect(() => {
     let url;
     if (formData.logo instanceof File) {
       url = URL.createObjectURL(formData.logo);
       setLogoPreview(url);
+    } else if (formData.logoUrl) {
+      setLogoPreview(formData.logoUrl);
     } else {
       setLogoPreview("");
     }
     return () => {
       if (url) URL.revokeObjectURL(url);
     };
-  }, [formData.logo]);
+  }, [formData.logo, formData.logoUrl]);
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
@@ -38,15 +41,26 @@ export default function StepTwo({ formData, setFormData, errors }) {
     if (name === "logo") {
       const file = files[0];
       setFormData((prev) => ({ ...prev, logo: file }));
-    } else if (
-      name === "companyPhotos" ||
-      name === "companyVideos" ||
-      name === "registration_documents" // ✅ NEW
-    ) {
+    } else if (name === "companyPhotos") {
       const arr = Array.from(files);
       setFormData((prev) => ({
         ...prev,
-        [name]: [...(prev[name] || []), ...arr],
+        companyPhotos: [...(prev.companyPhotos || []), ...arr],
+      }));
+    } else if (name === "companyVideos") {
+      const arr = Array.from(files);
+      setFormData((prev) => ({
+        ...prev,
+        companyVideos: [...(prev.companyVideos || []), ...arr],
+      }));
+    } else if (name === "registration_documents") {
+      const arr = Array.from(files);
+      setFormData((prev) => ({
+        ...prev,
+        registration_documents: [
+          ...(prev.registration_documents || []),
+          ...arr,
+        ],
       }));
     }
   };
@@ -63,23 +77,38 @@ export default function StepTwo({ formData, setFormData, errors }) {
     }));
   };
 
+  const removeUrlItem = (type, index) => {
+    setFormData((prev) => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index),
+    }));
+  };
+
   const removeAllPhotos = () => {
-    setFormData((prev) => ({ ...prev, companyPhotos: [] }));
+    setFormData((prev) => ({
+      ...prev,
+      companyPhotos: [],
+      companyPhotosUrl: [],
+    }));
   };
 
   const removeAllDocs = () => {
-    setFormData((prev) => ({ ...prev, registration_documents: [] }));
+    setFormData((prev) => ({
+      ...prev,
+      registration_documents: [],
+      registrationDocsUrl: [],
+    }));
   };
 
   const removeLogo = () => {
-    setFormData((prev) => ({ ...prev, logo: null }));
+    setFormData((prev) => ({ ...prev, logo: null, logoUrl: "" }));
     if (logoInputRef.current) logoInputRef.current.value = "";
   };
 
   const formRowClass =
     "flex flex-col sm:flex-row items-start py-4 border-b last:border-b-0";
   const labelClass =
-    "w-full sm:w-1/4 text-sm font-medium text-gray-600 sm:text-right pr-4 mb-2 sm:mb-0";
+    "w-full sm:w-1/4 text-sm font-medium text-gray-700 sm:text-right pr-4 mb-2 sm:mb-0";
   const controlClass = "w-full sm:w-3/4 flex flex-col";
 
   return (
@@ -92,19 +121,28 @@ export default function StepTwo({ formData, setFormData, errors }) {
         <div className={controlClass}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {logoPreview && (
-              <img
-                src={logoPreview}
-                alt="Logo Preview"
-                className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 object-cover border border-gray-500 rounded-md"
-              />
+              <div className="relative group">
+                <img
+                  src={logoPreview}
+                  alt="Logo Preview"
+                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 object-cover border-2 border-gray-300 rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={removeLogo}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={14} />
+                </button>
+              </div>
             )}
             <div className="flex flex-col items-start gap-2">
               <button
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
-                className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit transition-colors"
+                className="px-4 py-2 text-sm bg-navyblue text-white rounded hover:bg-blue-700 w-fit transition-colors"
               >
-                Browse
+                {logoPreview ? "Change Logo" : "Upload Logo"}
               </button>
               <input
                 ref={logoInputRef}
@@ -118,19 +156,10 @@ export default function StepTwo({ formData, setFormData, errors }) {
                 <span>300KB max. JPEG, PNG format. Suggested: 160*100px.</span>
                 <InfoTooltip text="For best results, upload a logo with the recommended dimensions." />
               </div>
-              {formData.logo && (
-                <button
-                  type="button"
-                  onClick={removeLogo}
-                  className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
-                >
-                  Remove
-                </button>
-              )}
             </div>
           </div>
           {errors.logo && (
-            <p className="text-xs text-red-500 mt-1">{errors.logo}</p>
+            <p className="text-xs text-red-500 mt-2">{errors.logo}</p>
           )}
         </div>
       </div>
@@ -147,7 +176,7 @@ export default function StepTwo({ formData, setFormData, errors }) {
             value={formData.companyDescription || ""}
             onChange={handleInputChange}
             name="companyDescription"
-            className={`w-full h-32 sm:h-40 px-3 py-2 text-sm border rounded-md focus:outline-none focus:border-navyblue transition-colors ${
+            className={`w-full h-32 sm:h-40 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-navyblue focus:border-navyblue transition-colors ${
               errors.companyDescription ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -173,9 +202,10 @@ export default function StepTwo({ formData, setFormData, errors }) {
             <button
               type="button"
               onClick={() => photosInputRef.current?.click()}
-              className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm bg-navyblue text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
-              Browse
+              <Upload size={16} />
+              Upload Photos
             </button>
             <input
               ref={photosInputRef}
@@ -186,47 +216,77 @@ export default function StepTwo({ formData, setFormData, errors }) {
               onChange={handleFileChange}
               className="hidden"
             />
-            <button
-              type="button"
-              onClick={removeAllPhotos}
-              className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
-            >
-              Remove All
-            </button>
+            {(formData.companyPhotos?.length > 0 ||
+              formData.companyPhotosUrl?.length > 0) && (
+              <button
+                type="button"
+                onClick={removeAllPhotos}
+                className="text-red-500 hover:text-red-600 text-xs transition-colors"
+              >
+                Remove All
+              </button>
+            )}
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 mt-2 text-xs text-gray-500">
             <span>200KB max. JPEG/PNG. Suggested: 1200*675px.</span>
             <InfoTooltip text="High-quality photos of your products, factory, or team can increase buyer trust." />
           </div>
-          {Array.isArray(formData.companyPhotos) &&
-            formData.companyPhotos.length > 0 && (
-              <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {formData.companyPhotos.map((file, index) => {
-                  const url = URL.createObjectURL(file);
-                  return (
-                    <div
-                      key={index}
-                      className="relative aspect-square border rounded-md overflow-hidden group"
-                    >
-                      <img
-                        src={url}
-                        alt={file.name}
-                        className="object-cover w-full h-full"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeFile("companyPhotos", index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        ×
-                      </button>
+
+          {/* Display Grid for Photos */}
+          {(formData.companyPhotosUrl?.length > 0 ||
+            formData.companyPhotos?.length > 0) && (
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {/* Existing photos from URL */}
+              {formData.companyPhotosUrl?.map((url, index) => (
+                <div
+                  key={`url-${index}`}
+                  className="relative aspect-square border-2 border-gray-300 rounded-lg overflow-hidden group"
+                >
+                  <img
+                    src={url}
+                    alt={`Existing photo ${index + 1}`}
+                    className="object-cover w-full h-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeUrlItem("companyPhotosUrl", index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+
+              {/* New photos to upload */}
+              {formData.companyPhotos?.map((file, index) => {
+                const url = URL.createObjectURL(file);
+                return (
+                  <div
+                    key={`new-${index}`}
+                    className="relative aspect-square border-2 border-navyblue rounded-lg overflow-hidden group"
+                  >
+                    <img
+                      src={url}
+                      alt={file.name}
+                      className="object-cover w-full h-full"
+                    />
+                    <div className="absolute top-1 left-1 bg-navyblue text-white text-xs px-2 py-0.5 rounded">
+                      New
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                    <button
+                      type="button"
+                      onClick={() => removeFile("companyPhotos", index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           {errors.companyPhotos && (
-            <p className="text-xs text-red-500 mt-1">{errors.companyPhotos}</p>
+            <p className="text-xs text-red-500 mt-2">{errors.companyPhotos}</p>
           )}
         </div>
       </div>
@@ -238,8 +298,9 @@ export default function StepTwo({ formData, setFormData, errors }) {
           <button
             type="button"
             onClick={() => videoInputRef.current?.click()}
-            className="px-4 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 w-fit transition-colors"
+            className="px-4 py-2 text-sm bg-navyblue text-white rounded hover:bg-blue-700 w-fit transition-colors flex items-center gap-2"
           >
+            <Upload size={16} />
             Upload Video
           </button>
           <input
@@ -254,37 +315,62 @@ export default function StepTwo({ formData, setFormData, errors }) {
             <p>Video must be less than 35 seconds. Max size: 2.5MB.</p>
             <p>File types: mp4, mov, wmv, flv. Do not use Erovians logo.</p>
           </div>
-          {Array.isArray(formData.companyVideos) &&
-            formData.companyVideos.length > 0 && (
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {formData.companyVideos.map((file, index) => {
-                  const url = URL.createObjectURL(file);
-                  return (
-                    <div
-                      key={index}
-                      className="relative w-full border rounded-lg overflow-hidden shadow-sm group"
-                    >
-                      <video
-                        src={url}
-                        className="object-cover w-full h-full"
-                        controls
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeFile("companyVideos", index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        ×
-                      </button>
+
+          {/* Display existing videos */}
+          {(formData.companyVideosUrl?.length > 0 ||
+            formData.companyVideos?.length > 0) && (
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {formData.companyVideosUrl?.map((url, index) => (
+                <div
+                  key={`url-${index}`}
+                  className="relative w-full border-2 border-gray-300 rounded-lg overflow-hidden shadow-sm group"
+                >
+                  <video
+                    src={url}
+                    className="object-cover w-full h-full"
+                    controls
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeUrlItem("companyVideosUrl", index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+
+              {formData.companyVideos?.map((file, index) => {
+                const url = URL.createObjectURL(file);
+                return (
+                  <div
+                    key={`new-${index}`}
+                    className="relative w-full border-2 border-navyblue rounded-lg overflow-hidden shadow-sm group"
+                  >
+                    <video
+                      src={url}
+                      className="object-cover w-full h-full"
+                      controls
+                    />
+                    <div className="absolute top-1 left-1 bg-navyblue text-white text-xs px-2 py-0.5 rounded">
+                      New
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                    <button
+                      type="button"
+                      onClick={() => removeFile("companyVideos", index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ✅ NEW: Registration Documents */}
+      {/* Registration Documents */}
       <div className={formRowClass}>
         <label className={`${labelClass} pt-1`}>
           <span className="text-red-500">*</span> Registration Documents:
@@ -308,11 +394,12 @@ export default function StepTwo({ formData, setFormData, errors }) {
               onChange={handleFileChange}
               className="hidden"
             />
-            {formData.registration_documents?.length > 0 && (
+            {(formData.registration_documents?.length > 0 ||
+              formData.registrationDocsUrl?.length > 0) && (
               <button
                 type="button"
                 onClick={removeAllDocs}
-                className="text-blue-500 hover:text-blue-600 text-xs transition-colors"
+                className="text-red-500 hover:text-red-600 text-xs transition-colors"
               >
                 Remove All
               </button>
@@ -324,41 +411,83 @@ export default function StepTwo({ formData, setFormData, errors }) {
           </div>
 
           {/* Document List */}
-          {Array.isArray(formData.registration_documents) &&
-            formData.registration_documents.length > 0 && (
-              <div className="mt-3 space-y-2">
-                {formData.registration_documents.map((file, index) => (
+          {(formData.registrationDocsUrl?.length > 0 ||
+            formData.registration_documents?.length > 0) && (
+            <div className="mt-3 space-y-2">
+              {/* Existing documents */}
+              {formData.registrationDocsUrl?.map((url, index) => {
+                const fileName = url.split("/").pop();
+                const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+                return (
                   <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg group hover:bg-gray-100 transition-colors"
+                    key={`url-${index}`}
+                    className="flex items-center justify-between p-3 bg-gray-50 border-2 border-gray-300 rounded-lg group hover:bg-gray-100 transition-colors"
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <FileText className="text-navyblue shrink-0" size={20} />
+                      {isImage ? (
+                        <Image className="text-navyblue shrink-0" size={20} />
+                      ) : (
+                        <FileText
+                          className="text-navyblue shrink-0"
+                          size={20}
+                        />
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-700 truncate">
-                          {file.name}
+                          {fileName}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {(file.size / 1024).toFixed(2)} KB
-                        </p>
+                        <p className="text-xs text-gray-500">Existing file</p>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() =>
-                        removeFile("registration_documents", index)
+                        removeUrlItem("registrationDocsUrl", index)
                       }
                       className="ml-2 text-red-500 hover:text-red-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
                     >
                       Remove
                     </button>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+
+              {/* New documents */}
+              {formData.registration_documents?.map((file, index) => (
+                <div
+                  key={`new-${index}`}
+                  className="flex items-center justify-between p-3 bg-blue-50 border-2 border-navyblue rounded-lg group hover:bg-blue-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <FileText className="text-navyblue shrink-0" size={20} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-700 truncate">
+                        {file.name}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-gray-500">
+                          {(file.size / 1024).toFixed(2)} KB
+                        </p>
+                        <span className="text-xs bg-navyblue text-white px-2 py-0.5 rounded">
+                          New
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeFile("registration_documents", index)}
+                    className="ml-2 text-red-500 hover:text-red-600 text-sm opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {errors.registration_documents && (
-            <p className="text-xs text-red-500 mt-1">
+            <p className="text-xs text-red-500 mt-2">
               {errors.registration_documents}
             </p>
           )}

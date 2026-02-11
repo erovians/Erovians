@@ -21,12 +21,7 @@ export const addProduct = createAsyncThunk(
 // Fetch all products for a company
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
-  /**
-   * params:
-   *   options = { sellerId?, companyId? }
-   *   for seller dashboard: {}
-   *   for buyer/admin: { sellerId } or { companyId }
-   */
+
   async (options = {}, { rejectWithValue }) => {
     try {
       const res = await api.get("/product/list", { params: { options } });

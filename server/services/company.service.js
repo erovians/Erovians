@@ -747,6 +747,7 @@ export const updateCompanyService = async (data, files, sellerId) => {
   }
 };
 // ======================== GET COMPANY ========================
+// ======================== GET COMPANY ========================
 export const getCompanyDetailsService = async ({ sellerId, companyId }) => {
   try {
     const matchFilter = {};
@@ -780,7 +781,21 @@ export const getCompanyDetailsService = async ({ sellerId, companyId }) => {
 
     if (!result.length) return null;
 
-    return result[0];
+    // ✅ FIX: Convert RegEx pattern to string before returning
+    const companyData = result[0];
+
+    if (
+      companyData?.companyBasicInfo?.address?.country?.businessIdConfig?.pattern
+    ) {
+      const pattern =
+        companyData.companyBasicInfo.address.country.businessIdConfig.pattern;
+
+      // Convert RegEx to string (remove leading/trailing slashes)
+      companyData.companyBasicInfo.address.country.businessIdConfig.pattern =
+        pattern instanceof RegExp ? pattern.source : String(pattern);
+    }
+
+    return companyData;
   } catch (err) {
     throw err;
   }

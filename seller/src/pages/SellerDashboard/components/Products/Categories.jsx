@@ -107,7 +107,7 @@ const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
             {items.map((product) => (
               <div
                 key={product.id}
-                className="flex-shrink-0 w-56 md:w-64 lg:w-72 bg-white border rounded-lg shadow hover:shadow-xl transition"
+                className="shrink-0 w-56 md:w-64 lg:w-72 bg-white border rounded-lg shadow hover:shadow-xl transition"
               >
                 {/* Image */}
                 <div className="h-44 bg-gray-50 rounded-t-lg overflow-hidden flex items-center justify-center relative">
@@ -130,7 +130,7 @@ const Categories = ({ companyId = "68e35cd9bb20aba94edb0598" }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 flex flex-col justify-between h-[280px]">
+                <div className="p-4 flex flex-col justify-between h-70">
                   <div>
                     <h3 className="text-md font-semibold text-gray-800 line-clamp-2">
                       {product.productName}

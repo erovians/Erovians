@@ -25,7 +25,7 @@ const SellerDashboardHome = () => {
           className="
       bg-white rounded shadow
       p-4 sm:p-5 md:p-6
-      h-95 sm:h-[430px] md:h-[480px]
+      h-95 sm:h-107.5 md:h-120
       flex flex-col hover:-translate-y-1 transition
       md:col-span-2  /* ⭐ gives chart more width */
     "
@@ -38,7 +38,7 @@ const SellerDashboardHome = () => {
           className="
       bg-white rounded shadow
       p-4 sm:p-5 md:p-6
-      h-[380px] sm:h-[430px] md:h-[480px]
+      h-95 sm:h-107.5 md:h-120
       flex flex-col hover:-translate-y-1 transition
     "
         >

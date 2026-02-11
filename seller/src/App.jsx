@@ -19,6 +19,8 @@ import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
 import CookiePolicy from "./pages/Legal/CookiePolicy";
 import TermsOfUse from "./pages/Legal/TermsOfUse";
 import CommunityGuidelines from "./pages/Legal/CommunityGuidelines";
+// import SellerProfile from "./pages/SellerDashboard/components/Home/SellerCompanyProfile";
+import SellerProfile from "./pages/SellerDashboard/components/SellerProfile/SellerProfile";
 
 //dashboard layouts
 import SellerDashboardLayout from "./pages/SellerDashboard/pages/SellerDashboardLayout";

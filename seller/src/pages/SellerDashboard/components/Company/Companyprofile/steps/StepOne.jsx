@@ -92,7 +92,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 const DEFAULT_FORM_DATA = {
   companyName: "",
-  company_registration_number: "", // ✅ NEW
+  company_registration_number: "",
   legalowner: "",
   locationOfRegistration: "",
   companyRegistrationYear: "",
@@ -103,8 +103,8 @@ const DEFAULT_FORM_DATA = {
     city: "",
     postalCode: "",
   },
-  mainCategory: [""],
-  mainProduct: [""],
+  mainCategory: [],
+  mainProduct: [],
   acceptedCurrency: [],
   acceptedPaymentType: [],
   languageSpoken: [],
@@ -127,17 +127,6 @@ const getErrorClass = (hasError) =>
   hasError
     ? "border-red-400 focus:ring-red-500"
     : "border-gray-300 hover:border-gray-400";
-
-const extractFieldErrors = (errors, prefix) => {
-  const fieldErrors = {};
-  Object.keys(errors).forEach((key) => {
-    if (key.startsWith(prefix)) {
-      const index = key.split(".")[1];
-      fieldErrors[index] = errors[key];
-    }
-  });
-  return fieldErrors;
-};
 
 const FormField = ({
   name,
@@ -257,7 +246,6 @@ const DynamicArrayField = ({
   icon: Icon,
   hint,
   error,
-  errors = {},
   placeholder,
   type = "input",
 }) => {
@@ -272,8 +260,10 @@ const DynamicArrayField = ({
 
   const handleRemove = useCallback(
     (index) => {
-      const newItems = items.filter((_, i) => i !== index);
-      onChange(newItems);
+      if (items.length > 1) {
+        const newItems = items.filter((_, i) => i !== index);
+        onChange(newItems);
+      }
     },
     [items, onChange]
   );
@@ -311,20 +301,22 @@ const DynamicArrayField = ({
                     onValueChange={(value) => handleItemChange(index, value)}
                   >
                     <SelectTrigger
-                      className={`w-full p-6 pl-10 h-14 text-sm rounded-lg border transition-all focus:outline-none focus:ring-2 ${
-                        errors[index]
+                      className={`w-full pl-10 pr-10 h-12 text-sm rounded-lg border transition-all focus:outline-none focus:ring-2 ${
+                        !item
                           ? "border-red-500 focus:ring-red-500"
                           : "border-gray-300 focus:ring-navyblue focus:border-navyblue"
                       }`}
                       aria-label={`${label} ${index + 1}`}
-                      aria-invalid={!!errors[index]}
                     >
                       <SelectValue placeholder={`Select ${label}`} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {CATEGORIES.map((category) => (
-                          <SelectItem key={category} value={category}>
+                          <SelectItem
+                            key={category}
+                            value={category.toLowerCase()}
+                          >
                             {category}
                           </SelectItem>
                         ))}
@@ -338,14 +330,13 @@ const DynamicArrayField = ({
                     onChange={(e) => handleItemChange(index, e.target.value)}
                     placeholder={`${placeholder} ${index + 1}`}
                     aria-label={`${label} ${index + 1}`}
-                    aria-invalid={!!errors[index]}
-                    className={`pl-10 pr-10 text-sm w-full py-3 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-navyblue focus:border-transparent ${getErrorClass(
-                      !!errors[index]
-                    )} bg-white`}
+                    className={`pl-10 pr-10 text-sm w-full py-3 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-navyblue focus:border-transparent ${
+                      !item ? "border-red-500" : "border-gray-300"
+                    } bg-white`}
                   />
                 )}
 
-                {index > 0 && (
+                {items.length > 1 && (
                   <button
                     type="button"
                     onClick={() => handleRemove(index)}
@@ -357,12 +348,6 @@ const DynamicArrayField = ({
                 )}
               </div>
             </div>
-
-            {errors[index] && (
-              <p className="text-xs text-red-500 ml-1" role="alert">
-                ⚠ {errors[index]}
-              </p>
-            )}
           </div>
         ))}
       </div>
@@ -392,21 +377,37 @@ const StepOne = ({
   setFormData = () => {},
   errors = {},
 }) => {
-  const safeFormData = useMemo(
-    () => ({
+  const safeFormData = useMemo(() => {
+    // Ensure arrays are properly initialized
+    const ensureArray = (value) => {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.length > 0 ? value : [""];
+      return [value];
+    };
+
+    return {
       ...DEFAULT_FORM_DATA,
       ...formData,
       address: {
         ...DEFAULT_FORM_DATA.address,
         ...(formData?.address || {}),
       },
-      mainCategory:
-        formData?.mainCategory?.length > 0 ? formData.mainCategory : [""],
-      mainProduct:
-        formData?.mainProduct?.length > 0 ? formData.mainProduct : [""],
-    }),
-    [formData]
-  );
+      mainCategory: ensureArray(formData?.mainCategory),
+      mainProduct: ensureArray(formData?.mainProduct),
+      acceptedCurrency: Array.isArray(formData?.acceptedCurrency)
+        ? formData.acceptedCurrency
+        : [],
+      acceptedPaymentType: Array.isArray(formData?.acceptedPaymentType)
+        ? formData.acceptedPaymentType
+        : [],
+      languageSpoken: Array.isArray(formData?.languageSpoken)
+        ? formData.languageSpoken
+        : [],
+      tradeCapabilities: Array.isArray(formData?.tradeCapabilities)
+        ? formData.tradeCapabilities
+        : [],
+    };
+  }, [formData]);
 
   const yearOptions = useMemo(
     () => generateYearOptions(YEAR_RANGE, CURRENT_YEAR),
@@ -452,16 +453,6 @@ const StepOne = ({
     [setFormData]
   );
 
-  const categoryErrors = useMemo(
-    () => extractFieldErrors(errors, "mainCategory."),
-    [errors]
-  );
-
-  const productErrors = useMemo(
-    () => extractFieldErrors(errors, "mainProduct."),
-    [errors]
-  );
-
   return (
     <div className="max-w-full mx-auto rounded-2xl">
       <div className="flex flex-col gap-6 md:gap-8">
@@ -490,7 +481,6 @@ const StepOne = ({
               required
             />
 
-            {/* ✅ NEW: Company Registration Number */}
             <FormField
               name="company_registration_number"
               value={safeFormData.company_registration_number}
@@ -666,7 +656,6 @@ const StepOne = ({
             icon={Layers}
             hint="Select the product categories that best describe your company offerings."
             error={errors.mainCategory}
-            errors={categoryErrors}
             type="select"
           />
 
@@ -677,7 +666,6 @@ const StepOne = ({
             icon={Building}
             hint="Enter your top-selling or key products relevant to your category. eg( natural stone - marble, ceramic & tiles - ceramic)."
             error={errors.mainProduct}
-            errors={productErrors}
             placeholder="Product"
             type="input"
           />

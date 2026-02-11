@@ -1,19 +1,72 @@
 import React from "react";
 import {
-  Mail,
-  Calendar,
-  FileText,
-  DollarSign,
   Building2,
   MapPin,
+  Calendar,
+  User,
   Package,
-  Languages,
+  Globe,
+  DollarSign,
+  CreditCard,
+  FileText,
+  Factory,
   Award,
+  CheckCircle2,
 } from "lucide-react";
+
+const InfoRow = ({ label, value, fullWidth = false }) => {
+  if (!value || (Array.isArray(value) && value.length === 0)) return null;
+
+  const displayValue = Array.isArray(value) ? value.join(", ") : value;
+
+  return (
+    <div
+      className={`grid ${
+        fullWidth ? "grid-cols-1" : "grid-cols-3"
+      } gap-4 py-3 border-b border-gray-100 last:border-0`}
+    >
+      <div className="text-sm font-medium text-gray-600">{label}</div>
+      <div
+        className={`${
+          fullWidth ? "col-span-1" : "col-span-2"
+        } text-sm text-gray-900`}
+      >
+        {displayValue}
+      </div>
+    </div>
+  );
+};
+
+const Section = ({ title, children, icon: Icon }) => (
+  <div className="mb-6">
+    <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-navyblue">
+      {Icon && <Icon className="w-5 h-5 text-navyblue" />}
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+    </div>
+    <div className="space-y-0">{children}</div>
+  </div>
+);
+
+const Badge = ({ text, variant = "primary" }) => {
+  const variants = {
+    primary: "bg-navyblue text-white",
+    secondary: "bg-gray-100 text-gray-700",
+    success: "bg-green-100 text-green-700",
+  };
+
+  return (
+    <span
+      className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${variants[variant]} mr-2 mb-2`}
+    >
+      {text}
+    </span>
+  );
+};
 
 export default function ReviewStep({ formData = {} }) {
   const {
     companyName,
+    company_registration_number,
     legalowner,
     companyDescription,
     companyRegistrationYear,
@@ -23,350 +76,347 @@ export default function ReviewStep({ formData = {} }) {
     acceptedCurrency,
     acceptedPaymentType,
     languageSpoken,
-    attendedTradeShows,
+    tradeCapabilities,
     address,
+    totalEmployees,
+    businessType,
+    factorySize,
+    factoryCountryOrRegion,
+    contractManufacturing,
+    numberOfProductionLines,
+    annualOutputValue,
+    rdTeamSize,
     logo,
+    logoUrl,
     companyPhotos,
+    companyPhotosUrl,
     companyVideos,
+    companyVideosUrl,
+    registration_documents,
+    registrationDocsUrl,
   } = formData;
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-blue-50 to-gray-100 ">
-      <div className="w-full bg-white shadow-2xl overflow-hidden">
-        {/* Header with Gradient
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6">
-          <h1 className="sm:text-3xl font-bold text-white drop-shadow-lg">
-            Review & Confirm Company Details
-          </h1>
-          <p className="text-blue-100 mt-1 md:text-sm text-xs">
-            Please review all information before submitting
-          </p>
-        </div> */}
+  const getLogoPreview = () => {
+    if (logo instanceof File) return URL.createObjectURL(logo);
+    if (logoUrl) return logoUrl;
+    return null;
+  };
 
-        <div className="md:p-8 ">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Left Column */}
-            <div className="space-y-6">
-              {/* Company Logo and Name Card */}
-              <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-gray-800 font-bold text-2xl overflow-hidden shadow-lg ring-2 ring-gray-200">
-                    {logo ? (
+  const getAllPhotos = () => {
+    const newPhotos = (companyPhotos || []).map((file) => ({
+      url: URL.createObjectURL(file),
+      isNew: true,
+    }));
+    const existingPhotos = (companyPhotosUrl || []).map((url) => ({
+      url,
+      isNew: false,
+    }));
+    return [...existingPhotos, ...newPhotos];
+  };
+
+  const getAllVideos = () => {
+    const newVideos = (companyVideos || []).map((file) => ({
+      url: URL.createObjectURL(file),
+      isNew: true,
+    }));
+    const existingVideos = (companyVideosUrl || []).map((url) => ({
+      url,
+      isNew: false,
+    }));
+    return [...existingVideos, ...newVideos];
+  };
+
+  const getTotalDocs = () => {
+    return (
+      (registrationDocsUrl?.length || 0) + (registration_documents?.length || 0)
+    );
+  };
+
+  const logoPreview = getLogoPreview();
+  const allPhotos = getAllPhotos();
+  const allVideos = getAllVideos();
+  const totalDocs = getTotalDocs();
+
+  const fullAddress = address
+    ? [
+        address.street,
+        address.city,
+        address.stateOrProvince,
+        address.postalCode,
+        address.countryOrRegion,
+      ]
+        .filter(Boolean)
+        .join(", ")
+    : null;
+
+  return (
+    <div className="max-w-6xl mx-auto bg-white">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-navyblue to-blue-900 text-white px-8 py-6 rounded-t-lg">
+        <div className="flex items-center gap-2 mb-2">
+          <CheckCircle2 className="w-6 h-6" />
+          <h2 className="text-2xl font-bold">Review Your Information</h2>
+        </div>
+        <p className="text-blue-100 text-sm">
+          Please verify all details before submission
+        </p>
+      </div>
+
+      {/* Main Content - Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8">
+        {/* Left Column - Image/Media Section */}
+        <div className="lg:col-span-4">
+          <div className="sticky top-8 space-y-6">
+            {/* Company Logo */}
+            <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+              <h4 className="text-sm font-semibold text-gray-600 mb-4 uppercase tracking-wide">
+                Company Logo
+              </h4>
+              <div className="w-full aspect-square bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200">
+                {logoPreview ? (
+                  <img
+                    src={logoPreview}
+                    alt="Company Logo"
+                    className="w-full h-full object-contain p-4"
+                  />
+                ) : (
+                  <Building2 className="w-20 h-20 text-gray-300" />
+                )}
+              </div>
+            </div>
+
+            {/* Company Photos */}
+            {allPhotos.length > 0 && (
+              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+                <h4 className="text-sm font-semibold text-gray-600 mb-4 uppercase tracking-wide">
+                  Company Photos ({allPhotos.length})
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  {allPhotos.slice(0, 4).map((photo, idx) => (
+                    <div
+                      key={idx}
+                      className="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                    >
                       <img
-                        src={URL.createObjectURL(logo)}
-                        alt="Logo"
-                        className="w-full h-full object-contain"
+                        src={photo.url}
+                        alt={`Photo ${idx + 1}`}
+                        className="w-full h-full object-cover"
                       />
-                    ) : companyName ? (
-                      companyName.substring(0, 2).toUpperCase()
-                    ) : (
-                      "IC"
-                    )}
+                      {photo.isNew && (
+                        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                          New
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {allPhotos.length > 4 && (
+                  <p className="text-sm text-gray-500 mt-3 text-center">
+                    +{allPhotos.length - 4} more photos
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Videos */}
+            {allVideos.length > 0 && (
+              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+                <h4 className="text-sm font-semibold text-gray-600 mb-4 uppercase tracking-wide">
+                  Company Videos ({allVideos.length})
+                </h4>
+                <div className="relative aspect-video rounded-lg overflow-hidden border border-gray-200">
+                  <video
+                    src={allVideos[0].url}
+                    className="w-full h-full object-cover"
+                    controls
+                  />
+                </div>
+                {allVideos.length > 1 && (
+                  <p className="text-sm text-gray-500 mt-3 text-center">
+                    +{allVideos.length - 1} more videos
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Documents */}
+            {totalDocs > 0 && (
+              <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-8 h-8 text-navyblue" />
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-900">
+                        Documents
+                      </h4>
+                      <p className="text-xs text-gray-500">
+                        Registration files
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-navyblue text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
+                    {totalDocs}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - Information Section */}
+        <div className="lg:col-span-8">
+          <div className="bg-white border-2 border-gray-200 rounded-lg p-8">
+            {/* Company Basic Information */}
+            <Section title="Company Information" icon={Building2}>
+              <InfoRow label="Company Name" value={companyName} />
+              <InfoRow
+                label="Registration Number"
+                value={company_registration_number}
+              />
+              <InfoRow label="Legal Owner" value={legalowner} />
+              <InfoRow
+                label="Registration Year"
+                value={companyRegistrationYear}
+              />
+              <InfoRow
+                label="Registration Location"
+                value={locationOfRegistration}
+              />
+              <InfoRow label="Business Type" value={businessType} />
+              {companyDescription && (
+                <div className="py-3 border-b border-gray-100 last:border-0">
+                  <div className="text-sm font-medium text-gray-600 mb-2">
+                    Company Description
+                  </div>
+                  <div className="text-sm text-gray-900 leading-relaxed">
+                    {companyDescription}
+                  </div>
+                </div>
+              )}
+            </Section>
+
+            {/* Categories & Products */}
+            {(mainCategory?.length > 0 || mainProduct?.length > 0) && (
+              <Section title="Categories & Products" icon={Package}>
+                {mainCategory && mainCategory.length > 0 && (
+                  <div className="py-3 border-b border-gray-100">
+                    <div className="text-sm font-medium text-gray-600 mb-3">
+                      Main Categories
+                    </div>
+                    <div>
+                      {mainCategory.map((cat, i) => (
+                        <Badge key={i} text={cat} variant="primary" />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {mainProduct && mainProduct.length > 0 && (
+                  <div className="py-3">
+                    <div className="text-sm font-medium text-gray-600 mb-3">
+                      Main Products
+                    </div>
+                    <div>
+                      {mainProduct.map((prod, i) => (
+                        <Badge key={i} text={prod} variant="secondary" />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </Section>
+            )}
+
+            {/* Address */}
+            {fullAddress && (
+              <Section title="Address" icon={MapPin}>
+                <InfoRow label="Full Address" value={fullAddress} />
+              </Section>
+            )}
+
+            {/* Factory & Production */}
+            <Section title="Production Information" icon={Factory}>
+              <InfoRow label="Total Employees" value={totalEmployees} />
+              <InfoRow label="Factory Size" value={factorySize} />
+              <InfoRow
+                label="Factory Location"
+                value={factoryCountryOrRegion}
+              />
+              <InfoRow
+                label="Production Lines"
+                value={numberOfProductionLines}
+              />
+              <InfoRow label="Annual Output Value" value={annualOutputValue} />
+              <InfoRow label="R&D Team Size" value={rdTeamSize} />
+              {contractManufacturing && (
+                <div className="py-3">
+                  <Badge
+                    text="Contract Manufacturing Available"
+                    variant="success"
+                  />
+                </div>
+              )}
+            </Section>
+
+            {/* Payment & Trade */}
+            <Section title="Payment & Trade" icon={CreditCard}>
+              {acceptedCurrency && acceptedCurrency.length > 0 && (
+                <div className="py-3 border-b border-gray-100">
+                  <div className="text-sm font-medium text-gray-600 mb-3">
+                    Accepted Currencies
                   </div>
                   <div>
-                    <h3 className="sm:text-xl md:text-2xl font-bold text-gray-900">
-                      {companyName || "Company Name"}
-                    </h3>
-                    {mainCategory && (
-                      <p className="text-sm text-gray-600 mt-0.5">
-                        {mainCategory}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Basic Information Card */}
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Building2 className="w-4 h-4 text-navyblue" />
-                  </div>
-                  Basic Information
-                </h2>
-
-                <div className="space-y-3 text-sm">
-                  {legalowner && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Mail className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">Legal Owner</p>
-                        <p className="font-semibold text-gray-900">
-                          {legalowner}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {companyRegistrationYear && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Calendar className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">Founding Date</p>
-                        <p className="font-semibold text-gray-900">
-                          {companyRegistrationYear}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {locationOfRegistration && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <FileText className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">
-                          Registration Location
-                        </p>
-                        <p className="font-semibold text-gray-900">
-                          {locationOfRegistration}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {mainProduct && mainProduct.length > 0 && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Package className="w-4 h-4 navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">Main Products</p>
-                        <p className="font-semibold text-gray-900">
-                          {mainProduct.join(", ")}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {languageSpoken && languageSpoken.length > 0 && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Languages className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">Languages</p>
-                        <p className="font-semibold text-gray-900">
-                          {languageSpoken.join(", ")}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {attendedTradeShows && (
-                    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                      <Award className="w-4 h-4 text-navyblue mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-gray-500 text-xs">Trade Shows</p>
-                        <p className="font-semibold text-gray-900">
-                          {attendedTradeShows}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Address Card */}
-              {address && (
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="font-bold text-gray-900 mb-3 text-sm flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center">
-                      <MapPin className="w-3 h-3 text-green-600" />
-                    </div>
-                    Headquarters Address
-                  </h3>
-                  <div className="text-sm text-gray-700 space-y-1 ml-8">
-                    {address.street && (
-                      <p className="font-medium">{address.street}</p>
-                    )}
-                    {(address.city ||
-                      address.stateOrProvince ||
-                      address.postalCode) && (
-                      <p>
-                        {[
-                          address.city,
-                          address.stateOrProvince,
-                          address.postalCode,
-                        ]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </p>
-                    )}
-                    {address.countryOrRegion && (
-                      <p className="text-gray-600">{address.countryOrRegion}</p>
-                    )}
+                    {acceptedCurrency.map((cur, i) => (
+                      <Badge key={i} text={cur} variant="primary" />
+                    ))}
                   </div>
                 </div>
               )}
-
-              {/* Payment Information Card */}
-              {(acceptedCurrency?.length > 0 ||
-                acceptedPaymentType?.length > 0) && (
-                <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                  <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
-                      <DollarSign className="w-4 h-4 text-green-600" />
-                    </div>
-                    Payment Information
-                  </h2>
-
-                  <div className="space-y-4">
-                    {acceptedCurrency && acceptedCurrency.length > 0 && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-2 font-medium">
-                          Accepted Currency
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {acceptedCurrency.map((cur, i) => (
-                            <span
-                              key={i}
-                              className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
-                            >
-                              {cur}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {acceptedPaymentType && acceptedPaymentType.length > 0 && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-2 font-medium">
-                          Payment Methods
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {acceptedPaymentType.map((pay, i) => (
-                            <span
-                              key={i}
-                              className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm hover:shadow-md transition-shadow"
-                            >
-                              {pay}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+              {acceptedPaymentType && acceptedPaymentType.length > 0 && (
+                <div className="py-3 border-b border-gray-100">
+                  <div className="text-sm font-medium text-gray-600 mb-3">
+                    Payment Methods
+                  </div>
+                  <div>
+                    {acceptedPaymentType.map((pay, i) => (
+                      <Badge key={i} text={pay} variant="secondary" />
+                    ))}
                   </div>
                 </div>
               )}
-
-              {/* Company Description Card */}
-              {companyDescription && (
-                <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3 text-sm flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center">
-                      <FileText className="w-3 h-3 text-amber-600" />
-                    </div>
-                    Company Description
-                  </h3>
-
-                  <div className="max-h-60 overflow-y-auto">
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      {companyDescription}
-                    </p>
+              {tradeCapabilities && tradeCapabilities.length > 0 && (
+                <div className="py-3">
+                  <div className="text-sm font-medium text-gray-600 mb-3">
+                    Trade Capabilities
+                  </div>
+                  <div>
+                    {tradeCapabilities.map((cap, i) => (
+                      <Badge key={i} text={cap} variant="secondary" />
+                    ))}
                   </div>
                 </div>
               )}
-            </div>
+            </Section>
 
-            {/* Right Column - Media Gallery */}
-            <div className="space-y-6">
-              <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <Package className="w-4 h-4 text-purple-600" />
-                  </div>
-                  Media Gallery
-                </h2>
-
-                {/* Photo Grid */}
-                <div className="mb-4">
-                  <p className="text-xs text-gray-500 mb-3 font-medium">
-                    Company Photos
-                  </p>
-                  <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-80 border rounded-xl">
-                    {companyPhotos && companyPhotos.length > 0 ? (
-                      companyPhotos
-                        .slice(0, companyPhotos.length)
-                        .map((photo, idx) => (
-                          <div
-                            key={idx}
-                            className="aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-navyblue"
-                          >
-                            <img
-                              src={URL.createObjectURL(photo)}
-                              alt={`Company photo ${idx + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ))
-                    ) : (
-                      <>
-                        <div className="aspect-video rounded-xl bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
-                          <div className="text-center">
-                            <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-1" />
-                            <p className="text-xs text-gray-500">No photo</p>
-                          </div>
-                        </div>
-                        <div className="aspect-video rounded-xl bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center border-2 border-dashed border-gray-300">
-                          <div className="text-center">
-                            <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-1" />
-                            <p className="text-xs text-gray-500">No photo</p>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {companyPhotos?.length && (
-                    <div className="mt-3 text-center">
-                      <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                        total {companyPhotos.length} photos
-                      </span>
-                    </div>
-                  )}
+            {/* Languages */}
+            {languageSpoken && languageSpoken.length > 0 && (
+              <Section title="Languages" icon={Globe}>
+                <div className="py-3">
+                  {languageSpoken.map((lang, i) => (
+                    <Badge key={i} text={lang} variant="primary" />
+                  ))}
                 </div>
-
-                {/* Video */}
-                <div>
-                  <p className="text-xs text-gray-500 mb-3 font-medium">
-                    Company Video
-                  </p>
-                  <div className="relative aspect-video rounded-xl bg-gray-100 overflow-hidden shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200">
-                    {companyVideos && companyVideos.length > 0 ? (
-                      <video
-                        src={URL.createObjectURL(companyVideos[0])}
-                        className="w-full h-full object-cover"
-                        controls
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-gray-200 via-gray-100 to-gray-200">
-                        <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-3 shadow-lg ring-4 ring-gray-200">
-                          <svg
-                            className="w-8 h-8 text-gray-600 ml-1"
-                            fill="currentColor"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M4 3l8 5-8 5V3z" />
-                          </svg>
-                        </div>
-                        <p className="text-sm font-semibold text-gray-700">
-                          No Company Video
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Upload a video to showcase your company
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {companyVideos?.length > 1 && (
-                    <div className="mt-3 text-center">
-                      <span className="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                        +{companyVideos.length - 1} more videos
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+              </Section>
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="bg-gray-50 px-8 py-6 rounded-b-lg border-t-2 border-gray-200">
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+          <CheckCircle2 className="w-5 h-5 text-green-600" />
+          <span className="font-medium">
+            Review complete. Click submit to finalize your company profile.
+          </span>
         </div>
       </div>
     </div>

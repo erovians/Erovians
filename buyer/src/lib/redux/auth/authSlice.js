@@ -52,6 +52,7 @@ export const checkUserAndSendOTP = createAsyncThunk(
   "auth/checkUserAndSendOTP",
   async (formData, { rejectWithValue }) => {
     try {
+      console.log(formData);
       const response = await api.post("/auth/check-user", formData);
       return response.data;
     } catch (error) {

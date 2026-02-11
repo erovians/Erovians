@@ -964,7 +964,7 @@ const ProductDetails = () => {
           {/* Thumbnails */}
           <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto w-full md:w-20">
             {editData.productImages?.map((img, idx) => (
-              <div key={idx} className="relative flex-shrink-0">
+              <div key={idx} className="relative shrink-0">
                 <img
                   src={img}
                   alt={`${product.productName}-${idx}`}
@@ -988,7 +988,7 @@ const ProductDetails = () => {
             ))}
 
             {newImages.map((img, idx) => (
-              <div key={`new-${idx}`} className="relative flex-shrink-0">
+              <div key={`new-${idx}`} className="relative shrink-0">
                 <img
                   src={img}
                   alt={`new-${idx}`}
@@ -1008,7 +1008,7 @@ const ProductDetails = () => {
             ))}
 
             {isEditing && (
-              <label className="cursor-pointer w-20 h-20 flex-shrink-0 flex items-center justify-center border rounded-lg text-gray-500 hover:bg-gray-100">
+              <label className="cursor-pointer w-20 h-20 shrink-0 flex items-center justify-center border rounded-lg text-gray-500 hover:bg-gray-100">
                 + Add
                 <input
                   type="file"
@@ -1025,7 +1025,7 @@ const ProductDetails = () => {
             <img
               src={selectedImg}
               alt={product.productName}
-              className="max-h-[450px] min-h-[250px] object-contain p-4 w-full"
+              className="max-h-112.5 min-h-62.5 object-contain p-4 w-full"
             />
           </div>
         </div>
@@ -1576,7 +1576,7 @@ const ProductDetails = () => {
                   rows={4}
                 />
               ) : (
-                <p className="text-gray-600 hide-scrollbar leading-relaxed text-xs md:text-sm max-h-[300px] scroll-smooth overflow-y-auto overflow-x-hidden">
+                <p className="text-gray-600 hide-scrollbar leading-relaxed text-xs md:text-sm max-h-75 scroll-smooth overflow-y-auto overflow-x-hidden">
                   {product.description || "No description available."}
                 </p>
               )}

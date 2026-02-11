@@ -13,7 +13,6 @@ import {
   getMyProducts,
 } from "../controller/product.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
-import { verifyUser, allowRoles } from "../middleware/auth.middleware.js";
 import {
   isAuthenticated,
   authorizeRoles,
@@ -40,13 +39,13 @@ router.get(
 router.delete(
   "/:productId",
   isAuthenticated,
-  allowRoles("seller"),
+  authorizeRoles("seller"),
   deleteProduct
 );
 router.put(
   "/:productId",
   isAuthenticated,
-  allowRoles("seller"),
+  authorizeRoles("seller"),
   updateProductData
 );
 router.post(

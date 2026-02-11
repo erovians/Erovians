@@ -470,6 +470,13 @@ export const loadSeller = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // ✅ FIX: Convert RegEx to string in seller_country
+  if (seller?.seller_country?.businessIdConfig?.pattern) {
+    const pattern = seller.seller_country.businessIdConfig.pattern;
+    seller.seller_country.businessIdConfig.pattern =
+      pattern instanceof RegExp ? pattern.source : String(pattern);
+  }
+
   // Check seller status
   if (seller.status === "suspended") {
     return next(new AppError("Your seller account has been suspended", 403));

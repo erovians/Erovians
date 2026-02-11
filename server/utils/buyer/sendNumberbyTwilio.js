@@ -29,6 +29,7 @@ export const sendSMS = async (to, message) => {
       status: sms.status,
     };
   } catch (error) {
+    console.log(error);
     logger.error("Error sending SMS", {
       error: error.message,
       to,

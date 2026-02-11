@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  saveCompany, // ✅ Single action
+  saveCompany,
   getCompany,
   clearError,
   clearSuccess,
@@ -40,7 +40,7 @@ export default function CompanyProfileForm() {
     useSelector((state) => state.company);
   const { seller } = useSelector((state) => state.seller);
   console.log("this is seller", seller);
-  console.log("here is compnay details", company);
+  console.log("here is company details", company);
 
   const [formData, setFormData] = useState({
     // Basic Info
@@ -76,6 +76,11 @@ export default function CompanyProfileForm() {
     companyPhotos: [],
     companyVideos: [],
     registration_documents: [],
+    // URL fields for existing data
+    logoUrl: "",
+    companyPhotosUrl: [],
+    companyVideosUrl: [],
+    registrationDocsUrl: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -89,23 +94,21 @@ export default function CompanyProfileForm() {
   // ✅ Populate form when company data arrives
   useEffect(() => {
     if (company === null) {
-      // Individual seller - CREATE mode
       toast.info("No company profile found. Let's create one! 🚀");
     } else if (company) {
-      // Professional seller - UPDATE mode
       const c = company;
 
-      // Helper to split comma-separated strings
-      const splitString = (str) => {
-        if (!str) return [];
-        if (Array.isArray(str)) {
-          return str.flatMap((item) =>
-            typeof item === "string"
-              ? item.split(",").map((s) => s.trim())
-              : item
-          );
+      // ✅ Helper to ensure array format
+      const ensureArray = (value) => {
+        if (!value) return [];
+        if (Array.isArray(value)) return value;
+        if (typeof value === "string") {
+          return value
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
         }
-        return str.split(",").map((s) => s.trim());
+        return [];
       };
 
       setFormData({
@@ -125,13 +128,15 @@ export default function CompanyProfileForm() {
           countryOrRegion: c.companyBasicInfo?.address?.countryOrRegion || "",
           postalCode: c.companyBasicInfo?.address?.postalCode || "",
         },
-        mainCategory: c.companyBasicInfo?.mainCategory || [],
-        mainProduct: c.companyBasicInfo?.subCategory || [],
-        acceptedCurrency: splitString(c.companyBasicInfo?.acceptedCurrency),
-        acceptedPaymentType: splitString(
+        // ✅ Fixed: Properly handle arrays
+        mainCategory: ensureArray(c.companyBasicInfo?.mainCategory),
+        mainProduct: ensureArray(c.companyBasicInfo?.subCategory),
+        acceptedCurrency: ensureArray(c.companyBasicInfo?.acceptedCurrency),
+        acceptedPaymentType: ensureArray(
           c.companyBasicInfo?.acceptedPaymentType
         ),
-        languageSpoken: splitString(c.companyBasicInfo?.languageSpoken),
+        languageSpoken: ensureArray(c.companyBasicInfo?.languageSpoken),
+        tradeCapabilities: ensureArray(c.companyBasicInfo?.tradeCapabilities),
         totalEmployees: c.companyBasicInfo?.totalEmployees?.toString() || "",
         businessType: c.companyBasicInfo?.businessType || "",
         factorySize: c.companyBasicInfo?.factorySize || "",
@@ -143,13 +148,20 @@ export default function CompanyProfileForm() {
           c.companyBasicInfo?.numberOfProductionLines?.toString() || "",
         annualOutputValue: c.companyBasicInfo?.annualOutputValue || "",
         rdTeamSize: c.companyBasicInfo?.rdTeamSize?.toString() || "",
-        tradeCapabilities: c.companyBasicInfo?.tradeCapabilities || [],
         // Company Intro
         companyDescription: c.companyIntro?.companyDescription || "",
+        // ✅ Store URLs separately
         logoUrl: c.companyIntro?.logo || "",
-        companyPhotosUrl: c.companyIntro?.companyPhotos || [],
-        companyVideosUrl: c.companyIntro?.companyVideos || [],
-        registrationDocsUrl: c.companyBasicInfo?.registration_documents || [],
+        companyPhotosUrl: ensureArray(c.companyIntro?.companyPhotos),
+        companyVideosUrl: ensureArray(c.companyIntro?.companyVideos),
+        registrationDocsUrl: ensureArray(
+          c.companyBasicInfo?.registration_documents
+        ),
+        // Keep file arrays empty for updates
+        logo: null,
+        companyPhotos: [],
+        companyVideos: [],
+        registration_documents: [],
       });
 
       toast.success("Company data loaded! You can update it now. ✏️");
@@ -190,7 +202,6 @@ export default function CompanyProfileForm() {
     const newErrors = {};
 
     if (step === 1) {
-      // ✅ REQUIRED FIELDS - Step 1
       if (!formData.companyName?.trim()) {
         newErrors.companyName = "Company name is required";
       }
@@ -240,31 +251,29 @@ export default function CompanyProfileForm() {
     }
 
     if (step === 2) {
-      // ✅ REQUIRED FIELDS - Step 2
       if (!formData.companyDescription?.trim()) {
         newErrors.companyDescription = "Company description is required";
       } else if (formData.companyDescription.length < 50) {
         newErrors.companyDescription = "Minimum 50 characters required";
       }
 
-      // Logo validation (only for new company)
-      if (!company && !formData.logo) {
+      // ✅ Fixed: Check both new file and existing URL
+      if (!company && !formData.logo && !formData.logoUrl) {
         newErrors.logo = "Company logo is required";
       }
 
-      // Photos validation (only for new company)
       if (
         !company &&
-        (!formData.companyPhotos || formData.companyPhotos.length === 0)
+        formData.companyPhotos.length === 0 &&
+        formData.companyPhotosUrl.length === 0
       ) {
         newErrors.companyPhotos = "At least one photo is required";
       }
 
-      // Registration documents validation (only for new company)
       if (
         !company &&
-        (!formData.registration_documents ||
-          formData.registration_documents.length === 0)
+        formData.registration_documents.length === 0 &&
+        formData.registrationDocsUrl.length === 0
       ) {
         newErrors.registration_documents =
           "At least one registration document is required";
@@ -296,14 +305,12 @@ export default function CompanyProfileForm() {
 
   const handleSubmit = async () => {
     try {
-      // Final validation
       const step1Errors = validateStep(1);
       const step2Errors = validateStep(2);
       const allErrors = { ...step1Errors, ...step2Errors };
 
       if (Object.keys(allErrors).length > 0) {
         setErrors(allErrors);
-        // Navigate to first error step
         if (Object.keys(step1Errors).length > 0) {
           setCurrentStep(1);
         } else if (Object.keys(step2Errors).length > 0) {
@@ -317,7 +324,6 @@ export default function CompanyProfileForm() {
 
       setErrors({});
 
-      // Create FormData
       const form = new FormData();
 
       // Basic Info
@@ -401,7 +407,6 @@ export default function CompanyProfileForm() {
         });
       }
 
-      // ✅ Single action - Backend will decide CREATE or UPDATE
       await dispatch(saveCompany(form)).unwrap();
     } catch (err) {
       console.error("Submit error:", err);
@@ -416,8 +421,8 @@ export default function CompanyProfileForm() {
       <div className="p-2 md:p-4">
         {/* Progress Bar */}
         <div className="flex justify-between mb-2">
-          <span className="font-medium">Progress</span>
-          <span className="text-sm">{progress}%</span>
+          <span className="font-medium text-gray-700">Progress</span>
+          <span className="text-sm text-gray-600">{progress}%</span>
         </div>
         <div className="w-full h-2 bg-gray-200 rounded">
           <div
@@ -469,7 +474,9 @@ export default function CompanyProfileForm() {
         {loading && currentStep === 1 ? (
           <div className="flex justify-center items-center h-64">
             <Spinner />
-            <span className="ml-2">Loading company details...</span>
+            <span className="ml-2 text-gray-600">
+              Loading company details...
+            </span>
           </div>
         ) : (
           <>

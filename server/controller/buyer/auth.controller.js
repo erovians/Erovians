@@ -19,6 +19,7 @@ import sendToken from "../../utils/buyer/sendToken.js";
 // ========================================
 export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
   const { email, mobile } = req.body;
+  console.log(req.body);
 
   // Validate input
   if (!email && !mobile) {

@@ -94,17 +94,17 @@ app.use("/api/v2/company", companyBuyerRoutes);
 app.use("/api/v2/category", categoryRoutes);
 app.use("/api/v2/quotation", quotationRoutes);
 
-app.post("/seed-database", async (req, res) => {
-  try {
-    await seedDatabase(req, res);
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error seeding database",
-      error: error.message,
-    });
-  }
-});
+// app.post("/seed-database", async (req, res) => {
+//   try {
+//     await seedDatabase(req, res);
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error seeding database",
+//       error: error.message,
+//     });
+//   }
+// });
 
 app.use(globalErrorHandler);
 export { app };
