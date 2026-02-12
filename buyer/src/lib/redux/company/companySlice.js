@@ -216,13 +216,13 @@ const companySlice = createSlice({
       })
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.loading = false;
-        state.companies = action.payload.companies;
+        state.companies = action.payload?.companies;
         state.pagination = {
           ...state.pagination,
-          currentPage: action.payload.pagination.currentPage,
-          totalPages: action.payload.pagination.totalPages,
-          totalCompanies: action.payload.pagination.totalCompanies,
-          limit: action.payload.pagination.limit,
+          currentPage: action.payload?.pagination.currentPage,
+          totalPages: action.payload?.pagination.totalPages,
+          totalCompanies: action.payload?.pagination.totalCompanies,
+          limit: action.payload?.pagination.limit,
         };
         state.error = null;
       })

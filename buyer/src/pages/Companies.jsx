@@ -250,7 +250,7 @@ const Companies = () => {
 
             {!loading && !error && (
               <>
-                {companies.length === 0 ? (
+                {companies?.length === 0 ? (
                   <div className="flex items-center justify-center h-96">
                     <div className="text-center">
                       <div className="text-6xl mb-4">🏢</div>
@@ -269,7 +269,7 @@ const Companies = () => {
                         <p className="text-sm text-gray-600">
                           Showing{" "}
                           <span className="font-semibold text-gray-900">
-                            {companies.length}
+                            {companies?.length}
                           </span>{" "}
                           of{" "}
                           <span className="font-semibold text-gray-900">
@@ -281,7 +281,7 @@ const Companies = () => {
 
                       <div className="max-w-7xl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-                          {companies.map((company) => (
+                          {companies?.map((company) => (
                             <CompanyCard
                               key={company._id}
                               company={company}
