@@ -65,12 +65,17 @@ const SellerSidebar = () => {
         },
       ],
     },
-    {
-      key: "company Profile",
-      icon: isProfessional ? <Store size={20} /> : <Building2 size={20} />,
-      label: isProfessional ? "Company Profile" : "Setup Company",
-      to: "/sellerdashboard/company/profile",
-    },
+    ...(isProfessional
+      ? [
+          {
+            key: "companyProfile",
+            icon: <Store size={20} />,
+            label: "Company Profile",
+            to: "/sellerdashboard/company/profile",
+          },
+        ]
+      : []),
+
     {
       key: "messages",
       icon: <MessageSquare size={20} />,

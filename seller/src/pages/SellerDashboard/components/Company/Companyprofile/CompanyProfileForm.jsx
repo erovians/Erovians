@@ -1,3 +1,5 @@
+// CompanyProfileForm.jsx
+
 import React, { useEffect, useState } from "react";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
@@ -15,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { loadSeller } from "@/redux/slice/sellerSlice";
+import { fetchCategories } from "@/redux/slice/categorySlice";
 
 const steps = [
   {
@@ -35,15 +38,7 @@ export default function CompanyProfileForm() {
   const dispatch = useDispatch();
 
   const [currentStep, setCurrentStep] = useState(1);
-
-  const { company, loading, error, success, message, seller_status } =
-    useSelector((state) => state.company);
-  const { seller } = useSelector((state) => state.seller);
-  console.log("this is seller", seller);
-  console.log("here is company details", company);
-
   const [formData, setFormData] = useState({
-    // Basic Info
     companyName: "",
     company_registration_number: "",
     legalowner: "",
@@ -70,35 +65,40 @@ export default function CompanyProfileForm() {
     annualOutputValue: "",
     rdTeamSize: "",
     tradeCapabilities: [],
-    // Company Intro
     companyDescription: "",
     logo: null,
     companyPhotos: [],
     companyVideos: [],
     registration_documents: [],
-    // URL fields for existing data
     logoUrl: "",
     companyPhotosUrl: [],
     companyVideosUrl: [],
     registrationDocsUrl: [],
   });
-
   const [errors, setErrors] = useState({});
   const [progress, setProgress] = useState(0);
 
-  // ✅ Fetch company data on mount
+  // Redux selectors
+  const { company, loading, error, success, message } = useSelector(
+    (state) => state.company
+  );
+  const { categories, loading: categoryLoading } = useSelector(
+    (state) => state.category
+  );
+
+  // Fetch categories and company data on component mount
   useEffect(() => {
+    dispatch(fetchCategories());
     dispatch(getCompany());
   }, [dispatch]);
 
-  // ✅ Populate form when company data arrives
+  // Populate form when company data is loaded
   useEffect(() => {
     if (company === null) {
       toast.info("No company profile found. Let's create one! 🚀");
     } else if (company) {
       const c = company;
 
-      // ✅ Helper to ensure array format
       const ensureArray = (value) => {
         if (!value) return [];
         if (Array.isArray(value)) return value;
@@ -112,7 +112,6 @@ export default function CompanyProfileForm() {
       };
 
       setFormData({
-        // Basic Info
         companyName: c.companyBasicInfo?.companyName || "",
         company_registration_number:
           c.companyBasicInfo?.company_registration_number || "",
@@ -128,7 +127,6 @@ export default function CompanyProfileForm() {
           countryOrRegion: c.companyBasicInfo?.address?.countryOrRegion || "",
           postalCode: c.companyBasicInfo?.address?.postalCode || "",
         },
-        // ✅ Fixed: Properly handle arrays
         mainCategory: ensureArray(c.companyBasicInfo?.mainCategory),
         mainProduct: ensureArray(c.companyBasicInfo?.subCategory),
         acceptedCurrency: ensureArray(c.companyBasicInfo?.acceptedCurrency),
@@ -148,16 +146,13 @@ export default function CompanyProfileForm() {
           c.companyBasicInfo?.numberOfProductionLines?.toString() || "",
         annualOutputValue: c.companyBasicInfo?.annualOutputValue || "",
         rdTeamSize: c.companyBasicInfo?.rdTeamSize?.toString() || "",
-        // Company Intro
         companyDescription: c.companyIntro?.companyDescription || "",
-        // ✅ Store URLs separately
         logoUrl: c.companyIntro?.logo || "",
         companyPhotosUrl: ensureArray(c.companyIntro?.companyPhotos),
         companyVideosUrl: ensureArray(c.companyIntro?.companyVideos),
         registrationDocsUrl: ensureArray(
           c.companyBasicInfo?.registration_documents
         ),
-        // Keep file arrays empty for updates
         logo: null,
         companyPhotos: [],
         companyVideos: [],
@@ -168,12 +163,12 @@ export default function CompanyProfileForm() {
     }
   }, [company]);
 
-  // ✅ Update progress
+  // Update progress bar
   useEffect(() => {
     setProgress(Math.round(((currentStep - 1) / (steps.length - 1)) * 100));
   }, [currentStep]);
 
-  // ✅ Handle success/error
+  // Handle success/error notifications
   useEffect(() => {
     if (success && message) {
       toast.success(message, {
@@ -257,7 +252,6 @@ export default function CompanyProfileForm() {
         newErrors.companyDescription = "Minimum 50 characters required";
       }
 
-      // ✅ Fixed: Check both new file and existing URL
       if (!company && !formData.logo && !formData.logoUrl) {
         newErrors.logo = "Company logo is required";
       }
@@ -326,7 +320,6 @@ export default function CompanyProfileForm() {
 
       const form = new FormData();
 
-      // Basic Info
       form.append("companyName", formData.companyName);
       form.append(
         "company_registration_number",
@@ -345,7 +338,6 @@ export default function CompanyProfileForm() {
       );
       form.append("languageSpoken", formData.languageSpoken.join(","));
 
-      // Optional fields
       if (formData.totalEmployees) {
         form.append("totalEmployees", formData.totalEmployees);
       }
@@ -377,22 +369,18 @@ export default function CompanyProfileForm() {
         form.append("tradeCapabilities", formData.tradeCapabilities.join(","));
       }
 
-      // Company Intro
       form.append("companyDescription", formData.companyDescription);
 
-      // Files - Logo
       if (formData.logo instanceof File) {
         form.append("logo", formData.logo);
       }
 
-      // Files - Photos
       if (Array.isArray(formData.companyPhotos)) {
         formData.companyPhotos.forEach((photo) => {
           if (photo instanceof File) form.append("companyPhotos", photo);
         });
       }
 
-      // Files - Video
       if (
         Array.isArray(formData.companyVideos) &&
         formData.companyVideos[0] instanceof File
@@ -400,7 +388,6 @@ export default function CompanyProfileForm() {
         form.append("companyVideo", formData.companyVideos[0]);
       }
 
-      // Files - Registration Documents
       if (Array.isArray(formData.registration_documents)) {
         formData.registration_documents.forEach((doc) => {
           if (doc instanceof File) form.append("registration_documents", doc);
@@ -484,6 +471,8 @@ export default function CompanyProfileForm() {
               formData={formData}
               setFormData={setFormData}
               errors={errors}
+              categories={categories}
+              categoryLoading={categoryLoading}
             />
 
             <div className="mt-6 flex gap-2 justify-between items-center">

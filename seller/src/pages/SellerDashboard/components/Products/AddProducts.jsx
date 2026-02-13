@@ -1,6 +1,9 @@
+// AddProduct.jsx - Updated with category fetch
+
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, clearMessage } from "../../../../redux/slice/productSlice";
+import { fetchCategories } from "@/redux/slice/categorySlice";
 import { Package, ChevronRight, Upload } from "lucide-react";
 import { toast } from "sonner";
 import ProductForm from "./ProductForm";
@@ -13,6 +16,9 @@ const AddProduct = () => {
   const { seller } = useSelector((state) => state.seller);
   const { loading, message, error } = useSelector(
     (state) => state.products || {}
+  );
+  const { categories, loading: categoryLoading } = useSelector(
+    (state) => state.category
   );
 
   const [showBulkUpload, setShowBulkUpload] = useState(false);
@@ -53,6 +59,11 @@ const AddProduct = () => {
     },
     description: "",
   });
+
+  // Fetch categories on mount
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   useEffect(() => {
     if (message || error) {
@@ -110,7 +121,6 @@ const AddProduct = () => {
     e.preventDefault();
 
     try {
-      // Basic validation
       if (!formData.productName || formData.productName.length < 2) {
         setErrors({
           productName: "Product name must be at least 2 characters",
@@ -184,7 +194,7 @@ const AddProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header - Remove sticky and top-0 */}
+      {/* Header */}
       <div className="bg-white border-b border-gray-200 z-10">
         <div className="max-w-400 mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
@@ -223,6 +233,8 @@ const AddProduct = () => {
             loading={loading}
             onFormChange={handleFormChange}
             onSubmit={handleSubmit}
+            categories={categories}
+            categoryLoading={categoryLoading}
           />
 
           {/* RIGHT: Buyer Preview */}

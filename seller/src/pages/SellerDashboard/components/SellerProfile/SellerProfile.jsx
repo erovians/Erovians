@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchSellerProfile,
-  updateSellerProfile,
-} from "@/redux/slice/sellerSlice";
+// import { updateSellerProfile } from "@/redux/slice/sellerSlice";
 import api from "@/utils/axios.utils";
 
 const SellerProfile = () => {
@@ -23,7 +20,7 @@ const SellerProfile = () => {
 
   // ================= FETCH PROFILE =================
   useEffect(() => {
-    dispatch(fetchSellerProfile());
+    // dispatch(fetchSellerProfile());
   }, [dispatch]);
 
   // ================= SYNC REDUX → FORM =================
@@ -106,7 +103,7 @@ const SellerProfile = () => {
 
     if (photoFile) data.append("seller_profile", photoFile);
 
-    dispatch(updateSellerProfile(data));
+    // dispatch(updateSellerProfile(data));
 
     setOtp("");
     setOtpVerified(false);

@@ -1,0 +1,263 @@
+import {
+  addProductService,
+  listAllProductsService,
+  getProductByIdService,
+  updateProductStatusService,
+  deleteProductService,
+  updateProductDataService,
+  bulkActivateProductsService,
+  bulkDeactivateProductsService,
+  bulkDeleteProductsService,
+} from "../../services/product.service.js";
+
+import Product from "../../models/product.model.js";
+
+import asyncHandler from "../../middleware/buyer/asyncHandler.js";
+
+// ✅ Add Product
+// product.controller.js - addProduct function
+
+export const addProduct = asyncHandler(async (req, res, next) => {
+  console.log("this is product controller", req.body);
+  const userId = req.user.id; // ✅ user id mil gayi
+  const userRole = req.user.role;
+
+  console.log(`this is user id ${userId} and this is user role ${userRole}`);
+  res.send("done");
+});
+
+// ✅ List All Products
+export const listAllProducts = async (req, res) => {
+  try {
+    console.log(req.user);
+    const products = await listAllProductsService(req.query, req.user);
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Error fetching products",
+    });
+  }
+};
+
+// ✅ Get Product by ID  (old approch and problem that everyone can see and edit that product)
+// export const getProductById = async (req, res) => {
+//   try {
+//     const product = await getProductByIdService(req.params.productId);
+//     if (!product) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Product not found" });
+//     }
+//     res.status(200).json({ success: true, data: product });
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: error.message || "Something went wrong while fetching product",
+//     });
+//   }
+// };
+// export const getProductById = async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
+
+//     // ✅ Increase view count every time product is viewed
+//     const product = await Product.findByIdAndUpdate(
+//       productId,
+//       { $inc: { views: 1 } },
+//       { new: true }
+//     );
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: product,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: error.message || "Something went wrong while fetching product",
+//     });
+//   }
+// };
+
+//best approch because handling everything in this role base access and just to add View Count Logic (Conditional and Debounced)
+export const getProductById = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const userRole = req.user.role; // Access the role set by your middleware
+    const userId = req.user.userId;
+    console.log(userId);
+
+    let findFilter = { _id: productId };
+    let updateViews = false;
+
+    // --- Authorization Logic ---
+    if (userRole === "seller") {
+      // Seller can only view their own product
+      findFilter.sellerId = userId;
+    } else if (userRole === "buyer" || userRole === "public") {
+      // Public/Buyer view: only show published products and increment views
+      findFilter.status = "active";
+      updateViews = true;
+    } else if (userRole === "admin") {
+      // Admin can view any product, published or not. No extra filter needed.
+    }
+
+    // 1. Fetch the product using the role-specific filter
+    const product = await Product.findOne(findFilter);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found or unauthorized access",
+      });
+    }
+
+    // 2. View Count Logic (Conditional and Debounced)
+    if (updateViews) {
+      // IMPORTANT: Call a separate, debounced service here to increment views
+      // This keeps the primary request fast and prevents inflation.
+      // Example: productViewService.logView(productId, req.ip || req.sessionID);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.error(`Fetch Error:`, error);
+    res.status(500).json({
+      success: false,
+      message: "An internal server error occurred.",
+    });
+  }
+};
+
+// ✅ Update Product Status
+export const updateProductStatus = async (req, res) => {
+  try {
+    const updatedProduct = await updateProductStatusService(
+      req.params.productId,
+      req.body.status
+    );
+    res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong while updating status",
+    });
+  }
+};
+
+// ✅ Delete Product
+export const deleteProduct = async (req, res) => {
+  try {
+    await deleteProductService(req.params.productId);
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+// ✅ Update Product Data
+export const updateProductData = async (req, res) => {
+  try {
+    const product = await updateProductDataService(
+      req.params.productId,
+      req.body
+    );
+    res.status(200).json({
+      success: true,
+      data: product,
+      message: "Product updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+// ✅ Bulk Actions
+export const bulkActivateProducts = async (req, res) => {
+  try {
+    await bulkActivateProductsService(req.body.productIds);
+    res.json({ success: true, message: "Products activated successfully" });
+  } catch (error) {
+    console.error("Error activating products:", error);
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Activation failed" });
+  }
+};
+
+export const bulkDeactivateProducts = async (req, res) => {
+  try {
+    await bulkDeactivateProductsService(req.body.productIds);
+    res.json({ success: true, message: "Products deactivated successfully" });
+  } catch (error) {
+    console.error("Error deactivating products:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Deactivation failed",
+    });
+  }
+};
+
+export const bulkDeleteProducts = async (req, res) => {
+  try {
+    await bulkDeleteProductsService(req.body.productIds);
+    res.json({ success: true, message: "Products deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting products:", error);
+    res
+      .status(500)
+      .json({ success: false, message: error.message || "Deletion failed" });
+  }
+};
+
+export const getMyProducts = async (req, res) => {
+  try {
+    const sellerId = req.user.userId;
+
+    const products = await Product.find({ sellerId }).lean();
+
+    res.json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log("Error fetching seller products:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch products" });
+  }
+};

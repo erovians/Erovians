@@ -1,26 +1,27 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import locationRoutes from "./routes/location.route.js";
-import sellerRoutes from "./routes/seller.routes.js";
-import companyRoutes from "./routes/company.routes.js";
-import productRoutes from "./routes/product.route.js";
-import authRoutes from "./routes/auth.routes.js";
-import orderRoutes from "./routes/orders.routes.js";
-import inquiryRoute from "./routes/Inquiry.route.js";
-import teamRoutes from "./routes/team.routes.js";
-import stocksRoutes from "./routes/stocks.routes.js";
-import contractRoutes from "./routes/contracts.routes.js";
-import taskAndProjectRoutes from "./routes/taskandprojects.routes.js";
-import workOrders from "./routes/workorder.routes.js";
-import estimateRoutes from "./routes/estimate.routes.js";
+import locationRoutes from "./routes/seller/location.route.js";
+import sellerRoutes from "./routes/seller/seller.routes.js";
+import companyRoutes from "./routes/seller/company.routes.js";
+import productRoutes from "./routes/seller/product.route.js";
+import authRoutes from "./routes/seller/auth.routes.js";
+import orderRoutes from "./routes/seller/orders.routes.js";
+import inquiryRoute from "./routes/seller/Inquiry.route.js";
+import teamRoutes from "./routes/seller/team.routes.js";
+import stocksRoutes from "./routes/seller/stocks.routes.js";
+import contractRoutes from "./routes/seller/contracts.routes.js";
+import taskAndProjectRoutes from "./routes/seller/taskandprojects.routes.js";
+import workOrders from "./routes/seller/workorder.routes.js";
+import estimateRoutes from "./routes/seller/estimate.routes.js";
 import globalErrorHandler from "./middleware/buyer/globalErrorHandler.js";
 import userAuthRoutes from "./routes/buyer/auth.route.js";
 import companyBuyerRoutes from "./routes/buyer/company.route.js";
-import categoryRoutes from "./routes/buyer/category.route.js";
-import { seedDatabase } from "./controller/seed.controller.js";
+import categoryRoutes from "./routes/category.routes.js";
 import quotationRoutes from "./routes/buyer/quotation.route.js";
-// user router import start from here
+import authAdminRoutes from "./routes/admin/auth.routes.js";
+import adminManagementRoutes from "./routes/admin/adminManagement.routes.js";
+import adminVerificationRoutes from "./routes/admin/Admin.verification.routes.js";
 
 const app = express();
 
@@ -45,66 +46,31 @@ app.use(
 // Cookie parser
 app.use(cookieParser());
 
-// Serve static files
+//seller routes
 app.use("/api/uploads", express.static("uploads"));
-
-//locattion route
-app.use("/api/location", locationRoutes);
-
-// Verify User Route
-app.use("/api/auth", authRoutes);
-
-// Routes
-app.use("/api/seller", sellerRoutes);
-
-// Company route (multer handles files internally)
-app.use("/api/company", companyRoutes);
-
-// Product routes
-app.use("/api/product", productRoutes);
-
-//Order routes
+app.use("/api/v2/location", locationRoutes);
+app.use("/api/v2/auth", authRoutes);
+app.use("/api/v2/seller", sellerRoutes);
+app.use("/api/v2/company", companyRoutes);
+app.use("/api/v2/product", productRoutes);
 app.use("/api/orders", orderRoutes);
-
-//inquiry routes
 app.use("/api/inquiry", inquiryRoute);
-
-// teams routes
 app.use("/api/team", teamRoutes);
-
-// stocks routes
 app.use("/api/stocks", stocksRoutes);
-
-// contracts routes
 app.use("/api/contracts", contractRoutes);
-
-// task and project routes
 app.use("/api/taskandprojects", taskAndProjectRoutes);
-
-// workorder routes
 app.use("/api/workorder", workOrders);
-
-// workorder routes
 app.use("/api/transport", estimateRoutes);
-
-// user routes implement here
-
+//buyer routes
 app.use("/api/v2/auth", userAuthRoutes);
 app.use("/api/v2/company", companyBuyerRoutes);
-app.use("/api/v2/category", categoryRoutes);
+
 app.use("/api/v2/quotation", quotationRoutes);
-
-// app.post("/seed-database", async (req, res) => {
-//   try {
-//     await seedDatabase(req, res);
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Error seeding database",
-//       error: error.message,
-//     });
-//   }
-// });
-
+//admin routes
+app.use("/api/v2/admin/manage", adminManagementRoutes);
+app.use("/api/v2/admin", adminVerificationRoutes);
+app.use("/api/v2/admin/auth", authAdminRoutes);
+//common routes
+app.use("/api/v2/category", categoryRoutes);
 app.use(globalErrorHandler);
 export { app };

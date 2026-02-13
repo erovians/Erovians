@@ -1,15 +1,84 @@
+
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser } from "../lib/redux/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 import { 
   Users, 
-  ShoppingCart, 
-  Package, 
-  TrendingUp,
   UserCheck,
   Clock,
-  XCircle,
-  DollarSign
+  DollarSign,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 
-export default function AdminDashboard() {
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, loading } = useSelector((state) => state.auth);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fullscreen functionality
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+    }
+  };
+
+ useEffect(() => {
+  const handleFullscreenChange = () => {
+    console.log("fullscreen changed");
+  };
+
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+  return () => {
+    document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  };
+}, []);
+
+
+    // Listen for fullscreen changes
+  //   const handleFullscreenChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
+
+  //   document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+  //   return () => {
+  //     document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    // dispatch(loadUser());
+  }, [dispatch, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Stats data
   const stats = [
     {
@@ -54,7 +123,6 @@ export default function AdminDashboard() {
     }
   ];
 
-  // Recent sellers data
   const recentSellers = [
     { name: "ABC Tiles Pvt Ltd", country: "India", status: "Active", date: "2 days ago" },
     { name: "Stone World LLC", country: "UAE", status: "Pending", date: "3 days ago" },
@@ -62,36 +130,42 @@ export default function AdminDashboard() {
     { name: "Granite Supplies Ltd", country: "UK", status: "Blocked", date: "1 week ago" },
   ];
 
-  // Monthly registration data
   const monthlyData = [
-    { month: "Jan", registrations: 12, orders: 45 },
-    { month: "Feb", registrations: 18, orders: 67 },
-    { month: "Mar", registrations: 25, orders: 89 },
-    { month: "Apr", registrations: 20, orders: 72 },
-    { month: "May", registrations: 30, orders: 95 },
-    { month: "Jun", registrations: 28, orders: 88 },
+    { month: "Jan", registrations: 12 },
+    { month: "Feb", registrations: 18 },
+    { month: "Mar", registrations: 25 },
+    { month: "Apr", registrations: 20 },
+    { month: "May", registrations: 30 },
+    { month: "Jun", registrations: 28 },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard Overview</h1>
-        <p className="text-gray-600 mt-1">Welcome back! Here's what's happening today.</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+          Welcome, {user?.name || "Admin"}
+        </h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Here's what's happening today.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div 
+              key={index} 
+              className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">{stat.title}</p>
-                  <h3 className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</h3>
-                  <div className="flex items-center mt-3">
-                    <span className={`text-sm font-semibold ${
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 font-medium truncate">{stat.title}</p>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1 sm:mt-2 truncate">
+                    {stat.value}
+                  </h3>
+                  <div className="flex items-center mt-2 sm:mt-3">
+                    <span className={`text-xs sm:text-sm font-semibold ${
                       stat.changeType === 'increase' ? 'text-green-600' : 
                       stat.changeType === 'decrease' ? 'text-red-600' : 
                       'text-gray-600'
@@ -101,8 +175,8 @@ export default function AdminDashboard() {
                     <span className="text-xs text-gray-500 ml-2">vs last month</span>
                   </div>
                 </div>
-                <div className={`${stat.bgColor} p-3 rounded-xl`}>
-                  <Icon className={`w-6 h-6 ${stat.iconColor}`} />
+                <div className={`${stat.bgColor} p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0 ml-2`}>
+                  <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.iconColor}`} />
                 </div>
               </div>
             </div>
@@ -111,24 +185,15 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         
         {/* Monthly Registrations Chart */}
-        <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Monthly Seller Registrations</h2>
-              <p className="text-sm text-gray-600 mt-1">New seller signups over time</p>
-            </div>
-            <select className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option>Last 6 months</option>
-              <option>Last 12 months</option>
-              <option>This year</option>
-            </select>
-          </div>
+        <div className="lg:col-span-2 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
+            Monthly Seller Registrations
+          </h2>
           
-          {/* Simple Bar Chart */}
-          <div className="flex items-end justify-between h-64 gap-4">
+          <div className="flex items-end justify-between h-48 sm:h-64 gap-2 sm:gap-4">
             {monthlyData.map((data, index) => (
               <div key={index} className="flex-1 flex flex-col items-center">
                 <div className="w-full flex flex-col items-center gap-2 mb-2">
@@ -148,125 +213,147 @@ export default function AdminDashboard() {
         </div>
 
         {/* Status Distribution */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Seller Status</h2>
+        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Seller Status</h2>
           
-          {/* Pie Chart Representation */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="relative w-48 h-48">
-              {/* Simple donut chart visualization */}
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
+            <div className="relative w-36 h-36 sm:w-48 sm:h-48">
               <svg viewBox="0 0 100 100" className="transform -rotate-90">
-                {/* Active - 60% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                  stroke="#22c55e"
-                  strokeWidth="20"
-                  strokeDasharray="150.8 251.2"
-                  strokeDashoffset="0"
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="40" 
+                  fill="transparent" 
+                  stroke="#22c55e" 
+                  strokeWidth="20" 
+                  strokeDasharray="150.8 251.2" 
+                  strokeDashoffset="0" 
                 />
-                {/* Pending - 25% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                  stroke="#eab308"
-                  strokeWidth="20"
-                  strokeDasharray="62.8 339.2"
-                  strokeDashoffset="-150.8"
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="40" 
+                  fill="transparent" 
+                  stroke="#eab308" 
+                  strokeWidth="20" 
+                  strokeDasharray="62.8 339.2" 
+                  strokeDashoffset="-150.8" 
                 />
-                {/* Blocked - 15% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                  stroke="#ef4444"
-                  strokeWidth="20"
-                  strokeDasharray="37.7 364.3"
-                  strokeDashoffset="-213.6"
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="40" 
+                  fill="transparent" 
+                  stroke="#ef4444" 
+                  strokeWidth="20" 
+                  strokeDasharray="37.7 364.3" 
+                  strokeDashoffset="-213.6" 
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900">156</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">156</p>
                   <p className="text-xs text-gray-600">Total</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Legend */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-gray-700">Active</span>
+                <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+                <span className="text-xs sm:text-sm text-gray-700">Active</span>
               </div>
-              <span className="text-sm font-semibold text-gray-900">94 (60%)</span>
+              <span className="text-xs sm:text-sm font-semibold text-gray-900">94 (60%)</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <span className="text-sm text-gray-700">Pending</span>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full flex-shrink-0"></div>
+                <span className="text-xs sm:text-sm text-gray-700">Pending</span>
               </div>
-              <span className="text-sm font-semibold text-gray-900">39 (25%)</span>
+              <span className="text-xs sm:text-sm font-semibold text-gray-900">39 (25%)</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm text-gray-700">Blocked</span>
+                <div className="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
+                <span className="text-xs sm:text-sm text-gray-700">Blocked</span>
               </div>
-              <span className="text-sm font-semibold text-gray-900">23 (15%)</span>
+              <span className="text-xs sm:text-sm font-semibold text-gray-900">23 (15%)</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Recent Seller Activity</h2>
-            <p className="text-sm text-gray-600 mt-1">Latest seller registrations and updates</p>
-          </div>
-          <button className="px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
-            View All
-          </button>
+      <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
+          Recent Seller Activity
+        </h2>
+
+        {/* Mobile View - Cards */}
+        <div className="block lg:hidden space-y-3">
+          {recentSellers.map((seller, index) => (
+            <div 
+              key={index} 
+              className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
+                  {seller.name.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate">{seller.name}</p>
+                  <p className="text-xs text-gray-600 mt-1">{seller.country}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
+                      seller.status === 'Active' ? 'bg-green-100 text-green-800' :
+                      seller.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {seller.status}
+                    </span>
+                    <span className="text-xs text-gray-500">{seller.date}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="overflow-hidden">
+        {/* Desktop View - Table */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Seller Name</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Country</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Registered</th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Seller Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Country
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Registered
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {recentSellers.map((seller, index) => (
                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
                         {seller.name.charAt(0)}
                       </div>
-                      <div className="ml-4">
-                        <p className="text-sm font-semibold text-gray-900">{seller.name}</p>
-                      </div>
+                      <p className="ml-4 text-sm font-semibold text-gray-900">{seller.name}</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-700">{seller.country}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                  <td className="px-6 py-4 text-sm text-gray-700">{seller.country}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${
                       seller.status === 'Active' ? 'bg-green-100 text-green-800' :
                       seller.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-red-100 text-red-800'
@@ -274,14 +361,7 @@ export default function AdminDashboard() {
                       {seller.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {seller.date}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                    <button className="text-indigo-600 hover:text-indigo-900 font-medium">
-                      View Details
-                    </button>
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{seller.date}</td>
                 </tr>
               ))}
             </tbody>
@@ -290,4 +370,6 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

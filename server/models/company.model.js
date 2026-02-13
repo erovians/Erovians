@@ -50,7 +50,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     ],
     mainCategory: {
       type: [String],
-      enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
+      enum: ["natural-stones", "ceramic-tiles", "alternatives-finishes"],
       required: false,
       set: (arr) => [...new Set(arr.map((v) => v.trim().toLowerCase()))],
     },

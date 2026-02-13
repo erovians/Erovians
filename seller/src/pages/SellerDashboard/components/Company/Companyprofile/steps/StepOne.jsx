@@ -1,4 +1,7 @@
+// StepOne.jsx - Updated with categories from Redux
+
 import React, { useMemo, useCallback } from "react";
+import { useSelector } from "react-redux";
 import CountryStateSelect from "../../../Helper/CountryStateSelect";
 import {
   User,
@@ -79,12 +82,6 @@ const LANGUAGES = [
   "Korean",
   "Hindi",
   "Italian",
-];
-
-const CATEGORIES = [
-  "Natural Stones",
-  "Ceramic & Tiles",
-  "Alternatives & Finishes",
 ];
 
 const YEAR_RANGE = 100;
@@ -248,6 +245,7 @@ const DynamicArrayField = ({
   error,
   placeholder,
   type = "input",
+  selectOptions = [],
 }) => {
   const handleItemChange = useCallback(
     (index, value) => {
@@ -312,12 +310,9 @@ const DynamicArrayField = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {CATEGORIES.map((category) => (
-                          <SelectItem
-                            key={category}
-                            value={category.toLowerCase()}
-                          >
-                            {category}
+                        {selectOptions.map((option) => (
+                          <SelectItem key={option.slug} value={option.slug}>
+                            {option.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -377,8 +372,12 @@ const StepOne = ({
   setFormData = () => {},
   errors = {},
 }) => {
+  // Get categories from Redux
+  const { categories, loading: categoryLoading } = useSelector(
+    (state) => state.category
+  );
+
   const safeFormData = useMemo(() => {
-    // Ensure arrays are properly initialized
     const ensureArray = (value) => {
       if (!value) return [];
       if (Array.isArray(value)) return value.length > 0 ? value : [""];
@@ -514,7 +513,6 @@ const StepOne = ({
               required
             />
 
-            {/* Registration Year Select */}
             <div className="flex flex-col">
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">
@@ -649,26 +647,37 @@ const StepOne = ({
             Products & Categories
           </h3>
 
-          <DynamicArrayField
-            items={safeFormData.mainCategory}
-            onChange={(items) => handleArrayFieldChange("mainCategory", items)}
-            label="Main Categories"
-            icon={Layers}
-            hint="Select the product categories that best describe your company offerings."
-            error={errors.mainCategory}
-            type="select"
-          />
+          {categoryLoading ? (
+            <p className="text-sm text-gray-500">Loading categories...</p>
+          ) : (
+            <>
+              <DynamicArrayField
+                items={safeFormData.mainCategory}
+                onChange={(items) =>
+                  handleArrayFieldChange("mainCategory", items)
+                }
+                label="Main Categories"
+                icon={Layers}
+                hint="Select the product categories that best describe your company offerings."
+                error={errors.mainCategory}
+                type="select"
+                selectOptions={categories}
+              />
 
-          <DynamicArrayField
-            items={safeFormData.mainProduct}
-            onChange={(items) => handleArrayFieldChange("mainProduct", items)}
-            label="Main Products"
-            icon={Building}
-            hint="Enter your top-selling or key products relevant to your category. eg( natural stone - marble, ceramic & tiles - ceramic)."
-            error={errors.mainProduct}
-            placeholder="Product"
-            type="input"
-          />
+              <DynamicArrayField
+                items={safeFormData.mainProduct}
+                onChange={(items) =>
+                  handleArrayFieldChange("mainProduct", items)
+                }
+                label="Main Products (Subcategories)"
+                icon={Building}
+                hint="Enter your top-selling or key products relevant to your category. eg( natural stones - marble, ceramic & tiles - ceramic tiles)."
+                error={errors.mainProduct}
+                placeholder="Product"
+                type="input"
+              />
+            </>
+          )}
         </section>
 
         {/* Company Overview */}

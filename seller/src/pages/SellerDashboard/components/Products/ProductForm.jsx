@@ -1,5 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
+// ProductForm.jsx - Updated to use categories from Redux
+
+import React, { useMemo } from "react";
 import {
   Layers,
   FileText,
@@ -27,10 +28,26 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 
-const ProductForm = ({ formData, errors, loading, onFormChange, onSubmit }) => {
-  const { company } = useSelector((state) => state.company);
-  const categories = company?.companyBasicInfo?.mainCategory || [];
-  const subCategories = company?.companyBasicInfo?.subCategory || [];
+const ProductForm = ({
+  formData,
+  errors,
+  loading,
+  onFormChange,
+  onSubmit,
+  categories = [],
+  categoryLoading = false,
+}) => {
+  // Get subcategories based on selected category
+  const availableSubcategories = useMemo(() => {
+    if (!formData.category || categories.length === 0) {
+      return [];
+    }
+
+    const selectedCategory = categories.find(
+      (cat) => cat.slug === formData.category
+    );
+    return selectedCategory?.subcategories || [];
+  }, [formData.category, categories]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -169,7 +186,7 @@ const ProductForm = ({ formData, errors, loading, onFormChange, onSubmit }) => {
               <input
                 type="text"
                 name="product_material"
-                placeholder="e.g., Granite, Marble"
+                placeholder="e.g., Carrara Marble, Black Granite"
                 value={formData.product_material}
                 onChange={handleChange}
                 className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
@@ -248,114 +265,128 @@ const ProductForm = ({ formData, errors, loading, onFormChange, onSubmit }) => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Category <span className="text-red-500">*</span>
-            </label>
-            <Select
-              value={formData.category}
-              onValueChange={(value) => onFormChange({ category: value })}
-            >
-              <SelectTrigger
-                className={`w-full ${errors.category ? "border-red-500" : ""}`}
-              >
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat} className="capitalize">
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        {categoryLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Spinner className="w-6 h-6" />
+            <span className="ml-2 text-sm text-gray-500">
+              Loading categories...
+            </span>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Category <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => {
+                  onFormChange({ category: value, subCategory: "" });
+                }}
+              >
+                <SelectTrigger
+                  className={`w-full ${
+                    errors.category ? "border-red-500" : ""
+                  }`}
+                >
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.slug} value={cat.slug}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Sub-Category <span className="text-red-500">*</span>
-            </label>
-            <Select
-              value={formData.subCategory}
-              onValueChange={(value) => onFormChange({ subCategory: value })}
-            >
-              <SelectTrigger
-                className={`w-full ${
-                  errors.subCategory ? "border-red-500" : ""
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Sub-Category <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.subCategory}
+                onValueChange={(value) => onFormChange({ subCategory: value })}
+                disabled={
+                  !formData.category || availableSubcategories.length === 0
+                }
+              >
+                <SelectTrigger
+                  className={`w-full ${
+                    errors.subCategory ? "border-red-500" : ""
+                  }`}
+                >
+                  <SelectValue placeholder="Select Sub-Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {availableSubcategories.map((subCat) => (
+                      <SelectItem key={subCat} value={subCat.toLowerCase()}>
+                        {subCat}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Grade <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.grade}
+                onValueChange={(value) => onFormChange({ grade: value })}
+              >
+                <SelectTrigger
+                  className={`w-full ${errors.grade ? "border-red-500" : ""}`}
+                >
+                  <SelectValue placeholder="Select Grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A">Grade A (Premium)</SelectItem>
+                  <SelectItem value="B">Grade B (Standard)</SelectItem>
+                  <SelectItem value="C">Grade C (Economy)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Color <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="color"
+                placeholder="e.g., White, Black"
+                value={formData.color}
+                onChange={handleChange}
+                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
+                  errors.color ? "border-red-500" : "border-gray-300"
                 }`}
-              >
-                <SelectValue placeholder="Select Sub-Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {subCategories.map((subCat) => (
-                  <SelectItem
-                    key={subCat}
-                    value={subCat}
-                    className="capitalize"
-                  >
-                    {subCat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Grade <span className="text-red-500">*</span>
-            </label>
-            <Select
-              value={formData.grade}
-              onValueChange={(value) => onFormChange({ grade: value })}
-            >
-              <SelectTrigger
-                className={`w-full ${errors.grade ? "border-red-500" : ""}`}
-              >
-                <SelectValue placeholder="Select Grade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="A">Grade A (Premium)</SelectItem>
-                <SelectItem value="B">Grade B (Standard)</SelectItem>
-                <SelectItem value="C">Grade C (Economy)</SelectItem>
-              </SelectContent>
-            </Select>
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Origin <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="origin"
+                placeholder="e.g., India, Italy"
+                value={formData.origin}
+                onChange={handleChange}
+                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
+                  errors.origin ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </div>
           </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Color <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="color"
-              placeholder="e.g., White, Black"
-              value={formData.color}
-              onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
-                errors.color ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Origin <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="origin"
-              placeholder="e.g., India, Italy"
-              value={formData.origin}
-              onChange={handleChange}
-              className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
-                errors.origin ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Dimensions & Weight */}

@@ -168,7 +168,7 @@ const ProductSchema = new Schema(
     category: {
       type: [String],
       required: true,
-      enum: ["natural stones", "ceramic & tiles", "alternatives & finishes"],
+      enum: ["natural-stones", "ceramic-tiles", "alternatives-finishes"],
       index: true,
     },
 

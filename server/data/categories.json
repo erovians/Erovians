@@ -1,0 +1,43 @@
+[
+    {
+      "name": "Natural Stones",
+      "slug": "natural-stones",
+      "subcategories": [
+        "Marble",
+        "Granite",
+        "Sandstone",
+        "Limestone",
+        "Slate",
+        "Quartzite",
+        "Travertine",
+        "Onyx"
+      ]
+    },
+    {
+      "name": "Ceramic & Tiles",
+      "slug": "ceramic-tiles",
+      "subcategories": [
+        "Floor Tiles",
+        "Wall Tiles",
+        "Vitrified Tiles",
+        "Glazed Tiles",
+        "Porcelain Tiles",
+        "Mosaic Tiles",
+        "Ceramic Tiles"
+      ]
+    },
+    {
+      "name": "Alternatives & Finishes",
+      "slug": "alternatives-finishes",
+      "subcategories": [
+        "Quartz",
+        "Engineered Stone",
+        "Terrazzo",
+        "Concrete",
+        "Resin",
+        "Metal Finishes",
+        "Sintered Stone",
+        "Solid Surface"
+      ]
+    }
+  ]
