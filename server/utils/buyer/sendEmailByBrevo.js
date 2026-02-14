@@ -26,6 +26,7 @@ const sendMail = async (options) => {
       sender: process.env.SMTP_USER,
     });
   } catch (error) {
+    console.log(error);
     logger.error("Email sending failed", {
       to: options.email,
       subject: options.subject,

@@ -4,15 +4,16 @@ import AppError from "../../utils/buyer/AppError.js";
 import validator from "validator";
 import sendMail from "../../utils/buyer/sendEmailByBrevo.js";
 import { sendOTPSMS } from "../../utils/buyer/sendNumberbyTwilio.js";
-import {
-  generateOTP,
-  getOTPExpiry,
-  isOTPExpired,
-  verifyOTP as verifyOTPUtil,
-} from "../../utils/buyer/otpUtils.js";
 import { getOTPEmailTemplate } from "../../utils/buyer/emailTemplate.js";
 import logger from "../../config/winston.js";
 import sendToken from "../../utils/buyer/sendToken.js";
+import {
+  generateOTP,
+  storeOTP,
+  verifyOTP as verifyOTPRedis,
+  isVerified,
+  markAsRegistered,
+} from "../../services/otp.service.js";
 
 // ========================================
 // 1. Check User & Send OTP
@@ -38,26 +39,24 @@ export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
     return next(new AppError("Please provide a valid mobile number", 400));
   }
 
-  // Check if user exists
+  // Check if user exists in DB
   let user = isEmail
     ? await User.findByEmail(identifier)
     : await User.findByMobile(identifier);
 
   const isNewUser = !user;
 
-  // If new user, create a temporary user document
-  if (isNewUser) {
-    user = new User(isEmail ? { email: identifier } : { mobile: identifier });
-  }
+  // If existing user, check if they can login with password
+  const hasPassword = user ? user.hasPassword : false;
 
   // Generate OTP
   const otp = generateOTP();
-  const otpExpires = getOTPExpiry();
 
-  // Save OTP to user
-  user.otp = otp;
-  user.otpExpires = otpExpires;
-  await user.save({ validateBeforeSave: false });
+  // Store OTP in Redis
+  const storeResult = await storeOTP(identifier, otp);
+  if (!storeResult.success) {
+    return next(new AppError(storeResult.message, 429));
+  }
 
   // Send OTP
   try {
@@ -95,16 +94,11 @@ export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
       message: `OTP sent successfully to your ${isEmail ? "email" : "mobile"}`,
       isNewUser,
       identifier,
-      hasPassword: user.hasPassword || false,
+      hasPassword,
       otpPurpose: isNewUser ? "register" : "login",
-      otpExpiresAt: otpExpires,
+      expiresIn: storeResult.expiresIn,
     });
   } catch (error) {
-    // Clear OTP on send failure
-    user.otp = undefined;
-    user.otpExpires = undefined;
-    await user.save({ validateBeforeSave: false });
-
     logger.error("Failed to send OTP", {
       error: error.message,
       identifier,
@@ -139,55 +133,27 @@ export const verifyOTP = asyncHandler(async (req, res, next) => {
   const isEmail = !!email;
   const identifier = isEmail ? email.toLowerCase().trim() : mobile.trim();
 
-  // Find user with OTP fields
-  const user = isEmail
-    ? await User.findByEmailWithAuth(identifier)
-    : await User.findByMobileWithAuth(identifier);
+  // Verify OTP from Redis
+  const verification = await verifyOTPRedis(identifier, otp);
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
-
-  // Check if user has OTP
-  if (!user.otp || !user.otpExpires) {
-    return next(new AppError("No OTP found. Please request a new one", 400));
-  }
-
-  // Check if OTP expired
-  if (isOTPExpired(user.otpExpires)) {
-    return next(new AppError("OTP has expired. Please request a new one", 400));
-  }
-
-  // Verify OTP
-  const isValid = verifyOTPUtil(otp, user.otp);
-
-  if (!isValid) {
-    logger.warn("Invalid OTP attempt", {
-      userId: user._id,
+  if (!verification.valid) {
+    logger.warn("OTP verification failed", {
       identifier,
+      reason: verification.message,
     });
-    return next(new AppError("Invalid OTP", 400));
+    return next(new AppError(verification.message, 400));
   }
 
-  // Clear OTP
-  user.otp = undefined;
-  user.otpExpires = undefined;
+  // Check if user exists in DB
+  const user = isEmail
+    ? await User.findByEmail(identifier)
+    : await User.findByMobile(identifier);
 
-  // Check if user has name (to determine if registration is complete)
-  const isNewUser = !user.name;
+  const isNewUser = !user;
 
   if (isNewUser) {
     // New user - needs to complete registration (provide name)
-    // Mark as verified but don't login yet
-    if (isEmail) {
-      user.isEmailVerified = true;
-    } else {
-      user.isMobileVerified = true;
-    }
-    await user.save({ validateBeforeSave: false });
-
     logger.info("OTP verified for new user", {
-      userId: user._id,
       identifier,
     });
 
@@ -195,16 +161,19 @@ export const verifyOTP = asyncHandler(async (req, res, next) => {
       success: true,
       message: "OTP verified successfully. Please complete your profile",
       isNewUser: true,
-      data: user.toSafeObject(),
+      identifier,
     });
   } else {
-    // Existing user - login complete
+    // Existing user - mark as verified and login
     if (isEmail) {
       user.isEmailVerified = true;
     } else {
       user.isMobileVerified = true;
     }
     await user.save({ validateBeforeSave: false });
+
+    // Mark as registered in Redis (delete verified flag since user already exists)
+    await markAsRegistered(identifier);
 
     logger.info("OTP verified and user logged in", {
       userId: user._id,
@@ -242,40 +211,42 @@ export const completeRegistration = asyncHandler(async (req, res, next) => {
   const isEmail = !!email;
   const identifier = isEmail ? email.toLowerCase().trim() : mobile.trim();
 
-  // Find user
-  const user = isEmail
+  // Check if identifier is verified in Redis
+  const verified = await isVerified(identifier);
+  if (!verified) {
+    return next(
+      new AppError("Please verify your OTP first before registration", 400)
+    );
+  }
+
+  // Check if user already exists
+  const existingUser = isEmail
     ? await User.findByEmail(identifier)
     : await User.findByMobile(identifier);
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
+  if (existingUser) {
+    return next(new AppError("User already registered. Please login", 400));
   }
 
-  // Check if user is verified
-  const isVerified = isEmail ? user.isEmailVerified : user.isMobileVerified;
+  // Create new user with buyer role
+  const userData = {
+    name: name.trim(),
+    role: ["user", "buyer"],
+    status: "active",
+  };
 
-  if (!isVerified) {
-    return next(new AppError("Please verify your account first", 400));
+  if (isEmail) {
+    userData.email = identifier;
+    userData.isEmailVerified = true;
+  } else {
+    userData.mobile = identifier;
+    userData.isMobileVerified = true;
   }
 
-  // Check if name already exists
-  if (user.name) {
-    return next(new AppError("Profile already completed", 400));
-  }
+  const user = await User.create(userData);
 
-  // Update user with name
-  user.name = name.trim();
-
-  // ✅ ADD BUYER ROLE
-  if (!user.hasRole("buyer")) {
-    await user.addRole("buyer");
-    logger.info("Buyer role added to user", {
-      userId: user._id,
-      roles: user.role,
-    });
-  }
-
-  await user.save();
+  // Mark as registered in Redis (delete verified flag)
+  await markAsRegistered(identifier);
 
   logger.info("Registration completed", {
     userId: user._id,
@@ -360,29 +331,27 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
   const isEmail = !!email;
   const identifier = isEmail ? email.toLowerCase().trim() : mobile.trim();
 
-  // Find user
+  // Check if user exists in DB
   const user = isEmail
     ? await User.findByEmail(identifier)
     : await User.findByMobile(identifier);
 
-  if (!user) {
-    return next(new AppError("User not found", 404));
-  }
+  const isNewUser = !user;
 
   // Generate new OTP
   const otp = generateOTP();
-  const otpExpires = getOTPExpiry();
 
-  // Save OTP to user
-  user.otp = otp;
-  user.otpExpires = otpExpires;
-  await user.save({ validateBeforeSave: false });
+  // Store OTP in Redis
+  const storeResult = await storeOTP(identifier, otp);
+  if (!storeResult.success) {
+    return next(new AppError(storeResult.message, 429));
+  }
 
   // Send OTP
   try {
     if (isEmail) {
       // Send OTP via Email
-      const purpose = user.name ? "login" : "register";
+      const purpose = isNewUser ? "register" : "login";
       await sendMail({
         email: identifier,
         subject: `Your OTP Code`,
@@ -391,7 +360,7 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
 
       logger.info("OTP resent via email", {
         email: identifier,
-        userId: user._id,
+        isNewUser,
       });
     } else {
       // Send OTP via SMS
@@ -403,7 +372,7 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
 
       logger.info("OTP resent via SMS", {
         mobile: identifier,
-        userId: user._id,
+        isNewUser,
       });
     }
 
@@ -413,18 +382,12 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
       message: `OTP resent successfully to your ${
         isEmail ? "email" : "mobile"
       }`,
-      otpExpiresAt: otpExpires,
+      expiresIn: storeResult.expiresIn,
     });
   } catch (error) {
-    // Clear OTP on send failure
-    user.otp = undefined;
-    user.otpExpires = undefined;
-    await user.save({ validateBeforeSave: false });
-
     logger.error("Failed to resend OTP", {
       error: error.message,
       identifier,
-      userId: user._id,
     });
 
     return next(new AppError(`Failed to resend OTP: ${error.message}`, 500));
@@ -480,6 +443,8 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
   const cookieOptions = {
     httpOnly: true,
     expires: new Date(0), // Expire immediately
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
   };
 
   // Clear both tokens

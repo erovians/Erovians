@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import dotenv from "dotenv";
+import logger from "../config/winston.js";
 
 dotenv.config();
 
@@ -14,50 +15,66 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath, mimetype) => {
   try {
     if (!localFilePath) {
-      console.error("❌ No file path provided");
+      logger.error("No file path provided for Cloudinary upload");
       return null;
     }
 
-    // ✅ PEHLE CHECK KARO
-    console.log(`📂 Checking file: ${localFilePath}`);
+    // Check if file exists
+    logger.info(`Checking file before upload: ${localFilePath}`);
     if (!fs.existsSync(localFilePath)) {
-      console.error(`❌ File not found BEFORE upload: ${localFilePath}`);
+      logger.error(`File not found before upload: ${localFilePath}`);
       return null;
     }
-    console.log(`✅ File exists, uploading...`);
+    logger.info("File exists, initiating upload to Cloudinary");
 
     const resourceType = mimetype === "application/pdf" ? "raw" : "auto";
 
-    // Upload
+    // Upload to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(localFilePath, {
       folder: "ero_vians_uploads",
       resource_type: resourceType,
     });
 
-    console.log("✅ File uploaded on Cloudinary:", uploadResult.secure_url);
+    logger.info("File uploaded successfully to Cloudinary", {
+      url: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
+    });
 
-    // Delete AFTER upload
+    // Delete local file after successful upload
     try {
       if (fs.existsSync(localFilePath)) {
         fs.unlinkSync(localFilePath);
-        console.log("🗑️ Local file deleted:", localFilePath);
+        logger.info("Local file deleted after upload", {
+          path: localFilePath,
+        });
       }
     } catch (deleteError) {
-      console.error("⚠️ Failed to delete local file:", deleteError);
+      logger.warn("Failed to delete local file after upload", {
+        path: localFilePath,
+        error: deleteError.message,
+      });
     }
 
     return uploadResult;
   } catch (error) {
-    console.error("❌ Cloudinary upload failed:", error);
+    logger.error("Cloudinary upload failed", {
+      error: error.message,
+      path: localFilePath,
+    });
 
-    // Cleanup on error
+    // Cleanup local file on error
     try {
       if (localFilePath && fs.existsSync(localFilePath)) {
         fs.unlinkSync(localFilePath);
-        console.log("🗑️ Local file cleaned up:", localFilePath);
+        logger.info("Local file cleaned up after upload failure", {
+          path: localFilePath,
+        });
       }
     } catch (cleanupError) {
-      console.error("⚠️ Failed to cleanup local file:", cleanupError);
+      logger.warn("Failed to cleanup local file after upload failure", {
+        path: localFilePath,
+        error: cleanupError.message,
+      });
     }
 
     return null;
@@ -70,13 +87,19 @@ const uploadOnCloudinary = async (localFilePath, mimetype) => {
  * @returns {Promise<void>}
  */
 const deleteFromCloudinary = async (publicId) => {
-  if (!publicId) return;
+  if (!publicId) {
+    logger.warn("No public_id provided for Cloudinary deletion");
+    return;
+  }
 
   try {
     await cloudinary.uploader.destroy(publicId);
-    console.log(`✅ Cloudinary file deleted: ${publicId}`);
+    logger.info("File deleted from Cloudinary", { publicId });
   } catch (error) {
-    console.error(`❌ Failed to delete Cloudinary file ${publicId}:`, error);
+    logger.error("Failed to delete file from Cloudinary", {
+      publicId,
+      error: error.message,
+    });
     // Note: do not throw here, just log to avoid breaking rollback flow
   }
 };

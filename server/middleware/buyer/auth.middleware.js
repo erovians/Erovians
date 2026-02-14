@@ -3,8 +3,9 @@ import AppError from "../../utils/buyer/AppError.js";
 import logger from "../../config/winston.js";
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model.js";
+import Seller from "../../models/sellerSingnup.model.js";
 
-// authenticated middlewares
+// ======================== IS AUTHENTICATED ========================
 export const isAuthenticated = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const accessToken = authHeader && authHeader.split(" ")[1];
@@ -20,14 +21,12 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
   try {
     const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
 
-    // ✅ Log successful authentication
     logger.info(`User authenticated: ${decoded.id}`, {
       path: req.originalUrl,
     });
 
-    // Attach decoded user data to the request object
     req.user = decoded;
-    next(); // Proceed to the next middleware or route handler
+    next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       logger.warn("Access token expired", { ip: req.ip });
@@ -38,7 +37,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
   }
 });
 
-//generate access token using refresh token
+// ======================== REFRESH TOKEN ========================
 export const refreshToken = asyncHandler(async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -46,11 +45,8 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
       logger.warn("Refresh token missing", { ip: req.ip });
       return next(new AppError("Please login again", 401));
     }
-    console.log(refreshToken);
-    const decoded = await jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET
-    );
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     const user = await User.findById(decoded.id);
 
@@ -83,7 +79,7 @@ export const refreshToken = asyncHandler(async (req, res, next) => {
   }
 });
 
-// roles middlewares
+// ======================== AUTHORIZE ROLES ========================
 export const authorizeRoles = (...allowedRoles) => {
   return asyncHandler(async (req, res, next) => {
     if (!req.user) {
@@ -102,21 +98,40 @@ export const authorizeRoles = (...allowedRoles) => {
       );
     }
 
+    // ✅ NEW: Check seller status if "seller" role is required
+    if (allowedRoles.includes("seller") && userRoles.includes("seller")) {
+      const seller = await Seller.findOne({ userId: req.user.id });
+
+      if (!seller) {
+        return next(new AppError("Seller profile not found", 404));
+      }
+
+      if (seller.status === "suspended") {
+        return next(
+          new AppError("Your seller account has been suspended", 403)
+        );
+      }
+
+      if (seller.status === "inactive") {
+        return next(new AppError("Your seller account is inactive", 403));
+      }
+
+      // Attach seller to request for downstream use
+      req.seller = seller;
+    }
+
     next();
   });
 };
 
-// ========================================
-// OPTIONAL AUTHENTICATION MIDDLEWARE
-// Attaches user to req if token exists, but doesn't fail if no token
-// ========================================
+// ======================== OPTIONAL AUTH ========================
 export const optionalAuth = asyncHandler(async (req, res, next) => {
   const token =
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return next(); // Continue without user
+    return next();
   }
 
   try {
@@ -124,7 +139,6 @@ export const optionalAuth = asyncHandler(async (req, res, next) => {
     req.user = { id: decoded.id, role: decoded.role };
     next();
   } catch (error) {
-    // Token invalid or expired, continue without user
     next();
   }
 });
