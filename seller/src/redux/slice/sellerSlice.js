@@ -1,7 +1,6 @@
 import api from "@/utils/axios.utils";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// ======================== SEND OTP ========================
 export const sendOtp = createAsyncThunk(
   "seller/sendOtp",
   async (mobile, { rejectWithValue }) => {
@@ -16,7 +15,6 @@ export const sendOtp = createAsyncThunk(
   }
 );
 
-// ======================== VERIFY OTP ========================
 export const verifyOtp = createAsyncThunk(
   "seller/verifyOtp",
   async ({ mobile, otp }, { rejectWithValue }) => {
@@ -31,11 +29,10 @@ export const verifyOtp = createAsyncThunk(
   }
 );
 
-// ======================== CHECK UNIQUENESS ========================
 export const checkUnique = createAsyncThunk(
   "seller/checkUnique",
   async (
-    { email, businessId, mobile, seller_status, seller_country }, // ✅ ADDED seller_country
+    { email, businessId, mobile, seller_country },
     { rejectWithValue }
   ) => {
     try {
@@ -43,8 +40,7 @@ export const checkUnique = createAsyncThunk(
         email,
         businessId,
         mobile,
-        seller_status,
-        seller_country, // ✅ NEW
+        seller_country,
       });
       return response.data;
     } catch (error) {
@@ -55,7 +51,6 @@ export const checkUnique = createAsyncThunk(
   }
 );
 
-// ======================== REGISTER SELLER ========================
 export const registerSeller = createAsyncThunk(
   "seller/registerSeller",
   async (sellerData, { rejectWithValue }) => {
@@ -72,7 +67,6 @@ export const registerSeller = createAsyncThunk(
   }
 );
 
-// ======================== LOGIN SELLER ========================
 export const loginSeller = createAsyncThunk(
   "seller/loginSeller",
   async ({ identifier, password }, { rejectWithValue }) => {
@@ -81,8 +75,6 @@ export const loginSeller = createAsyncThunk(
         identifier,
         password,
       });
-
-      console.log("this is response", response);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -92,7 +84,6 @@ export const loginSeller = createAsyncThunk(
   }
 );
 
-// ======================== LOAD SELLER ========================
 export const loadSeller = createAsyncThunk(
   "seller/loadSeller",
   async (_, { rejectWithValue }) => {
@@ -107,7 +98,6 @@ export const loadSeller = createAsyncThunk(
   }
 );
 
-// ======================== LOGOUT SELLER ========================
 export const logoutSeller = createAsyncThunk(
   "seller/logoutSeller",
   async (_, { rejectWithValue }) => {
@@ -122,17 +112,13 @@ export const logoutSeller = createAsyncThunk(
   }
 );
 
-// ======================== SLICE ========================
 const sellerSlice = createSlice({
   name: "seller",
   initialState: {
-    // Auth state
     isAuthenticated: false,
     user: null,
     seller: null,
     permissions: null,
-
-    // Loading states (separate for each action)
     isLoadingOtp: false,
     isLoadingVerify: false,
     isLoadingCheck: false,
@@ -140,15 +126,9 @@ const sellerSlice = createSlice({
     isLoadingLogin: false,
     isLoadingProfile: false,
     isLoadingLogout: false,
-
-    // OTP flow
-    otpStatus: "idle", // idle | sending | sent | verifying | verified
+    otpStatus: "idle",
     isMobileVerified: false,
-
-    // Validation
     isUniquenessChecked: false,
-
-    // Messages
     error: null,
     successMessage: null,
   },
@@ -187,7 +167,6 @@ const sellerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ========== SEND OTP ==========
       .addCase(sendOtp.pending, (state) => {
         state.isLoadingOtp = true;
         state.error = null;
@@ -204,7 +183,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Failed to send OTP";
       })
 
-      // ========== VERIFY OTP ==========
       .addCase(verifyOtp.pending, (state) => {
         state.isLoadingVerify = true;
         state.error = null;
@@ -222,7 +200,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Invalid or expired OTP";
       })
 
-      // ========== CHECK UNIQUENESS ==========
       .addCase(checkUnique.pending, (state) => {
         state.isLoadingCheck = true;
         state.error = null;
@@ -239,7 +216,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Validation failed";
       })
 
-      // ========== REGISTER SELLER ==========
       .addCase(registerSeller.pending, (state) => {
         state.isLoadingRegister = true;
         state.error = null;
@@ -247,7 +223,6 @@ const sellerSlice = createSlice({
       .addCase(registerSeller.fulfilled, (state, action) => {
         state.isLoadingRegister = false;
         state.successMessage = action.payload.message;
-        // Reset OTP flow after successful registration
         state.otpStatus = "idle";
         state.isMobileVerified = false;
         state.isUniquenessChecked = false;
@@ -257,7 +232,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Registration failed";
       })
 
-      // ========== LOGIN SELLER ==========
       .addCase(loginSeller.pending, (state) => {
         state.isLoadingLogin = true;
         state.error = null;
@@ -276,7 +250,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Login failed";
       })
 
-      // ========== LOAD SELLER ==========
       .addCase(loadSeller.pending, (state) => {
         state.isLoadingProfile = true;
         state.error = null;
@@ -297,7 +270,6 @@ const sellerSlice = createSlice({
         state.error = action.payload?.message || "Failed to load seller";
       })
 
-      // ========== LOGOUT SELLER ==========
       .addCase(logoutSeller.pending, (state) => {
         state.isLoadingLogout = true;
       })
@@ -308,6 +280,7 @@ const sellerSlice = createSlice({
         state.seller = null;
         state.permissions = null;
         state.successMessage = "Logged out successfully";
+        localStorage.removeItem("accessToken");
       })
       .addCase(logoutSeller.rejected, (state, action) => {
         state.isLoadingLogout = false;
@@ -323,5 +296,4 @@ export const {
   resetOtpStatus,
   resetUniquenessCheck,
 } = sellerSlice.actions;
-
 export default sellerSlice.reducer;

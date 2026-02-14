@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,7 +38,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
-      select: false,
+      select: false, // ✅ Hidden by default
       validate: {
         validator: function (v) {
           return !v || validator.isEmail(v);
@@ -67,14 +66,15 @@ const userSchema = new mongoose.Schema(
       type: [String],
       enum: {
         values: [
-          "user",
-          "buyer",
+          "admin",
           "seller",
           "member",
-          "admin",
+          "user",
+          "buyer",
           "sub_admin",
+          "admin",
           "super_admin",
-        ], // ✅ FIXED: Removed duplicate "admin"
+        ],
         message: "{VALUE} is not a valid role",
       },
       default: ["user"],
@@ -107,14 +107,6 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null,
       },
-    },
-
-    // ✅ NEW: Seller profile reference for sync
-    sellerProfile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Seller",
-      default: null,
-      index: true,
     },
 
     buyer_data: {
@@ -340,23 +332,12 @@ userSchema.index({ mobile: 1 });
 userSchema.index({ role: 1, status: 1 });
 userSchema.index({ email: 1, status: 1 });
 userSchema.index({ mobile: 1, status: 1 });
-userSchema.index({ sellerProfile: 1 }); // ✅ NEW: Index for seller lookup
 userSchema.index({ otpExpires: 1 }, { expireAfterSeconds: 0, sparse: true });
 userSchema.index(
   { resetPasswordOtpExpires: 1 },
   { expireAfterSeconds: 0, sparse: true }
 );
 userSchema.index({ lockUntil: 1 }, { expireAfterSeconds: 0, sparse: true });
-
-// ✅ NEW: Compound index to ensure at least one identifier exists
-userSchema.index(
-  { email: 1, mobile: 1 },
-  {
-    partialFilterExpression: {
-      $or: [{ email: { $exists: true } }, { mobile: { $exists: true } }],
-    },
-  }
-);
 
 // ======================== PRE-SAVE HOOKS ========================
 userSchema.pre("save", function (next) {
@@ -397,7 +378,6 @@ userSchema.methods.canLoginWithPassword = function () {
   return this.hasPassword && this.password !== null;
 };
 
-// ✅ FIXED: Constant-time OTP comparison (prevents timing attacks)
 userSchema.methods.verifyOtp = function (candidateOtp) {
   if (!this.otp || !this.otpExpires) {
     return { valid: false, message: "No OTP found" };
@@ -407,26 +387,11 @@ userSchema.methods.verifyOtp = function (candidateOtp) {
     return { valid: false, message: "OTP has expired" };
   }
 
-  try {
-    // Convert strings to buffers for constant-time comparison
-    const otpBuffer = Buffer.from(this.otp, "utf8");
-    const candidateBuffer = Buffer.from(candidateOtp, "utf8");
-
-    // Both buffers must be same length for timingSafeEqual
-    if (otpBuffer.length !== candidateBuffer.length) {
-      return { valid: false, message: "Invalid OTP" };
-    }
-
-    const isValid = crypto.timingSafeEqual(otpBuffer, candidateBuffer);
-
-    if (!isValid) {
-      return { valid: false, message: "Invalid OTP" };
-    }
-
-    return { valid: true, message: "OTP verified successfully" };
-  } catch (error) {
+  if (this.otp !== candidateOtp) {
     return { valid: false, message: "Invalid OTP" };
   }
+
+  return { valid: true, message: "OTP verified successfully" };
 };
 
 userSchema.methods.clearOtp = function () {
@@ -493,32 +458,14 @@ userSchema.methods.hasRole = function (roleName) {
   return this.role.includes(roleName);
 };
 
-// ✅ FIXED: Now returns Promise for consistency
-userSchema.methods.addRole = async function (roleName) {
+userSchema.methods.addRole = function (roleName) {
   if (!this.role.includes(roleName)) {
     return this.updateOne({ $addToSet: { role: roleName } });
   }
-  return Promise.resolve(); // Already has role
 };
 
 userSchema.methods.removeRole = function (roleName) {
   return this.updateOne({ $pull: { role: roleName } });
-};
-
-// ✅ NEW: Check if user is active seller
-userSchema.methods.isActiveSeller = async function () {
-  if (!this.hasRole("seller") || !this.sellerProfile) {
-    return false;
-  }
-
-  const Seller = mongoose.model("Seller");
-  const seller = await Seller.findById(this.sellerProfile);
-
-  return (
-    seller &&
-    seller.status === "active" &&
-    seller.varificationStatus === "Approved"
-  );
 };
 
 // ======================== VIRTUAL ========================

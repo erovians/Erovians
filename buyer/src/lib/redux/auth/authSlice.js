@@ -15,9 +15,9 @@ const initialState = {
   isNewUser: null,
   identifier: "",
   loginMethod: "mobile",
-  authMode: "login", // "login" or "signup"
-  loginType: null, // "otp" or "password" (only for login mode)
-  hasPassword: false, // to check if user can login with password
+  authMode: "login",
+  loginType: null,
+  hasPassword: false,
   otpSent: false,
   otpPurpose: null,
   otpExpiresAt: null,
@@ -25,9 +25,6 @@ const initialState = {
   nextRoute: null,
 };
 
-// ========================================
-// 1. LOAD USER
-// ========================================
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, { rejectWithValue }) => {
@@ -45,16 +42,12 @@ export const loadUser = createAsyncThunk(
   }
 );
 
-// ========================================
-// 2. CHECK USER & SEND OTP
-// ========================================
 export const checkUserAndSendOTP = createAsyncThunk(
   "auth/checkUserAndSendOTP",
   async (formData, { rejectWithValue }) => {
     try {
-      console.log(formData);
       const response = await api.post("/auth/check-user", formData);
-      return response.data;
+      return { ...response.data, intendedRoute: formData.intendedRoute };
     } catch (error) {
       return rejectWithValue(
         error?.response?.data || {
@@ -66,9 +59,6 @@ export const checkUserAndSendOTP = createAsyncThunk(
   }
 );
 
-// ========================================
-// 3. VERIFY OTP
-// ========================================
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
   async (formData, { rejectWithValue }) => {
@@ -86,9 +76,6 @@ export const verifyOTP = createAsyncThunk(
   }
 );
 
-// ========================================
-// 4. COMPLETE REGISTRATION (Name Submit)
-// ========================================
 export const completeRegistration = createAsyncThunk(
   "auth/completeRegistration",
   async (formData, { rejectWithValue }) => {
@@ -106,9 +93,6 @@ export const completeRegistration = createAsyncThunk(
   }
 );
 
-// ========================================
-// 5. LOGIN WITH PASSWORD
-// ========================================
 export const loginWithPassword = createAsyncThunk(
   "auth/loginWithPassword",
   async (formData, { rejectWithValue }) => {
@@ -117,18 +101,12 @@ export const loginWithPassword = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error?.response?.data || {
-          success: false,
-          message: "Login failed",
-        }
+        error?.response?.data || { success: false, message: "Login failed" }
       );
     }
   }
 );
 
-// ========================================
-// 6. RESEND OTP
-// ========================================
 export const resendOTP = createAsyncThunk(
   "auth/resendOTP",
   async (formData, { rejectWithValue }) => {
@@ -146,9 +124,6 @@ export const resendOTP = createAsyncThunk(
   }
 );
 
-// ========================================
-// 7. LOGOUT
-// ========================================
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
@@ -157,18 +132,12 @@ export const logoutUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error?.response?.data || {
-          success: false,
-          message: "Failed to logout",
-        }
+        error?.response?.data || { success: false, message: "Failed to logout" }
       );
     }
   }
 );
 
-// ========================================
-// 8. UPDATE USER
-// ========================================
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async (formData, { rejectWithValue }) => {
@@ -186,9 +155,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-// ========================================
-// 9. UPDATE ADDRESS (Billing/Shipping)
-// ========================================
 export const updateAddress = createAsyncThunk(
   "auth/updateAddress",
   async ({ type, action, data, index }, { rejectWithValue }) => {
@@ -217,7 +183,6 @@ const authSlice = createSlice({
   reducers: {
     clearError: (state) => {
       state.error = null;
-      state.message = null;
     },
     clearSuccess: (state) => {
       state.success = false;
@@ -260,45 +225,29 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
-      // ========================================
-      // 1. LOAD USER
-      // ========================================
       .addCase(loadUser.pending, (state) => {
-        state.loading = true; // General loading for page load
+        state.loading = true;
         state.error = null;
       })
       .addCase(loadUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
-        state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data || null;
       })
       .addCase(loadUser.rejected, (state, action) => {
         state.loading = false;
-        state.success = false;
         state.isAuthenticated = false;
         state.user = null;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to load user";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to load user";
       })
 
-      // ========================================
-      // 2. CHECK USER & SEND OTP
-      // ========================================
       .addCase(checkUserAndSendOTP.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.message = null;
       })
       .addCase(checkUserAndSendOTP.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         state.success = true;
         state.otpSent = true;
         state.isNewUser = action.payload?.isNewUser || false;
@@ -308,6 +257,7 @@ const authSlice = createSlice({
         state.requiresVerification = true;
         state.hasPassword = action.payload?.hasPassword || false;
         state.message = action.payload?.message || "OTP sent successfully";
+        state.nextRoute = action.payload?.intendedRoute || "/";
 
         if (state.authMode === "signup") {
           state.step = "otp";
@@ -321,25 +271,16 @@ const authSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.otpSent = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to send OTP";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to send OTP";
       })
 
-      // ========================================
-      // 3. VERIFY OTP
-      // ========================================
       .addCase(verifyOTP.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.message = null;
       })
       .addCase(verifyOTP.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         state.success = true;
         state.message = action.payload?.message || "OTP verified successfully";
 
@@ -353,7 +294,6 @@ const authSlice = createSlice({
           state.requiresVerification = false;
           state.otpPurpose = null;
           state.otpExpiresAt = null;
-          state.nextRoute = action.payload?.nextRoute || "/";
 
           if (action.payload?.accessToken) {
             localStorage.setItem("accessToken", action.payload.accessToken);
@@ -363,25 +303,16 @@ const authSlice = createSlice({
       .addCase(verifyOTP.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "OTP verification failed";
-        state.message = state.error;
+        state.error = action.payload?.message || "OTP verification failed";
       })
 
-      // ========================================
-      // 4. COMPLETE REGISTRATION
-      // ========================================
       .addCase(completeRegistration.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.message = null;
       })
       .addCase(completeRegistration.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data || null;
@@ -390,7 +321,6 @@ const authSlice = createSlice({
         state.requiresVerification = false;
         state.otpPurpose = null;
         state.otpExpiresAt = null;
-        state.nextRoute = action.payload?.nextRoute || "/";
         state.message =
           action.payload?.message || "Registration completed successfully";
 
@@ -401,30 +331,20 @@ const authSlice = createSlice({
       .addCase(completeRegistration.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Registration failed";
-        state.message = state.error;
+        state.error = action.payload?.message || "Registration failed";
       })
 
-      // ========================================
-      // 5. LOGIN WITH PASSWORD
-      // ========================================
       .addCase(loginWithPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.message = null;
       })
       .addCase(loginWithPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         state.success = true;
         state.isAuthenticated = true;
         state.user = action.payload?.data || null;
         state.step = "initial";
-        state.nextRoute = action.payload?.nextRoute || "/";
         state.message = action.payload?.message || "Login successful";
 
         if (action.payload?.accessToken) {
@@ -434,23 +354,16 @@ const authSlice = createSlice({
       .addCase(loginWithPassword.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error =
-          action.payload?.message || action.payload?.error || "Login failed";
-        state.message = state.error;
+        state.error = action.payload?.message || "Login failed";
       })
 
-      // ========================================
-      // 6. RESEND OTP
-      // ========================================
       .addCase(resendOTP.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.message = null;
       })
       .addCase(resendOTP.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
         state.success = true;
         state.otpExpiresAt = action.payload?.otpExpiresAt || null;
         state.message = action.payload?.message || "OTP resent successfully";
@@ -458,63 +371,42 @@ const authSlice = createSlice({
       .addCase(resendOTP.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to resend OTP";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to resend OTP";
       })
 
-      // ========================================
-      // 7. LOGOUT
-      // ========================================
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-
         return {
           ...initialState,
           message: action.payload?.message || "Logged out successfully",
           success: true,
-          loading: false,
         };
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to logout";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to logout";
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         return { ...initialState, error: state.error };
       })
 
-      // ========================================
-      // 8. UPDATE USER - SPLIT INTO PROFILE & BUYER
-      // ========================================
       .addCase(updateUser.pending, (state, action) => {
-        // Check if it's profile update or buyer update based on payload
         const payload = action.meta.arg;
-
         if (payload.buyer_data) {
-          state.buyerLoading = true; // Buyer details loading
+          state.buyerLoading = true;
         } else {
-          state.profileLoading = true; // Personal info loading
+          state.profileLoading = true;
         }
-
         state.error = null;
         state.success = false;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.profileLoading = false;
         state.buyerLoading = false;
-        state.error = null;
         state.success = true;
         state.user = action.payload?.data || state.user;
         state.message = action.payload?.message || "User updated successfully";
@@ -523,24 +415,16 @@ const authSlice = createSlice({
         state.profileLoading = false;
         state.buyerLoading = false;
         state.success = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to update user";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to update user";
       })
 
-      // ========================================
-      // 9. UPDATE ADDRESS
-      // ========================================
       .addCase(updateAddress.pending, (state) => {
-        state.addressLoading = true; // Address specific loading
+        state.addressLoading = true;
         state.error = null;
         state.success = false;
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
         state.addressLoading = false;
-        state.error = null;
         state.success = true;
         state.user = action.payload?.data || state.user;
         state.message =
@@ -549,11 +433,7 @@ const authSlice = createSlice({
       .addCase(updateAddress.rejected, (state, action) => {
         state.addressLoading = false;
         state.success = false;
-        state.error =
-          action.payload?.message ||
-          action.payload?.error ||
-          "Failed to update address";
-        state.message = state.error;
+        state.error = action.payload?.message || "Failed to update address";
       });
   },
 });
@@ -567,5 +447,4 @@ export const {
   resetAuthFlow,
   logout,
 } = authSlice.actions;
-
 export default authSlice.reducer;

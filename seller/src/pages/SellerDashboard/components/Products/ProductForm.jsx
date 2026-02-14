@@ -1,6 +1,5 @@
-// ProductForm.jsx - Updated to use categories from Redux
-
-import React, { useMemo } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import {
   Layers,
   FileText,
@@ -17,6 +16,8 @@ import {
   Hash,
   Weight,
   Clock,
+  FileCode,
+  Settings,
 } from "lucide-react";
 import {
   Select,
@@ -28,26 +29,15 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 
-const ProductForm = ({
-  formData,
-  errors,
-  loading,
-  onFormChange,
-  onSubmit,
-  categories = [],
-  categoryLoading = false,
-}) => {
-  // Get subcategories based on selected category
-  const availableSubcategories = useMemo(() => {
-    if (!formData.category || categories.length === 0) {
-      return [];
-    }
+const ProductForm = ({ formData, errors, loading, onFormChange, onSubmit }) => {
+  const { company } = useSelector((state) => state.company);
+  const categories = company?.companyBasicInfo?.mainCategory || [];
+  const subCategories = company?.companyBasicInfo?.subCategory || [];
 
-    const selectedCategory = categories.find(
-      (cat) => cat.slug === formData.category
-    );
-    return selectedCategory?.subcategories || [];
-  }, [formData.category, categories]);
+  // Check if custom product type is selected
+  const isCustomProduct = ["made-to-order", "CNC", "stone-cutting"].includes(
+    formData.product_type
+  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -64,6 +54,15 @@ const ProductForm = ({
           [field]: type === "checkbox" ? checked : value,
         },
       });
+    } else if (name.startsWith("custom_")) {
+      // Handle custom parameters
+      const field = name.replace("custom_", "");
+      onFormChange({
+        custom_parameters: {
+          ...formData.custom_parameters,
+          [field]: value,
+        },
+      });
     } else {
       onFormChange({ [name]: value });
     }
@@ -76,9 +75,32 @@ const ProductForm = ({
     });
   };
 
+  const handleTechnicalFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      onFormChange({
+        technical_file: {
+          ...formData.technical_file,
+          url: file, // This will be uploaded to backend
+        },
+      });
+    }
+  };
+
   const removeImage = (idx) => {
     onFormChange({
       productImages: formData.productImages.filter((_, i) => i !== idx),
+    });
+  };
+
+  const handleArrayInput = (field, value) => {
+    // Convert comma-separated string to array
+    const arrayValue = value.split(",").map((item) => item.trim());
+    onFormChange({
+      custom_parameters: {
+        ...formData.custom_parameters,
+        [field]: arrayValue,
+      },
     });
   };
 
@@ -186,7 +208,7 @@ const ProductForm = ({
               <input
                 type="text"
                 name="product_material"
-                placeholder="e.g., Carrara Marble, Black Granite"
+                placeholder="e.g., Granite, Marble"
                 value={formData.product_material}
                 onChange={handleChange}
                 className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
@@ -256,6 +278,283 @@ const ProductForm = ({
         )}
       </div>
 
+      {/* ========== CONDITIONAL: Custom Product Fields ========== */}
+      {isCustomProduct && (
+        <>
+          {/* Technical File Upload */}
+          <div className="bg-amber-50 rounded-lg border-2 border-amber-200 p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <FileCode className="w-5 h-5 text-amber-700" />
+              <h2 className="text-base font-semibold text-gray-900">
+                Technical Drawing{" "}
+                <span className="text-red-500">
+                  * (Required for {formData.product_type})
+                </span>
+              </h2>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm text-amber-800">
+                Upload technical file (DXF, DWG, PDF, STEP, STL) with exact
+                specifications
+              </p>
+
+              <label className="flex flex-col items-center justify-center border-2 border-dashed border-amber-300 rounded-lg p-6 cursor-pointer hover:border-amber-500 hover:bg-amber-100/50 transition-all">
+                <FileCode className="w-8 h-8 text-amber-600 mb-2" />
+                <span className="text-sm font-medium text-gray-700">
+                  {formData.technical_file?.url
+                    ? formData.technical_file.url.name || "File uploaded"
+                    : "Click to upload technical file"}
+                </span>
+                <span className="text-xs text-gray-500 mt-1">
+                  Accepted: DXF, DWG, PDF, STEP, STL (Max 10MB)
+                </span>
+                <input
+                  type="file"
+                  accept=".dxf,.dwg,.pdf,.step,.stl"
+                  onChange={handleTechnicalFileChange}
+                  className="hidden"
+                />
+              </label>
+
+              {formData.technical_file?.url && (
+                <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded p-3">
+                  <Check className="w-5 h-5 text-green-600" />
+                  <span className="text-sm text-green-800">
+                    Technical file uploaded successfully
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Custom Parameters */}
+          <div className="bg-blue-50 rounded-lg border-2 border-blue-200 p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Settings className="w-5 h-5 text-blue-700" />
+              <h2 className="text-base font-semibold text-gray-900">
+                Custom Parameters{" "}
+                <span className="text-red-500">
+                  * (Required for {formData.product_type})
+                </span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Height */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Custom Height (mm)
+                </label>
+                <input
+                  type="number"
+                  name="custom_height"
+                  placeholder="e.g., 2400"
+                  value={formData.custom_parameters?.height || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Width */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Custom Width (mm)
+                </label>
+                <input
+                  type="number"
+                  name="custom_width"
+                  placeholder="e.g., 1200"
+                  value={formData.custom_parameters?.width || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Length */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Custom Length (mm)
+                </label>
+                <input
+                  type="number"
+                  name="custom_length"
+                  placeholder="e.g., 3000"
+                  value={formData.custom_parameters?.length || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Thickness */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Custom Thickness (mm)
+                </label>
+                <input
+                  type="number"
+                  name="custom_thickness"
+                  placeholder="e.g., 20"
+                  value={formData.custom_parameters?.thickness || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Tolerances */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Tolerances
+                </label>
+                <input
+                  type="text"
+                  name="custom_tolerances"
+                  placeholder="e.g., ±0.5mm"
+                  value={formData.custom_parameters?.tolerances || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Radius */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Radius (mm)
+                </label>
+                <input
+                  type="number"
+                  name="custom_radius"
+                  placeholder="e.g., 5"
+                  value={formData.custom_parameters?.radius || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Angles */}
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Angles (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., 45, 90, 135"
+                  value={formData.custom_parameters?.angles?.join(", ") || ""}
+                  onChange={(e) => handleArrayInput("angles", e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Finish Types */}
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Finish Types (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., polished, honed, brushed"
+                  value={
+                    formData.custom_parameters?.finish_types?.join(", ") || ""
+                  }
+                  onChange={(e) =>
+                    handleArrayInput("finish_types", e.target.value)
+                  }
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Chamfers */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Chamfers / Bevels
+                </label>
+                <input
+                  type="text"
+                  name="custom_chamfers"
+                  placeholder="e.g., 2mm beveled edges"
+                  value={formData.custom_parameters?.chamfers || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+
+              {/* Vein Orientation (for stone) */}
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Vein Orientation (for stone)
+                </label>
+                <Select
+                  value={formData.custom_parameters?.vein_orientation || ""}
+                  onValueChange={(value) =>
+                    onFormChange({
+                      custom_parameters: {
+                        ...formData.custom_parameters,
+                        vein_orientation: value,
+                      },
+                    })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select orientation" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="horizontal">Horizontal</SelectItem>
+                    <SelectItem value="vertical">Vertical</SelectItem>
+                    <SelectItem value="diagonal">Diagonal</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Drilling Positions */}
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Drilling Positions (comma-separated)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., top-left: 50mm, center: 100mm"
+                  value={
+                    formData.custom_parameters?.drilling_positions?.join(
+                      ", "
+                    ) || ""
+                  }
+                  onChange={(e) =>
+                    handleArrayInput("drilling_positions", e.target.value)
+                  }
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 3D Preview URL (Optional) */}
+          <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Box className="w-5 h-5 text-gray-700" />
+              <h2 className="text-base font-semibold text-gray-900">
+                3D Preview URL{" "}
+                <span className="text-xs text-gray-500 font-normal">
+                  (Optional)
+                </span>
+              </h2>
+            </div>
+
+            <input
+              type="url"
+              name="preview_3d_url"
+              placeholder="https://example.com/3d-preview"
+              value={formData.preview_3d_url || ""}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm"
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Provide a URL to a 3D visualization of the custom product
+            </p>
+          </div>
+        </>
+      )}
+      {/* ========== END Custom Product Fields ========== */}
+
       {/* Category & Classification */}
       <div className="bg-white rounded-lg border border-gray-200 p-5">
         <div className="flex items-center gap-2 mb-4">
@@ -265,128 +564,114 @@ const ProductForm = ({
           </h2>
         </div>
 
-        {categoryLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Spinner className="w-6 h-6" />
-            <span className="ml-2 text-sm text-gray-500">
-              Loading categories...
-            </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <Select
+              value={formData.category}
+              onValueChange={(value) => onFormChange({ category: value })}
+            >
+              <SelectTrigger
+                className={`w-full ${errors.category ? "border-red-500" : ""}`}
+              >
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat} className="capitalize">
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Category <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => {
-                  onFormChange({ category: value, subCategory: "" });
-                }}
-              >
-                <SelectTrigger
-                  className={`w-full ${
-                    errors.category ? "border-red-500" : ""
-                  }`}
-                >
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.slug} value={cat.slug}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Sub-Category <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.subCategory}
-                onValueChange={(value) => onFormChange({ subCategory: value })}
-                disabled={
-                  !formData.category || availableSubcategories.length === 0
-                }
-              >
-                <SelectTrigger
-                  className={`w-full ${
-                    errors.subCategory ? "border-red-500" : ""
-                  }`}
-                >
-                  <SelectValue placeholder="Select Sub-Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {availableSubcategories.map((subCat) => (
-                      <SelectItem key={subCat} value={subCat.toLowerCase()}>
-                        {subCat}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Grade <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.grade}
-                onValueChange={(value) => onFormChange({ grade: value })}
-              >
-                <SelectTrigger
-                  className={`w-full ${errors.grade ? "border-red-500" : ""}`}
-                >
-                  <SelectValue placeholder="Select Grade" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="A">Grade A (Premium)</SelectItem>
-                  <SelectItem value="B">Grade B (Standard)</SelectItem>
-                  <SelectItem value="C">Grade C (Economy)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Color <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="color"
-                placeholder="e.g., White, Black"
-                value={formData.color}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
-                  errors.color ? "border-red-500" : "border-gray-300"
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Sub-Category <span className="text-red-500">*</span>
+            </label>
+            <Select
+              value={formData.subCategory}
+              onValueChange={(value) => onFormChange({ subCategory: value })}
+            >
+              <SelectTrigger
+                className={`w-full ${
+                  errors.subCategory ? "border-red-500" : ""
                 }`}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Origin <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="origin"
-                placeholder="e.g., India, Italy"
-                value={formData.origin}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
-                  errors.origin ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-            </div>
+              >
+                <SelectValue placeholder="Select Sub-Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {subCategories.map((subCat) => (
+                  <SelectItem
+                    key={subCat}
+                    value={subCat}
+                    className="capitalize"
+                  >
+                    {subCat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
+
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Grade <span className="text-red-500">*</span>
+            </label>
+            <Select
+              value={formData.grade}
+              onValueChange={(value) => onFormChange({ grade: value })}
+            >
+              <SelectTrigger
+                className={`w-full ${errors.grade ? "border-red-500" : ""}`}
+              >
+                <SelectValue placeholder="Select Grade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="A">Grade A (Premium)</SelectItem>
+                <SelectItem value="B">Grade B (Standard)</SelectItem>
+                <SelectItem value="C">Grade C (Economy)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Color <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="color"
+              placeholder="e.g., White, Black"
+              value={formData.color}
+              onChange={handleChange}
+              className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
+                errors.color ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Origin <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="origin"
+              placeholder="e.g., India, Italy"
+              value={formData.origin}
+              onChange={handleChange}
+              className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-sm ${
+                errors.origin ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Dimensions & Weight */}
@@ -654,7 +939,7 @@ const ProductForm = ({
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-navyblue text-white py-3.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-navyblue text-white py-3.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-800"
       >
         {loading ? (
           <>

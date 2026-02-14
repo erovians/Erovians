@@ -19,7 +19,6 @@ import sendToken from "../../utils/buyer/sendToken.js";
 // ========================================
 export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
   const { email, mobile } = req.body;
-  console.log(req.body);
 
   // Validate input
   if (!email && !mobile) {
@@ -96,7 +95,7 @@ export const checkUserAndSendOTP = asyncHandler(async (req, res, next) => {
       message: `OTP sent successfully to your ${isEmail ? "email" : "mobile"}`,
       isNewUser,
       identifier,
-      hasPassword: user.hasPassword || false, // ✅ ADDED
+      hasPassword: user.hasPassword || false,
       otpPurpose: isNewUser ? "register" : "login",
       otpExpiresAt: otpExpires,
     });
@@ -213,7 +212,7 @@ export const verifyOTP = asyncHandler(async (req, res, next) => {
     });
 
     // Send tokens
-    sendToken(user, 200, res, "Login successful");
+    await sendToken(user, 200, res, "Login successful");
   }
 });
 
@@ -269,7 +268,7 @@ export const completeRegistration = asyncHandler(async (req, res, next) => {
 
   // ✅ ADD BUYER ROLE
   if (!user.hasRole("buyer")) {
-    user.role = [...new Set([...user.role, "buyer"])];
+    await user.addRole("buyer");
     logger.info("Buyer role added to user", {
       userId: user._id,
       roles: user.role,
@@ -282,15 +281,15 @@ export const completeRegistration = asyncHandler(async (req, res, next) => {
     userId: user._id,
     name: user.name,
     identifier,
-    roles: user.role, // ✅ Log roles
+    roles: user.role,
   });
 
   // Send tokens and login
-  sendToken(user, 201, res, "Registration completed successfully");
+  await sendToken(user, 201, res, "Registration completed successfully");
 });
 
 // ========================================
-// 4. Login with Password (NEW)
+// 4. Login with Password
 // ========================================
 export const loginWithPassword = asyncHandler(async (req, res, next) => {
   const { email, mobile, password } = req.body;
@@ -343,7 +342,7 @@ export const loginWithPassword = asyncHandler(async (req, res, next) => {
   });
 
   // Send tokens
-  sendToken(user, 200, res, "Login successful");
+  await sendToken(user, 200, res, "Login successful");
 });
 
 // ========================================
@@ -437,7 +436,6 @@ export const resendOTP = asyncHandler(async (req, res, next) => {
 // ========================================
 export const getMe = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
-  console.log("this is id of buyer side", userId);
 
   logger.info("User profile requested", { userId });
 
@@ -506,7 +504,6 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
 export const updateBasicProfile = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
   const { name, gender, buyer_data } = req.body;
-  console.log("this is update basic profile req.body", req.body);
 
   logger.info("Profile update request", { userId, updates: req.body });
 
@@ -599,13 +596,13 @@ export const updateBasicProfile = asyncHandler(async (req, res, next) => {
     data: user.toSafeObject(),
   });
 });
+
 // ========================================
 // 9. UPDATE USER ADDRESS
 // ========================================
 export const updateAddress = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
   const { type, action, data, index } = req.body;
-  console.log("this is update address req body", req.body);
 
   logger.info("Address update request", {
     userId,
