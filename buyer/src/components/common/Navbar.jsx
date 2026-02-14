@@ -240,17 +240,6 @@ export default function Header() {
                 </span>
               </button>
 
-              {/* Not Logged In - Become A Seller */}
-              {!isAuthenticated && (
-                <Link
-                  to="/seller-registration"
-                  className="bg-yellow-500 text-navyblue px-4 py-1 rounded-sm font-semibold hover:bg-yellow-400 transition-colors flex items-center gap-1"
-                >
-                  <Store size={14} />
-                  Become A Seller
-                </Link>
-              )}
-
               {/* Logged In - Not Seller */}
               {isAuthenticated && !isSeller && (
                 <Link
